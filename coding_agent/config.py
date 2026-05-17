@@ -230,7 +230,7 @@ def get_value(key: str):
 
 
 def get_assistant_name():
-    return get_value("assistant_name") or "Coding Agent"
+    return get_value("assistant_name") or "Coco"
 
 
 def get_owner_name():
