@@ -32,19 +32,15 @@ from coco_codes.config import (
 from coco_codes.http_utils import find_available_port
 from coco_codes.keymap import (
     KeymapError,
-    get_cancel_agent_display_name,
-    get_pause_agent_display_name,
     validate_cancel_agent_key,
     validate_pause_agent_key,
 )
 from coco_codes.messaging import emit_info
 from coco_codes.terminal_utils import (
-    print_truecolor_warning,
     reset_unix_terminal,
     reset_windows_terminal_ansi,
     reset_windows_terminal_full,
 )
-from coco_codes.version_checker import default_version_mismatch_behavior
 
 plugins.load_plugin_callbacks()
 
@@ -344,10 +340,7 @@ async def main():
         emit_system_message(version_msg)
         emit_system_message(update_disabled_msg)
     else:
-        if len(callbacks.get_callbacks("version_check")):
-            await callbacks.on_version_check(current_version)
-        else:
-            default_version_mismatch_behavior(current_version)
+        pass  # Version check disabled — not published to PyPI
 
     await callbacks.on_startup()
 
@@ -387,42 +380,7 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
     display_console = message_renderer.console
     from coco_codes.messaging import emit_info, emit_system_message
 
-    emit_system_message(
-        "Type '/exit', '/quit', or press Ctrl+D to exit the interactive mode."
-    )
-    emit_system_message("Type 'clear' to reset the conversation history.")
-    emit_system_message("Type /help to view all commands")
-    emit_system_message(
-        "Type @ for path completion, or /model to pick a model. Toggle multiline with Alt+M or F2; newline: Ctrl+J."
-    )
-    emit_system_message("Paste images: Ctrl+V (even on Mac!), F3, or /paste command.")
-    import platform
-
-    if platform.system() == "Darwin":
-        emit_system_message(
-            "macOS tip: Use Ctrl+V (not Cmd+V) to paste images in terminal."
-        )
-    cancel_key = get_cancel_agent_display_name()
-    emit_system_message(
-        f"Press {cancel_key} during processing to cancel the current task or inference. Use Ctrl+X to interrupt running shell commands."
-    )
-    pause_key = get_pause_agent_display_name()
-    emit_system_message(
-        f"Press {pause_key} during processing to pause the agent and inject a steering message."
-    )
-    emit_system_message(
-        "Use /autosave_load to manually load a previous autosave session."
-    )
-    emit_system_message(
-        "Use /diff to configure diff highlighting colors for file changes."
-    )
-    emit_system_message("To re-run the tutorial, use /tutorial.")
-    emit_system_message(
-        "!<command> to run shell commands directly (e.g., !git status)",
-    )
-    # Print truecolor warning LAST so it's the most visible thing on startup
-    # Big ugly red box should be impossible to miss! 
-    print_truecolor_warning(display_console)
+    emit_system_message("Type /help for commands. Press Ctrl+C to cancel, Ctrl+D to exit.")
 
     # Shell pass-through for initial_command: !<cmd> bypasses the agent
     if initial_command:
