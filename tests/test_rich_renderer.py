@@ -15,24 +15,24 @@ from rich.rule import Rule
 from rich.text import Text
 
 ROOT = Path(__file__).resolve().parents[1]
-MESSAGING_PATH = ROOT / "coco_codes" / "messaging"
-TOOLS_PATH = ROOT / "coco_codes" / "tools"
+MESSAGING_PATH = ROOT / "coding_agent" / "messaging"
+TOOLS_PATH = ROOT / "coding_agent" / "tools"
 
-messaging_pkg = types.ModuleType("coco_codes.messaging")
+messaging_pkg = types.ModuleType("coding_agent.messaging")
 messaging_pkg.__path__ = [str(MESSAGING_PATH)]
-sys.modules.setdefault("coco_codes.messaging", messaging_pkg)
+sys.modules.setdefault("coding_agent.messaging", messaging_pkg)
 
-tools_pkg = types.ModuleType("coco_codes.tools")
+tools_pkg = types.ModuleType("coding_agent.tools")
 tools_pkg.__path__ = [str(TOOLS_PATH)]
-sys.modules.setdefault("coco_codes.tools", tools_pkg)
+sys.modules.setdefault("coding_agent.tools", tools_pkg)
 
-common_stub = types.ModuleType("coco_codes.tools.common")
+common_stub = types.ModuleType("coding_agent.tools.common")
 common_stub.format_diff_with_colors = lambda diff_text: diff_text
-sys.modules.setdefault("coco_codes.tools.common", common_stub)
+sys.modules.setdefault("coding_agent.tools.common", common_stub)
 
-from coco_codes.messaging import rich_renderer as rich_renderer_module  # noqa: E402
-from coco_codes.messaging.bus import MessageBus  # noqa: E402
-from coco_codes.messaging.messages import (  # noqa: E402
+from coding_agent.messaging import rich_renderer as rich_renderer_module  # noqa: E402
+from coding_agent.messaging.bus import MessageBus  # noqa: E402
+from coding_agent.messaging.messages import (  # noqa: E402
     AgentReasoningMessage,
     ConfirmationRequest,
     DiffLine,
@@ -56,7 +56,7 @@ from coco_codes.messaging.messages import (  # noqa: E402
     UserInputRequest,
     VersionCheckMessage,
 )
-from coco_codes.messaging.rich_renderer import RichConsoleRenderer  # noqa: E402
+from coding_agent.messaging.rich_renderer import RichConsoleRenderer  # noqa: E402
 
 
 def _make_renderer() -> tuple[RichConsoleRenderer, Mock]:

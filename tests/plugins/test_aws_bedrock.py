@@ -23,7 +23,7 @@ def tmp_extra_models(tmp_path):
     """Return a path to a temporary extra_models.json and patch get_extra_models_path."""
     p = tmp_path / "extra_models.json"
     with patch(
-        "coco_codes.plugins.aws_bedrock.utils.get_extra_models_path", return_value=p
+        "coding_agent.plugins.aws_bedrock.utils.get_extra_models_path", return_value=p
     ):
         yield p
 
@@ -63,7 +63,7 @@ class TestConfig:
     """Test config.py constants and helpers."""
 
     def test_models_list_has_expected_entries(self):
-        from coco_codes.plugins.aws_bedrock.config import MODELS
+        from coding_agent.plugins.aws_bedrock.config import MODELS
 
         keys = [m["base_key"] for m in MODELS]
         assert "bedrock-opus-4-7" in keys
@@ -72,7 +72,7 @@ class TestConfig:
         assert "bedrock-haiku" in keys
 
     def test_models_context_lengths(self):
-        from coco_codes.plugins.aws_bedrock.config import MODELS
+        from coding_agent.plugins.aws_bedrock.config import MODELS
 
         by_key = {m["base_key"]: m for m in MODELS}
         assert by_key["bedrock-opus-4-7"]["context_length"] == 1_000_000
@@ -81,13 +81,13 @@ class TestConfig:
         assert by_key["bedrock-haiku"]["context_length"] == 200_000
 
     def test_get_bedrock_region_env_override(self):
-        from coco_codes.plugins.aws_bedrock.config import get_bedrock_region
+        from coding_agent.plugins.aws_bedrock.config import get_bedrock_region
 
         with patch.dict("os.environ", {"BEDROCK_REGION": "eu-west-1"}, clear=False):
             assert get_bedrock_region() == "eu-west-1"
 
     def test_get_bedrock_region_aws_region_fallback(self):
-        from coco_codes.plugins.aws_bedrock.config import get_bedrock_region
+        from coding_agent.plugins.aws_bedrock.config import get_bedrock_region
 
         env = {"AWS_REGION": "us-west-2"}
         with (
@@ -101,7 +101,7 @@ class TestConfig:
             assert get_bedrock_region() == "us-west-2"
 
     def test_get_bedrock_region_default(self):
-        from coco_codes.plugins.aws_bedrock.config import get_bedrock_region
+        from coding_agent.plugins.aws_bedrock.config import get_bedrock_region
 
         with (
             patch.dict(
@@ -110,7 +110,7 @@ class TestConfig:
                 clear=False,
             ),
             patch(
-                "coco_codes.plugins.aws_bedrock.config._detect_region",
+                "coding_agent.plugins.aws_bedrock.config._detect_region",
                 return_value=None,
             ),
         ):
@@ -121,13 +121,13 @@ class TestConfig:
             assert get_bedrock_region() == "us-east-1"
 
     def test_get_aws_profile_from_env(self):
-        from coco_codes.plugins.aws_bedrock.config import get_aws_profile
+        from coding_agent.plugins.aws_bedrock.config import get_aws_profile
 
         with patch.dict("os.environ", {"AWS_PROFILE": "dev-profile"}, clear=False):
             assert get_aws_profile() == "dev-profile"
 
     def test_get_aws_profile_none_when_unset(self):
-        from coco_codes.plugins.aws_bedrock.config import get_aws_profile
+        from coding_agent.plugins.aws_bedrock.config import get_aws_profile
 
         with patch.dict("os.environ", {}, clear=False):
             import os
@@ -145,7 +145,7 @@ class TestBuildModelEntry:
     """Test _build_model_entry helper."""
 
     def test_basic_entry(self):
-        from coco_codes.plugins.aws_bedrock.utils import _build_model_entry
+        from coding_agent.plugins.aws_bedrock.utils import _build_model_entry
 
         entry = _build_model_entry(
             model_id="us.anthropic.claude-opus-4-7",
@@ -160,7 +160,7 @@ class TestBuildModelEntry:
         assert "default_effort" not in entry
 
     def test_entry_with_effort(self):
-        from coco_codes.plugins.aws_bedrock.utils import _build_model_entry
+        from coding_agent.plugins.aws_bedrock.utils import _build_model_entry
 
         entry = _build_model_entry(
             model_id="us.anthropic.claude-opus-4-7",
@@ -172,7 +172,7 @@ class TestBuildModelEntry:
         assert entry["default_effort"] == "high"
 
     def test_entry_with_aws_overrides(self):
-        from coco_codes.plugins.aws_bedrock.utils import _build_model_entry
+        from coding_agent.plugins.aws_bedrock.utils import _build_model_entry
 
         entry = _build_model_entry(
             model_id="us.anthropic.claude-opus-4-7",
@@ -189,7 +189,7 @@ class TestAddBedrockModelsToConfig:
     """Test add_bedrock_models_to_config — variant expansion and persistence."""
 
     def test_adds_all_models_and_variants(self, tmp_extra_models):
-        from coco_codes.plugins.aws_bedrock.utils import add_bedrock_models_to_config
+        from coding_agent.plugins.aws_bedrock.utils import add_bedrock_models_to_config
 
         added = add_bedrock_models_to_config(aws_region="us-east-1")
         assert len(added) > 0
@@ -208,7 +208,7 @@ class TestAddBedrockModelsToConfig:
         assert data["bedrock-opus-4-7"]["type"] == "aws_bedrock"
 
     def test_preserves_existing_entries(self, tmp_extra_models):
-        from coco_codes.plugins.aws_bedrock.utils import add_bedrock_models_to_config
+        from coding_agent.plugins.aws_bedrock.utils import add_bedrock_models_to_config
 
         # Write a pre-existing model
         existing = {"my-openai-model": {"type": "openai", "name": "gpt-4o"}}
@@ -220,10 +220,10 @@ class TestAddBedrockModelsToConfig:
         assert "bedrock-opus-4-7" in data
 
     def test_returns_empty_on_save_failure(self, tmp_extra_models):
-        from coco_codes.plugins.aws_bedrock.utils import add_bedrock_models_to_config
+        from coding_agent.plugins.aws_bedrock.utils import add_bedrock_models_to_config
 
         with patch(
-            "coco_codes.plugins.aws_bedrock.utils.save_extra_models",
+            "coding_agent.plugins.aws_bedrock.utils.save_extra_models",
             return_value=False,
         ):
             result = add_bedrock_models_to_config()
@@ -234,7 +234,7 @@ class TestRemoveBedrockModelsFromConfig:
     """Test remove_bedrock_models_from_config."""
 
     def test_removes_only_bedrock_entries(self, extra_models_with_bedrock):
-        from coco_codes.plugins.aws_bedrock.utils import (
+        from coding_agent.plugins.aws_bedrock.utils import (
             remove_bedrock_models_from_config,
         )
 
@@ -248,7 +248,7 @@ class TestRemoveBedrockModelsFromConfig:
         assert "bedrock-opus-4-7" not in data
 
     def test_returns_empty_when_nothing_to_remove(self, tmp_extra_models):
-        from coco_codes.plugins.aws_bedrock.utils import (
+        from coding_agent.plugins.aws_bedrock.utils import (
             remove_bedrock_models_from_config,
         )
 
@@ -257,12 +257,12 @@ class TestRemoveBedrockModelsFromConfig:
         assert removed == []
 
     def test_returns_empty_on_save_failure(self, extra_models_with_bedrock):
-        from coco_codes.plugins.aws_bedrock.utils import (
+        from coding_agent.plugins.aws_bedrock.utils import (
             remove_bedrock_models_from_config,
         )
 
         with patch(
-            "coco_codes.plugins.aws_bedrock.utils.save_extra_models",
+            "coding_agent.plugins.aws_bedrock.utils.save_extra_models",
             return_value=False,
         ):
             result = remove_bedrock_models_from_config()
@@ -273,7 +273,7 @@ class TestGetBedrockModelsFromConfig:
     """Test get_bedrock_models_from_config."""
 
     def test_filters_bedrock_only(self, extra_models_with_bedrock):
-        from coco_codes.plugins.aws_bedrock.utils import (
+        from coding_agent.plugins.aws_bedrock.utils import (
             get_bedrock_models_from_config,
         )
 
@@ -292,7 +292,7 @@ class TestHandleCustomCommand:
     """Test _handle_custom_command dispatch."""
 
     def test_returns_none_for_unknown_command(self):
-        from coco_codes.plugins.aws_bedrock.register_callbacks import (
+        from coding_agent.plugins.aws_bedrock.register_callbacks import (
             _handle_custom_command,
         )
 
@@ -300,24 +300,24 @@ class TestHandleCustomCommand:
         assert result is None
 
     def test_returns_true_for_known_command(self):
-        from coco_codes.plugins.aws_bedrock.register_callbacks import (
+        from coding_agent.plugins.aws_bedrock.register_callbacks import (
             _handle_custom_command,
         )
 
         with patch(
-            "coco_codes.plugins.aws_bedrock.register_callbacks._handle_bedrock_status"
+            "coding_agent.plugins.aws_bedrock.register_callbacks._handle_bedrock_status"
         ):
             result = _handle_custom_command("/bedrock-status", "bedrock-status")
             assert result is True
 
     def test_returns_true_on_handler_error(self):
         """Error path should return True (command was handled, just failed)."""
-        from coco_codes.plugins.aws_bedrock.register_callbacks import (
+        from coding_agent.plugins.aws_bedrock.register_callbacks import (
             _handle_custom_command,
         )
 
         with patch(
-            "coco_codes.plugins.aws_bedrock.register_callbacks._handle_bedrock_status",
+            "coding_agent.plugins.aws_bedrock.register_callbacks._handle_bedrock_status",
             side_effect=RuntimeError("boom"),
         ):
             result = _handle_custom_command("/bedrock-status", "bedrock-status")
@@ -328,7 +328,7 @@ class TestCustomHelp:
     """Test _custom_help entries."""
 
     def test_help_entries(self):
-        from coco_codes.plugins.aws_bedrock.register_callbacks import _custom_help
+        from coding_agent.plugins.aws_bedrock.register_callbacks import _custom_help
 
         entries = _custom_help()
         names = [e[0] for e in entries]
@@ -337,7 +337,7 @@ class TestCustomHelp:
         assert "bedrock-remove" in names
 
     def test_setup_help_not_interactive(self):
-        from coco_codes.plugins.aws_bedrock.register_callbacks import _custom_help
+        from coding_agent.plugins.aws_bedrock.register_callbacks import _custom_help
 
         entries = dict(_custom_help())
         assert "interactive" not in entries["bedrock-setup"].lower()
@@ -353,27 +353,27 @@ class TestSupportsAdaptiveThinking:
     """Test the shared supports_adaptive_thinking helper."""
 
     def test_opus_4_7_by_alias(self):
-        from coco_codes.model_utils import supports_adaptive_thinking
+        from coding_agent.model_utils import supports_adaptive_thinking
 
         assert supports_adaptive_thinking("claude-opus-4-7") is True
 
     def test_opus_4_6_by_alias(self):
-        from coco_codes.model_utils import supports_adaptive_thinking
+        from coding_agent.model_utils import supports_adaptive_thinking
 
         assert supports_adaptive_thinking("claude-opus-4-6") is True
 
     def test_sonnet_4_6_by_alias(self):
-        from coco_codes.model_utils import supports_adaptive_thinking
+        from coding_agent.model_utils import supports_adaptive_thinking
 
         assert supports_adaptive_thinking("claude-sonnet-4-6") is True
 
     def test_haiku_not_adaptive(self):
-        from coco_codes.model_utils import supports_adaptive_thinking
+        from coding_agent.model_utils import supports_adaptive_thinking
 
         assert supports_adaptive_thinking("claude-haiku-4-5") is False
 
     def test_bedrock_opus_via_actual_model_id(self):
-        from coco_codes.model_utils import supports_adaptive_thinking
+        from coding_agent.model_utils import supports_adaptive_thinking
 
         # The alias doesn't contain the tag, but the actual_model_id does
         assert (
@@ -384,7 +384,7 @@ class TestSupportsAdaptiveThinking:
         )
 
     def test_unknown_model(self):
-        from coco_codes.model_utils import supports_adaptive_thinking
+        from coding_agent.model_utils import supports_adaptive_thinking
 
         assert supports_adaptive_thinking("gpt-4o") is False
 
@@ -393,17 +393,17 @@ class TestGetDefaultExtendedThinking:
     """Test get_default_extended_thinking uses the shared helper."""
 
     def test_adaptive_for_opus(self):
-        from coco_codes.model_utils import get_default_extended_thinking
+        from coding_agent.model_utils import get_default_extended_thinking
 
         assert get_default_extended_thinking("claude-opus-4-7") == "adaptive"
 
     def test_enabled_for_haiku(self):
-        from coco_codes.model_utils import get_default_extended_thinking
+        from coding_agent.model_utils import get_default_extended_thinking
 
         assert get_default_extended_thinking("claude-haiku-4-5") == "enabled"
 
     def test_adaptive_via_actual_model_id(self):
-        from coco_codes.model_utils import get_default_extended_thinking
+        from coding_agent.model_utils import get_default_extended_thinking
 
         result = get_default_extended_thinking(
             "bedrock-opus", actual_model_id="us.anthropic.claude-opus-4-6-v1:0"
@@ -415,17 +415,17 @@ class TestShouldUseThinkingSummary:
     """Test should_use_anthropic_thinking_summary."""
 
     def test_true_for_opus_4_7(self):
-        from coco_codes.model_utils import should_use_anthropic_thinking_summary
+        from coding_agent.model_utils import should_use_anthropic_thinking_summary
 
         assert should_use_anthropic_thinking_summary("claude-opus-4-7") is True
 
     def test_false_for_opus_4_6(self):
-        from coco_codes.model_utils import should_use_anthropic_thinking_summary
+        from coding_agent.model_utils import should_use_anthropic_thinking_summary
 
         assert should_use_anthropic_thinking_summary("claude-opus-4-6") is False
 
     def test_true_via_actual_model_id(self):
-        from coco_codes.model_utils import should_use_anthropic_thinking_summary
+        from coding_agent.model_utils import should_use_anthropic_thinking_summary
 
         assert (
             should_use_anthropic_thinking_summary(

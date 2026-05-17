@@ -1,7 +1,7 @@
-"""Tests for coco_codes.tools.tools_content.
+"""Tests for coding_agent.tools.tools_content.
 
 This module tests the tools_content string constant that provides
-user-facing documentation about Coco Codes's available tools.
+user-facing documentation about Coding Agent's available tools.
 """
 
 # Import directly from the module file to avoid heavy dependencies in __init__.py
@@ -10,7 +10,7 @@ from pathlib import Path
 
 spec = importlib.util.spec_from_file_location(
     "tools_content_module",
-    Path(__file__).parent.parent.parent / "coco_codes" / "tools" / "tools_content.py",
+    Path(__file__).parent.parent.parent / "coding_agent" / "tools" / "tools_content.py",
 )
 tools_content_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(tools_content_module)

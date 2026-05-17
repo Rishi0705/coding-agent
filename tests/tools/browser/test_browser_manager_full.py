@@ -7,20 +7,20 @@ import pytest
 
 class TestLoadPluginBrowserTypes:
     def test_load_plugin_browser_types_success(self):
-        from coco_codes.tools.browser import browser_manager as bm
+        from coding_agent.tools.browser import browser_manager as bm
 
         bm._BROWSER_TYPES_LOADED = False
         bm._CUSTOM_BROWSER_TYPES = {}
 
         with patch(
-            "coco_codes.tools.browser.browser_manager.on_register_browser_types",
+            "coding_agent.tools.browser.browser_manager.on_register_browser_types",
             create=True,
         ):
             # Patch the import inside the function
             with patch.dict(
                 "sys.modules",
                 {
-                    "coco_codes.callbacks": MagicMock(
+                    "coding_agent.callbacks": MagicMock(
                         on_register_browser_types=MagicMock(
                             return_value=[{"custom": lambda: None}]
                         )
@@ -32,19 +32,19 @@ class TestLoadPluginBrowserTypes:
                 assert bm._BROWSER_TYPES_LOADED is True
 
     def test_load_plugin_browser_types_already_loaded(self):
-        from coco_codes.tools.browser import browser_manager as bm
+        from coding_agent.tools.browser import browser_manager as bm
 
         bm._BROWSER_TYPES_LOADED = True
         bm._load_plugin_browser_types()  # Should return immediately
 
     def test_load_plugin_browser_types_exception(self):
-        from coco_codes.tools.browser import browser_manager as bm
+        from coding_agent.tools.browser import browser_manager as bm
 
         bm._BROWSER_TYPES_LOADED = False
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.callbacks": MagicMock(
+                "coding_agent.callbacks": MagicMock(
                     on_register_browser_types=MagicMock(side_effect=Exception("fail"))
                 )
             },
@@ -55,7 +55,7 @@ class TestLoadPluginBrowserTypes:
 
 class TestSessionContextVars:
     def test_set_and_get_browser_session(self):
-        from coco_codes.tools.browser.browser_manager import (
+        from coding_agent.tools.browser.browser_manager import (
             get_browser_session,
             set_browser_session,
         )
@@ -66,7 +66,7 @@ class TestSessionContextVars:
         set_browser_session(None)
 
     def test_get_session_browser_manager(self):
-        from coco_codes.tools.browser.browser_manager import (
+        from coding_agent.tools.browser.browser_manager import (
             get_session_browser_manager,
             set_browser_session,
         )
@@ -80,7 +80,7 @@ class TestSessionContextVars:
 class TestInitializeBrowser:
     @pytest.mark.asyncio
     async def test_initialize_browser_default_chromium(self):
-        from coco_codes.tools.browser.browser_manager import BrowserManager
+        from coding_agent.tools.browser.browser_manager import BrowserManager
 
         mgr = BrowserManager("init-test")
         mgr.browser_type = None  # default
@@ -95,9 +95,9 @@ class TestInitializeBrowser:
 
         with (
             patch(
-                "coco_codes.tools.browser.browser_manager._load_plugin_browser_types"
+                "coding_agent.tools.browser.browser_manager._load_plugin_browser_types"
             ),
-            patch("coco_codes.tools.browser.browser_manager.emit_info"),
+            patch("coding_agent.tools.browser.browser_manager.emit_info"),
             patch("playwright.async_api.async_playwright", return_value=mock_pw_class),
         ):
             await mgr._initialize_browser()
@@ -106,8 +106,8 @@ class TestInitializeBrowser:
 
     @pytest.mark.asyncio
     async def test_initialize_browser_custom_type(self):
-        from coco_codes.tools.browser import browser_manager as bm
-        from coco_codes.tools.browser.browser_manager import BrowserManager
+        from coding_agent.tools.browser import browser_manager as bm
+        from coding_agent.tools.browser.browser_manager import BrowserManager
 
         async def custom_init(manager):
             manager._context = AsyncMock()
@@ -119,7 +119,7 @@ class TestInitializeBrowser:
         mgr = BrowserManager("custom-test")
         mgr.browser_type = "custom"
 
-        with patch("coco_codes.tools.browser.browser_manager.emit_info"):
+        with patch("coding_agent.tools.browser.browser_manager.emit_info"):
             await mgr._initialize_browser()
             assert mgr._initialized is True
 
@@ -129,7 +129,7 @@ class TestInitializeBrowser:
 class TestCleanupSilent:
     @pytest.mark.asyncio
     async def test_cleanup_silent_mode(self):
-        from coco_codes.tools.browser.browser_manager import BrowserManager
+        from coding_agent.tools.browser.browser_manager import BrowserManager
 
         mgr = BrowserManager("silent-test")
         mgr._initialized = True
@@ -139,8 +139,8 @@ class TestCleanupSilent:
 
         # Silent mode should not emit warnings
         with (
-            patch("coco_codes.tools.browser.browser_manager.emit_warning") as mock_warn,
-            patch("coco_codes.tools.browser.browser_manager.emit_success") as mock_succ,
+            patch("coding_agent.tools.browser.browser_manager.emit_warning") as mock_warn,
+            patch("coding_agent.tools.browser.browser_manager.emit_success") as mock_succ,
         ):
             await mgr._cleanup(silent=True)
             mock_warn.assert_not_called()
@@ -149,7 +149,7 @@ class TestCleanupSilent:
 
     @pytest.mark.asyncio
     async def test_cleanup_non_silent_storage_success(self):
-        from coco_codes.tools.browser.browser_manager import BrowserManager
+        from coding_agent.tools.browser.browser_manager import BrowserManager
 
         mgr = BrowserManager("succ-test")
         mgr._initialized = True
@@ -158,9 +158,9 @@ class TestCleanupSilent:
         mgr._browser = AsyncMock()
 
         with (
-            patch("coco_codes.tools.browser.browser_manager.emit_success") as mock_succ,
-            patch("coco_codes.tools.browser.browser_manager.emit_warning"),
-            patch("coco_codes.tools.browser.browser_manager.emit_info"),
+            patch("coding_agent.tools.browser.browser_manager.emit_success") as mock_succ,
+            patch("coding_agent.tools.browser.browser_manager.emit_warning"),
+            patch("coding_agent.tools.browser.browser_manager.emit_info"),
         ):
             await mgr._cleanup(silent=False)
             assert mock_succ.called
@@ -168,7 +168,7 @@ class TestCleanupSilent:
     @pytest.mark.asyncio
     async def test_cleanup_outer_exception(self):
         """Test cleanup handles outer exception in non-silent mode."""
-        from coco_codes.tools.browser.browser_manager import BrowserManager
+        from coding_agent.tools.browser.browser_manager import BrowserManager
 
         mgr = BrowserManager("outer-err")
         mgr._initialized = True
@@ -180,8 +180,8 @@ class TestCleanupSilent:
         mgr._browser.close = AsyncMock(side_effect=Exception("browser close fail"))
 
         with (
-            patch("coco_codes.tools.browser.browser_manager.emit_success"),
-            patch("coco_codes.tools.browser.browser_manager.emit_warning"),
+            patch("coding_agent.tools.browser.browser_manager.emit_success"),
+            patch("coding_agent.tools.browser.browser_manager.emit_warning"),
         ):
             await mgr._cleanup(silent=False)
             assert mgr._initialized is False
@@ -189,7 +189,7 @@ class TestCleanupSilent:
 
 class TestSyncCleanup:
     def test_sync_cleanup_with_active_managers(self):
-        from coco_codes.tools.browser import browser_manager as bm
+        from coding_agent.tools.browser import browser_manager as bm
 
         bm._cleanup_done = False
         mgr = bm.get_browser_manager("sync-active")
@@ -199,16 +199,16 @@ class TestSyncCleanup:
         mgr._browser = AsyncMock()
 
         with (
-            patch("coco_codes.tools.browser.browser_manager.emit_info"),
-            patch("coco_codes.tools.browser.browser_manager.emit_success"),
-            patch("coco_codes.tools.browser.browser_manager.emit_warning"),
+            patch("coding_agent.tools.browser.browser_manager.emit_info"),
+            patch("coding_agent.tools.browser.browser_manager.emit_success"),
+            patch("coding_agent.tools.browser.browser_manager.emit_warning"),
         ):
             bm._sync_cleanup_browsers()
 
 
 class TestBackwardsCompat:
     def test_aliases(self):
-        from coco_codes.tools.browser.browser_manager import (
+        from coding_agent.tools.browser.browser_manager import (
             BrowserManager,
             CamoufoxManager,
             get_browser_manager,

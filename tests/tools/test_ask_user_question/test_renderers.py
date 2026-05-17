@@ -2,14 +2,14 @@
 
 import re
 
-from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-from coco_codes.tools.ask_user_question.renderers import (
+from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+from coding_agent.tools.ask_user_question.renderers import (
     _render_help_overlay,
     _render_option,
     render_question_panel,
 )
-from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
-from coco_codes.tools.ask_user_question.theme import RichColors
+from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
+from coding_agent.tools.ask_user_question.theme import RichColors
 
 _ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -293,7 +293,7 @@ class TestMarkupInjectionResistance:
 
     def test_renderer_never_propagates_exceptions(self, monkeypatch):
         # Force the inner renderer to blow up; outer guard must still return ANSI.
-        from coco_codes.tools.ask_user_question import renderers
+        from coding_agent.tools.ask_user_question import renderers
 
         def boom(*_a, **_kw):
             raise RuntimeError("kaboom")

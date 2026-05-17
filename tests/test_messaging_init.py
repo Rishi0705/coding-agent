@@ -1,9 +1,9 @@
-"""Tests for coco_codes.messaging package __init__.py.
+"""Tests for coding_agent.messaging package __init__.py.
 
 This module tests that the messaging package properly exports all its public API.
 """
 
-import coco_codes.messaging as messaging_package
+import coding_agent.messaging as messaging_package
 
 
 class TestMessagingPackageExports:

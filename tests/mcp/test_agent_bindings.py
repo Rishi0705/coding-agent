@@ -1,4 +1,4 @@
-"""Tests for coco_codes.mcp_.agent_bindings."""
+"""Tests for coding_agent.mcp_.agent_bindings."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.mcp_ import agent_bindings as ab
+from coding_agent.mcp_ import agent_bindings as ab
 
 
 @pytest.fixture
@@ -112,7 +112,7 @@ class TestManagerFilter:
     """get_servers_for_agent should respect bindings (strict opt-in)."""
 
     def test_unbound_agent_gets_nothing(self, tmp_bindings):
-        from coco_codes.mcp_.manager import MCPManager
+        from coding_agent.mcp_.manager import MCPManager
 
         with (
             patch.object(MCPManager, "sync_from_config"),
@@ -129,7 +129,7 @@ class TestManagerFilter:
         assert manager.get_servers_for_agent(agent_name="ghost-agent") == []
 
     def test_bound_agent_gets_only_bound(self, tmp_bindings):
-        from coco_codes.mcp_.manager import MCPManager
+        from coding_agent.mcp_.manager import MCPManager
 
         with (
             patch.object(MCPManager, "sync_from_config"),
@@ -146,7 +146,7 @@ class TestManagerFilter:
         assert servers == [fake_a.get_pydantic_server.return_value]
 
     def test_legacy_no_agent_name_returns_all(self, tmp_bindings):
-        from coco_codes.mcp_.manager import MCPManager
+        from coding_agent.mcp_.manager import MCPManager
 
         with (
             patch.object(MCPManager, "sync_from_config"),

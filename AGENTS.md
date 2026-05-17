@@ -1,14 +1,14 @@
-# Contributing to Coco Codes
+# Contributing to Coding Agent
 
-> **Golden rule:** Nearly all new functionality should be a **plugin** under `coco_codes/plugins/`
-> that hooks into core via `coco_codes/callbacks.py`. Avoid editing `coco_codes/command_line/` directly.
+> **Golden rule:** Nearly all new functionality should be a **plugin** under `coding_agent/plugins/`
+> that hooks into core via `coding_agent/callbacks.py`. Avoid editing `coding_agent/command_line/` directly.
 
 ## How Plugins Work
 
-Create `coco_codes/plugins/my_feature/register_callbacks.py` (builtin) or `~/.coco_codes/plugins/my_feature/register_callbacks.py` (user):
+Create `coding_agent/plugins/my_feature/register_callbacks.py` (builtin) or `~/.coding_agent/plugins/my_feature/register_callbacks.py` (user):
 
 ```python
-from coco_codes.callbacks import register_callback
+from coding_agent.callbacks import register_callback
 
 def _on_startup():
     print("my_feature loaded!")
@@ -46,7 +46,7 @@ The plugin loader auto-discovers `register_callbacks.py` in subdirectories.
 | `stream_event` | Response streaming | `(event_type, event_data, agent_session_id=None) -> None` |
 | `pre_mcp_autostart` | Before bound MCP servers auto-start | `(agent_name, server_names) -> None` |
 
-Full list + rarely-used hooks: see `coco_codes/callbacks.py` source.
+Full list + rarely-used hooks: see `coding_agent/callbacks.py` source.
 
 ## Rules
 

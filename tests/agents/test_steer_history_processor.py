@@ -15,8 +15,8 @@ from unittest.mock import Mock
 import pytest
 from pydantic_ai.messages import ModelMessage, ModelRequest, UserPromptPart
 
-from coco_codes.agents._steer_processor import make_steer_history_processor
-from coco_codes.messaging.pause_controller import (
+from coding_agent.agents._steer_processor import make_steer_history_processor
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
@@ -197,7 +197,7 @@ def test_processor_with_no_agent_message_history_attribute():
 def test_processor_emits_preview_info_message(monkeypatch):
     infos: List[str] = []
     monkeypatch.setattr(
-        "coco_codes.agents._steer_processor.emit_info",
+        "coding_agent.agents._steer_processor.emit_info",
         lambda msg, *_a, **_k: infos.append(msg),
     )
 
@@ -215,7 +215,7 @@ def test_processor_truncates_long_previews(monkeypatch):
     """Steer previews longer than 80 chars get an ellipsis."""
     infos: List[str] = []
     monkeypatch.setattr(
-        "coco_codes.agents._steer_processor.emit_info",
+        "coding_agent.agents._steer_processor.emit_info",
         lambda msg, *_a, **_k: infos.append(msg),
     )
 

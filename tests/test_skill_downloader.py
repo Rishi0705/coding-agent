@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-import coco_codes.plugins.agent_skills.downloader as dl
+import coding_agent.plugins.agent_skills.downloader as dl
 
 
 @pytest.fixture(autouse=True)

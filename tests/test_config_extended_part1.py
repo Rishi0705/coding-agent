@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.config import (
+from coding_agent.config import (
     DEFAULT_SECTION,
     get_allow_recursion,
     get_auto_save_session,
@@ -23,13 +23,13 @@ from coco_codes.config import (
 
 
 class TestConfigExtendedPart1:
-    """Test basic config operations in coco_codes/config.py"""
+    """Test basic config operations in coding_agent/config.py"""
 
     @pytest.fixture
     def temp_config_dir(self):
         """Create a temporary config directory for isolated testing"""
         with tempfile.TemporaryDirectory() as temp_dir:
-            config_file = os.path.join(temp_dir, "coco.cfg")
+            config_file = os.path.join(temp_dir, "coding_agent.cfg")
 
             # Create a basic config file
             config = configparser.ConfigParser()
@@ -55,7 +55,7 @@ class TestConfigExtendedPart1:
     def mock_config_file(self, temp_config_dir):
         """Mock the CONFIG_FILE to use our temporary config"""
         temp_dir, config_file = temp_config_dir
-        with patch("coco_codes.config.CONFIG_FILE", config_file):
+        with patch("coding_agent.config.CONFIG_FILE", config_file):
             yield config_file
 
     def test_get_value_with_existing_key(self, mock_config_file):
@@ -136,7 +136,7 @@ class TestConfigExtendedPart1:
         with open(config_file, "w") as f:
             config.write(f)
 
-        with patch("coco_codes.config.CONFIG_FILE", config_file):
+        with patch("coding_agent.config.CONFIG_FILE", config_file):
             result = get_allow_recursion()
             assert result is True  # Default should be True
 
@@ -150,7 +150,7 @@ class TestConfigExtendedPart1:
         with open(config_file, "w") as f:
             config.write(f)
 
-        with patch("coco_codes.config.CONFIG_FILE", config_file):
+        with patch("coding_agent.config.CONFIG_FILE", config_file):
             result = get_yolo_mode()
             assert result is True  # Default should be True
 
@@ -164,7 +164,7 @@ class TestConfigExtendedPart1:
         with open(config_file, "w") as f:
             config.write(f)
 
-        with patch("coco_codes.config.CONFIG_FILE", config_file):
+        with patch("coding_agent.config.CONFIG_FILE", config_file):
             result = get_auto_save_session()
             assert result is True  # Default should be True
 
@@ -219,7 +219,7 @@ class TestConfigExtendedPart1:
         with open(config_file, "w") as f:
             config.write(f)
 
-        with patch("coco_codes.config.CONFIG_FILE", config_file):
+        with patch("coding_agent.config.CONFIG_FILE", config_file):
             result = get_assistant_name()
             assert result == "Puppy"  # Default should be "Puppy"
 
@@ -233,12 +233,12 @@ class TestConfigExtendedPart1:
         with open(config_file, "w") as f:
             config.write(f)
 
-        with patch("coco_codes.config.CONFIG_FILE", config_file):
+        with patch("coding_agent.config.CONFIG_FILE", config_file):
             result = get_owner_name()
             assert result == "Master"  # Default should be "Master"
 
-    @patch("coco_codes.config._validate_model_exists")
-    @patch("coco_codes.config._default_model_from_models_json")
+    @patch("coding_agent.config._validate_model_exists")
+    @patch("coding_agent.config._default_model_from_models_json")
     def test_get_global_model_name_with_valid_stored_model(
         self, mock_default, mock_validate, mock_config_file
     ):
@@ -251,8 +251,8 @@ class TestConfigExtendedPart1:
         mock_validate.assert_called_once_with("gpt-4")
         mock_default.assert_not_called()
 
-    @patch("coco_codes.config._validate_model_exists")
-    @patch("coco_codes.config._default_model_from_models_json")
+    @patch("coding_agent.config._validate_model_exists")
+    @patch("coding_agent.config._default_model_from_models_json")
     def test_get_global_model_name_with_invalid_stored_model(
         self, mock_default, mock_validate, mock_config_file
     ):
@@ -265,8 +265,8 @@ class TestConfigExtendedPart1:
         mock_validate.assert_called_once_with("gpt-4")
         mock_default.assert_called_once()
 
-    @patch("coco_codes.config._validate_model_exists")
-    @patch("coco_codes.config._default_model_from_models_json")
+    @patch("coding_agent.config._validate_model_exists")
+    @patch("coding_agent.config._default_model_from_models_json")
     def test_get_global_model_name_no_stored_model(
         self, mock_default, mock_validate, temp_config_dir
     ):
@@ -281,7 +281,7 @@ class TestConfigExtendedPart1:
 
         mock_default.return_value = "default-model"
 
-        with patch("coco_codes.config.CONFIG_FILE", config_file):
+        with patch("coding_agent.config.CONFIG_FILE", config_file):
             result = get_global_model_name()
             assert result == "default-model"  # Should return the default model
             mock_validate.assert_not_called()

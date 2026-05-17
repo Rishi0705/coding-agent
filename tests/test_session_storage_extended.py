@@ -8,7 +8,7 @@ from typing import Any, Callable, List
 
 import pytest
 
-from coco_codes.session_storage import (
+from coding_agent.session_storage import (
     cleanup_sessions,
     list_sessions,
     load_session,

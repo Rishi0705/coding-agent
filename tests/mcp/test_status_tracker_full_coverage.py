@@ -2,8 +2,8 @@
 
 from datetime import datetime, timedelta
 
-from coco_codes.mcp_.managed_server import ServerState
-from coco_codes.mcp_.status_tracker import ServerStatusTracker
+from coding_agent.mcp_.managed_server import ServerState
+from coding_agent.mcp_.status_tracker import ServerStatusTracker
 
 
 class TestServerStatusTracker:
@@ -122,7 +122,7 @@ class TestServerStatusTracker:
         # Add old event
         from collections import deque
 
-        from coco_codes.mcp_.status_tracker import Event
+        from coding_agent.mcp_.status_tracker import Event
 
         old_event = Event(
             timestamp=datetime.now() - timedelta(days=10),

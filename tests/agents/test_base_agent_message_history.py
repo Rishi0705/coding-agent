@@ -10,7 +10,7 @@ This module tests the following message history methods in BaseAgent:
 
 import pytest
 
-from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
 
 class TestMessageHistoryManagement:
@@ -20,10 +20,10 @@ class TestMessageHistoryManagement:
     def agent(self):
         """Create a fresh agent instance for each test.
 
-        Uses CocoCodesAgent as a concrete implementation of BaseAgent
+        Uses CodingAgentAgent as a concrete implementation of BaseAgent
         to test the abstract class's message history functionality.
         """
-        return CocoCodesAgent()
+        return CodingAgentAgent()
 
     def test_get_empty_message_history(self, agent):
         """Test that a new agent has an empty message history.
@@ -238,8 +238,8 @@ class TestMessageHistoryManagement:
         Verifies that message history is instance-specific and
         not shared between different agent instances.
         """
-        agent1 = CocoCodesAgent()
-        agent2 = CocoCodesAgent()
+        agent1 = CodingAgentAgent()
+        agent2 = CodingAgentAgent()
 
         messages1 = [{"role": "user", "content": "Agent 1 message"}]
         messages2 = [

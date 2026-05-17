@@ -12,9 +12,9 @@ from typing import Any, List
 
 import pytest
 
-from coco_codes.agents import _runtime
-from coco_codes.callbacks import _callbacks, clear_callbacks
-from coco_codes.messaging.pause_controller import (
+from coding_agent.agents import _runtime
+from coding_agent.callbacks import _callbacks, clear_callbacks
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
@@ -213,7 +213,7 @@ def test_queued_steer_does_not_double_inject_via_history_processor():
     """
     from unittest.mock import Mock
 
-    from coco_codes.agents._steer_processor import make_steer_history_processor
+    from coding_agent.agents._steer_processor import make_steer_history_processor
 
     agent = Mock()
     agent._message_history = []
@@ -233,7 +233,7 @@ def test_prepare_queued_steer_injection_returns_none_when_empty(_isolated_runtim
     """``prepare_queued_steer_injection`` is a no-op when the queue is empty."""
     from unittest.mock import Mock
 
-    from coco_codes.agents._run_signals import prepare_queued_steer_injection
+    from coding_agent.agents._run_signals import prepare_queued_steer_injection
 
     result = prepare_queued_steer_injection(Mock(), Mock())
     assert result is None
@@ -243,7 +243,7 @@ def test_prepare_queued_steer_injection_drains_one_and_requeues_rest():
     """Helper processes exactly ONE steer per call; leftovers are re-queued."""
     from unittest.mock import Mock
 
-    from coco_codes.agents._run_signals import prepare_queued_steer_injection
+    from coding_agent.agents._run_signals import prepare_queued_steer_injection
 
     pc = get_pause_controller()
     pc.request_steer("one", mode="queue")

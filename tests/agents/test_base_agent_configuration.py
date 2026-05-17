@@ -1,20 +1,20 @@
 import pytest
 
-from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
 
 class TestBaseAgentConfiguration:
     @pytest.fixture
     def agent(self):
-        return CocoCodesAgent()
+        return CodingAgentAgent()
 
 
-class TestCocoCodesDynamicPrompt:
-    """Test that the Coco-Codes system prompt no longer references the retired reasoning tool."""
+class TestCodingAgentDynamicPrompt:
+    """Test that the Coding-Agent system prompt no longer references the retired reasoning tool."""
 
     @pytest.fixture
     def agent(self):
-        return CocoCodesAgent()
+        return CodingAgentAgent()
 
     def test_prompt_mentions_reasoning_without_tool_name(self, agent):
         """Prompt should still encourage thinking, just not via the retired tool."""

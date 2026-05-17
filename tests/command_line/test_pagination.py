@@ -2,7 +2,7 @@
 
 import pytest
 
-from coco_codes.command_line.pagination import (
+from coding_agent.command_line.pagination import (
     ensure_visible_page,
     get_page_bounds,
     get_page_for_index,

@@ -8,28 +8,28 @@ import pytest
 
 @pytest.fixture
 def edit_cmd():
-    with patch("coco_codes.command_line.mcp.base.get_mcp_manager") as mock_mgr:
+    with patch("coding_agent.command_line.mcp.base.get_mcp_manager") as mock_mgr:
         mock_mgr.return_value = MagicMock()
-        from coco_codes.command_line.mcp.edit_command import EditCommand
+        from coding_agent.command_line.mcp.edit_command import EditCommand
 
         return EditCommand()
 
 
 class TestEditCommand:
     def test_no_args_shows_usage(self, edit_cmd):
-        with patch("coco_codes.command_line.mcp.edit_command.emit_info") as mock_emit:
+        with patch("coding_agent.command_line.mcp.edit_command.emit_info") as mock_emit:
             edit_cmd.execute([], group_id="g1")
             assert mock_emit.call_count == 2
 
     def test_generates_group_id(self, edit_cmd):
-        with patch("coco_codes.command_line.mcp.edit_command.emit_info"):
+        with patch("coding_agent.command_line.mcp.edit_command.emit_info"):
             edit_cmd.execute([])  # no group_id
 
     def test_config_file_not_exists(self, edit_cmd):
         with (
             patch("os.path.exists", return_value=False),
-            patch("coco_codes.command_line.mcp.edit_command.emit_error") as mock_err,
-            patch("coco_codes.command_line.mcp.edit_command.emit_info"),
+            patch("coding_agent.command_line.mcp.edit_command.emit_error") as mock_err,
+            patch("coding_agent.command_line.mcp.edit_command.emit_info"),
         ):
             edit_cmd.execute(["myserver"], group_id="g1")
             assert "No MCP servers configured" in str(mock_err.call_args)
@@ -39,9 +39,9 @@ class TestEditCommand:
         with (
             patch("os.path.exists", return_value=True),
             patch("builtins.open", mock_open(read_data=json.dumps(data))),
-            patch("coco_codes.command_line.mcp.edit_command.emit_error") as mock_err,
-            patch("coco_codes.command_line.mcp.edit_command.emit_warning"),
-            patch("coco_codes.command_line.mcp.edit_command.emit_info"),
+            patch("coding_agent.command_line.mcp.edit_command.emit_error") as mock_err,
+            patch("coding_agent.command_line.mcp.edit_command.emit_warning"),
+            patch("coding_agent.command_line.mcp.edit_command.emit_info"),
         ):
             edit_cmd.execute(["myserver"], group_id="g1")
             assert "not found" in str(mock_err.call_args)
@@ -51,9 +51,9 @@ class TestEditCommand:
         with (
             patch("os.path.exists", return_value=True),
             patch("builtins.open", mock_open(read_data=json.dumps(data))),
-            patch("coco_codes.command_line.mcp.edit_command.emit_error"),
-            patch("coco_codes.command_line.mcp.edit_command.emit_warning") as mock_warn,
-            patch("coco_codes.command_line.mcp.edit_command.emit_info") as mock_info,
+            patch("coding_agent.command_line.mcp.edit_command.emit_error"),
+            patch("coding_agent.command_line.mcp.edit_command.emit_warning") as mock_warn,
+            patch("coding_agent.command_line.mcp.edit_command.emit_info") as mock_info,
         ):
             edit_cmd.execute(["missing"], group_id="g1")
             mock_warn.assert_called_once()
@@ -66,16 +66,16 @@ class TestEditCommand:
             patch("os.path.exists", return_value=True),
             patch("builtins.open", mock_open(read_data=json.dumps(data))),
             patch(
-                "coco_codes.command_line.mcp.edit_command.run_custom_server_form",
+                "coding_agent.command_line.mcp.edit_command.run_custom_server_form",
                 return_value=True,
             ) as mock_form,
             patch(
-                "coco_codes.command_line.mcp.edit_command.reload_mcp_servers",
+                "coding_agent.command_line.mcp.edit_command.reload_mcp_servers",
                 create=True,
             ),
         ):
             # Patch the import inside execute
-            with patch.dict("sys.modules", {"coco_codes.agent": MagicMock()}):
+            with patch.dict("sys.modules", {"coding_agent.agent": MagicMock()}):
                 edit_cmd.execute(["myserver"], group_id="g1")
             mock_form.assert_called_once()
             assert mock_form.call_args[1]["edit_mode"] is True
@@ -88,22 +88,22 @@ class TestEditCommand:
             patch("os.path.exists", return_value=True),
             patch("builtins.open", mock_open(read_data=json.dumps(data))),
             patch(
-                "coco_codes.command_line.mcp.edit_command.run_custom_server_form",
+                "coding_agent.command_line.mcp.edit_command.run_custom_server_form",
                 return_value=True,
             ),
         ):
             # Make the import fail
             import sys
 
-            saved = sys.modules.get("coco_codes.agent")
-            sys.modules["coco_codes.agent"] = None  # will cause ImportError
+            saved = sys.modules.get("coding_agent.agent")
+            sys.modules["coding_agent.agent"] = None  # will cause ImportError
             try:
                 edit_cmd.execute(["myserver"], group_id="g1")
             finally:
                 if saved is not None:
-                    sys.modules["coco_codes.agent"] = saved
+                    sys.modules["coding_agent.agent"] = saved
                 else:
-                    sys.modules.pop("coco_codes.agent", None)
+                    sys.modules.pop("coding_agent.agent", None)
 
     def test_form_returns_false(self, edit_cmd):
         data = {"mcp_servers": {"myserver": {"type": "stdio", "command": "echo"}}}
@@ -111,7 +111,7 @@ class TestEditCommand:
             patch("os.path.exists", return_value=True),
             patch("builtins.open", mock_open(read_data=json.dumps(data))),
             patch(
-                "coco_codes.command_line.mcp.edit_command.run_custom_server_form",
+                "coding_agent.command_line.mcp.edit_command.run_custom_server_form",
                 return_value=False,
             ),
         ):
@@ -121,7 +121,7 @@ class TestEditCommand:
         with (
             patch("os.path.exists", return_value=True),
             patch("builtins.open", mock_open(read_data="{bad json")),
-            patch("coco_codes.command_line.mcp.edit_command.emit_error") as mock_err,
+            patch("coding_agent.command_line.mcp.edit_command.emit_error") as mock_err,
         ):
             edit_cmd.execute(["myserver"], group_id="g1")
             assert "Error reading config" in str(mock_err.call_args)
@@ -130,7 +130,7 @@ class TestEditCommand:
         with (
             patch("os.path.exists", return_value=True),
             patch("builtins.open", side_effect=PermissionError("denied")),
-            patch("coco_codes.command_line.mcp.edit_command.emit_error") as mock_err,
+            patch("coding_agent.command_line.mcp.edit_command.emit_error") as mock_err,
         ):
             edit_cmd.execute(["myserver"], group_id="g1")
             assert "Error loading server config" in str(mock_err.call_args)
@@ -140,7 +140,7 @@ class TestEditCommand:
             patch.object(
                 edit_cmd, "_load_server_config", side_effect=Exception("boom")
             ),
-            patch("coco_codes.command_line.mcp.edit_command.emit_error") as mock_err,
+            patch("coding_agent.command_line.mcp.edit_command.emit_error") as mock_err,
         ):
             edit_cmd.execute(["myserver"], group_id="g1")
             mock_err.assert_called_once()
@@ -152,7 +152,7 @@ class TestEditCommand:
             patch("os.path.exists", return_value=True),
             patch("builtins.open", mock_open(read_data=json.dumps(data))),
             patch(
-                "coco_codes.command_line.mcp.edit_command.run_custom_server_form",
+                "coding_agent.command_line.mcp.edit_command.run_custom_server_form",
                 return_value=False,
             ) as mock_form,
         ):

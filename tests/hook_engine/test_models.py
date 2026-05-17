@@ -2,7 +2,7 @@
 
 import pytest
 
-from coco_codes.hook_engine.models import (
+from coding_agent.hook_engine.models import (
     EventData,
     ExecutionResult,
     HookConfig,

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import importlib
 
-import coco_codes.plugins.agent_skills.remote_catalog as rc
-from coco_codes.plugins.agent_skills.remote_catalog import (
+import coding_agent.plugins.agent_skills.remote_catalog as rc
+from coding_agent.plugins.agent_skills.remote_catalog import (
     RemoteCatalogData,
     RemoteSkillEntry,
 )
@@ -24,7 +24,7 @@ def _load_skill_catalog():
         return None
 
     rc.fetch_remote_catalog = _no_fetch  # type: ignore[assignment]
-    module = importlib.import_module("coco_codes.plugins.agent_skills.skill_catalog")
+    module = importlib.import_module("coding_agent.plugins.agent_skills.skill_catalog")
     return importlib.reload(module)
 
 

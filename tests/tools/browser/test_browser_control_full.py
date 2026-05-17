@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.browser.browser_control import (
+from coding_agent.tools.browser.browser_control import (
     create_new_page,
     get_browser_status,
     list_pages,
@@ -24,16 +24,16 @@ def _mock_manager(**kwargs):
 
 
 def _patch_control(target, **kwargs):
-    return patch(f"coco_codes.tools.browser.browser_control.{target}", **kwargs)
+    return patch(f"coding_agent.tools.browser.browser_control.{target}", **kwargs)
 
 
 @pytest.fixture(autouse=True)
 def _suppress_emit():
     with (
-        patch("coco_codes.tools.browser.browser_control.emit_info"),
-        patch("coco_codes.tools.browser.browser_control.emit_error"),
-        patch("coco_codes.tools.browser.browser_control.emit_success"),
-        patch("coco_codes.tools.browser.browser_control.emit_warning"),
+        patch("coding_agent.tools.browser.browser_control.emit_info"),
+        patch("coding_agent.tools.browser.browser_control.emit_error"),
+        patch("coding_agent.tools.browser.browser_control.emit_success"),
+        patch("coding_agent.tools.browser.browser_control.emit_warning"),
     ):
         yield
 

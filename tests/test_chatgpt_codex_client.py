@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, Mock, patch
 import httpx
 import pytest
 
-from coco_codes.chatgpt_codex_client import (
+from coding_agent.chatgpt_codex_client import (
     ChatGPTCodexAsyncClient,
     _is_reasoning_model,
     create_codex_async_client,

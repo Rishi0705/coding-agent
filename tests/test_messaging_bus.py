@@ -12,13 +12,13 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.messaging.bus import MessageBus
-from coco_codes.messaging.commands import (
+from coding_agent.messaging.bus import MessageBus
+from coding_agent.messaging.commands import (
     ConfirmationResponse,
     SelectionResponse,
     UserInputResponse,
 )
-from coco_codes.messaging.messages import (
+from coding_agent.messaging.messages import (
     MessageCategory,
     MessageLevel,
     TextMessage,
@@ -226,7 +226,7 @@ class TestUserInputRequest:
         asyncio.create_task(send_response())
 
         # Mock the uuid to control prompt_id
-        with patch("coco_codes.messaging.bus.uuid4", return_value="test-id"):
+        with patch("coding_agent.messaging.bus.uuid4", return_value="test-id"):
             result = await asyncio.wait_for(
                 bus.request_input("Enter text:"), timeout=2.0
             )
@@ -247,7 +247,7 @@ class TestUserInputRequest:
 
         asyncio.create_task(send_empty_response())
 
-        with patch("coco_codes.messaging.bus.uuid4", return_value="test-id"):
+        with patch("coding_agent.messaging.bus.uuid4", return_value="test-id"):
             result = await asyncio.wait_for(
                 bus.request_input("Enter:", default="default-value"), timeout=2.0
             )
@@ -268,7 +268,7 @@ class TestUserInputRequest:
 
         asyncio.create_task(send_response())
 
-        with patch("coco_codes.messaging.bus.uuid4", return_value="pwd-id"):
+        with patch("coding_agent.messaging.bus.uuid4", return_value="pwd-id"):
             result = await asyncio.wait_for(
                 bus.request_input("Password:", input_type="password"), timeout=2.0
             )
@@ -289,7 +289,7 @@ class TestUserInputRequest:
 
         asyncio.create_task(send_response())
 
-        with patch("coco_codes.messaging.bus.uuid4", return_value="cleanup-id"):
+        with patch("coding_agent.messaging.bus.uuid4", return_value="cleanup-id"):
             result = await asyncio.wait_for(bus.request_input("Test:"), timeout=2.0)
 
         # Pending requests should be cleaned up
@@ -318,7 +318,7 @@ class TestConfirmationRequest:
 
         asyncio.create_task(send_response())
 
-        with patch("coco_codes.messaging.bus.uuid4", return_value="confirm-id"):
+        with patch("coding_agent.messaging.bus.uuid4", return_value="confirm-id"):
             confirmed, feedback = await asyncio.wait_for(
                 bus.request_confirmation(
                     title="Confirm?",
@@ -348,7 +348,7 @@ class TestConfirmationRequest:
 
         asyncio.create_task(send_response())
 
-        with patch("coco_codes.messaging.bus.uuid4", return_value="confirm-id"):
+        with patch("coding_agent.messaging.bus.uuid4", return_value="confirm-id"):
             confirmed, feedback = await asyncio.wait_for(
                 bus.request_confirmation(
                     title="Confirm?",
@@ -383,7 +383,7 @@ class TestSelectionRequest:
 
         asyncio.create_task(send_response())
 
-        with patch("coco_codes.messaging.bus.uuid4", return_value="select-id"):
+        with patch("coding_agent.messaging.bus.uuid4", return_value="select-id"):
             index, value = await asyncio.wait_for(
                 bus.request_selection(
                     "Choose:",
@@ -413,7 +413,7 @@ class TestSelectionRequest:
 
         asyncio.create_task(send_response())
 
-        with patch("coco_codes.messaging.bus.uuid4", return_value="select-first-id"):
+        with patch("coding_agent.messaging.bus.uuid4", return_value="select-first-id"):
             index, value = await asyncio.wait_for(
                 bus.request_selection(
                     "Choose:",
@@ -431,7 +431,7 @@ class TestProvideResponse:
 
     def test_provide_response_puts_in_queue(self):
         """Test that non-response commands go into incoming queue."""
-        from coco_codes.messaging.commands import CancelAgentCommand
+        from coding_agent.messaging.commands import CancelAgentCommand
 
         bus = MessageBus()
         command = CancelAgentCommand()

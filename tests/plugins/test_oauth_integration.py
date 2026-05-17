@@ -14,12 +14,12 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from coco_codes.plugins.chatgpt_oauth.config import (
+from coding_agent.plugins.chatgpt_oauth.config import (
     CHATGPT_OAUTH_CONFIG,
     get_chatgpt_models_path,
     get_token_storage_path,
 )
-from coco_codes.plugins.chatgpt_oauth.utils import (
+from coding_agent.plugins.chatgpt_oauth.utils import (
     add_models_to_extra_config,
     exchange_code_for_tokens,
     fetch_chatgpt_models,
@@ -27,22 +27,22 @@ from coco_codes.plugins.chatgpt_oauth.utils import (
     prepare_oauth_context,
     save_tokens,
 )
-from coco_codes.plugins.claude_code_oauth.config import (
+from coding_agent.plugins.claude_code_oauth.config import (
     CLAUDE_CODE_OAUTH_CONFIG,
 )
-from coco_codes.plugins.claude_code_oauth.config import (
+from coding_agent.plugins.claude_code_oauth.config import (
     get_token_storage_path as get_claude_token_path,
 )
-from coco_codes.plugins.claude_code_oauth.utils import (
+from coding_agent.plugins.claude_code_oauth.utils import (
     add_models_to_extra_config as claude_add_models,
 )
-from coco_codes.plugins.claude_code_oauth.utils import (
+from coding_agent.plugins.claude_code_oauth.utils import (
     exchange_code_for_tokens as claude_exchange_code,
 )
-from coco_codes.plugins.claude_code_oauth.utils import (
+from coding_agent.plugins.claude_code_oauth.utils import (
     fetch_claude_code_models,
 )
-from coco_codes.plugins.claude_code_oauth.utils import (
+from coding_agent.plugins.claude_code_oauth.utils import (
     prepare_oauth_context as claude_prepare_context,
 )
 
@@ -108,11 +108,11 @@ class TestOAuthFlowIntegration:
 
         # Mock token storage path
         with patch(
-            "coco_codes.plugins.chatgpt_oauth.utils.get_token_storage_path",
+            "coding_agent.plugins.chatgpt_oauth.utils.get_token_storage_path",
             return_value=mock_token_storage,
         ):
             with patch(
-                "coco_codes.plugins.chatgpt_oauth.utils.parse_jwt_claims"
+                "coding_agent.plugins.chatgpt_oauth.utils.parse_jwt_claims"
             ) as mock_jwt:
                 mock_jwt.return_value = {
                     "https://api.openai.com/auth": {
@@ -173,15 +173,15 @@ class TestOAuthFlowIntegration:
         )
 
         with patch(
-            "coco_codes.plugins.chatgpt_oauth.utils.get_token_storage_path",
+            "coding_agent.plugins.chatgpt_oauth.utils.get_token_storage_path",
             return_value=mock_token_storage,
         ):
             with patch(
-                "coco_codes.plugins.chatgpt_oauth.utils.get_chatgpt_models_path",
+                "coding_agent.plugins.chatgpt_oauth.utils.get_chatgpt_models_path",
                 return_value=mock_models_storage,
             ):
                 with patch(
-                    "coco_codes.plugins.chatgpt_oauth.utils.parse_jwt_claims"
+                    "coding_agent.plugins.chatgpt_oauth.utils.parse_jwt_claims"
                 ) as mock_jwt:
                     mock_jwt.return_value = {
                         "https://api.openai.com/auth": {
@@ -201,7 +201,7 @@ class TestOAuthFlowIntegration:
                     save_tokens(tokens)
 
                     # 3. Use default Codex models (API fetch no longer used)
-                    from coco_codes.plugins.chatgpt_oauth.utils import (
+                    from coding_agent.plugins.chatgpt_oauth.utils import (
                         DEFAULT_CODEX_MODELS,
                     )
 
@@ -262,15 +262,15 @@ class TestOAuthFlowIntegration:
         )
 
         with patch(
-            "coco_codes.plugins.claude_code_oauth.utils.get_token_storage_path",
+            "coding_agent.plugins.claude_code_oauth.utils.get_token_storage_path",
             return_value=token_path,
         ):
             with patch(
-                "coco_codes.plugins.claude_code_oauth.utils.get_claude_models_path",
+                "coding_agent.plugins.claude_code_oauth.utils.get_claude_models_path",
                 return_value=models_path,
             ):
                 with patch(
-                    "coco_codes.plugins.claude_code_oauth.utils.load_stored_tokens"
+                    "coding_agent.plugins.claude_code_oauth.utils.load_stored_tokens"
                 ) as mock_load_tokens:
                     mock_load_tokens.return_value = {
                         "access_token": "claude_access_token"
@@ -286,7 +286,7 @@ class TestOAuthFlowIntegration:
 
                     # 2. Save tokens
                     with patch(
-                        "coco_codes.plugins.claude_code_oauth.utils.save_tokens"
+                        "coding_agent.plugins.claude_code_oauth.utils.save_tokens"
                     ) as mock_save:
                         mock_save.return_value = True
                         mock_save(tokens)
@@ -372,7 +372,7 @@ class TestOAuthSecurityScenarios:
     def test_expired_context_token_exchange(self, mock_post):
         """Test that expired OAuth contexts cannot exchange tokens."""
         # Create an expired context
-        from coco_codes.plugins.chatgpt_oauth.utils import OAuthContext
+        from coding_agent.plugins.chatgpt_oauth.utils import OAuthContext
 
         expired_context = OAuthContext(
             state="test_state",
@@ -433,7 +433,7 @@ class TestOAuthSecurityScenarios:
         }
 
         with patch(
-            "coco_codes.plugins.chatgpt_oauth.utils.get_token_storage_path",
+            "coding_agent.plugins.chatgpt_oauth.utils.get_token_storage_path",
             return_value=mock_token_storage,
         ):
             # Save tokens
@@ -541,7 +541,7 @@ class TestOAuthErrorRecovery:
             claude_result = fetch_claude_code_models("test_key")
 
             # ChatGPT returns default models on error, Claude returns None
-            from coco_codes.plugins.chatgpt_oauth.utils import DEFAULT_CODEX_MODELS
+            from coding_agent.plugins.chatgpt_oauth.utils import DEFAULT_CODEX_MODELS
 
             assert openai_result == DEFAULT_CODEX_MODELS
             assert claude_result is None
@@ -553,7 +553,7 @@ class TestOAuthErrorRecovery:
             f.write("{invalid json content")
 
         with patch(
-            "coco_codes.plugins.chatgpt_oauth.utils.get_token_storage_path",
+            "coding_agent.plugins.chatgpt_oauth.utils.get_token_storage_path",
             return_value=mock_token_storage,
         ):
             # Should return None for corrupted file
@@ -761,8 +761,8 @@ class TestOAuthConfigurationIntegration:
 
         # Paths should be in the same directory
         assert chatgpt_token_path.parent == chatgpt_models_path.parent
-        # Parent dir should be coco_codes (either legacy .coco_codes or XDG coco_codes)
-        assert "coco_codes" in chatgpt_token_path.parent.name
+        # Parent dir should be coding_agent (either legacy .coding_agent or XDG coding_agent)
+        assert "coding_agent" in chatgpt_token_path.parent.name
 
 
 class TestOAuthDataIntegrity:
@@ -778,7 +778,7 @@ class TestOAuthDataIntegrity:
         special_tokens["metadata"] = {"key": "value with spaces and symbols!@#$%"}
 
         with patch(
-            "coco_codes.plugins.chatgpt_oauth.utils.get_token_storage_path",
+            "coding_agent.plugins.chatgpt_oauth.utils.get_token_storage_path",
             return_value=mock_token_storage,
         ):
             # Save tokens
@@ -814,7 +814,7 @@ class TestOAuthDataIntegrity:
         }
 
         with patch(
-            "coco_codes.plugins.chatgpt_oauth.utils.get_chatgpt_models_path",
+            "coding_agent.plugins.chatgpt_oauth.utils.get_chatgpt_models_path",
             return_value=mock_models_storage,
         ):
             # Save configuration
@@ -841,7 +841,7 @@ class TestOAuthDataIntegrity:
         def save_tokens_worker(worker_id):
             try:
                 with patch(
-                    "coco_codes.plugins.chatgpt_oauth.utils.get_token_storage_path",
+                    "coding_agent.plugins.chatgpt_oauth.utils.get_token_storage_path",
                     return_value=mock_token_storage,
                 ):
                     tokens = {
@@ -909,7 +909,7 @@ class TestOAuthPerformanceAndLimits:
         import time
 
         with patch(
-            "coco_codes.plugins.chatgpt_oauth.utils.get_token_storage_path",
+            "coding_agent.plugins.chatgpt_oauth.utils.get_token_storage_path",
             return_value=mock_token_storage,
         ):
             # Test save performance
@@ -930,7 +930,7 @@ class TestOAuthPerformanceAndLimits:
 
     def test_model_list_handling_limits(self):
         """Test handling of large model lists."""
-        from coco_codes.plugins.claude_code_oauth.utils import (
+        from coding_agent.plugins.claude_code_oauth.utils import (
             filter_latest_claude_models,
         )
 

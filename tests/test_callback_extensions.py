@@ -1,4 +1,4 @@
-"""Tests for the Phase-1 callback extensions in ``coco_codes.callbacks``.
+"""Tests for the Phase-1 callback extensions in ``coding_agent.callbacks``.
 
 Covers four new hook phases added for the DBOS-extraction refactor:
 
@@ -13,7 +13,7 @@ from contextlib import asynccontextmanager
 
 import pytest
 
-from coco_codes.callbacks import (
+from coding_agent.callbacks import (
     clear_callbacks,
     on_agent_run_cancel,
     on_agent_run_context,
@@ -169,7 +169,7 @@ class TestShouldSkipFallbackRender:
 
 # Standalone pytest-style sanity check for callbacks present in registry.
 def test_new_phases_registered():
-    from coco_codes.callbacks import _callbacks
+    from coding_agent.callbacks import _callbacks
 
     for phase in (
         "wrap_pydantic_agent",

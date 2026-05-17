@@ -1,16 +1,16 @@
-"""Tests for coco_codes/command_line/mcp/logs_command.py"""
+"""Tests for coding_agent/command_line/mcp/logs_command.py"""
 
 from unittest.mock import MagicMock, patch
 
-MODULE = "coco_codes.command_line.mcp.logs_command"
-UTILS = "coco_codes.command_line.mcp.utils"
+MODULE = "coding_agent.command_line.mcp.logs_command"
+UTILS = "coding_agent.command_line.mcp.utils"
 
 
 def _make_cmd():
     """Create a LogsCommand with mocked manager."""
-    with patch("coco_codes.command_line.mcp.base.get_mcp_manager") as mock_mgr:
+    with patch("coding_agent.command_line.mcp.base.get_mcp_manager") as mock_mgr:
         mock_mgr.return_value = MagicMock()
-        from coco_codes.command_line.mcp.logs_command import LogsCommand
+        from coding_agent.command_line.mcp.logs_command import LogsCommand
 
         cmd = LogsCommand()
     return cmd

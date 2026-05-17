@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
-from coco_codes.tools import (
+from coding_agent.tools import (
     REMOVED_LEGACY_TOOLS,
     TOOL_REGISTRY,
     get_available_tool_names,
@@ -112,7 +112,7 @@ class TestRemovedReasoningToolBehavior:
 
     def testhas_extended_thinking_active_none_model(self):
         """Returns False when model_name is None and global model is None."""
-        with patch("coco_codes.config.get_global_model_name", return_value=None):
+        with patch("coding_agent.config.get_global_model_name", return_value=None):
             assert has_extended_thinking_active(None) is False
 
     def testhas_extended_thinking_active_non_anthropic_model(self):
@@ -121,43 +121,43 @@ class TestRemovedReasoningToolBehavior:
         assert has_extended_thinking_active("gemini-2.5-pro") is False
         assert has_extended_thinking_active("o3-mini") is False
 
-    @patch("coco_codes.config.get_effective_model_settings")
+    @patch("coding_agent.config.get_effective_model_settings")
     def testhas_extended_thinking_active_claude_enabled(self, mock_settings):
         """Returns True for Claude models with extended_thinking='enabled'."""
         mock_settings.return_value = {"extended_thinking": "enabled"}
         assert has_extended_thinking_active("claude-sonnet-4-20250514") is True
 
-    @patch("coco_codes.config.get_effective_model_settings")
+    @patch("coding_agent.config.get_effective_model_settings")
     def testhas_extended_thinking_active_claude_adaptive(self, mock_settings):
         """Returns True for Claude models with extended_thinking='adaptive'."""
         mock_settings.return_value = {"extended_thinking": "adaptive"}
         assert has_extended_thinking_active("claude-sonnet-4-20250514") is True
 
-    @patch("coco_codes.config.get_effective_model_settings")
+    @patch("coding_agent.config.get_effective_model_settings")
     def testhas_extended_thinking_active_claude_off(self, mock_settings):
         """Returns False for Claude models with extended_thinking='off'."""
         mock_settings.return_value = {"extended_thinking": "off"}
         assert has_extended_thinking_active("claude-sonnet-4-20250514") is False
 
-    @patch("coco_codes.config.get_effective_model_settings")
+    @patch("coding_agent.config.get_effective_model_settings")
     def testhas_extended_thinking_active_legacy_bool_true(self, mock_settings):
         """Returns True for legacy boolean True (backwards compat)."""
         mock_settings.return_value = {"extended_thinking": True}
         assert has_extended_thinking_active("claude-sonnet-4-20250514") is True
 
-    @patch("coco_codes.config.get_effective_model_settings")
+    @patch("coding_agent.config.get_effective_model_settings")
     def testhas_extended_thinking_active_legacy_bool_false(self, mock_settings):
         """Returns False for legacy boolean False (backwards compat)."""
         mock_settings.return_value = {"extended_thinking": False}
         assert has_extended_thinking_active("claude-sonnet-4-20250514") is False
 
-    @patch("coco_codes.config.get_effective_model_settings")
+    @patch("coding_agent.config.get_effective_model_settings")
     def testhas_extended_thinking_active_anthropic_prefix(self, mock_settings):
         """Also works for 'anthropic-' prefixed model names."""
         mock_settings.return_value = {"extended_thinking": "enabled"}
         assert has_extended_thinking_active("anthropic-claude-sonnet") is True
 
-    @patch("coco_codes.config.get_effective_model_settings")
+    @patch("coding_agent.config.get_effective_model_settings")
     def test_has_extended_thinking_default_is_enabled(self, mock_settings):
         """When no extended_thinking setting exists, defaults to 'enabled'."""
         mock_settings.return_value = {}  # No extended_thinking key
@@ -168,7 +168,7 @@ class TestRemovedReasoningToolBehavior:
         assert "agent_share_your_reasoning" in TOOL_REGISTRY
         assert "agent_share_your_reasoning" not in REMOVED_LEGACY_TOOLS
 
-    @patch("coco_codes.tools.emit_warning")
+    @patch("coding_agent.tools.emit_warning")
     def test_legacy_reasoning_tool_can_be_registered_without_warning(
         self, mock_warning
     ):

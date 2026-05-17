@@ -4,9 +4,9 @@ from unittest.mock import MagicMock, patch
 import httpx
 import pytest
 
-from coco_codes.model_factory import ModelFactory
+from coding_agent.model_factory import ModelFactory
 
-TEST_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../coco_codes/models.json")
+TEST_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../coding_agent/models.json")
 
 
 def test_ollama_load_model():
@@ -78,14 +78,14 @@ def test_custom_endpoint_missing_url():
 
 # Additional tests for coverage
 def test_get_custom_config_missing_custom_endpoint():
-    from coco_codes.model_factory import get_custom_config
+    from coding_agent.model_factory import get_custom_config
 
     with pytest.raises(ValueError):
         get_custom_config({})
 
 
 def test_get_custom_config_missing_url():
-    from coco_codes.model_factory import get_custom_config
+    from coding_agent.model_factory import get_custom_config
 
     config = {"custom_endpoint": {"headers": {}}}
     with pytest.raises(ValueError):
@@ -143,7 +143,7 @@ def test_custom_openai_timeout_config(monkeypatch):
         }
     }
 
-    with patch("coco_codes.model_factory.create_async_client") as mock_client:
+    with patch("coding_agent.model_factory.create_async_client") as mock_client:
         mock_client.return_value = httpx.AsyncClient(timeout=600)
         model = ModelFactory.get_model("custom", config)
 
@@ -169,7 +169,7 @@ def test_custom_gemini_timeout_config(monkeypatch):
         }
     }
 
-    with patch("coco_codes.model_factory.create_async_client") as mock_client:
+    with patch("coding_agent.model_factory.create_async_client") as mock_client:
         mock_client.return_value = httpx.AsyncClient(timeout=600)
         model = ModelFactory.get_model("custom", config)
 
@@ -196,10 +196,10 @@ def test_custom_anthropic_timeout_config(monkeypatch):
     }
 
     with (
-        patch("coco_codes.model_factory.ClaudeCacheAsyncClient") as mock_client,
-        patch("coco_codes.model_factory.make_anthropic_provider") as mock_provider,
-        patch("coco_codes.model_factory.AsyncAnthropic") as mock_anthropic,
-        patch("coco_codes.model_factory.get_http2", return_value=False),
+        patch("coding_agent.model_factory.ClaudeCacheAsyncClient") as mock_client,
+        patch("coding_agent.model_factory.make_anthropic_provider") as mock_provider,
+        patch("coding_agent.model_factory.AsyncAnthropic") as mock_anthropic,
+        patch("coding_agent.model_factory.get_http2", return_value=False),
     ):
         mock_client.return_value = MagicMock()
         mock_provider.return_value = MagicMock()
@@ -231,12 +231,12 @@ def test_cerebras_timeout_config(monkeypatch):
         }
     }
 
-    with patch("coco_codes.model_factory.create_async_client") as mock_client:
+    with patch("coding_agent.model_factory.create_async_client") as mock_client:
         mock_client.return_value = httpx.AsyncClient(timeout=600)
         model = ModelFactory.get_model("custom", config)
 
     mock_client.assert_called_once_with(
-        headers={"X-Api-Key": "ok", "X-Cerebras-3rd-Party-Integration": "coco-codes"},
+        headers={"X-Api-Key": "ok", "X-Cerebras-3rd-Party-Integration": "coding-agent"},
         verify=False,
         model_name="cerebras",
         timeout=600,
@@ -248,7 +248,7 @@ def test_anthropic_missing_api_key(monkeypatch):
     config = {"anthropic": {"type": "anthropic", "name": "claude-v2"}}
     if "ANTHROPIC_API_KEY" in os.environ:
         monkeypatch.delenv("ANTHROPIC_API_KEY")
-    with patch("coco_codes.model_factory.emit_warning") as mock_warn:
+    with patch("coding_agent.model_factory.emit_warning") as mock_warn:
         model = ModelFactory.get_model("anthropic", config)
         assert model is None
         mock_warn.assert_called_once()
@@ -311,10 +311,10 @@ def test_extra_models_json_decode_error(tmp_path, monkeypatch):
     extra_models_file.write_text("{ invalid json content }")
 
     # Patch the EXTRA_MODELS_FILE path to point to our temporary file
-    from coco_codes.model_factory import ModelFactory
+    from coding_agent.model_factory import ModelFactory
 
     monkeypatch.setattr(
-        "coco_codes.model_factory.EXTRA_MODELS_FILE", str(extra_models_file)
+        "coding_agent.model_factory.EXTRA_MODELS_FILE", str(extra_models_file)
     )
 
     # This should not raise an exception despite the invalid JSON
@@ -332,10 +332,10 @@ def test_extra_models_exception_handling(tmp_path, monkeypatch, caplog):
     extra_models_file.mkdir()
 
     # Patch the EXTRA_MODELS_FILE path
-    from coco_codes.model_factory import ModelFactory
+    from coding_agent.model_factory import ModelFactory
 
     monkeypatch.setattr(
-        "coco_codes.model_factory.EXTRA_MODELS_FILE", str(extra_models_file)
+        "coding_agent.model_factory.EXTRA_MODELS_FILE", str(extra_models_file)
     )
 
     # This should not raise an exception despite the error
@@ -398,7 +398,7 @@ def test_custom_timeout_precedence(monkeypatch):
         }
     }
 
-    with patch("coco_codes.model_factory.create_async_client") as mock_client:
+    with patch("coding_agent.model_factory.create_async_client") as mock_client:
         mock_client.return_value = httpx.AsyncClient(timeout=300)
         model = ModelFactory.get_model("custom", config)
 

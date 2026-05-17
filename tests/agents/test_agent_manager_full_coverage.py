@@ -1,4 +1,4 @@
-"""Full coverage tests for coco_codes/agents/agent_manager.py.
+"""Full coverage tests for coding_agent/agents/agent_manager.py.
 
 Targets all uncovered lines to achieve 100% coverage.
 """
@@ -10,8 +10,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import coco_codes.agents.agent_manager as am
-from coco_codes.agents.base_agent import BaseAgent
+import coding_agent.agents.agent_manager as am
+from coding_agent.agents.base_agent import BaseAgent
 
 
 # Concrete agent for testing
@@ -216,7 +216,7 @@ class TestGetCurrentAgent:
         finally:
             am._SESSION_AGENTS_CACHE.pop(session_id, None)
 
-    @patch("coco_codes.config.get_default_agent", return_value="default-agent")
+    @patch("coding_agent.config.get_default_agent", return_value="default-agent")
     def test_falls_back_to_config(self, mock_default):
         session_id = am.get_terminal_session_id()
         am._SESSION_AGENTS_CACHE.pop(session_id, None)
@@ -227,10 +227,10 @@ class TestGetCurrentAgent:
 class TestGetAgentDescriptionsFiltering:
     """Tests for get_agent_descriptions UC filtering (line 511)."""
 
-    @patch("coco_codes.config.get_pack_agents_enabled", return_value=True)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=False)
+    @patch("coding_agent.config.get_pack_agents_enabled", return_value=True)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=False)
     def test_uc_disabled_filters_uc_agents(self, mock_uc, mock_pack):
-        from coco_codes.config import UC_AGENT_NAMES
+        from coding_agent.config import UC_AGENT_NAMES
 
         # Add a fake UC agent
         am._AGENT_REGISTRY["uc-test-agent"] = FakeAgent
@@ -278,8 +278,8 @@ class TestLoadSessionDataRobust:
 class TestDeleteCloneUnlinkError:
     """Test delete_clone_agent when unlink fails (lines 673-674)."""
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
     def test_unlink_error(self, mock_dir, mock_discover, tmp_path):
         # Create a clone file
         clone_file = tmp_path / "my-clone.json"
@@ -324,22 +324,22 @@ class TestGetTerminalSessionId:
 class TestDiscoverAgents:
     """Tests for _discover_agents (lines 367-392)."""
 
-    @patch("coco_codes.agents.agent_manager.on_register_agents", return_value=[])
-    @patch("coco_codes.agents.agent_manager.discover_json_agents", return_value={})
+    @patch("coding_agent.agents.agent_manager.on_register_agents", return_value=[])
+    @patch("coding_agent.agents.agent_manager.discover_json_agents", return_value={})
     def test_discovers_python_agents(self, mock_json, mock_plugins):
         am._discover_agents()
-        # Should have found at least coco-codes agent
+        # Should have found at least coding-agent agent
         assert len(am._AGENT_REGISTRY) > 0
 
-    @patch("coco_codes.agents.agent_manager.on_register_agents")
-    @patch("coco_codes.agents.agent_manager.discover_json_agents", return_value={})
+    @patch("coding_agent.agents.agent_manager.on_register_agents")
+    @patch("coding_agent.agents.agent_manager.discover_json_agents", return_value={})
     def test_plugin_agents_class(self, mock_json, mock_plugins):
         mock_plugins.return_value = [[{"name": "plugin-agent", "class": FakeAgent}]]
         am._discover_agents()
         assert "plugin-agent" in am._AGENT_REGISTRY
 
-    @patch("coco_codes.agents.agent_manager.on_register_agents")
-    @patch("coco_codes.agents.agent_manager.discover_json_agents", return_value={})
+    @patch("coding_agent.agents.agent_manager.on_register_agents")
+    @patch("coding_agent.agents.agent_manager.discover_json_agents", return_value={})
     def test_plugin_agents_json_path(self, mock_json, mock_plugins):
         mock_plugins.return_value = [
             [{"name": "json-plugin", "json_path": "/path/to/agent.json"}]
@@ -348,15 +348,15 @@ class TestDiscoverAgents:
         assert "json-plugin" in am._AGENT_REGISTRY
         assert am._AGENT_REGISTRY["json-plugin"] == "/path/to/agent.json"
 
-    @patch("coco_codes.agents.agent_manager.on_register_agents")
-    @patch("coco_codes.agents.agent_manager.discover_json_agents", return_value={})
+    @patch("coding_agent.agents.agent_manager.on_register_agents")
+    @patch("coding_agent.agents.agent_manager.discover_json_agents", return_value={})
     def test_plugin_agents_none_result(self, mock_json, mock_plugins):
         mock_plugins.return_value = [None]
         am._discover_agents()
         # Should not crash
 
-    @patch("coco_codes.agents.agent_manager.on_register_agents")
-    @patch("coco_codes.agents.agent_manager.discover_json_agents", return_value={})
+    @patch("coding_agent.agents.agent_manager.on_register_agents")
+    @patch("coding_agent.agents.agent_manager.discover_json_agents", return_value={})
     def test_plugin_agents_invalid_def(self, mock_json, mock_plugins):
         mock_plugins.return_value = [
             [{"no_name": True}],  # Missing 'name'
@@ -366,27 +366,27 @@ class TestDiscoverAgents:
         am._discover_agents()
 
     @patch(
-        "coco_codes.agents.agent_manager.on_register_agents",
+        "coding_agent.agents.agent_manager.on_register_agents",
         side_effect=Exception("fail"),
     )
-    @patch("coco_codes.agents.agent_manager.discover_json_agents", return_value={})
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager.discover_json_agents", return_value={})
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_plugin_exception(self, mock_warn, mock_json, mock_plugins):
         am._discover_agents()
         mock_warn.assert_called()
 
-    @patch("coco_codes.agents.agent_manager.on_register_agents", return_value=[])
+    @patch("coding_agent.agents.agent_manager.on_register_agents", return_value=[])
     @patch(
-        "coco_codes.agents.agent_manager.discover_json_agents",
+        "coding_agent.agents.agent_manager.discover_json_agents",
         side_effect=Exception("fail"),
     )
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_json_discovery_exception(self, mock_warn, mock_json, mock_plugins):
         am._discover_agents()
         mock_warn.assert_called()
 
-    @patch("coco_codes.agents.agent_manager.on_register_agents")
-    @patch("coco_codes.agents.agent_manager.discover_json_agents", return_value={})
+    @patch("coding_agent.agents.agent_manager.on_register_agents")
+    @patch("coding_agent.agents.agent_manager.discover_json_agents", return_value={})
     def test_plugin_single_dict(self, mock_json, mock_plugins):
         # Return a single dict instead of a list
         mock_plugins.return_value = [{"name": "single", "class": FakeAgent}]
@@ -397,35 +397,35 @@ class TestDiscoverAgents:
 class TestGetAvailableAgents:
     """Tests for get_available_agents (lines 380-392)."""
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_pack_agents_enabled", return_value=False)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=False)
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_pack_agents_enabled", return_value=False)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=False)
     def test_filters_pack_agents(self, mock_uc, mock_pack, mock_discover):
         am._AGENT_REGISTRY["pack-leader"] = FakeAgent
         am._AGENT_REGISTRY["normal"] = FakeAgent
         with (
-            patch("coco_codes.config.PACK_AGENT_NAMES", {"pack-leader"}),
-            patch("coco_codes.config.UC_AGENT_NAMES", set()),
+            patch("coding_agent.config.PACK_AGENT_NAMES", {"pack-leader"}),
+            patch("coding_agent.config.UC_AGENT_NAMES", set()),
         ):
             agents = am.get_available_agents()
             assert "pack-leader" not in agents
             assert "normal" in agents
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_pack_agents_enabled", return_value=True)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=False)
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_pack_agents_enabled", return_value=True)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=False)
     def test_filters_uc_agents(self, mock_uc, mock_pack, mock_discover):
         am._AGENT_REGISTRY["uc-agent"] = FakeAgent
         with (
-            patch("coco_codes.config.PACK_AGENT_NAMES", set()),
-            patch("coco_codes.config.UC_AGENT_NAMES", {"uc-agent"}),
+            patch("coding_agent.config.PACK_AGENT_NAMES", set()),
+            patch("coding_agent.config.UC_AGENT_NAMES", {"uc-agent"}),
         ):
             agents = am.get_available_agents()
             assert "uc-agent" not in agents
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_pack_agents_enabled", return_value=True)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=True)
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_pack_agents_enabled", return_value=True)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=True)
     def test_json_agent_display_name(self, mock_uc, mock_pack, mock_discover, tmp_path):
         # Create a JSON agent file
         agent_file = tmp_path / "test.json"
@@ -441,21 +441,21 @@ class TestGetAvailableAgents:
         )
         am._AGENT_REGISTRY["json-test"] = str(agent_file)
         with (
-            patch("coco_codes.config.PACK_AGENT_NAMES", set()),
-            patch("coco_codes.config.UC_AGENT_NAMES", set()),
+            patch("coding_agent.config.PACK_AGENT_NAMES", set()),
+            patch("coding_agent.config.UC_AGENT_NAMES", set()),
         ):
             agents = am.get_available_agents()
             assert "json-test" in agents
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_pack_agents_enabled", return_value=True)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=True)
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_pack_agents_enabled", return_value=True)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=True)
     def test_exception_fallback(self, mock_uc, mock_pack, mock_discover):
         # Bad agent ref that will raise
         am._AGENT_REGISTRY["bad"] = "nonexistent_path.json"
         with (
-            patch("coco_codes.config.PACK_AGENT_NAMES", set()),
-            patch("coco_codes.config.UC_AGENT_NAMES", set()),
+            patch("coding_agent.config.PACK_AGENT_NAMES", set()),
+            patch("coding_agent.config.UC_AGENT_NAMES", set()),
         ):
             agents = am.get_available_agents()
             assert agents["bad"] == "Bad"  # Fallback to title()
@@ -464,26 +464,26 @@ class TestGetAvailableAgents:
 class TestGetAgentDescriptions:
     """Tests for get_agent_descriptions (lines 511-520)."""
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_pack_agents_enabled", return_value=True)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=True)
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_pack_agents_enabled", return_value=True)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=True)
     def test_returns_descriptions(self, mock_uc, mock_pack, mock_discover):
         am._AGENT_REGISTRY["my-agent"] = FakeAgent
         with (
-            patch("coco_codes.config.PACK_AGENT_NAMES", set()),
-            patch("coco_codes.config.UC_AGENT_NAMES", set()),
+            patch("coding_agent.config.PACK_AGENT_NAMES", set()),
+            patch("coding_agent.config.UC_AGENT_NAMES", set()),
         ):
             descs = am.get_agent_descriptions()
             assert descs["my-agent"] == "A fake agent for testing"
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_pack_agents_enabled", return_value=True)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=True)
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_pack_agents_enabled", return_value=True)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=True)
     def test_exception_fallback(self, mock_uc, mock_pack, mock_discover):
         am._AGENT_REGISTRY["bad"] = "nonexistent.json"
         with (
-            patch("coco_codes.config.PACK_AGENT_NAMES", set()),
-            patch("coco_codes.config.UC_AGENT_NAMES", set()),
+            patch("coding_agent.config.PACK_AGENT_NAMES", set()),
+            patch("coding_agent.config.UC_AGENT_NAMES", set()),
         ):
             descs = am.get_agent_descriptions()
             assert descs["bad"] == "No description available"
@@ -517,7 +517,7 @@ class TestCloneHelpers:
 
     def test_filter_available_tools(self):
         with patch(
-            "coco_codes.tools.get_available_tool_names", return_value=["tool1", "tool3"]
+            "coding_agent.tools.get_available_tool_names", return_value=["tool1", "tool3"]
         ):
             result = am._filter_available_tools(["tool1", "tool2", "tool3"])
             assert result == ["tool1", "tool3"]
@@ -537,21 +537,21 @@ class TestCloneHelpers:
 class TestCloneAgent:
     """Tests for clone_agent (lines 606-683)."""
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_agent_not_found(self, mock_warn, mock_discover):
         result = am.clone_agent("nonexistent")
         assert result is None
         mock_warn.assert_called()
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
-    @patch("coco_codes.config.get_agent_pinned_model", return_value=None)
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
+    @patch("coding_agent.config.get_agent_pinned_model", return_value=None)
     @patch(
-        "coco_codes.agents.agent_manager._filter_available_tools",
+        "coding_agent.agents.agent_manager._filter_available_tools",
         side_effect=lambda x: x,
     )
-    @patch("coco_codes.agents.agent_manager.emit_success")
+    @patch("coding_agent.agents.agent_manager.emit_success")
     def test_clone_python_agent(
         self, mock_success, mock_filter, mock_pinned, mock_dir, mock_discover, tmp_path
     ):
@@ -563,14 +563,14 @@ class TestCloneAgent:
         assert "clone" in result
         mock_success.assert_called()
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
-    @patch("coco_codes.config.get_agent_pinned_model", return_value="pinned-model")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
+    @patch("coding_agent.config.get_agent_pinned_model", return_value="pinned-model")
     @patch(
-        "coco_codes.agents.agent_manager._filter_available_tools",
+        "coding_agent.agents.agent_manager._filter_available_tools",
         side_effect=lambda x: x,
     )
-    @patch("coco_codes.agents.agent_manager.emit_success")
+    @patch("coding_agent.agents.agent_manager.emit_success")
     def test_clone_python_agent_with_pinned_model(
         self, mock_success, mock_filter, mock_pinned, mock_dir, mock_discover, tmp_path
     ):
@@ -586,13 +586,13 @@ class TestCloneAgent:
         assert config.get("user_prompt") == "custom user prompt"
         assert config.get("tools_config") == {"key": "value"}
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
     @patch(
-        "coco_codes.agents.agent_manager._filter_available_tools",
+        "coding_agent.agents.agent_manager._filter_available_tools",
         side_effect=lambda x: x,
     )
-    @patch("coco_codes.agents.agent_manager.emit_success")
+    @patch("coding_agent.agents.agent_manager.emit_success")
     def test_clone_json_agent(
         self, mock_success, mock_filter, mock_dir, mock_discover, tmp_path
     ):
@@ -614,13 +614,13 @@ class TestCloneAgent:
         result = am.clone_agent("src")
         assert result is not None
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
     @patch(
-        "coco_codes.agents.agent_manager._filter_available_tools",
+        "coding_agent.agents.agent_manager._filter_available_tools",
         side_effect=lambda x: x,
     )
-    @patch("coco_codes.agents.agent_manager.emit_success")
+    @patch("coding_agent.agents.agent_manager.emit_success")
     def test_clone_json_no_display_name_no_model(
         self, mock_success, mock_filter, mock_dir, mock_discover, tmp_path
     ):
@@ -639,13 +639,13 @@ class TestCloneAgent:
         result = am.clone_agent("src2")
         assert result is not None
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
     @patch(
-        "coco_codes.agents.agent_manager._filter_available_tools",
+        "coding_agent.agents.agent_manager._filter_available_tools",
         side_effect=lambda x: x,
     )
-    @patch("coco_codes.agents.agent_manager.emit_success")
+    @patch("coding_agent.agents.agent_manager.emit_success")
     def test_clone_json_non_list_tools(
         self, mock_success, mock_filter, mock_dir, mock_discover, tmp_path
     ):
@@ -664,9 +664,9 @@ class TestCloneAgent:
         result = am.clone_agent("src3")
         assert result is not None
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_clone_build_exception(self, mock_warn, mock_dir, mock_discover, tmp_path):
         am._AGENT_REGISTRY["bad"] = "nonexistent_path.json"
         mock_dir.return_value = str(tmp_path)
@@ -674,13 +674,13 @@ class TestCloneAgent:
         result = am.clone_agent("bad")
         assert result is None
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
     @patch(
-        "coco_codes.agents.agent_manager._filter_available_tools",
+        "coding_agent.agents.agent_manager._filter_available_tools",
         side_effect=lambda x: x,
     )
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_clone_target_exists(
         self, mock_warn, mock_filter, mock_dir, mock_discover, tmp_path
     ):
@@ -697,14 +697,14 @@ class TestCloneAgent:
         (tmp_path / f"{clone_name}.json").touch()
         # This might still succeed with index 3, so test write error instead
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.config.get_user_agents_directory")
-    @patch("coco_codes.config.get_agent_pinned_model", return_value=None)
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.config.get_user_agents_directory")
+    @patch("coding_agent.config.get_agent_pinned_model", return_value=None)
     @patch(
-        "coco_codes.agents.agent_manager._filter_available_tools",
+        "coding_agent.agents.agent_manager._filter_available_tools",
         side_effect=lambda x: x,
     )
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_clone_write_failure(
         self, mock_warn, mock_filter, mock_pinned, mock_dir, mock_discover, tmp_path
     ):
@@ -718,53 +718,53 @@ class TestCloneAgent:
 class TestDeleteCloneAgent:
     """Tests for delete_clone_agent (lines 695-735)."""
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_not_a_clone(self, mock_warn, mock_discover):
         assert am.delete_clone_agent("normal-agent") is False
         mock_warn.assert_called()
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     @patch(
-        "coco_codes.agents.agent_manager.get_current_agent_name",
+        "coding_agent.agents.agent_manager.get_current_agent_name",
         return_value="agent-clone-1",
     )
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_cannot_delete_active(self, mock_warn, mock_name, mock_discover):
         assert am.delete_clone_agent("agent-clone-1") is False
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     @patch(
-        "coco_codes.agents.agent_manager.get_current_agent_name", return_value="other"
+        "coding_agent.agents.agent_manager.get_current_agent_name", return_value="other"
     )
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_clone_not_found(self, mock_warn, mock_name, mock_discover):
         assert am.delete_clone_agent("agent-clone-1") is False
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     @patch(
-        "coco_codes.agents.agent_manager.get_current_agent_name", return_value="other"
+        "coding_agent.agents.agent_manager.get_current_agent_name", return_value="other"
     )
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_not_json_agent(self, mock_warn, mock_name, mock_discover):
         am._AGENT_REGISTRY["agent-clone-1"] = FakeAgent
         assert am.delete_clone_agent("agent-clone-1") is False
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     @patch(
-        "coco_codes.agents.agent_manager.get_current_agent_name", return_value="other"
+        "coding_agent.agents.agent_manager.get_current_agent_name", return_value="other"
     )
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_file_doesnt_exist(self, mock_warn, mock_name, mock_discover):
         am._AGENT_REGISTRY["agent-clone-1"] = "/nonexistent/path.json"
         assert am.delete_clone_agent("agent-clone-1") is False
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     @patch(
-        "coco_codes.agents.agent_manager.get_current_agent_name", return_value="other"
+        "coding_agent.agents.agent_manager.get_current_agent_name", return_value="other"
     )
-    @patch("coco_codes.config.get_user_agents_directory")
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_wrong_directory(
         self, mock_warn, mock_dir, mock_name, mock_discover, tmp_path
     ):
@@ -775,12 +775,12 @@ class TestDeleteCloneAgent:
         mock_dir.return_value = str(tmp_path / "agents")
         assert am.delete_clone_agent("agent-clone-1") is False
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     @patch(
-        "coco_codes.agents.agent_manager.get_current_agent_name", return_value="other"
+        "coding_agent.agents.agent_manager.get_current_agent_name", return_value="other"
     )
-    @patch("coco_codes.config.get_user_agents_directory")
-    @patch("coco_codes.agents.agent_manager.emit_success")
+    @patch("coding_agent.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager.emit_success")
     def test_successful_delete(
         self, mock_success, mock_dir, mock_name, mock_discover, tmp_path
     ):
@@ -795,12 +795,12 @@ class TestDeleteCloneAgent:
         assert not clone_file.exists()
         assert "agent-clone-1" not in am._AGENT_REGISTRY
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     @patch(
-        "coco_codes.agents.agent_manager.get_current_agent_name", return_value="other"
+        "coding_agent.agents.agent_manager.get_current_agent_name", return_value="other"
     )
-    @patch("coco_codes.config.get_user_agents_directory")
-    @patch("coco_codes.agents.agent_manager.emit_warning")
+    @patch("coding_agent.config.get_user_agents_directory")
+    @patch("coding_agent.agents.agent_manager.emit_warning")
     def test_unlink_failure(
         self, mock_warn, mock_dir, mock_name, mock_discover, tmp_path
     ):
@@ -818,10 +818,10 @@ class TestDeleteCloneAgent:
 class TestSetCurrentAgent:
     """Tests for set_current_agent."""
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    @patch("coco_codes.agents.agent_manager.load_agent")
-    @patch("coco_codes.agents.agent_manager.on_agent_reload")
-    @patch("coco_codes.agents.agent_manager._save_session_data")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager.load_agent")
+    @patch("coding_agent.agents.agent_manager.on_agent_reload")
+    @patch("coding_agent.agents.agent_manager._save_session_data")
     def test_set_with_history_restore(
         self, mock_save, mock_reload, mock_load, mock_discover
     ):
@@ -841,20 +841,20 @@ class TestSetCurrentAgent:
 class TestLoadAgent:
     """Tests for load_agent."""
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
-    def test_fallback_to_coco_codes(self, mock_discover):
-        from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+    @patch("coding_agent.agents.agent_manager._discover_agents")
+    def test_fallback_to_coding_agent(self, mock_discover):
+        from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
-        am._AGENT_REGISTRY["coco-codes"] = CocoCodesAgent
+        am._AGENT_REGISTRY["coding-agent"] = CodingAgentAgent
         agent = am.load_agent("nonexistent")
-        assert agent.name == "coco-codes"
+        assert agent.name == "coding-agent"
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     def test_no_fallback_raises(self, mock_discover):
         with pytest.raises(ValueError):
             am.load_agent("nonexistent")
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     def test_load_json_agent(self, mock_discover, tmp_path):
         agent_file = tmp_path / "test.json"
         agent_file.write_text(
@@ -876,7 +876,7 @@ class TestLoadAgent:
 class TestRefreshAgents:
     """Test refresh_agents."""
 
-    @patch("coco_codes.agents.agent_manager._discover_agents")
+    @patch("coding_agent.agents.agent_manager._discover_agents")
     def test_refresh(self, mock_discover):
         am.refresh_agents()
         mock_discover.assert_called_once()

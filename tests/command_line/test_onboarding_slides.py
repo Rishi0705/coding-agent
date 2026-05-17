@@ -1,17 +1,17 @@
-"""Tests for coco_codes/command_line/onboarding_slides.py"""
+"""Tests for coding_agent/command_line/onboarding_slides.py"""
 
-MODULE = "coco_codes.command_line.onboarding_slides"
+MODULE = "coding_agent.command_line.onboarding_slides"
 
 
 class TestModelOptions:
     def test_model_options_is_list(self):
-        from coco_codes.command_line.onboarding_slides import MODEL_OPTIONS
+        from coding_agent.command_line.onboarding_slides import MODEL_OPTIONS
 
         assert isinstance(MODEL_OPTIONS, list)
         assert len(MODEL_OPTIONS) >= 4
 
     def test_model_options_tuples(self):
-        from coco_codes.command_line.onboarding_slides import MODEL_OPTIONS
+        from coding_agent.command_line.onboarding_slides import MODEL_OPTIONS
 
         for opt in MODEL_OPTIONS:
             assert len(opt) == 3
@@ -20,7 +20,7 @@ class TestModelOptions:
 
 class TestGetNavFooter:
     def test_returns_string(self):
-        from coco_codes.command_line.onboarding_slides import get_nav_footer
+        from coding_agent.command_line.onboarding_slides import get_nav_footer
 
         result = get_nav_footer()
         assert isinstance(result, str)
@@ -31,7 +31,7 @@ class TestGetNavFooter:
 
 class TestGetGradientBanner:
     def test_with_pyfiglet(self):
-        from coco_codes.command_line.onboarding_slides import get_gradient_banner
+        from coding_agent.command_line.onboarding_slides import get_gradient_banner
 
         result = get_gradient_banner()
         assert isinstance(result, str)
@@ -40,7 +40,7 @@ class TestGetGradientBanner:
 
     def test_without_pyfiglet(self):
         """Test fallback when pyfiglet is unavailable."""
-        import coco_codes.command_line.onboarding_slides as mod
+        import coding_agent.command_line.onboarding_slides as mod
 
         # pyfiglet is available in this env, so normal path works
         result = mod.get_gradient_banner()
@@ -49,7 +49,7 @@ class TestGetGradientBanner:
 
 class TestSlideWelcome:
     def test_returns_string(self):
-        from coco_codes.command_line.onboarding_slides import slide_welcome
+        from coding_agent.command_line.onboarding_slides import slide_welcome
 
         result = slide_welcome()
         assert isinstance(result, str)
@@ -59,7 +59,7 @@ class TestSlideWelcome:
 
 class TestSlideModels:
     def test_with_options(self):
-        from coco_codes.command_line.onboarding_slides import slide_models
+        from coding_agent.command_line.onboarding_slides import slide_models
 
         options = [
             ("chatgpt", "ChatGPT"),
@@ -73,41 +73,41 @@ class TestSlideModels:
         assert "▶" in result  # selected indicator
 
     def test_claude_selected(self):
-        from coco_codes.command_line.onboarding_slides import slide_models
+        from coding_agent.command_line.onboarding_slides import slide_models
 
         options = [("chatgpt", "ChatGPT"), ("claude", "Claude")]
         result = slide_models(1, options)
         assert "Claude" in result
 
     def test_api_keys_context(self):
-        from coco_codes.command_line.onboarding_slides import slide_models
+        from coding_agent.command_line.onboarding_slides import slide_models
 
         options = [("api_keys", "API Keys")]
         result = slide_models(0, options)
         assert "API Key" in result
 
     def test_openrouter_context(self):
-        from coco_codes.command_line.onboarding_slides import slide_models
+        from coding_agent.command_line.onboarding_slides import slide_models
 
         options = [("openrouter", "OpenRouter")]
         result = slide_models(0, options)
         assert "OpenRouter" in result
 
     def test_skip_context(self):
-        from coco_codes.command_line.onboarding_slides import slide_models
+        from coding_agent.command_line.onboarding_slides import slide_models
 
         options = [("skip", "Skip")]
         result = slide_models(0, options)
         assert "later" in result.lower() or "No worries" in result
 
     def test_empty_options(self):
-        from coco_codes.command_line.onboarding_slides import slide_models
+        from coding_agent.command_line.onboarding_slides import slide_models
 
         result = slide_models(0, [])
         assert isinstance(result, str)
 
     def test_chatgpt_context(self):
-        from coco_codes.command_line.onboarding_slides import slide_models
+        from coding_agent.command_line.onboarding_slides import slide_models
 
         options = [("chatgpt", "ChatGPT Plus")]
         result = slide_models(0, options)
@@ -116,7 +116,7 @@ class TestSlideModels:
 
 class TestSlideMcp:
     def test_returns_string(self):
-        from coco_codes.command_line.onboarding_slides import slide_mcp
+        from coding_agent.command_line.onboarding_slides import slide_mcp
 
         result = slide_mcp()
         assert isinstance(result, str)
@@ -126,17 +126,17 @@ class TestSlideMcp:
 
 class TestSlideUseCases:
     def test_returns_string(self):
-        from coco_codes.command_line.onboarding_slides import slide_use_cases
+        from coding_agent.command_line.onboarding_slides import slide_use_cases
 
         result = slide_use_cases()
         assert isinstance(result, str)
         assert "Planning" in result
-        assert "Coco Codes" in result
+        assert "Coding Agent" in result
 
 
 class TestSlideDone:
     def test_without_oauth(self):
-        from coco_codes.command_line.onboarding_slides import slide_done
+        from coding_agent.command_line.onboarding_slides import slide_done
 
         result = slide_done(None)
         assert isinstance(result, str)
@@ -144,14 +144,14 @@ class TestSlideDone:
         assert "/tutorial" in result
 
     def test_with_oauth_chatgpt(self):
-        from coco_codes.command_line.onboarding_slides import slide_done
+        from coding_agent.command_line.onboarding_slides import slide_done
 
         result = slide_done("chatgpt")
         assert "Chatgpt" in result or "chatgpt" in result.lower()
         assert "OAuth" in result
 
     def test_with_oauth_claude(self):
-        from coco_codes.command_line.onboarding_slides import slide_done
+        from coding_agent.command_line.onboarding_slides import slide_done
 
         result = slide_done("claude")
         assert "Claude" in result or "claude" in result.lower()

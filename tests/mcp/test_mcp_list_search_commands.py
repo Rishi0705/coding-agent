@@ -9,9 +9,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from coco_codes.command_line.mcp.list_command import ListCommand
-from coco_codes.command_line.mcp.search_command import SearchCommand
-from coco_codes.mcp_.managed_server import ServerState
+from coding_agent.command_line.mcp.list_command import ListCommand
+from coding_agent.command_line.mcp.search_command import SearchCommand
+from coding_agent.mcp_.managed_server import ServerState
 
 
 class TestListCommand:
@@ -156,7 +156,7 @@ class TestListCommand:
             error_messages.append((message, message_group))
 
         with patch(
-            "coco_codes.command_line.mcp.list_command.emit_error",
+            "coding_agent.command_line.mcp.list_command.emit_error",
             side_effect=capture_error,
         ):
             self.command.execute([])
@@ -415,7 +415,7 @@ class TestSearchCommand:
     def test_execute_import_error(self, mock_emit_info):
         """Test handling when server registry is not available."""
         with patch(
-            "coco_codes.mcp_.server_registry_catalog.catalog", side_effect=ImportError
+            "coding_agent.mcp_.server_registry_catalog.catalog", side_effect=ImportError
         ):
             self.command.execute(["test"])
 
@@ -426,7 +426,7 @@ class TestSearchCommand:
     def test_execute_general_exception(self, mock_emit_info):
         """Test handling of general exceptions."""
         with patch(
-            "coco_codes.mcp_.server_registry_catalog.catalog",
+            "coding_agent.mcp_.server_registry_catalog.catalog",
             side_effect=Exception("Search error"),
         ):
             self.command.execute(["test"])
@@ -498,7 +498,7 @@ class TestCommandIntegration:
 
         # Mock both to have no results for simplicity
         mock_mcp_manager.list_servers.return_value = []
-        with patch("coco_codes.mcp_.server_registry_catalog.catalog") as mock_catalog:
+        with patch("coding_agent.mcp_.server_registry_catalog.catalog") as mock_catalog:
             mock_catalog.get_popular.return_value = []
 
             list_cmd.execute([])
@@ -526,7 +526,7 @@ class TestCommandIntegration:
         list_cmd.execute([])
 
         with patch(
-            "coco_codes.mcp_.server_registry_catalog.catalog",
+            "coding_agent.mcp_.server_registry_catalog.catalog",
             side_effect=Exception("Search error"),
         ):
             search_cmd.execute(["test"])

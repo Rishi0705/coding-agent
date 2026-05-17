@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from coco_codes.plugins.destructive_command_guard.detector import (
+from coding_agent.plugins.destructive_command_guard.detector import (
     DestructiveCommandMatch,
     detect_destructive_command,
 )

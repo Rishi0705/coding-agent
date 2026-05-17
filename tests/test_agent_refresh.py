@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-from coco_codes.agents import get_available_agents, refresh_agents
+from coding_agent.agents import get_available_agents, refresh_agents
 
 
 def test_refresh_agents_function():
@@ -36,7 +36,7 @@ def test_json_agent_discovery_refresh():
     """Test that refresh picks up new JSON agents."""
     with tempfile.TemporaryDirectory() as temp_dir:
         with patch(
-            "coco_codes.config.get_user_agents_directory", return_value=temp_dir
+            "coding_agent.config.get_user_agents_directory", return_value=temp_dir
         ):
             # Get initial agents (should not include our test agent)
             initial_agents = get_available_agents()

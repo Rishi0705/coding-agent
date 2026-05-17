@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import httpx
 
-from coco_codes.plugins.agent_skills.remote_catalog import (
+from coding_agent.plugins.agent_skills.remote_catalog import (
     RemoteCatalogData,
     _cache_is_fresh,
     _fetch_remote_json,
@@ -69,7 +69,7 @@ class TestCacheIsFresh:
 
     def test_exception(self):
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog.Path.exists",
+            "coding_agent.plugins.agent_skills.remote_catalog.Path.exists",
             side_effect=OSError,
         ):
             assert _cache_is_fresh(Path("/fake"), 60) is False
@@ -103,7 +103,7 @@ class TestWriteCache:
 
     def test_failure(self):
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog.Path.mkdir",
+            "coding_agent.plugins.agent_skills.remote_catalog.Path.mkdir",
             side_effect=OSError,
         ):
             assert _write_cache(Path("/cant/write"), {}) is False
@@ -119,7 +119,7 @@ class TestFetchRemoteJson:
         mock_client.get.return_value = mock_resp
 
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog.httpx.Client",
+            "coding_agent.plugins.agent_skills.remote_catalog.httpx.Client",
             return_value=mock_client,
         ):
             assert _fetch_remote_json("http://example.com") == {"version": "1"}
@@ -133,7 +133,7 @@ class TestFetchRemoteJson:
         mock_client.get.return_value = mock_resp
 
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog.httpx.Client",
+            "coding_agent.plugins.agent_skills.remote_catalog.httpx.Client",
             return_value=mock_client,
         ):
             assert _fetch_remote_json("http://example.com") is None
@@ -151,7 +151,7 @@ class TestFetchRemoteJson:
         mock_client.get.return_value = mock_resp
 
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog.httpx.Client",
+            "coding_agent.plugins.agent_skills.remote_catalog.httpx.Client",
             return_value=mock_client,
         ):
             assert _fetch_remote_json("http://example.com") is None
@@ -163,7 +163,7 @@ class TestFetchRemoteJson:
         mock_client.get.side_effect = httpx.ConnectError("fail")
 
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog.httpx.Client",
+            "coding_agent.plugins.agent_skills.remote_catalog.httpx.Client",
             return_value=mock_client,
         ):
             assert _fetch_remote_json("http://example.com") is None
@@ -177,7 +177,7 @@ class TestFetchRemoteJson:
         mock_client.get.return_value = mock_resp
 
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog.httpx.Client",
+            "coding_agent.plugins.agent_skills.remote_catalog.httpx.Client",
             return_value=mock_client,
         ):
             assert _fetch_remote_json("http://example.com") is None
@@ -189,7 +189,7 @@ class TestFetchRemoteJson:
         mock_client.get.side_effect = RuntimeError("boom")
 
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog.httpx.Client",
+            "coding_agent.plugins.agent_skills.remote_catalog.httpx.Client",
             return_value=mock_client,
         ):
             assert _fetch_remote_json("http://example.com") is None
@@ -284,7 +284,7 @@ class TestParseCatalog:
 
     def test_exception(self):
         with patch(
-            "coco_codes.plugins.agent_skills.remote_catalog._safe_int",
+            "coding_agent.plugins.agent_skills.remote_catalog._safe_int",
             side_effect=RuntimeError,
         ):
             assert _parse_catalog({}) is None
@@ -295,15 +295,15 @@ class TestFetchRemoteCatalog:
         cache_data = {"version": "1", "groups": []}
         with (
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._cache_is_fresh",
+                "coding_agent.plugins.agent_skills.remote_catalog._cache_is_fresh",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._read_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._read_cache",
                 return_value=cache_data,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._parse_catalog",
+                "coding_agent.plugins.agent_skills.remote_catalog._parse_catalog",
                 return_value=RemoteCatalogData(
                     version="1", base_url="", total_skills=0, groups=[], entries=[]
                 ),
@@ -315,23 +315,23 @@ class TestFetchRemoteCatalog:
     def test_fresh_cache_read_fails(self):
         with (
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._cache_is_fresh",
+                "coding_agent.plugins.agent_skills.remote_catalog._cache_is_fresh",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._read_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._read_cache",
                 return_value=None,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._fetch_remote_json",
+                "coding_agent.plugins.agent_skills.remote_catalog._fetch_remote_json",
                 return_value={"version": "1", "groups": []},
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._write_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._write_cache",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._parse_catalog",
+                "coding_agent.plugins.agent_skills.remote_catalog._parse_catalog",
                 return_value=RemoteCatalogData(
                     version="1", base_url="", total_skills=0, groups=[], entries=[]
                 ),
@@ -343,15 +343,15 @@ class TestFetchRemoteCatalog:
     def test_fresh_cache_parse_fails(self):
         with (
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._cache_is_fresh",
+                "coding_agent.plugins.agent_skills.remote_catalog._cache_is_fresh",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._read_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._read_cache",
                 return_value={"bad": True},
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._parse_catalog",
+                "coding_agent.plugins.agent_skills.remote_catalog._parse_catalog",
                 side_effect=[
                     None,
                     RemoteCatalogData(
@@ -360,11 +360,11 @@ class TestFetchRemoteCatalog:
                 ],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._fetch_remote_json",
+                "coding_agent.plugins.agent_skills.remote_catalog._fetch_remote_json",
                 return_value={"version": "1", "groups": []},
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._write_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._write_cache",
                 return_value=True,
             ),
         ):
@@ -374,19 +374,19 @@ class TestFetchRemoteCatalog:
     def test_force_refresh(self):
         with (
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._cache_is_fresh",
+                "coding_agent.plugins.agent_skills.remote_catalog._cache_is_fresh",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._fetch_remote_json",
+                "coding_agent.plugins.agent_skills.remote_catalog._fetch_remote_json",
                 return_value={"v": "1", "groups": []},
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._write_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._write_cache",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._parse_catalog",
+                "coding_agent.plugins.agent_skills.remote_catalog._parse_catalog",
                 return_value=RemoteCatalogData(
                     version="1", base_url="", total_skills=0, groups=[], entries=[]
                 ),
@@ -401,23 +401,23 @@ class TestFetchRemoteCatalog:
         )
         with (
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._cache_is_fresh",
+                "coding_agent.plugins.agent_skills.remote_catalog._cache_is_fresh",
                 return_value=False,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._CACHE_PATH",
+                "coding_agent.plugins.agent_skills.remote_catalog._CACHE_PATH",
                 MagicMock(exists=MagicMock(return_value=True)),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._fetch_remote_json",
+                "coding_agent.plugins.agent_skills.remote_catalog._fetch_remote_json",
                 return_value=None,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._read_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._read_cache",
                 return_value={"version": "1", "groups": []},
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._parse_catalog",
+                "coding_agent.plugins.agent_skills.remote_catalog._parse_catalog",
                 return_value=catalog,
             ),
         ):
@@ -427,15 +427,15 @@ class TestFetchRemoteCatalog:
     def test_no_cache_remote_fails(self):
         with (
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._cache_is_fresh",
+                "coding_agent.plugins.agent_skills.remote_catalog._cache_is_fresh",
                 return_value=False,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._CACHE_PATH",
+                "coding_agent.plugins.agent_skills.remote_catalog._CACHE_PATH",
                 MagicMock(exists=MagicMock(return_value=False)),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._fetch_remote_json",
+                "coding_agent.plugins.agent_skills.remote_catalog._fetch_remote_json",
                 return_value=None,
             ),
         ):
@@ -448,27 +448,27 @@ class TestFetchRemoteCatalog:
         )
         with (
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._cache_is_fresh",
+                "coding_agent.plugins.agent_skills.remote_catalog._cache_is_fresh",
                 return_value=False,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._CACHE_PATH",
+                "coding_agent.plugins.agent_skills.remote_catalog._CACHE_PATH",
                 MagicMock(exists=MagicMock(return_value=True)),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._fetch_remote_json",
+                "coding_agent.plugins.agent_skills.remote_catalog._fetch_remote_json",
                 return_value={"bad": True},
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._write_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._write_cache",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._parse_catalog",
+                "coding_agent.plugins.agent_skills.remote_catalog._parse_catalog",
                 side_effect=[None, catalog],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._read_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._read_cache",
                 return_value={"version": "1", "groups": []},
             ),
         ):
@@ -478,19 +478,19 @@ class TestFetchRemoteCatalog:
     def test_fallback_cache_read_fails(self):
         with (
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._cache_is_fresh",
+                "coding_agent.plugins.agent_skills.remote_catalog._cache_is_fresh",
                 return_value=False,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._CACHE_PATH",
+                "coding_agent.plugins.agent_skills.remote_catalog._CACHE_PATH",
                 MagicMock(exists=MagicMock(return_value=True)),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._fetch_remote_json",
+                "coding_agent.plugins.agent_skills.remote_catalog._fetch_remote_json",
                 return_value=None,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.remote_catalog._read_cache",
+                "coding_agent.plugins.agent_skills.remote_catalog._read_cache",
                 return_value=None,
             ),
         ):

@@ -1,4 +1,4 @@
-"""Tests for coco_codes.messaging.queue_console."""
+"""Tests for coding_agent.messaging.queue_console."""
 
 from io import StringIO
 from unittest.mock import MagicMock, patch
@@ -8,8 +8,8 @@ from rich.markdown import Markdown
 from rich.table import Table
 from rich.text import Text
 
-from coco_codes.messaging.message_queue import MessageQueue, MessageType
-from coco_codes.messaging.queue_console import QueueConsole, get_queue_console
+from coding_agent.messaging.message_queue import MessageQueue, MessageType
+from coding_agent.messaging.queue_console import QueueConsole, get_queue_console
 
 
 @pytest.fixture
@@ -228,35 +228,35 @@ def test_status(qc, mq):
 # =========================================================================
 
 
-@patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+@patch("coding_agent.tools.command_runner.set_awaiting_user_input")
 @patch("builtins.input", return_value="user response")
 def test_input(mock_input, mock_set, qc, mq):
     result = qc.input("Enter:")
     assert result == "user response"
 
 
-@patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+@patch("coding_agent.tools.command_runner.set_awaiting_user_input")
 @patch("builtins.input", return_value="")
 def test_input_empty(mock_input, mock_set, qc, mq):
     result = qc.input("Enter:")
     assert result == ""
 
 
-@patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+@patch("coding_agent.tools.command_runner.set_awaiting_user_input")
 @patch("builtins.input", side_effect=KeyboardInterrupt)
 def test_input_keyboard_interrupt(mock_input, mock_set, qc, mq):
     result = qc.input("Enter:")
     assert result == ""
 
 
-@patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+@patch("coding_agent.tools.command_runner.set_awaiting_user_input")
 @patch("builtins.input", side_effect=EOFError)
 def test_input_eof(mock_input, mock_set, qc, mq):
     result = qc.input("Enter:")
     assert result == ""
 
 
-@patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+@patch("coding_agent.tools.command_runner.set_awaiting_user_input")
 @patch("builtins.input", return_value="val")
 def test_input_no_prompt(mock_input, mock_set, qc, mq):
     result = qc.input()

@@ -13,8 +13,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes import session_storage
-from coco_codes.session_storage import (
+from coding_agent import session_storage
+from coding_agent.session_storage import (
     _LEGACY_SIGNATURE_SIZE,
     _LEGACY_SIGNED_HEADER,
     restore_autosave_interactively,
@@ -54,27 +54,27 @@ def mock_interactive_imports(
 
         patches = [
             patch(
-                "coco_codes.command_line.prompt_toolkit_completion.get_input_with_combined_completion",
+                "coding_agent.command_line.prompt_toolkit_completion.get_input_with_combined_completion",
                 mock_input,
             ),
             patch(
-                "coco_codes.messaging.emit_system_message",
+                "coding_agent.messaging.emit_system_message",
                 side_effect=lambda msg: system_msgs.append(msg),
             ),
             patch(
-                "coco_codes.messaging.emit_warning",
+                "coding_agent.messaging.emit_warning",
                 side_effect=lambda msg: warning_msgs.append(msg),
             ),
             patch(
-                "coco_codes.messaging.emit_success",
+                "coding_agent.messaging.emit_success",
                 side_effect=lambda msg: success_msgs.append(msg),
             ),
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
             patch(
-                "coco_codes.config.set_current_autosave_from_session_name",
+                "coding_agent.config.set_current_autosave_from_session_name",
                 MagicMock(),
             ),
         ]
@@ -82,7 +82,7 @@ def mock_interactive_imports(
         if mock_load_session is not None:
             patches.append(
                 patch(
-                    "coco_codes.session_storage.load_session",
+                    "coding_agent.session_storage.load_session",
                     mock_load_session,
                 )
             )
@@ -545,7 +545,7 @@ class TestRestoreAutosaveErrorHandling:
 
         # Patch set_current_autosave_from_session_name to raise an exception
         with patch(
-            "coco_codes.config.set_current_autosave_from_session_name",
+            "coding_agent.config.set_current_autosave_from_session_name",
             side_effect=Exception("Config error"),
         ):
             async with mock_interactive_imports(

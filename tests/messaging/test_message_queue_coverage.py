@@ -12,7 +12,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.messaging.message_queue import (
+from coding_agent.messaging.message_queue import (
     MessageQueue,
     MessageType,
     UIMessage,
@@ -331,7 +331,7 @@ class TestGlobalQueueFunctions:
     def test_get_global_queue_creates_queue(self):
         """Test that get_global_queue creates and starts a queue."""
         # Reset global state for test
-        import coco_codes.messaging.message_queue as mq_module
+        import coding_agent.messaging.message_queue as mq_module
 
         original_queue = mq_module._global_queue
         mq_module._global_queue = None
@@ -355,7 +355,7 @@ class TestGlobalQueueFunctions:
 
     def test_get_buffered_startup_messages(self):
         """Test getting buffered startup messages."""
-        import coco_codes.messaging.message_queue as mq_module
+        import coding_agent.messaging.message_queue as mq_module
 
         original_queue = mq_module._global_queue
 
@@ -550,9 +550,9 @@ class TestEmitPrompt:
     def test_emit_prompt(self):
         """Test emit_prompt calls safe_input and returns response."""
         with patch(
-            "coco_codes.command_line.utils.safe_input", return_value="user input"
+            "coding_agent.command_line.utils.safe_input", return_value="user input"
         ) as mock_input:
-            from coco_codes.messaging.message_queue import emit_prompt
+            from coding_agent.messaging.message_queue import emit_prompt
 
             result = emit_prompt("Enter something:")
 

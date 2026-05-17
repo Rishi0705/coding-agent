@@ -1,13 +1,13 @@
-"""Tests for coco_codes/command_line/mcp/install_command.py"""
+"""Tests for coding_agent/command_line/mcp/install_command.py"""
 
 import os
 from dataclasses import dataclass
 from unittest.mock import MagicMock, patch
 
-MODULE = "coco_codes.command_line.mcp.install_command"
-UTILS = "coco_codes.command_line.mcp.utils"
-WIZARD = "coco_codes.command_line.mcp.wizard_utils"
-MESSAGING = "coco_codes.messaging"
+MODULE = "coding_agent.command_line.mcp.install_command"
+UTILS = "coding_agent.command_line.mcp.utils"
+WIZARD = "coding_agent.command_line.mcp.wizard_utils"
+MESSAGING = "coding_agent.messaging"
 
 
 @dataclass
@@ -32,9 +32,9 @@ class FakeServer:
 
 def make_cmd():
     """Create an InstallCommand with mocked manager."""
-    with patch("coco_codes.command_line.mcp.base.get_mcp_manager") as mock_mgr:
+    with patch("coding_agent.command_line.mcp.base.get_mcp_manager") as mock_mgr:
         mock_mgr.return_value = MagicMock()
-        from coco_codes.command_line.mcp.install_command import InstallCommand
+        from coding_agent.command_line.mcp.install_command import InstallCommand
 
         cmd = InstallCommand()
     return cmd
@@ -58,14 +58,14 @@ class TestExecute:
         with patch.object(
             cmd, "_install_from_catalog", return_value=True
         ) as mock_install:
-            with patch.dict("sys.modules", {"coco_codes.agent": MagicMock()}):
+            with patch.dict("sys.modules", {"coding_agent.agent": MagicMock()}):
                 cmd.execute(["some-server"], "grp")
         mock_install.assert_called_once_with("some-server", "grp")
 
     def test_with_args_reloads_on_success(self):
         cmd = make_cmd()
         with patch.object(cmd, "_install_from_catalog", return_value=True):
-            with patch.dict("sys.modules", {"coco_codes.agent": MagicMock()}):
+            with patch.dict("sys.modules", {"coding_agent.agent": MagicMock()}):
                 cmd.execute(["srv"], "grp")
 
     def test_with_args_no_reload_on_failure(self):
@@ -77,7 +77,7 @@ class TestExecute:
         """Test that ImportError on reload_mcp_servers is handled."""
         cmd = make_cmd()
         with patch.object(cmd, "_install_from_catalog", return_value=True):
-            # Don't mock coco_codes.agent so it raises ImportError
+            # Don't mock coding_agent.agent so it raises ImportError
             cmd.execute(["srv"], "grp")
 
     @patch(f"{MODULE}.emit_info")
@@ -106,7 +106,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -127,7 +127,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -149,7 +149,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -171,7 +171,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -191,7 +191,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -214,7 +214,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -242,7 +242,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -266,7 +266,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -280,7 +280,7 @@ class TestInstallFromCatalog:
     def test_import_error(self, mock_info):
         cmd = make_cmd()
         with patch.dict(
-            "sys.modules", {"coco_codes.mcp_.server_registry_catalog": None}
+            "sys.modules", {"coding_agent.mcp_.server_registry_catalog": None}
         ):
             result = cmd._install_from_catalog("srv", "grp")
         assert result is False
@@ -295,7 +295,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -317,7 +317,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -338,7 +338,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -366,7 +366,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },
@@ -386,7 +386,7 @@ class TestInstallFromCatalog:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.mcp_.server_registry_catalog": MagicMock(
+                "coding_agent.mcp_.server_registry_catalog": MagicMock(
                     catalog=mock_catalog
                 )
             },

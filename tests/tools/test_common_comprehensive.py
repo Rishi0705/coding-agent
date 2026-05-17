@@ -1,4 +1,4 @@
-"""Comprehensive tests for coco_codes.tools.common.
+"""Comprehensive tests for coding_agent.tools.common.
 
 This module provides extensive coverage for the common utilities module, testing:
 - Path filtering and ignore patterns
@@ -13,7 +13,7 @@ This module provides extensive coverage for the common utilities module, testing
 import os
 from unittest.mock import patch
 
-from coco_codes.tools.common import (
+from coding_agent.tools.common import (
     DIR_IGNORE_PATTERNS,
     FILE_IGNORE_PATTERNS,
     brighten_hex,

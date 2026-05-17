@@ -15,8 +15,8 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from coco_codes.mcp_.managed_server import ManagedMCPServer, ServerConfig, ServerState
-from coco_codes.mcp_.manager import MCPManager, ServerInfo, get_mcp_manager
+from coding_agent.mcp_.managed_server import ManagedMCPServer, ServerConfig, ServerState
+from coding_agent.mcp_.manager import MCPManager, ServerInfo, get_mcp_manager
 
 
 class TestMCPManagerExtended:
@@ -25,16 +25,16 @@ class TestMCPManagerExtended:
     def setup_method(self):
         """Set up fresh manager for each test."""
         # Reset singleton to ensure clean state
-        import coco_codes.mcp_.manager
+        import coding_agent.mcp_.manager
 
-        coco_codes.mcp_.manager._manager_instance = None
+        coding_agent.mcp_.manager._manager_instance = None
 
     def test_get_mcp_manager_singleton(self):
         """Test singleton pattern - same instance returned."""
         # Reset singleton first
-        import coco_codes.mcp_.manager
+        import coding_agent.mcp_.manager
 
-        coco_codes.mcp_.manager._manager_instance = None
+        coding_agent.mcp_.manager._manager_instance = None
 
         mgr1 = get_mcp_manager()
         mgr2 = get_mcp_manager()
@@ -82,7 +82,7 @@ class TestMCPManagerExtended:
         ):
             # Make ManagedMCPServer creation fail
             with patch(
-                "coco_codes.mcp_.manager.ManagedMCPServer",
+                "coding_agent.mcp_.manager.ManagedMCPServer",
                 side_effect=Exception("Creation failed"),
             ):
                 config = ServerConfig(
@@ -254,7 +254,7 @@ class TestMCPManagerExtended:
 
         with (
             patch(
-                "coco_codes.mcp_.manager.get_lifecycle_manager",
+                "coding_agent.mcp_.manager.get_lifecycle_manager",
                 return_value=mock_lifecycle,
             ),
             patch.object(manager.status_tracker, "set_status") as mock_set_status,
@@ -298,7 +298,7 @@ class TestMCPManagerExtended:
 
         with (
             patch(
-                "coco_codes.mcp_.manager.get_lifecycle_manager",
+                "coding_agent.mcp_.manager.get_lifecycle_manager",
                 return_value=mock_lifecycle,
             ),
             patch.object(manager.status_tracker, "set_status") as mock_set_status,
@@ -353,7 +353,7 @@ class TestMCPManagerExtended:
 
         with (
             patch(
-                "coco_codes.mcp_.manager.get_lifecycle_manager",
+                "coding_agent.mcp_.manager.get_lifecycle_manager",
                 return_value=mock_lifecycle,
             ),
             patch.object(manager.status_tracker, "set_status") as mock_set_status,
@@ -413,7 +413,7 @@ class TestMCPManagerExtended:
 
         with (
             patch.object(manager.registry, "get", return_value=config),
-            patch("coco_codes.mcp_.manager.ManagedMCPServer") as mock_managed_class,
+            patch("coding_agent.mcp_.manager.ManagedMCPServer") as mock_managed_class,
             patch.object(manager.status_tracker, "set_status") as mock_set_status,
             patch.object(manager.status_tracker, "record_event"),
         ):
@@ -643,14 +643,14 @@ class TestMCPManagerExtended:
             ),
         ]
 
-        with patch("coco_codes.mcp_.manager.ServerRegistry") as mock_registry_class:
+        with patch("coding_agent.mcp_.manager.ServerRegistry") as mock_registry_class:
             mock_registry = Mock()
             mock_registry.list_all.return_value = configs
             mock_registry_class.return_value = mock_registry
 
             with (
-                patch("coco_codes.mcp_.manager.ManagedMCPServer") as mock_managed_class,
-                patch("coco_codes.mcp_.manager.ServerStatusTracker"),
+                patch("coding_agent.mcp_.manager.ManagedMCPServer") as mock_managed_class,
+                patch("coding_agent.mcp_.manager.ServerStatusTracker"),
             ):
                 manager = MCPManager()
 
@@ -684,7 +684,7 @@ class TestMCPManagerExtended:
             ),
         ]
 
-        with patch("coco_codes.mcp_.manager.ServerRegistry") as mock_registry_class:
+        with patch("coding_agent.mcp_.manager.ServerRegistry") as mock_registry_class:
             mock_registry = Mock()
             mock_registry.list_all.return_value = configs
             mock_registry_class.return_value = mock_registry
@@ -697,10 +697,10 @@ class TestMCPManagerExtended:
 
             with (
                 patch(
-                    "coco_codes.mcp_.manager.ManagedMCPServer", side_effect=side_effect
+                    "coding_agent.mcp_.manager.ManagedMCPServer", side_effect=side_effect
                 ),
                 patch(
-                    "coco_codes.mcp_.manager.ServerStatusTracker"
+                    "coding_agent.mcp_.manager.ServerStatusTracker"
                 ) as mock_tracker_class,
             ):
                 mock_tracker = Mock()
@@ -736,13 +736,13 @@ class TestMCPManagerExtended:
 
         with (
             patch(
-                "coco_codes.config.load_mcp_server_configs", return_value=mock_configs
+                "coding_agent.config.load_mcp_server_configs", return_value=mock_configs
             ),
             patch(
-                "coco_codes.mcp_.manager.ServerRegistry",
+                "coding_agent.mcp_.manager.ServerRegistry",
                 return_value=mock_registry_instance,
             ),
-            patch("coco_codes.mcp_.manager.ServerStatusTracker"),
+            patch("coding_agent.mcp_.manager.ServerStatusTracker"),
         ):
             # Actually instantiate the manager to trigger sync_from_config!
             MCPManager()

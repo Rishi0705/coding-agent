@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from coco_codes.tools.file_modifications import (
+from coding_agent.tools.file_modifications import (
     ContentPayload,
     DeleteSnippetPayload,
     Replacement,

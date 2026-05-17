@@ -15,14 +15,14 @@ class TestExampleCustomCommand:
     """Tests for example custom command (lines 6, 23-47)."""
 
     def _get_handler(self):
-        from coco_codes.plugins.example_custom_command.register_callbacks import (
+        from coding_agent.plugins.example_custom_command.register_callbacks import (
             _handle_custom_command,
         )
 
         return _handle_custom_command
 
     def _get_help(self):
-        from coco_codes.plugins.example_custom_command.register_callbacks import (
+        from coding_agent.plugins.example_custom_command.register_callbacks import (
             _custom_help,
         )
 
@@ -65,12 +65,12 @@ class TestUniversalConstructorCallbacks:
     """Tests for UC startup callback (lines 19-38)."""
 
     def test_startup_disabled(self):
-        from coco_codes.plugins.universal_constructor.register_callbacks import (
+        from coding_agent.plugins.universal_constructor.register_callbacks import (
             _on_startup,
         )
 
         with patch(
-            "coco_codes.config.get_universal_constructor_enabled",
+            "coding_agent.config.get_universal_constructor_enabled",
             return_value=False,
         ) as mock_enabled:
             _on_startup()
@@ -82,21 +82,21 @@ class TestUniversalConstructorCallbacks:
         mock_registry = MagicMock()
         mock_registry.list_tools.return_value = [mock_tool]
 
-        from coco_codes.plugins.universal_constructor.register_callbacks import (
+        from coding_agent.plugins.universal_constructor.register_callbacks import (
             _on_startup,
         )
 
         with (
             patch(
-                "coco_codes.config.get_universal_constructor_enabled",
+                "coding_agent.config.get_universal_constructor_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.universal_constructor.register_callbacks.get_registry",
+                "coding_agent.plugins.universal_constructor.register_callbacks.get_registry",
                 return_value=mock_registry,
             ),
             patch(
-                "coco_codes.plugins.universal_constructor.register_callbacks.USER_UC_DIR",
+                "coding_agent.plugins.universal_constructor.register_callbacks.USER_UC_DIR",
             ) as mock_dir,
         ):
             _on_startup()
@@ -112,7 +112,7 @@ class TestDiscoveryMissedLines:
 
     def test_discover_skills_none_directories_uses_config(self, tmp_path):
         """Lines 72-79: when directories=None, merges config + defaults."""
-        from coco_codes.plugins.agent_skills.discovery import discover_skills
+        from coding_agent.plugins.agent_skills.discovery import discover_skills
 
         skill_dir = tmp_path / "skills" / "my-skill"
         skill_dir.mkdir(parents=True)
@@ -120,11 +120,11 @@ class TestDiscoveryMissedLines:
 
         with (
             patch(
-                "coco_codes.plugins.agent_skills.discovery.get_skill_directories",
+                "coding_agent.plugins.agent_skills.discovery.get_skill_directories",
                 return_value=[str(tmp_path / "skills")],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.get_default_skill_directories",
+                "coding_agent.plugins.agent_skills.discovery.get_default_skill_directories",
                 return_value=[tmp_path / "skills"],  # same as config, tests dedup
             ),
         ):
@@ -137,7 +137,7 @@ class TestDiscoveryMissedLines:
         not_a_dir = tmp_path / "not-a-dir"
         not_a_dir.write_text("I'm a file")
 
-        from coco_codes.plugins.agent_skills.discovery import discover_skills
+        from coding_agent.plugins.agent_skills.discovery import discover_skills
 
         results = discover_skills(directories=[not_a_dir])
         assert results == []

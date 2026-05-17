@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
 
 class TestAgentCreatorAgent:
@@ -29,18 +29,18 @@ class TestAgentCreatorAgent:
         # Mock the tools function
         mock_tools = ["tool1", "tool2", "tool3"]
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+            "coding_agent.agents.agent_creator_agent.get_available_tool_names",
             lambda: mock_tools,
         )
 
         # Mock other dependencies
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+            "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
             lambda: "/mock/agents/dir",
         )
 
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.ModelFactory.load_config", lambda: {}
+            "coding_agent.agents.agent_creator_agent.ModelFactory.load_config", lambda: {}
         )
 
         agent = AgentCreatorAgent()
@@ -62,17 +62,17 @@ class TestAgentCreatorAgent:
 
         # Mock all dependencies
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+            "coding_agent.agents.agent_creator_agent.get_available_tool_names",
             lambda: ["tool1"],
         )
 
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+            "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
             lambda: mock_dir,
         )
 
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.ModelFactory.load_config", lambda: {}
+            "coding_agent.agents.agent_creator_agent.ModelFactory.load_config", lambda: {}
         )
 
         agent = AgentCreatorAgent()
@@ -91,17 +91,17 @@ class TestAgentCreatorAgent:
 
         # Mock all dependencies
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+            "coding_agent.agents.agent_creator_agent.get_available_tool_names",
             lambda: ["tool1"],
         )
 
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+            "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
             lambda: "/mock/agents/dir",
         )
 
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.ModelFactory.load_config",
+            "coding_agent.agents.agent_creator_agent.ModelFactory.load_config",
             lambda: mock_models_config,
         )
 
@@ -130,7 +130,7 @@ class TestAgentCreatorAgent:
             "delete_snippet",
             "invoke_agent",
         ]
-        mock_agents_dir = "/home/user/.coco_codes/agents"
+        mock_agents_dir = "/home/user/.coding_agent/agents"
         mock_models_config = {
             "gpt-5": {"type": "OpenAI", "context_length": "128k"},
             "claude-4-sonnet": {"type": "Anthropic", "context_length": "200k"},
@@ -138,17 +138,17 @@ class TestAgentCreatorAgent:
 
         # Mock all dependencies
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+            "coding_agent.agents.agent_creator_agent.get_available_tool_names",
             lambda: mock_tools,
         )
 
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+            "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
             lambda: mock_agents_dir,
         )
 
         monkeypatch.setattr(
-            "coco_codes.agents.agent_creator_agent.ModelFactory.load_config",
+            "coding_agent.agents.agent_creator_agent.ModelFactory.load_config",
             lambda: mock_models_config,
         )
 
@@ -179,7 +179,7 @@ class TestAgentCreatorAgent:
     def test_get_available_tools_with_uc_enabled(self):
         """Test that get_available_tools includes UC when enabled."""
         with patch(
-            "coco_codes.config.get_universal_constructor_enabled",
+            "coding_agent.config.get_universal_constructor_enabled",
             return_value=True,
         ):
             agent = AgentCreatorAgent()
@@ -199,7 +199,7 @@ class TestAgentCreatorAgent:
     def test_get_available_tools_with_uc_disabled(self):
         """Test that get_available_tools excludes UC when disabled."""
         with patch(
-            "coco_codes.config.get_universal_constructor_enabled",
+            "coding_agent.config.get_universal_constructor_enabled",
             return_value=False,
         ):
             agent = AgentCreatorAgent()

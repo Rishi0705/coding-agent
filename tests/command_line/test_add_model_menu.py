@@ -12,7 +12,7 @@ Tests interactive model browser TUI including:
 
 from unittest.mock import MagicMock, patch
 
-from coco_codes.command_line.add_model_menu import (
+from coding_agent.command_line.add_model_menu import (
     PAGE_SIZE,
     PROVIDER_ENDPOINTS,
     UNSUPPORTED_PROVIDERS,
@@ -34,8 +34,8 @@ def _make_provider(name: str, provider_id: str):
 class TestAddModelMenuInitialization:
     """Test AddModelMenu initialization."""
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
-    @patch("coco_codes.command_line.add_model_menu.emit_info")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.emit_info")
     def test_menu_initialization_success(self, mock_emit, mock_registry_class):
         """Test successful menu initialization."""
         # Mock the registry
@@ -53,8 +53,8 @@ class TestAddModelMenuInitialization:
         assert menu.view_mode == "providers"
         assert menu.selected_provider_idx == 0
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
-    @patch("coco_codes.command_line.add_model_menu.emit_error")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.emit_error")
     def test_menu_initialization_registry_not_found(
         self, mock_emit_error, mock_registry_class
     ):
@@ -66,8 +66,8 @@ class TestAddModelMenuInitialization:
         AddModelMenu()
         mock_emit_error.assert_called()
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
-    @patch("coco_codes.command_line.add_model_menu.emit_error")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.emit_error")
     def test_menu_initialization_registry_error(
         self, mock_emit_error, mock_registry_class
     ):
@@ -77,8 +77,8 @@ class TestAddModelMenuInitialization:
         AddModelMenu()
         mock_emit_error.assert_called()
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
-    @patch("coco_codes.command_line.add_model_menu.emit_error")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.emit_error")
     def test_menu_initialization_empty_providers(
         self, mock_emit_error, mock_registry_class
     ):
@@ -94,7 +94,7 @@ class TestAddModelMenuInitialization:
 class TestMenuStateManagement:
     """Test menu state management."""
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_initial_state(self, mock_registry_class):
         """Test menu has correct initial state."""
         mock_registry = MagicMock()
@@ -112,7 +112,7 @@ class TestMenuStateManagement:
         assert menu.result is None
         assert menu.is_custom_model_selected is False
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_view_mode_switching(self, mock_registry_class):
         """Test switching between providers and models view."""
         mock_registry = MagicMock()
@@ -131,7 +131,7 @@ class TestMenuStateManagement:
 class TestProviderNavigation:
     """Test provider list navigation."""
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_provider_selection(self, mock_registry_class):
         """Test selecting a provider."""
         providers = [
@@ -148,7 +148,7 @@ class TestProviderNavigation:
         menu._get_current_provider()
         # In real implementation, would return providers[1]
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_provider_navigation_up(self, mock_registry_class):
         """Test navigating up in provider list."""
         providers = [
@@ -166,7 +166,7 @@ class TestProviderNavigation:
         menu.selected_provider_idx = max(0, menu.selected_provider_idx - 1)
         assert menu.selected_provider_idx == 1
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_provider_navigation_down(self, mock_registry_class):
         """Test navigating down in provider list."""
         providers = [
@@ -186,7 +186,7 @@ class TestProviderNavigation:
         )
         assert menu.selected_provider_idx == 1
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_provider_navigation_bounds(self, mock_registry_class):
         """Test navigation bounds are respected."""
         providers = [
@@ -212,7 +212,7 @@ class TestProviderNavigation:
 class TestModelNavigation:
     """Test model list navigation and pagination."""
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_pagination_first_page(self, mock_registry_class):
         """Test first page of models in pagination."""
         mock_registry = MagicMock()
@@ -227,7 +227,7 @@ class TestModelNavigation:
         assert start_idx == 0
         assert end_idx == PAGE_SIZE
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_pagination_second_page(self, mock_registry_class):
         """Test second page of models in pagination."""
         mock_registry = MagicMock()
@@ -242,7 +242,7 @@ class TestModelNavigation:
         assert start_idx == PAGE_SIZE
         assert end_idx == 2 * PAGE_SIZE
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_pagination_page_up(self, mock_registry_class):
         """Test paginating up to previous page."""
         mock_registry = MagicMock()
@@ -255,7 +255,7 @@ class TestModelNavigation:
         menu.current_page = max(0, menu.current_page - 1)
         assert menu.current_page == 1
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_pagination_page_down(self, mock_registry_class):
         """Test paginating down to next page."""
         mock_registry = MagicMock()
@@ -272,9 +272,9 @@ class TestModelNavigation:
 class TestModelAddition:
     """Test adding models to extra_models.json."""
 
-    @patch("coco_codes.command_line.add_model_menu.set_config_value")
-    @patch("coco_codes.command_line.add_model_menu.EXTRA_MODELS_FILE", "/tmp/test.json")
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.set_config_value")
+    @patch("coding_agent.command_line.add_model_menu.EXTRA_MODELS_FILE", "/tmp/test.json")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_add_model_to_extra_models(self, mock_registry_class, mock_set_config):
         """Test adding a selected model to extra_models.json."""
         mock_registry = MagicMock()
@@ -286,9 +286,9 @@ class TestModelAddition:
         mock_set_config("test_key", "test_value")
         mock_set_config.assert_called_once()
 
-    @patch("coco_codes.command_line.add_model_menu.emit_info")
-    @patch("coco_codes.command_line.add_model_menu.set_config_value")
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.emit_info")
+    @patch("coding_agent.command_line.add_model_menu.set_config_value")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_add_model_shows_success_message(
         self, mock_registry_class, mock_set_config, mock_emit_info
     ):
@@ -307,8 +307,8 @@ class TestModelAddition:
 class TestCredentialHandling:
     """Test credential validation and prompting."""
 
-    @patch("coco_codes.command_line.add_model_menu.safe_input")
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.safe_input")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_prompt_for_api_key(self, mock_registry_class, mock_input):
         """Test prompting user for API key."""
         mock_input.return_value = "sk-test123"
@@ -320,8 +320,8 @@ class TestCredentialHandling:
         api_key = mock_input("Enter your API key: ")
         assert api_key == "sk-test123"
 
-    @patch("coco_codes.command_line.add_model_menu.emit_warning")
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.emit_warning")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_missing_api_key_warning(self, mock_registry_class, mock_emit_warning):
         """Test warning when API key is not provided."""
         mock_registry = MagicMock()
@@ -351,7 +351,7 @@ class TestSupportedProviders:
         assert "google-vertex" in UNSUPPORTED_PROVIDERS
         assert "cloudflare-workers-ai" in UNSUPPORTED_PROVIDERS
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_unsupported_provider_warning(self, mock_registry_class):
         """Test warning when selecting unsupported provider."""
         provider = MagicMock(id="amazon-bedrock")
@@ -363,8 +363,8 @@ class TestSupportedProviders:
 class TestCustomModelSupport:
     """Test custom model input."""
 
-    @patch("coco_codes.command_line.add_model_menu.safe_input")
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.safe_input")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_enable_custom_model_mode(self, mock_registry_class, mock_input):
         """Test enabling custom model mode."""
         mock_registry = MagicMock()
@@ -375,8 +375,8 @@ class TestCustomModelSupport:
         menu.is_custom_model_selected = True
         assert menu.is_custom_model_selected is True
 
-    @patch("coco_codes.command_line.add_model_menu.safe_input")
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.safe_input")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_custom_model_name_input(self, mock_registry_class, mock_input):
         """Test inputting custom model name."""
         mock_input.return_value = "my-custom-model"
@@ -394,8 +394,8 @@ class TestCustomModelSupport:
 class TestErrorRecovery:
     """Test error handling and recovery."""
 
-    @patch("coco_codes.command_line.add_model_menu.emit_error")
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.emit_error")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_recovery_from_selection_error(self, mock_registry_class, mock_emit_error):
         """Test recovery from selection error."""
         mock_registry = MagicMock()
@@ -407,8 +407,8 @@ class TestErrorRecovery:
         mock_emit_error("Selection error")
         mock_emit_error.assert_called_once()
 
-    @patch("coco_codes.command_line.add_model_menu.emit_error")
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.emit_error")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_recovery_from_addition_error(self, mock_registry_class, mock_emit_error):
         """Test recovery from model addition error."""
         mock_registry = MagicMock()
@@ -424,7 +424,7 @@ class TestErrorRecovery:
 class TestMenuExit:
     """Test menu exit behavior."""
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_exit_without_selection(self, mock_registry_class):
         """Test exiting menu without selecting a model."""
         mock_registry = MagicMock()
@@ -435,7 +435,7 @@ class TestMenuExit:
         menu.result = None
         assert menu.result is None
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_exit_with_selection(self, mock_registry_class):
         """Test exiting menu after selecting a model."""
         mock_registry = MagicMock()
@@ -450,7 +450,7 @@ class TestMenuExit:
 class TestSharedPaginationState:
     """Test shared pagination behavior in the add model menu."""
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_provider_selection_updates_page_when_moving_down(
         self, mock_registry_class
     ):
@@ -468,7 +468,7 @@ class TestSharedPaginationState:
 
         assert menu.current_page == 1
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_go_to_previous_page_selects_first_item_on_page(self, mock_registry_class):
         providers = [_make_provider(f"Provider{i}", f"prov{i}") for i in range(20)]
         mock_registry = MagicMock()
@@ -485,7 +485,7 @@ class TestSharedPaginationState:
         assert menu.current_page == 0
         assert menu.selected_provider_idx == 0
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_go_to_next_page_selects_first_model_on_page(self, mock_registry_class):
         providers = [_make_provider("OpenAI", "openai")]
         mock_registry = MagicMock()
@@ -506,7 +506,7 @@ class TestSharedPaginationState:
         assert menu.current_page == 1
         assert menu.selected_model_idx == PAGE_SIZE
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_return_to_providers_restores_provider_page(self, mock_registry_class):
         providers = [_make_provider(f"Provider{i}", f"prov{i}") for i in range(20)]
         mock_registry = MagicMock()
@@ -532,7 +532,7 @@ class TestSharedPaginationState:
 
 
 class TestFilteringBehavior:
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_provider_filter_reduces_visible_providers(self, mock_registry_class):
         providers = [
             _make_provider("OpenAI", "openai"),
@@ -549,7 +549,7 @@ class TestFilteringBehavior:
         assert menu._filtered_providers() == [providers[1]]
         assert menu._get_current_provider() == providers[1]
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_model_filter_preserves_custom_selection_when_visible(
         self, mock_registry_class
     ):
@@ -576,7 +576,7 @@ class TestFilteringBehavior:
         assert menu._filtered_models() == []
         assert menu._is_custom_model_selected() is True
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_model_filter_matches_model_id_and_name(self, mock_registry_class):
         provider = _make_provider("OpenAI", "openai")
         named_model = MagicMock(
@@ -602,7 +602,7 @@ class TestFilteringBehavior:
 
         assert menu._filtered_models() == [named_model]
 
-    @patch("coco_codes.command_line.add_model_menu.ModelsDevRegistry")
+    @patch("coding_agent.command_line.add_model_menu.ModelsDevRegistry")
     def test_try_add_current_model_uses_custom_entry_when_filter_hides_builtins(
         self, mock_registry_class
     ):

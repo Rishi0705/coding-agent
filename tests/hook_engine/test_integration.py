@@ -11,12 +11,12 @@ Integration tests for hook_engine covering:
   - __init__ public API
 
 Implementation targets:
-  coco_codes/hook_engine/aliases.py
-  coco_codes/hook_engine/matcher.py  (alias integration)
-  coco_codes/hook_engine/executor.py
-  coco_codes/hook_engine/registry.py
-  coco_codes/hook_engine/engine.py
-  coco_codes/hook_engine/__init__.py
+  coding_agent/hook_engine/aliases.py
+  coding_agent/hook_engine/matcher.py  (alias integration)
+  coding_agent/hook_engine/executor.py
+  coding_agent/hook_engine/registry.py
+  coding_agent/hook_engine/engine.py
+  coding_agent/hook_engine/__init__.py
 """
 
 import json
@@ -24,18 +24,18 @@ import os
 
 import pytest
 
-from coco_codes.hook_engine import EventData, HookConfig, HookEngine
-from coco_codes.hook_engine.engine import validate_config_file
-from coco_codes.hook_engine.executor import (
+from coding_agent.hook_engine import EventData, HookConfig, HookEngine
+from coding_agent.hook_engine.engine import validate_config_file
+from coding_agent.hook_engine.executor import (
     _build_environment,
     _build_stdin_payload,
     execute_hooks_parallel,
     format_execution_summary,
     get_failed_results,
 )
-from coco_codes.hook_engine.matcher import matches
-from coco_codes.hook_engine.models import ExecutionResult
-from coco_codes.hook_engine.registry import (
+from coding_agent.hook_engine.matcher import matches
+from coding_agent.hook_engine.models import ExecutionResult
+from coding_agent.hook_engine.registry import (
     build_registry_from_config,
     get_registry_stats,
 )
@@ -48,7 +48,7 @@ from coco_codes.hook_engine.registry import (
 class TestCrossProviderMatching:
     """
     Verifies that a hook configured with a Claude Code tool name ("Bash") fires
-    correctly when coco_codes calls the equivalent internal tool
+    correctly when coding_agent calls the equivalent internal tool
     ("agent_run_shell_command"), and vice-versa.
     """
 
@@ -926,36 +926,36 @@ class TestOnceReset:
 
 class TestPublicAPI:
     def test_hook_engine_importable(self):
-        from coco_codes.hook_engine import HookEngine
+        from coding_agent.hook_engine import HookEngine
 
         assert HookEngine is not None
 
     def test_hook_config_importable(self):
-        from coco_codes.hook_engine import HookConfig
+        from coding_agent.hook_engine import HookConfig
 
         assert HookConfig is not None
 
     def test_event_data_importable(self):
-        from coco_codes.hook_engine import EventData
+        from coding_agent.hook_engine import EventData
 
         assert EventData is not None
 
     def test_execution_result_importable(self):
-        from coco_codes.hook_engine import ExecutionResult
+        from coding_agent.hook_engine import ExecutionResult
 
         assert ExecutionResult is not None
 
     def test_process_event_result_importable(self):
-        from coco_codes.hook_engine import ProcessEventResult
+        from coding_agent.hook_engine import ProcessEventResult
 
         assert ProcessEventResult is not None
 
     def test_aliases_module_importable(self):
-        from coco_codes.hook_engine import aliases
+        from coding_agent.hook_engine import aliases
 
         assert aliases is not None
 
     def test_hook_registry_importable(self):
-        from coco_codes.hook_engine import HookRegistry
+        from coding_agent.hook_engine import HookRegistry
 
         assert HookRegistry is not None

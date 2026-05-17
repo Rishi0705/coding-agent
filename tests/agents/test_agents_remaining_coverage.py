@@ -1,4 +1,4 @@
-"""Tests targeting remaining uncovered lines in coco_codes/agents/ (non-base_agent)."""
+"""Tests targeting remaining uncovered lines in coding_agent/agents/ (non-base_agent)."""
 
 import json
 from unittest.mock import MagicMock, patch
@@ -26,7 +26,7 @@ def _test_reviewer_agent(module_path, class_name):
 
 
 def test_qa_kitten():
-    from coco_codes.agents.agent_qa_automation import QualityAssuranceKittenAgent
+    from coding_agent.agents.agent_qa_automation import QualityAssuranceKittenAgent
 
     agent = QualityAssuranceKittenAgent()
     tools = agent.get_available_tools()
@@ -36,7 +36,7 @@ def test_qa_kitten():
 
 
 def test_helios_agent():
-    from coco_codes.agents.agent_helios import HeliosAgent
+    from coding_agent.agents.agent_helios import HeliosAgent
 
     agent = HeliosAgent()
     tools = agent.get_available_tools()
@@ -45,10 +45,10 @@ def test_helios_agent():
     assert isinstance(prompt, str)
 
 
-def test_coco_codes_agent():
-    from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+def test_coding_agent_agent():
+    from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
-    agent = CocoCodesAgent()
+    agent = CodingAgentAgent()
     tools = agent.get_available_tools()
     assert isinstance(tools, list)
     prompt = agent.get_system_prompt()
@@ -61,7 +61,7 @@ def test_coco_codes_agent():
 
 
 def test_planning_agent():
-    from coco_codes.agents.agent_planning import PlanningAgent
+    from coding_agent.agents.agent_planning import PlanningAgent
 
     agent = PlanningAgent()
     tools = agent.get_available_tools()
@@ -71,11 +71,11 @@ def test_planning_agent():
     assert len(prompt) > 100
 
 
-def test_coco_codes_prompt_allows_callback_additions():
-    from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+def test_coding_agent_prompt_allows_callback_additions():
+    from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
-    agent = CocoCodesAgent()
-    with patch("coco_codes.agents.agent_coco_codes.callbacks") as mock_cb:
+    agent = CodingAgentAgent()
+    with patch("coding_agent.agents.agent_coding_agent.callbacks") as mock_cb:
         mock_cb.on_load_prompt.return_value = ["extra"]
         prompt = agent.get_system_prompt()
         assert "extra" in prompt
@@ -88,7 +88,7 @@ def test_coco_codes_prompt_allows_callback_additions():
 
 def test_creator_agent_get_system_prompt_with_uc_tools():
     """Cover UC tools loading in get_system_prompt."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
 
@@ -101,7 +101,7 @@ def test_creator_agent_get_system_prompt_with_uc_tools():
     mock_registry.list_tools.return_value = [mock_tool]
 
     with patch(
-        "coco_codes.plugins.universal_constructor.registry.get_registry",
+        "coding_agent.plugins.universal_constructor.registry.get_registry",
         return_value=mock_registry,
     ):
         prompt = agent.get_system_prompt()
@@ -110,12 +110,12 @@ def test_creator_agent_get_system_prompt_with_uc_tools():
 
 def test_creator_agent_get_system_prompt_uc_import_error():
     """Cover ImportError branch for UC tools."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
 
     with patch(
-        "coco_codes.plugins.universal_constructor.registry.get_registry",
+        "coding_agent.plugins.universal_constructor.registry.get_registry",
         side_effect=Exception("boom"),
     ):
         prompt = agent.get_system_prompt()
@@ -124,12 +124,12 @@ def test_creator_agent_get_system_prompt_uc_import_error():
 
 def test_creator_validate_agent_json_valid():
     """Cover validate_agent_json with valid config."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
 
     with patch(
-        "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+        "coding_agent.agents.agent_creator_agent.get_available_tool_names",
         return_value=["list_files", "read_file"],
     ):
         errors = agent.validate_agent_json(
@@ -145,7 +145,7 @@ def test_creator_validate_agent_json_valid():
 
 def test_creator_validate_agent_json_missing_fields():
     """Cover missing required fields."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
     errors = agent.validate_agent_json({})
@@ -154,12 +154,12 @@ def test_creator_validate_agent_json_missing_fields():
 
 def test_creator_validate_agent_json_bad_name():
     """Cover name validation: spaces, empty."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
 
     with patch(
-        "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+        "coding_agent.agents.agent_creator_agent.get_available_tool_names",
         return_value=["list_files"],
     ):
         # Space in name
@@ -187,12 +187,12 @@ def test_creator_validate_agent_json_bad_name():
 
 def test_creator_validate_agent_json_bad_tools():
     """Cover tools validation: not a list, invalid tools."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
 
     with patch(
-        "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+        "coding_agent.agents.agent_creator_agent.get_available_tool_names",
         return_value=["list_files"],
     ):
         # tools not a list
@@ -220,12 +220,12 @@ def test_creator_validate_agent_json_bad_tools():
 
 def test_creator_validate_agent_json_bad_prompt():
     """Cover system_prompt validation: not string/list, bad list items."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
 
     with patch(
-        "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+        "coding_agent.agents.agent_creator_agent.get_available_tool_names",
         return_value=["list_files"],
     ):
         # prompt is number
@@ -253,11 +253,11 @@ def test_creator_validate_agent_json_bad_prompt():
 
 def test_creator_get_agent_file_path():
     """Cover get_agent_file_path."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
     with patch(
-        "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+        "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
         return_value="/tmp/agents",
     ):
         path = agent.get_agent_file_path("my-agent")
@@ -266,17 +266,17 @@ def test_creator_get_agent_file_path():
 
 def test_creator_create_agent_json_success(tmp_path):
     """Cover create_agent_json success path."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
 
     with (
         patch(
-            "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+            "coding_agent.agents.agent_creator_agent.get_available_tool_names",
             return_value=["list_files"],
         ),
         patch(
-            "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+            "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
             return_value=str(tmp_path),
         ),
     ):
@@ -295,18 +295,18 @@ def test_creator_create_agent_json_success(tmp_path):
 
 def test_creator_create_agent_json_already_exists(tmp_path):
     """Cover create_agent_json when file exists."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
     (tmp_path / "existing.json").write_text("{}")
 
     with (
         patch(
-            "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+            "coding_agent.agents.agent_creator_agent.get_available_tool_names",
             return_value=["list_files"],
         ),
         patch(
-            "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+            "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
             return_value=str(tmp_path),
         ),
     ):
@@ -324,7 +324,7 @@ def test_creator_create_agent_json_already_exists(tmp_path):
 
 def test_creator_create_agent_json_validation_error():
     """Cover create_agent_json with validation errors."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
     success, msg = agent.create_agent_json({})
@@ -334,17 +334,17 @@ def test_creator_create_agent_json_validation_error():
 
 def test_creator_create_agent_json_write_failure(tmp_path):
     """Cover create_agent_json write failure."""
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
 
     with (
         patch(
-            "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+            "coding_agent.agents.agent_creator_agent.get_available_tool_names",
             return_value=["list_files"],
         ),
         patch(
-            "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+            "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
             return_value=str(tmp_path),
         ),
         patch("builtins.open", side_effect=PermissionError("denied")),
@@ -362,7 +362,7 @@ def test_creator_create_agent_json_write_failure(tmp_path):
 
 
 def test_creator_get_user_prompt():
-    from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+    from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
     agent = AgentCreatorAgent()
     prompt = agent.get_user_prompt()
@@ -378,7 +378,7 @@ def test_agent_manager_is_process_alive_dead_process():
     """Cover ProcessLookupError branch in _is_process_alive."""
     import sys
 
-    from coco_codes.agents.agent_manager import _is_process_alive
+    from coding_agent.agents.agent_manager import _is_process_alive
 
     if sys.platform == "win32":
         pytest.skip("Unix-only")
@@ -391,7 +391,7 @@ def test_agent_manager_is_process_alive_permission():
     """Cover PermissionError branch (process exists but no permission)."""
     import sys
 
-    from coco_codes.agents.agent_manager import _is_process_alive
+    from coding_agent.agents.agent_manager import _is_process_alive
 
     if sys.platform == "win32":
         pytest.skip("Unix-only")
@@ -402,7 +402,7 @@ def test_agent_manager_is_process_alive_permission():
 
 def test_agent_manager_discover_agents_error():
     """Cover error loading agent sub-packages (lines 267-279)."""
-    from coco_codes.agents.agent_manager import _discover_agents
+    from coding_agent.agents.agent_manager import _discover_agents
 
     # Should not raise even with import errors
     with patch("importlib.import_module", side_effect=Exception("boom")):
@@ -413,7 +413,7 @@ def test_next_clone_index():
     """Cover _next_clone_index (line 585)."""
     from pathlib import Path
 
-    from coco_codes.agents.agent_manager import _next_clone_index
+    from coding_agent.agents.agent_manager import _next_clone_index
 
     # No existing clones
     with patch("pathlib.Path.exists", return_value=False):
@@ -429,9 +429,9 @@ def test_next_clone_index():
 
 def test_clone_agent_failure():
     """Cover clone_agent failure paths (lines 673-674)."""
-    from coco_codes.agents.agent_manager import clone_agent
+    from coding_agent.agents.agent_manager import clone_agent
 
-    with patch("coco_codes.agents.agent_manager.emit_warning"):
+    with patch("coding_agent.agents.agent_manager.emit_warning"):
         result = clone_agent("totally-nonexistent-agent-xyz")
         # Should return None for nonexistent agent
         assert result is None
@@ -444,17 +444,17 @@ def test_clone_agent_failure():
 
 def test_fire_stream_event_import_error():
     """Cover ImportError branch in _fire_stream_event."""
-    from coco_codes.agents.event_stream_handler import _fire_stream_event
+    from coding_agent.agents.event_stream_handler import _fire_stream_event
 
-    with patch("coco_codes.callbacks.on_stream_event", side_effect=ImportError):
+    with patch("coding_agent.callbacks.on_stream_event", side_effect=ImportError):
         _fire_stream_event("test", {})  # Should not raise
 
 
 def test_fire_stream_event_exception():
     """Cover Exception branch in _fire_stream_event."""
-    from coco_codes.agents.event_stream_handler import _fire_stream_event
+    from coding_agent.agents.event_stream_handler import _fire_stream_event
 
-    with patch("coco_codes.callbacks.on_stream_event", side_effect=Exception("boom")):
+    with patch("coding_agent.callbacks.on_stream_event", side_effect=Exception("boom")):
         _fire_stream_event("test", {})  # Should not raise
 
 
@@ -465,7 +465,7 @@ def test_fire_stream_event_exception():
 
 def _make_json_agent(tmp_path, config):
     """Helper to create a JSONAgent from a dict config."""
-    from coco_codes.agents.json_agent import JSONAgent
+    from coding_agent.agents.json_agent import JSONAgent
 
     path = tmp_path / f"{config['name']}.json"
     path.write_text(json.dumps(config))
@@ -493,7 +493,7 @@ def test_json_agent_uc_tools(tmp_path):
     mock_registry.list_tools.return_value = [mock_tool]
 
     with patch(
-        "coco_codes.plugins.universal_constructor.registry.get_registry",
+        "coding_agent.plugins.universal_constructor.registry.get_registry",
         return_value=mock_registry,
     ):
         tools = agent.get_available_tools()
@@ -515,7 +515,7 @@ def test_json_agent_uc_import_error(tmp_path):
 
     # The import is inside get_available_tools, so we patch at source
     with patch.dict(
-        "sys.modules", {"coco_codes.plugins.universal_constructor.registry": None}
+        "sys.modules", {"coding_agent.plugins.universal_constructor.registry": None}
     ):
         tools = agent.get_available_tools()
         assert "list_files" in tools
@@ -544,7 +544,7 @@ def test_json_agent_get_user_prompt(tmp_path):
 
 def test_subagent_fire_callback_no_loop():
     """Cover RuntimeError branch (no event loop) in _fire_callback."""
-    from coco_codes.agents.subagent_stream_handler import _fire_callback
+    from coding_agent.agents.subagent_stream_handler import _fire_callback
 
     # Called outside async context - should not raise
     _fire_callback("test", {}, None)
@@ -552,9 +552,9 @@ def test_subagent_fire_callback_no_loop():
 
 def test_subagent_fire_callback_import_error():
     """Cover ImportError branch in _fire_callback."""
-    from coco_codes.agents.subagent_stream_handler import _fire_callback
+    from coding_agent.agents.subagent_stream_handler import _fire_callback
 
-    with patch("coco_codes.callbacks.on_stream_event", side_effect=ImportError):
+    with patch("coding_agent.callbacks.on_stream_event", side_effect=ImportError):
         _fire_callback("test", {}, None)
 
 
@@ -562,5 +562,5 @@ def test_subagent_stream_handler_module():
     """Verify the module is importable."""
     import importlib
 
-    mod = importlib.import_module("coco_codes.agents.subagent_stream_handler")
+    mod = importlib.import_module("coding_agent.agents.subagent_stream_handler")
     assert hasattr(mod, "_fire_callback")

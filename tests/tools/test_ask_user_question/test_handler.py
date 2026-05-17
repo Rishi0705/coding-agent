@@ -5,12 +5,12 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.command_line.wiggum_state import start_wiggum, stop_wiggum
-from coco_codes.tools.ask_user_question.handler import (
+from coding_agent.command_line.wiggum_state import start_wiggum, stop_wiggum
+from coding_agent.tools.ask_user_question.handler import (
     ask_user_question,
     is_interactive,
 )
-from coco_codes.tools.subagent_context import subagent_context
+from coding_agent.tools.subagent_context import subagent_context
 
 
 class TestIsInteractive:
@@ -62,7 +62,7 @@ class TestAskUserQuestionValidation:
     def mock_interactive(self):
         """Mock is_interactive to return True for all validation tests."""
         with patch(
-            "coco_codes.tools.ask_user_question.handler.is_interactive",
+            "coding_agent.tools.ask_user_question.handler.is_interactive",
             return_value=True,
         ):
             yield
@@ -221,7 +221,7 @@ class TestAskUserQuestionSubagentBlocking:
         to actually show a TUI in tests.
         """
         with patch(
-            "coco_codes.tools.ask_user_question.handler.is_interactive",
+            "coding_agent.tools.ask_user_question.handler.is_interactive",
             return_value=False,
         ):
             # Outside subagent context, it should reach the interactive check
@@ -277,7 +277,7 @@ class TestAskUserQuestionWiggumBlocking:
         stop_wiggum()
 
         with patch(
-            "coco_codes.tools.ask_user_question.handler.is_interactive",
+            "coding_agent.tools.ask_user_question.handler.is_interactive",
             return_value=False,
         ):
             # Outside wiggum mode, it should reach the interactive check
@@ -303,7 +303,7 @@ class TestAskUserQuestionNonInteractive:
     def test_returns_error_when_non_interactive(self) -> None:
         """Should return error when not in interactive terminal."""
         with patch(
-            "coco_codes.tools.ask_user_question.handler.is_interactive",
+            "coding_agent.tools.ask_user_question.handler.is_interactive",
             return_value=False,
         ):
             result = ask_user_question(

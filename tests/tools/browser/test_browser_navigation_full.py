@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.browser.browser_navigation import (
+from coding_agent.tools.browser.browser_navigation import (
     get_page_info,
     go_back,
     go_forward,
@@ -19,7 +19,7 @@ from coco_codes.tools.browser.browser_navigation import (
     wait_for_load_state,
 )
 
-MOD = "coco_codes.tools.browser.browser_navigation"
+MOD = "coding_agent.tools.browser.browser_navigation"
 
 
 @pytest.fixture(autouse=True)

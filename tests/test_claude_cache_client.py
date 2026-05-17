@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, Mock, patch
 import httpx
 import pytest
 
-from coco_codes.claude_cache_client import (
+from coding_agent.claude_cache_client import (
     CLAUDE_CLI_USER_AGENT,
     TOKEN_MAX_AGE_SECONDS,
     TOOL_PREFIX,

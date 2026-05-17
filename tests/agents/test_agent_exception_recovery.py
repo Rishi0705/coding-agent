@@ -6,8 +6,8 @@ from typing import Any
 
 import pytest
 
-from coco_codes.agents import _runtime
-from coco_codes.callbacks import _callbacks, clear_callbacks, register_callback
+from coding_agent.agents import _runtime
+from coding_agent.callbacks import _callbacks, clear_callbacks, register_callback
 
 
 class DummyResult:

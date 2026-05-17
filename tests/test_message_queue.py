@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from rich.table import Table
 from rich.text import Text
 
-from coco_codes.messaging.message_queue import MessageQueue, MessageType, UIMessage
+from coding_agent.messaging.message_queue import MessageQueue, MessageType, UIMessage
 
 
 class TestUIMessage:

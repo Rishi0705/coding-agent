@@ -52,12 +52,12 @@ _FAKE_CI_KEYS = {"fake-key-for-ci-testing", ""}
 
 
 def _syn_key_available() -> bool:
-    """True if SYN_API_KEY is set to a real-looking value (env OR coco.cfg)."""
+    """True if SYN_API_KEY is set to a real-looking value (env OR coding_agent.cfg)."""
     env_key = os.environ.get("SYN_API_KEY", "").strip()
     if env_key and env_key not in _FAKE_CI_KEYS:
         return True
     try:
-        from coco_codes.model_factory import get_api_key
+        from coding_agent.model_factory import get_api_key
 
         cfg_key = (get_api_key("SYN_API_KEY") or "").strip()
         return bool(cfg_key) and cfg_key not in _FAKE_CI_KEYS
@@ -67,7 +67,7 @@ def _syn_key_available() -> bool:
 
 pytestmark = pytest.mark.skipif(
     not _syn_key_available(),
-    reason="SYN_API_KEY not set (env or coco.cfg); GLM-5.1 fallback test skipped.",
+    reason="SYN_API_KEY not set (env or coding_agent.cfg); GLM-5.1 fallback test skipped.",
 )
 
 
@@ -83,16 +83,16 @@ def _require_integration_env_vars():
 
 @pytest.fixture
 def glm51_agent(monkeypatch):
-    """Fresh CocoCodesAgent pinned to synthetic-GLM-5.1 (200k ctx)."""
-    from coco_codes import config as cp_config
-    from coco_codes import summarization_agent as _sum_mod
-    from coco_codes.agents import _builder, _runtime
-    from coco_codes.agents import base_agent as _base_agent_mod
-    from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+    """Fresh CodingAgentAgent pinned to synthetic-GLM-5.1 (200k ctx)."""
+    from coding_agent import config as cp_config
+    from coding_agent import summarization_agent as _sum_mod
+    from coding_agent.agents import _builder, _runtime
+    from coding_agent.agents import base_agent as _base_agent_mod
+    from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
     pinned = "synthetic-GLM-5.1"
 
-    # `from coco_codes.config import foo` captures bindings at import time, so
+    # `from coding_agent.config import foo` captures bindings at import time, so
     # patch every site that re-imports the model-name getters.
     for mod in (cp_config, _base_agent_mod):
         if hasattr(mod, "get_global_model_name"):
@@ -110,7 +110,7 @@ def glm51_agent(monkeypatch):
         if hasattr(mod, "get_use_dbos"):
             monkeypatch.setattr(mod, "get_use_dbos", lambda: False)
 
-    return CocoCodesAgent()
+    return CodingAgentAgent()
 
 
 # -- The test -----------------------------------------------------------------
@@ -124,8 +124,8 @@ async def test_summarization_oversize_falls_back_to_truncation(
     summarization sub-agent rejects the oversized payload → compact() catches
     the failure and falls back to truncation → main run still completes.
     """
-    from coco_codes.agents import _compaction
-    from coco_codes.agents._history import estimate_tokens_for_message
+    from coding_agent.agents import _compaction
+    from coding_agent.agents._history import estimate_tokens_for_message
 
     # Force summarization strategy with a low threshold so compaction fires
     # immediately, and a small protected window so the summarizer is asked
@@ -166,8 +166,8 @@ async def test_summarization_oversize_falls_back_to_truncation(
     monkeypatch.setattr(_compaction, "_truncate_with_dropped", spy_truncate_fallback)
 
     # -- Exception spy (to detect rate limits swallowed by run_agent_task) ---
-    from coco_codes.agents import _runtime as _runtime_mod
-    from coco_codes.agents._diagnostics import emit_exception_diagnostics
+    from coding_agent.agents import _runtime as _runtime_mod
+    from coding_agent.agents._diagnostics import emit_exception_diagnostics
 
     _captured_exceptions: list[BaseException] = []
     orig_emit_diag = emit_exception_diagnostics

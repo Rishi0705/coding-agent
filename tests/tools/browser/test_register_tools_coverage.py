@@ -34,13 +34,13 @@ def _mock_context():
 class TestBrowserControlRegister:
     @pytest.mark.asyncio
     async def test_browser_initialize(self):
-        from coco_codes.tools.browser.browser_control import register_initialize_browser
+        from coding_agent.tools.browser.browser_control import register_initialize_browser
 
         agent = _make_agent()
         register_initialize_browser(agent)
         fn = agent._registered["browser_initialize"]
         with patch(
-            "coco_codes.tools.browser.browser_control.initialize_browser",
+            "coding_agent.tools.browser.browser_control.initialize_browser",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -48,13 +48,13 @@ class TestBrowserControlRegister:
 
     @pytest.mark.asyncio
     async def test_browser_close(self):
-        from coco_codes.tools.browser.browser_control import register_close_browser
+        from coding_agent.tools.browser.browser_control import register_close_browser
 
         agent = _make_agent()
         register_close_browser(agent)
         fn = agent._registered["browser_close"]
         with patch(
-            "coco_codes.tools.browser.browser_control.close_browser",
+            "coding_agent.tools.browser.browser_control.close_browser",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -62,13 +62,13 @@ class TestBrowserControlRegister:
 
     @pytest.mark.asyncio
     async def test_browser_status(self):
-        from coco_codes.tools.browser.browser_control import register_get_browser_status
+        from coding_agent.tools.browser.browser_control import register_get_browser_status
 
         agent = _make_agent()
         register_get_browser_status(agent)
         fn = agent._registered["browser_status"]
         with patch(
-            "coco_codes.tools.browser.browser_control.get_browser_status",
+            "coding_agent.tools.browser.browser_control.get_browser_status",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -76,13 +76,13 @@ class TestBrowserControlRegister:
 
     @pytest.mark.asyncio
     async def test_browser_new_page(self):
-        from coco_codes.tools.browser.browser_control import register_create_new_page
+        from coding_agent.tools.browser.browser_control import register_create_new_page
 
         agent = _make_agent()
         register_create_new_page(agent)
         fn = agent._registered["browser_new_page"]
         with patch(
-            "coco_codes.tools.browser.browser_control.create_new_page",
+            "coding_agent.tools.browser.browser_control.create_new_page",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -90,13 +90,13 @@ class TestBrowserControlRegister:
 
     @pytest.mark.asyncio
     async def test_browser_list_pages(self):
-        from coco_codes.tools.browser.browser_control import register_list_pages
+        from coding_agent.tools.browser.browser_control import register_list_pages
 
         agent = _make_agent()
         register_list_pages(agent)
         fn = agent._registered["browser_list_pages"]
         with patch(
-            "coco_codes.tools.browser.browser_control.list_pages",
+            "coding_agent.tools.browser.browser_control.list_pages",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -109,13 +109,13 @@ class TestBrowserControlRegister:
 class TestBrowserNavigationRegister:
     @pytest.mark.asyncio
     async def test_browser_navigate(self):
-        from coco_codes.tools.browser.browser_navigation import register_navigate_to_url
+        from coding_agent.tools.browser.browser_navigation import register_navigate_to_url
 
         agent = _make_agent()
         register_navigate_to_url(agent)
         fn = agent._registered["browser_navigate"]
         with patch(
-            "coco_codes.tools.browser.browser_navigation.navigate_to_url",
+            "coding_agent.tools.browser.browser_navigation.navigate_to_url",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), url="http://x")
@@ -123,13 +123,13 @@ class TestBrowserNavigationRegister:
 
     @pytest.mark.asyncio
     async def test_browser_get_page_info(self):
-        from coco_codes.tools.browser.browser_navigation import register_get_page_info
+        from coding_agent.tools.browser.browser_navigation import register_get_page_info
 
         agent = _make_agent()
         register_get_page_info(agent)
         fn = agent._registered["browser_get_page_info"]
         with patch(
-            "coco_codes.tools.browser.browser_navigation.get_page_info",
+            "coding_agent.tools.browser.browser_navigation.get_page_info",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -137,13 +137,13 @@ class TestBrowserNavigationRegister:
 
     @pytest.mark.asyncio
     async def test_browser_go_back(self):
-        from coco_codes.tools.browser.browser_navigation import register_browser_go_back
+        from coding_agent.tools.browser.browser_navigation import register_browser_go_back
 
         agent = _make_agent()
         register_browser_go_back(agent)
         fn = agent._registered["browser_go_back"]
         with patch(
-            "coco_codes.tools.browser.browser_navigation.go_back",
+            "coding_agent.tools.browser.browser_navigation.go_back",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -151,7 +151,7 @@ class TestBrowserNavigationRegister:
 
     @pytest.mark.asyncio
     async def test_browser_go_forward(self):
-        from coco_codes.tools.browser.browser_navigation import (
+        from coding_agent.tools.browser.browser_navigation import (
             register_browser_go_forward,
         )
 
@@ -159,7 +159,7 @@ class TestBrowserNavigationRegister:
         register_browser_go_forward(agent)
         fn = agent._registered["browser_go_forward"]
         with patch(
-            "coco_codes.tools.browser.browser_navigation.go_forward",
+            "coding_agent.tools.browser.browser_navigation.go_forward",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -167,13 +167,13 @@ class TestBrowserNavigationRegister:
 
     @pytest.mark.asyncio
     async def test_browser_reload(self):
-        from coco_codes.tools.browser.browser_navigation import register_reload_page
+        from coding_agent.tools.browser.browser_navigation import register_reload_page
 
         agent = _make_agent()
         register_reload_page(agent)
         fn = agent._registered["browser_reload"]
         with patch(
-            "coco_codes.tools.browser.browser_navigation.reload_page",
+            "coding_agent.tools.browser.browser_navigation.reload_page",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -181,7 +181,7 @@ class TestBrowserNavigationRegister:
 
     @pytest.mark.asyncio
     async def test_browser_wait_for_load(self):
-        from coco_codes.tools.browser.browser_navigation import (
+        from coding_agent.tools.browser.browser_navigation import (
             register_wait_for_load_state,
         )
 
@@ -189,7 +189,7 @@ class TestBrowserNavigationRegister:
         register_wait_for_load_state(agent)
         fn = agent._registered["browser_wait_for_load"]
         with patch(
-            "coco_codes.tools.browser.browser_navigation.wait_for_load_state",
+            "coding_agent.tools.browser.browser_navigation.wait_for_load_state",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -202,13 +202,13 @@ class TestBrowserNavigationRegister:
 class TestBrowserInteractionsRegister:
     @pytest.mark.asyncio
     async def test_click(self):
-        from coco_codes.tools.browser.browser_interactions import register_click_element
+        from coding_agent.tools.browser.browser_interactions import register_click_element
 
         agent = _make_agent()
         register_click_element(agent)
         fn = agent._registered["browser_click"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.click_element",
+            "coding_agent.tools.browser.browser_interactions.click_element",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -216,7 +216,7 @@ class TestBrowserInteractionsRegister:
 
     @pytest.mark.asyncio
     async def test_double_click(self):
-        from coco_codes.tools.browser.browser_interactions import (
+        from coding_agent.tools.browser.browser_interactions import (
             register_double_click_element,
         )
 
@@ -224,7 +224,7 @@ class TestBrowserInteractionsRegister:
         register_double_click_element(agent)
         fn = agent._registered["browser_double_click"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.double_click_element",
+            "coding_agent.tools.browser.browser_interactions.double_click_element",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -232,13 +232,13 @@ class TestBrowserInteractionsRegister:
 
     @pytest.mark.asyncio
     async def test_hover(self):
-        from coco_codes.tools.browser.browser_interactions import register_hover_element
+        from coding_agent.tools.browser.browser_interactions import register_hover_element
 
         agent = _make_agent()
         register_hover_element(agent)
         fn = agent._registered["browser_hover"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.hover_element",
+            "coding_agent.tools.browser.browser_interactions.hover_element",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -246,7 +246,7 @@ class TestBrowserInteractionsRegister:
 
     @pytest.mark.asyncio
     async def test_set_text(self):
-        from coco_codes.tools.browser.browser_interactions import (
+        from coding_agent.tools.browser.browser_interactions import (
             register_set_element_text,
         )
 
@@ -254,7 +254,7 @@ class TestBrowserInteractionsRegister:
         register_set_element_text(agent)
         fn = agent._registered["browser_set_text"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.set_element_text",
+            "coding_agent.tools.browser.browser_interactions.set_element_text",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x", text="hi")
@@ -262,7 +262,7 @@ class TestBrowserInteractionsRegister:
 
     @pytest.mark.asyncio
     async def test_get_text(self):
-        from coco_codes.tools.browser.browser_interactions import (
+        from coding_agent.tools.browser.browser_interactions import (
             register_get_element_text,
         )
 
@@ -270,7 +270,7 @@ class TestBrowserInteractionsRegister:
         register_get_element_text(agent)
         fn = agent._registered["browser_get_text"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.get_element_text",
+            "coding_agent.tools.browser.browser_interactions.get_element_text",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -278,7 +278,7 @@ class TestBrowserInteractionsRegister:
 
     @pytest.mark.asyncio
     async def test_get_value(self):
-        from coco_codes.tools.browser.browser_interactions import (
+        from coding_agent.tools.browser.browser_interactions import (
             register_get_element_value,
         )
 
@@ -286,7 +286,7 @@ class TestBrowserInteractionsRegister:
         register_get_element_value(agent)
         fn = agent._registered["browser_get_value"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.get_element_value",
+            "coding_agent.tools.browser.browser_interactions.get_element_value",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -294,13 +294,13 @@ class TestBrowserInteractionsRegister:
 
     @pytest.mark.asyncio
     async def test_select_option(self):
-        from coco_codes.tools.browser.browser_interactions import register_select_option
+        from coding_agent.tools.browser.browser_interactions import register_select_option
 
         agent = _make_agent()
         register_select_option(agent)
         fn = agent._registered["browser_select_option"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.select_option",
+            "coding_agent.tools.browser.browser_interactions.select_option",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x", value="a")
@@ -308,13 +308,13 @@ class TestBrowserInteractionsRegister:
 
     @pytest.mark.asyncio
     async def test_check(self):
-        from coco_codes.tools.browser.browser_interactions import register_browser_check
+        from coding_agent.tools.browser.browser_interactions import register_browser_check
 
         agent = _make_agent()
         register_browser_check(agent)
         fn = agent._registered["browser_check"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.check_element",
+            "coding_agent.tools.browser.browser_interactions.check_element",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -322,7 +322,7 @@ class TestBrowserInteractionsRegister:
 
     @pytest.mark.asyncio
     async def test_uncheck(self):
-        from coco_codes.tools.browser.browser_interactions import (
+        from coding_agent.tools.browser.browser_interactions import (
             register_browser_uncheck,
         )
 
@@ -330,7 +330,7 @@ class TestBrowserInteractionsRegister:
         register_browser_uncheck(agent)
         fn = agent._registered["browser_uncheck"]
         with patch(
-            "coco_codes.tools.browser.browser_interactions.uncheck_element",
+            "coding_agent.tools.browser.browser_interactions.uncheck_element",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -343,13 +343,13 @@ class TestBrowserInteractionsRegister:
 class TestBrowserLocatorsRegister:
     @pytest.mark.asyncio
     async def test_find_by_role(self):
-        from coco_codes.tools.browser.browser_locators import register_find_by_role
+        from coding_agent.tools.browser.browser_locators import register_find_by_role
 
         agent = _make_agent()
         register_find_by_role(agent)
         fn = agent._registered["browser_find_by_role"]
         with patch(
-            "coco_codes.tools.browser.browser_locators.find_by_role",
+            "coding_agent.tools.browser.browser_locators.find_by_role",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), role="button")
@@ -357,13 +357,13 @@ class TestBrowserLocatorsRegister:
 
     @pytest.mark.asyncio
     async def test_find_by_text(self):
-        from coco_codes.tools.browser.browser_locators import register_find_by_text
+        from coding_agent.tools.browser.browser_locators import register_find_by_text
 
         agent = _make_agent()
         register_find_by_text(agent)
         fn = agent._registered["browser_find_by_text"]
         with patch(
-            "coco_codes.tools.browser.browser_locators.find_by_text",
+            "coding_agent.tools.browser.browser_locators.find_by_text",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), text="hi")
@@ -371,13 +371,13 @@ class TestBrowserLocatorsRegister:
 
     @pytest.mark.asyncio
     async def test_find_by_label(self):
-        from coco_codes.tools.browser.browser_locators import register_find_by_label
+        from coding_agent.tools.browser.browser_locators import register_find_by_label
 
         agent = _make_agent()
         register_find_by_label(agent)
         fn = agent._registered["browser_find_by_label"]
         with patch(
-            "coco_codes.tools.browser.browser_locators.find_by_label",
+            "coding_agent.tools.browser.browser_locators.find_by_label",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), text="email")
@@ -385,7 +385,7 @@ class TestBrowserLocatorsRegister:
 
     @pytest.mark.asyncio
     async def test_find_by_placeholder(self):
-        from coco_codes.tools.browser.browser_locators import (
+        from coding_agent.tools.browser.browser_locators import (
             register_find_by_placeholder,
         )
 
@@ -393,7 +393,7 @@ class TestBrowserLocatorsRegister:
         register_find_by_placeholder(agent)
         fn = agent._registered["browser_find_by_placeholder"]
         with patch(
-            "coco_codes.tools.browser.browser_locators.find_by_placeholder",
+            "coding_agent.tools.browser.browser_locators.find_by_placeholder",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), text="search")
@@ -401,13 +401,13 @@ class TestBrowserLocatorsRegister:
 
     @pytest.mark.asyncio
     async def test_find_by_test_id(self):
-        from coco_codes.tools.browser.browser_locators import register_find_by_test_id
+        from coding_agent.tools.browser.browser_locators import register_find_by_test_id
 
         agent = _make_agent()
         register_find_by_test_id(agent)
         fn = agent._registered["browser_find_by_test_id"]
         with patch(
-            "coco_codes.tools.browser.browser_locators.find_by_test_id",
+            "coding_agent.tools.browser.browser_locators.find_by_test_id",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), test_id="btn")
@@ -415,13 +415,13 @@ class TestBrowserLocatorsRegister:
 
     @pytest.mark.asyncio
     async def test_xpath_query(self):
-        from coco_codes.tools.browser.browser_locators import register_run_xpath_query
+        from coding_agent.tools.browser.browser_locators import register_run_xpath_query
 
         agent = _make_agent()
         register_run_xpath_query(agent)
         fn = agent._registered["browser_xpath_query"]
         with patch(
-            "coco_codes.tools.browser.browser_locators.run_xpath_query",
+            "coding_agent.tools.browser.browser_locators.run_xpath_query",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), xpath="//div")
@@ -429,13 +429,13 @@ class TestBrowserLocatorsRegister:
 
     @pytest.mark.asyncio
     async def test_find_buttons(self):
-        from coco_codes.tools.browser.browser_locators import register_find_buttons
+        from coding_agent.tools.browser.browser_locators import register_find_buttons
 
         agent = _make_agent()
         register_find_buttons(agent)
         fn = agent._registered["browser_find_buttons"]
         with patch(
-            "coco_codes.tools.browser.browser_locators.find_buttons",
+            "coding_agent.tools.browser.browser_locators.find_buttons",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -443,13 +443,13 @@ class TestBrowserLocatorsRegister:
 
     @pytest.mark.asyncio
     async def test_find_links(self):
-        from coco_codes.tools.browser.browser_locators import register_find_links
+        from coding_agent.tools.browser.browser_locators import register_find_links
 
         agent = _make_agent()
         register_find_links(agent)
         fn = agent._registered["browser_find_links"]
         with patch(
-            "coco_codes.tools.browser.browser_locators.find_links",
+            "coding_agent.tools.browser.browser_locators.find_links",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -462,13 +462,13 @@ class TestBrowserLocatorsRegister:
 class TestBrowserScriptsRegister:
     @pytest.mark.asyncio
     async def test_execute_js(self):
-        from coco_codes.tools.browser.browser_scripts import register_execute_javascript
+        from coding_agent.tools.browser.browser_scripts import register_execute_javascript
 
         agent = _make_agent()
         register_execute_javascript(agent)
         fn = agent._registered["browser_execute_js"]
         with patch(
-            "coco_codes.tools.browser.browser_scripts.execute_javascript",
+            "coding_agent.tools.browser.browser_scripts.execute_javascript",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), script="1+1")
@@ -476,13 +476,13 @@ class TestBrowserScriptsRegister:
 
     @pytest.mark.asyncio
     async def test_scroll(self):
-        from coco_codes.tools.browser.browser_scripts import register_scroll_page
+        from coding_agent.tools.browser.browser_scripts import register_scroll_page
 
         agent = _make_agent()
         register_scroll_page(agent)
         fn = agent._registered["browser_scroll"]
         with patch(
-            "coco_codes.tools.browser.browser_scripts.scroll_page",
+            "coding_agent.tools.browser.browser_scripts.scroll_page",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -490,13 +490,13 @@ class TestBrowserScriptsRegister:
 
     @pytest.mark.asyncio
     async def test_scroll_to_element(self):
-        from coco_codes.tools.browser.browser_scripts import register_scroll_to_element
+        from coding_agent.tools.browser.browser_scripts import register_scroll_to_element
 
         agent = _make_agent()
         register_scroll_to_element(agent)
         fn = agent._registered["browser_scroll_to_element"]
         with patch(
-            "coco_codes.tools.browser.browser_scripts.scroll_to_element",
+            "coding_agent.tools.browser.browser_scripts.scroll_to_element",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -504,13 +504,13 @@ class TestBrowserScriptsRegister:
 
     @pytest.mark.asyncio
     async def test_set_viewport(self):
-        from coco_codes.tools.browser.browser_scripts import register_set_viewport_size
+        from coding_agent.tools.browser.browser_scripts import register_set_viewport_size
 
         agent = _make_agent()
         register_set_viewport_size(agent)
         fn = agent._registered["browser_set_viewport"]
         with patch(
-            "coco_codes.tools.browser.browser_scripts.set_viewport_size",
+            "coding_agent.tools.browser.browser_scripts.set_viewport_size",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), width=800, height=600)
@@ -518,13 +518,13 @@ class TestBrowserScriptsRegister:
 
     @pytest.mark.asyncio
     async def test_wait_for_element(self):
-        from coco_codes.tools.browser.browser_scripts import register_wait_for_element
+        from coding_agent.tools.browser.browser_scripts import register_wait_for_element
 
         agent = _make_agent()
         register_wait_for_element(agent)
         fn = agent._registered["browser_wait_for_element"]
         with patch(
-            "coco_codes.tools.browser.browser_scripts.wait_for_element",
+            "coding_agent.tools.browser.browser_scripts.wait_for_element",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -532,7 +532,7 @@ class TestBrowserScriptsRegister:
 
     @pytest.mark.asyncio
     async def test_highlight_element(self):
-        from coco_codes.tools.browser.browser_scripts import (
+        from coding_agent.tools.browser.browser_scripts import (
             register_browser_highlight_element,
         )
 
@@ -540,7 +540,7 @@ class TestBrowserScriptsRegister:
         register_browser_highlight_element(agent)
         fn = agent._registered["browser_highlight_element"]
         with patch(
-            "coco_codes.tools.browser.browser_scripts.highlight_element",
+            "coding_agent.tools.browser.browser_scripts.highlight_element",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), selector="#x")
@@ -548,7 +548,7 @@ class TestBrowserScriptsRegister:
 
     @pytest.mark.asyncio
     async def test_clear_highlights(self):
-        from coco_codes.tools.browser.browser_scripts import (
+        from coding_agent.tools.browser.browser_scripts import (
             register_browser_clear_highlights,
         )
 
@@ -556,7 +556,7 @@ class TestBrowserScriptsRegister:
         register_browser_clear_highlights(agent)
         fn = agent._registered["browser_clear_highlights"]
         with patch(
-            "coco_codes.tools.browser.browser_scripts.clear_highlights",
+            "coding_agent.tools.browser.browser_scripts.clear_highlights",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -569,7 +569,7 @@ class TestBrowserScriptsRegister:
 class TestBrowserScreenshotRegister:
     @pytest.mark.asyncio
     async def test_screenshot_analyze(self):
-        from coco_codes.tools.browser.browser_screenshot import (
+        from coding_agent.tools.browser.browser_screenshot import (
             register_take_screenshot_and_analyze,
         )
 
@@ -577,7 +577,7 @@ class TestBrowserScreenshotRegister:
         register_take_screenshot_and_analyze(agent)
         fn = agent._registered["browser_screenshot_analyze"]
         with patch(
-            "coco_codes.tools.browser.browser_screenshot.take_screenshot",
+            "coding_agent.tools.browser.browser_screenshot.take_screenshot",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -590,13 +590,13 @@ class TestBrowserScreenshotRegister:
 class TestBrowserWorkflowsRegister:
     @pytest.mark.asyncio
     async def test_save_workflow(self):
-        from coco_codes.tools.browser.browser_workflows import register_save_workflow
+        from coding_agent.tools.browser.browser_workflows import register_save_workflow
 
         agent = _make_agent()
         register_save_workflow(agent)
         fn = agent._registered["browser_save_workflow"]
         with patch(
-            "coco_codes.tools.browser.browser_workflows.save_workflow",
+            "coding_agent.tools.browser.browser_workflows.save_workflow",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), name="test", content="# Test")
@@ -604,13 +604,13 @@ class TestBrowserWorkflowsRegister:
 
     @pytest.mark.asyncio
     async def test_list_workflows(self):
-        from coco_codes.tools.browser.browser_workflows import register_list_workflows
+        from coding_agent.tools.browser.browser_workflows import register_list_workflows
 
         agent = _make_agent()
         register_list_workflows(agent)
         fn = agent._registered["browser_list_workflows"]
         with patch(
-            "coco_codes.tools.browser.browser_workflows.list_workflows",
+            "coding_agent.tools.browser.browser_workflows.list_workflows",
             return_value={"success": True},
         ):
             r = await fn(_mock_context())
@@ -618,13 +618,13 @@ class TestBrowserWorkflowsRegister:
 
     @pytest.mark.asyncio
     async def test_read_workflow(self):
-        from coco_codes.tools.browser.browser_workflows import register_read_workflow
+        from coding_agent.tools.browser.browser_workflows import register_read_workflow
 
         agent = _make_agent()
         register_read_workflow(agent)
         fn = agent._registered["browser_read_workflow"]
         with patch(
-            "coco_codes.tools.browser.browser_workflows.read_workflow",
+            "coding_agent.tools.browser.browser_workflows.read_workflow",
             return_value={"success": True},
         ):
             r = await fn(_mock_context(), name="test")

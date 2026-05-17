@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 
 def _plugin_module():
-    return importlib.import_module("coco_codes.plugins.wiggum.register_callbacks")
+    return importlib.import_module("coding_agent.plugins.wiggum.register_callbacks")
 
 
 def test_goal_command_uses_banner_for_activation():
@@ -74,7 +74,7 @@ def test_judges_command_invokes_menu():
             return_value=_ExecCtx(),
         ),
         patch(
-            "coco_codes.command_line.judges_menu.interactive_judges_menu"
+            "coding_agent.command_line.judges_menu.interactive_judges_menu"
         ) as mock_menu,
     ):
         mock_asyncio.run.return_value = None
@@ -99,10 +99,10 @@ def test_goal_command_has_puppy_themed_aliases():
     feels most natural. They MUST share the same handler so behavior is
     identical \u2014 if they ever diverge, that's a bug.
     """
-    from coco_codes.command_line.command_registry import get_all_commands
+    from coding_agent.command_line.command_registry import get_all_commands
 
     # Importing the plugin module triggers @register_command via side-effect.
-    import coco_codes.plugins.wiggum.register_callbacks  # noqa: F401
+    import coding_agent.plugins.wiggum.register_callbacks  # noqa: F401
 
     cmds = get_all_commands()
     goal = cmds.get("goal")
@@ -119,7 +119,7 @@ def test_goal_command_has_puppy_themed_aliases():
 def test_prompt_extraction_is_command_word_agnostic():
     """_extract_prompt drops the first whitespace-delimited token, so the
     same prompt is extracted regardless of which alias the user typed."""
-    from coco_codes.plugins.wiggum.register_callbacks import _extract_prompt
+    from coding_agent.plugins.wiggum.register_callbacks import _extract_prompt
 
     expected = "make the tests pass for the auth flow"
     assert _extract_prompt(f"/goal {expected}") == expected
@@ -132,7 +132,7 @@ def test_usage_hint_mentions_aliases():
     hint should advertise the aliases so they're discoverable."""
     from unittest.mock import patch
 
-    from coco_codes.plugins.wiggum.register_callbacks import handle_goal_command
+    from coding_agent.plugins.wiggum.register_callbacks import handle_goal_command
 
     captured: list[str] = []
 
@@ -141,11 +141,11 @@ def test_usage_hint_mentions_aliases():
 
     with (
         patch(
-            "coco_codes.plugins.wiggum.register_callbacks.emit_warning",
+            "coding_agent.plugins.wiggum.register_callbacks.emit_warning",
             side_effect=capture,
         ),
         patch(
-            "coco_codes.plugins.wiggum.register_callbacks.emit_info",
+            "coding_agent.plugins.wiggum.register_callbacks.emit_info",
             side_effect=capture,
         ),
     ):

@@ -7,8 +7,8 @@ from typing import Any, List
 
 import pytest
 
-from coco_codes.agents import _run_signals
-from coco_codes.messaging.pause_controller import (
+from coding_agent.agents import _run_signals
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
@@ -151,7 +151,7 @@ def test_schedule_pause_proceeds_when_shell_running(monkeypatch):
     monkeypatch.setattr(asyncio, "run_coroutine_threadsafe", _spy)
     # A shell command is in flight — pause must still go through.
     monkeypatch.setattr(
-        "coco_codes.tools.command_runner._RUNNING_PROCESSES", {"fake-pid": object()}
+        "coding_agent.tools.command_runner._RUNNING_PROCESSES", {"fake-pid": object()}
     )
 
     schedule_pause = _run_signals.make_schedule_pause(_fake_task(), _fake_loop())

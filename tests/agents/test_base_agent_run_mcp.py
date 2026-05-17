@@ -13,7 +13,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from pydantic_ai import BinaryContent, DocumentUrl, ImageUrl
 
-from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
 
 class TestBaseAgentRunMCP:
@@ -21,8 +21,8 @@ class TestBaseAgentRunMCP:
 
     @pytest.fixture
     def agent(self):
-        """Create a CocoCodesAgent instance for testing."""
-        return CocoCodesAgent()
+        """Create a CodingAgentAgent instance for testing."""
+        return CodingAgentAgent()
 
     @pytest.mark.asyncio
     async def test_run_with_mcp_basic(self, agent):

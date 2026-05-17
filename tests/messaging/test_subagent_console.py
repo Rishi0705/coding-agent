@@ -1,4 +1,4 @@
-"""Tests for coco_codes.messaging.subagent_console."""
+"""Tests for coding_agent.messaging.subagent_console."""
 
 import time
 from io import StringIO
@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 import pytest
 from rich.console import Console
 
-from coco_codes.messaging.subagent_console import (
+from coding_agent.messaging.subagent_console import (
     STATUS_STYLES,
     AgentState,
     SubAgentConsoleManager,

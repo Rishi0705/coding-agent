@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 from prompt_toolkit.document import Document
 
-from coco_codes.command_line.load_context_completion import LoadContextCompleter
+from coding_agent.command_line.load_context_completion import LoadContextCompleter
 
 
 class TestLoadContextCompleter:
@@ -32,7 +32,7 @@ class TestLoadContextCompleter:
     def test_trigger_with_space_no_contexts(self):
         with tempfile.TemporaryDirectory() as td:
             with patch(
-                "coco_codes.command_line.load_context_completion.CONFIG_DIR", td
+                "coding_agent.command_line.load_context_completion.CONFIG_DIR", td
             ):
                 result = self._get_completions("/load_context ")
                 assert result == []
@@ -46,7 +46,7 @@ class TestLoadContextCompleter:
                 with open(os.path.join(contexts_dir, name), "w") as f:
                     f.write("")
             with patch(
-                "coco_codes.command_line.load_context_completion.CONFIG_DIR", td
+                "coding_agent.command_line.load_context_completion.CONFIG_DIR", td
             ):
                 result = self._get_completions("/load_context ")
                 names = [c.text for c in result]
@@ -61,7 +61,7 @@ class TestLoadContextCompleter:
                 with open(os.path.join(contexts_dir, name), "w") as f:
                     f.write("")
             with patch(
-                "coco_codes.command_line.load_context_completion.CONFIG_DIR", td
+                "coding_agent.command_line.load_context_completion.CONFIG_DIR", td
             ):
                 result = self._get_completions("/load_context al")
                 names = [c.text for c in result]
@@ -70,7 +70,7 @@ class TestLoadContextCompleter:
 
     def test_exception_in_listing(self):
         with patch(
-            "coco_codes.command_line.load_context_completion.CONFIG_DIR",
+            "coding_agent.command_line.load_context_completion.CONFIG_DIR",
             "/nonexistent_xyz",
         ):
             result = self._get_completions("/load_context ")

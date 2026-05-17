@@ -12,7 +12,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from prompt_toolkit.formatted_text import ANSI
 
-from coco_codes.command_line.diff_menu import (
+from coding_agent.command_line.diff_menu import (
     ADDITION_COLORS,
     DELETION_COLORS,
     SUPPORTED_LANGUAGES,
@@ -49,7 +49,7 @@ class TestKeyBindingHandlers:
             changes_made.append(choice)
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -85,7 +85,7 @@ class TestKeyBindingHandlers:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -118,7 +118,7 @@ class TestKeyBindingHandlers:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -167,7 +167,7 @@ class TestKeyBindingHandlers:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -208,7 +208,7 @@ class TestKeyBindingHandlers:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -239,7 +239,7 @@ class TestKeyBindingHandlers:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -270,7 +270,7 @@ class TestKeyBindingHandlers:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -301,7 +301,7 @@ class TestKeyBindingHandlers:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -346,7 +346,7 @@ class TestPanelTextGeneration:
         config = DiffConfiguration()
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -373,7 +373,7 @@ class TestPanelTextGeneration:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -400,7 +400,7 @@ class TestPanelTextGeneration:
         broken_config.get_current_language.side_effect = Exception("Config error")
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -427,7 +427,7 @@ class TestPanelTextGeneration:
             raise Exception("Preview generation failed")
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -454,7 +454,7 @@ class TestUpdatePreviewCallback:
         config = DiffConfiguration()
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=capture_selector,
         ):
             await _handle_color_menu(config, "additions")
@@ -482,7 +482,7 @@ class TestUpdatePreviewCallback:
         config = DiffConfiguration()
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=capture_selector,
         ):
             await _handle_color_menu(config, "deletions")
@@ -505,7 +505,7 @@ class TestUpdatePreviewCallback:
         config = DiffConfiguration()
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=capture_selector,
         ):
             await _handle_color_menu(config, "additions")
@@ -526,7 +526,7 @@ class TestUpdatePreviewCallback:
             raise KeyboardInterrupt()
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=interrupt_selector,
         ):
             await _handle_color_menu(config, "deletions")
@@ -552,10 +552,10 @@ class TestInteractiveDiffPickerInnerFunctions:
             return "Exit"
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=capture_selector,
         ):
-            with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+            with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                 with patch("sys.stdout.write"):
                     with patch("time.sleep"):
                         await interactive_diff_picker()
@@ -573,14 +573,14 @@ class TestInteractiveDiffPickerInnerFunctions:
             return "Exit"
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=capture_selector,
         ):
-            with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+            with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                 with patch("sys.stdout.write"):
                     with patch("time.sleep"):
                         with patch(
-                            "coco_codes.tools.common.format_diff_with_colors",
+                            "coding_agent.tools.common.format_diff_with_colors",
                             return_value="mock diff",
                         ):
                             await interactive_diff_picker()
@@ -590,7 +590,7 @@ class TestInteractiveDiffPickerInnerFunctions:
 
         # Call it and verify it returns something
         with patch(
-            "coco_codes.tools.common.format_diff_with_colors", return_value="mock diff"
+            "coding_agent.tools.common.format_diff_with_colors", return_value="mock diff"
         ):
             result = captured_preview_fn[0]()
             assert result is not None
@@ -607,11 +607,11 @@ class TestInteractiveDiffPickerInnerFunctions:
         config = DiffConfiguration()
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=capture_selector,
         ):
             with patch(
-                "coco_codes.tools.common.format_diff_with_colors", return_value="mock"
+                "coding_agent.tools.common.format_diff_with_colors", return_value="mock"
             ):
                 await _handle_color_menu(config, "additions")
 
@@ -619,7 +619,7 @@ class TestInteractiveDiffPickerInnerFunctions:
 
         # Call preview function and verify it works
         with patch(
-            "coco_codes.tools.common.format_diff_with_colors", return_value="mock diff"
+            "coding_agent.tools.common.format_diff_with_colors", return_value="mock diff"
         ):
             result = captured_preview_fn[0]()
             assert result is not None
@@ -642,10 +642,10 @@ class TestFormattedTextControlInvocation:
             return original_ftc(get_formatted_text, *args, **kwargs)
 
         with patch(
-            "coco_codes.command_line.diff_menu.FormattedTextControl",
+            "coding_agent.command_line.diff_menu.FormattedTextControl",
             side_effect=track_ftc,
         ):
-            with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+            with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
                 mock_instance = MagicMock()
                 mock_instance.run_async = AsyncMock()
                 mock_app.return_value = mock_instance
@@ -692,9 +692,9 @@ class TestFormattedTextControlInvocation:
             return MagicMock()
 
         with patch(
-            "coco_codes.command_line.diff_menu.Window", side_effect=capture_window
+            "coding_agent.command_line.diff_menu.Window", side_effect=capture_window
         ):
-            with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+            with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
                 mock_instance = MagicMock()
                 mock_instance.run_async = AsyncMock()
                 mock_app.return_value = mock_instance
@@ -717,10 +717,10 @@ class TestExceptionPaths:
     async def test_general_exception_in_interactive_picker(self):
         """Test that general exceptions are caught and return None."""
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=RuntimeError("Unexpected runtime error"),
         ):
-            with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+            with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                 with patch("sys.stdout.write"):
                     with patch("time.sleep"):
                         result = await interactive_diff_picker()
@@ -733,7 +733,7 @@ class TestExceptionPaths:
         config = DiffConfiguration()
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=ValueError("Value error during selection"),
         ):
             # Should not raise - exceptions are caught silently
@@ -748,7 +748,7 @@ class TestExceptionPaths:
         config.current_del_color = "#original"
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=KeyboardInterrupt(),
         ):
             await _handle_color_menu(config, "deletions")
@@ -771,10 +771,10 @@ class TestInnerFunctionExecution:
             return MagicMock()
 
         with patch(
-            "coco_codes.command_line.diff_menu.FormattedTextControl",
+            "coding_agent.command_line.diff_menu.FormattedTextControl",
             side_effect=track_ftc,
         ):
-            with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+            with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
                 mock_instance = MagicMock()
                 mock_instance.run_async = AsyncMock()
                 mock_app.return_value = mock_instance
@@ -812,10 +812,10 @@ class TestInnerFunctionExecution:
         bad_config.get_current_language.side_effect = RuntimeError("Language error!")
 
         with patch(
-            "coco_codes.command_line.diff_menu.FormattedTextControl",
+            "coding_agent.command_line.diff_menu.FormattedTextControl",
             side_effect=track_ftc,
         ):
-            with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+            with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
                 mock_instance = MagicMock()
                 mock_instance.run_async = AsyncMock()
                 mock_app.return_value = mock_instance
@@ -850,10 +850,10 @@ class TestInnerFunctionExecution:
             raise ValueError("Preview generation failed!")
 
         with patch(
-            "coco_codes.command_line.diff_menu.FormattedTextControl",
+            "coding_agent.command_line.diff_menu.FormattedTextControl",
             side_effect=track_ftc,
         ):
-            with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+            with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
                 mock_instance = MagicMock()
                 mock_instance.run_async = AsyncMock()
                 mock_app.return_value = mock_instance
@@ -885,7 +885,7 @@ class TestInnerFunctionExecution:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 with pytest.raises(KeyboardInterrupt):
@@ -911,7 +911,7 @@ class TestInnerFunctionExecution:
     async def test_result_none_raises_keyboard_interrupt(self):
         """Test that result[0] = None triggers KeyboardInterrupt (line 618)."""
         # When result[0] stays None after run_async, should raise KeyboardInterrupt
-        with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+        with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
             mock_instance = MagicMock()
             # run_async completes but result[0] is still None
             mock_instance.run_async = AsyncMock()
@@ -947,7 +947,7 @@ class TestInnerFunctionExecution:
             return mock_app
 
         with patch(
-            "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+            "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
         ):
             with patch("sys.stdout.write"):
                 # With empty choices, result[0] will be None after accept handler
@@ -973,10 +973,10 @@ class TestInnerFunctionExecution:
         config = DiffConfiguration()
 
         with patch(
-            "coco_codes.command_line.diff_menu.FormattedTextControl",
+            "coding_agent.command_line.diff_menu.FormattedTextControl",
             side_effect=track_ftc,
         ):
-            with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+            with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
                 mock_instance = MagicMock()
                 mock_instance.run_async = AsyncMock()
                 mock_app.return_value = mock_instance
@@ -1014,7 +1014,7 @@ class TestColorMenuChoicesConstruction:
         config.current_add_color = ADDITION_COLORS["dark green"]
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=capture_selector,
         ):
             await _handle_color_menu(config, "additions")
@@ -1039,7 +1039,7 @@ class TestColorMenuChoicesConstruction:
         config.current_del_color = DELETION_COLORS["dark red"]
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=capture_selector,
         ):
             await _handle_color_menu(config, "deletions")

@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.browser.browser_interactions import (
+from coding_agent.tools.browser.browser_interactions import (
     check_element,
     click_element,
     double_click_element,
@@ -25,7 +25,7 @@ from coco_codes.tools.browser.browser_interactions import (
     uncheck_element,
 )
 
-MOD = "coco_codes.tools.browser.browser_interactions"
+MOD = "coding_agent.tools.browser.browser_interactions"
 
 
 @pytest.fixture(autouse=True)

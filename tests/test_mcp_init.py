@@ -1,9 +1,9 @@
-"""Tests for coco_codes.mcp_ package __init__.py.
+"""Tests for coding_agent.mcp_ package __init__.py.
 
 This module tests that the MCP package properly exports all its public API.
 """
 
-import coco_codes.mcp_ as mcp_package
+import coding_agent.mcp_ as mcp_package
 
 
 class TestMCPPackageExports:

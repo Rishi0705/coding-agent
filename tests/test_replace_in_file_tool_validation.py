@@ -6,7 +6,7 @@ because that's where malformed payloads from a model would arrive.
 
 from typing import Callable, Dict, Any
 
-from coco_codes.tools.file_modifications import register_replace_in_file
+from coding_agent.tools.file_modifications import register_replace_in_file
 
 
 class _CapturingAgent:

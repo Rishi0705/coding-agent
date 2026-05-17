@@ -5,15 +5,15 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 # Patch targets for lazy imports inside _get_skills_prompt_section
-_CFG = "coco_codes.plugins.agent_skills.config"
-_DISC = "coco_codes.plugins.agent_skills.discovery"
-_META = "coco_codes.plugins.agent_skills.metadata"
-_PB = "coco_codes.plugins.agent_skills.prompt_builder"
+_CFG = "coding_agent.plugins.agent_skills.config"
+_DISC = "coding_agent.plugins.agent_skills.discovery"
+_META = "coding_agent.plugins.agent_skills.metadata"
+_PB = "coding_agent.plugins.agent_skills.prompt_builder"
 
 
 class TestGetSkillsPromptSection:
     def test_disabled(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _get_skills_prompt_section,
         )
 
@@ -21,7 +21,7 @@ class TestGetSkillsPromptSection:
             assert _get_skills_prompt_section() is None
 
     def test_no_skills_discovered(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _get_skills_prompt_section,
         )
 
@@ -33,7 +33,7 @@ class TestGetSkillsPromptSection:
             assert _get_skills_prompt_section() is None
 
     def test_disabled_and_no_skill_md(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _get_skills_prompt_section,
         )
 
@@ -52,7 +52,7 @@ class TestGetSkillsPromptSection:
             assert _get_skills_prompt_section() is None
 
     def test_metadata_parse_fails(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _get_skills_prompt_section,
         )
 
@@ -69,7 +69,7 @@ class TestGetSkillsPromptSection:
             assert _get_skills_prompt_section() is None
 
     def test_success(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _get_skills_prompt_section,
         )
 
@@ -93,23 +93,23 @@ class TestGetSkillsPromptSection:
 
 class TestInjectSkillsIntoPrompt:
     def test_no_skills(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _inject_skills_into_prompt,
         )
 
         with patch(
-            "coco_codes.plugins.agent_skills.register_callbacks._get_skills_prompt_section",
+            "coding_agent.plugins.agent_skills.register_callbacks._get_skills_prompt_section",
             return_value=None,
         ):
             assert _inject_skills_into_prompt("model", "prompt", "user") is None
 
     def test_with_skills(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _inject_skills_into_prompt,
         )
 
         with patch(
-            "coco_codes.plugins.agent_skills.register_callbacks._get_skills_prompt_section",
+            "coding_agent.plugins.agent_skills.register_callbacks._get_skills_prompt_section",
             return_value="SKILLS SECTION",
         ):
             result = _inject_skills_into_prompt("model", "base prompt", "user input")
@@ -120,7 +120,7 @@ class TestInjectSkillsIntoPrompt:
 
 class TestRegisterSkillsTools:
     def test_returns_tools(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _register_skills_tools,
         )
 
@@ -133,7 +133,7 @@ class TestRegisterSkillsTools:
 
 class TestSkillsCommandHelp:
     def test_returns_entries(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _skills_command_help,
         )
 
@@ -144,21 +144,21 @@ class TestSkillsCommandHelp:
 
 
 # Patch targets for lazy imports inside _handle_skills_command
-_MSG = "coco_codes.messaging"
-_SKILLS_MENU = "coco_codes.plugins.agent_skills.skills_menu"
-_SKILLS_INSTALL = "coco_codes.plugins.agent_skills.skills_install_menu"
+_MSG = "coding_agent.messaging"
+_SKILLS_MENU = "coding_agent.plugins.agent_skills.skills_menu"
+_SKILLS_INSTALL = "coding_agent.plugins.agent_skills.skills_install_menu"
 
 
 class TestHandleSkillsCommand:
     def test_unrelated_command(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
         assert _handle_skills_command("/other", "other") is None
 
     def test_skills_list_no_skills(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -171,7 +171,7 @@ class TestHandleSkillsCommand:
             assert _handle_skills_command("/skills list", "skills") is True
 
     def test_skills_list_with_skills(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -192,7 +192,7 @@ class TestHandleSkillsCommand:
             assert _handle_skills_command("/skills list", "skills") is True
 
     def test_skills_list_disabled_skill(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -211,7 +211,7 @@ class TestHandleSkillsCommand:
             assert _handle_skills_command("/skills list", "skills") is True
 
     def test_skills_list_no_metadata(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -228,7 +228,7 @@ class TestHandleSkillsCommand:
             assert _handle_skills_command("/skills list", "skills") is True
 
     def test_skills_install(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -236,7 +236,7 @@ class TestHandleSkillsCommand:
             assert _handle_skills_command("/skills install", "skills") is True
 
     def test_skills_enable(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -247,7 +247,7 @@ class TestHandleSkillsCommand:
             assert _handle_skills_command("/skills enable", "skills") is True
 
     def test_skills_disable(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -258,7 +258,7 @@ class TestHandleSkillsCommand:
             assert _handle_skills_command("/skills disable", "skills") is True
 
     def test_skills_toggle(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -272,7 +272,7 @@ class TestHandleSkillsCommand:
             mock_success.assert_called_once()
 
     def test_skills_help(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -282,7 +282,7 @@ class TestHandleSkillsCommand:
             assert "toggle" in str(mock_info.call_args_list)
 
     def test_skills_refresh(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -302,7 +302,7 @@ class TestHandleSkillsCommand:
             assert "1 with SKILL.md" in str(mock_success.call_args)
 
     def test_skills_unknown_subcommand(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -315,7 +315,7 @@ class TestHandleSkillsCommand:
             assert "help" in str(mock_info.call_args)
 
     def test_skills_no_subcommand_launches_menu(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 
@@ -324,7 +324,7 @@ class TestHandleSkillsCommand:
             mock_menu.assert_called_once()
 
     def test_skill_alias(self):
-        from coco_codes.plugins.agent_skills.register_callbacks import (
+        from coding_agent.plugins.agent_skills.register_callbacks import (
             _handle_skills_command,
         )
 

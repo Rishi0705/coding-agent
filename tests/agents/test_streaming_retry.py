@@ -13,7 +13,7 @@ import httpx
 import pytest
 from pydantic_ai import UnexpectedModelBehavior
 
-from coco_codes.agents.base_agent import should_retry_streaming_exception
+from coding_agent.agents.base_agent import should_retry_streaming_exception
 
 try:
     from openai import APIError

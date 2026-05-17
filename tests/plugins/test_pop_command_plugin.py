@@ -18,7 +18,7 @@ from pydantic_ai.messages import (
 
 def _plugin_module():
     sys.modules.setdefault("dbos", MagicMock())
-    return importlib.import_module("coco_codes.plugins.pop_command.register_callbacks")
+    return importlib.import_module("coding_agent.plugins.pop_command.register_callbacks")
 
 
 def _agent_manager_module(agent: MagicMock) -> SimpleNamespace:
@@ -37,7 +37,7 @@ def test_parse_pop_count_defaults_to_one():
 def test_parse_pop_count_rejects_invalid_integer():
     module = _plugin_module()
     with patch(
-        "coco_codes.plugins.pop_command.register_callbacks.emit_error"
+        "coding_agent.plugins.pop_command.register_callbacks.emit_error"
     ) as mock_error:
         assert module._parse_pop_count("/pop nope") is None
     mock_error.assert_called_once()
@@ -103,12 +103,12 @@ def test_handle_pop_command_pops_and_prunes_tail_fragments():
     with (
         patch.dict(
             sys.modules,
-            {"coco_codes.agents.agent_manager": _agent_manager_module(agent)},
+            {"coding_agent.agents.agent_manager": _agent_manager_module(agent)},
         ),
         patch(
-            "coco_codes.plugins.pop_command.register_callbacks.emit_success"
+            "coding_agent.plugins.pop_command.register_callbacks.emit_success"
         ) as mock_success,
-        patch("coco_codes.plugins.pop_command.register_callbacks.emit_info"),
+        patch("coding_agent.plugins.pop_command.register_callbacks.emit_info"),
     ):
         result = _plugin_module()._handle_custom_command("/pop", "pop")
 
@@ -127,14 +127,14 @@ def test_handle_pop_command_preserves_system_prompt_when_count_too_large():
     with (
         patch.dict(
             sys.modules,
-            {"coco_codes.agents.agent_manager": _agent_manager_module(agent)},
+            {"coding_agent.agents.agent_manager": _agent_manager_module(agent)},
         ),
         patch(
-            "coco_codes.plugins.pop_command.register_callbacks.emit_warning"
+            "coding_agent.plugins.pop_command.register_callbacks.emit_warning"
         ) as mock_warning,
-        patch("coco_codes.plugins.pop_command.register_callbacks.emit_success"),
+        patch("coding_agent.plugins.pop_command.register_callbacks.emit_success"),
         patch(
-            "coco_codes.plugins.pop_command.register_callbacks.emit_info"
+            "coding_agent.plugins.pop_command.register_callbacks.emit_info"
         ) as mock_info,
     ):
         result = _plugin_module()._handle_custom_command("/pop 99", "pop")
@@ -154,10 +154,10 @@ def test_handle_pop_command_reports_system_only_history():
     with (
         patch.dict(
             sys.modules,
-            {"coco_codes.agents.agent_manager": _agent_manager_module(agent)},
+            {"coding_agent.agents.agent_manager": _agent_manager_module(agent)},
         ),
         patch(
-            "coco_codes.plugins.pop_command.register_callbacks.emit_warning"
+            "coding_agent.plugins.pop_command.register_callbacks.emit_warning"
         ) as mock_warning,
     ):
         result = _plugin_module()._handle_custom_command("/pop", "pop")

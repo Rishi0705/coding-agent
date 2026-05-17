@@ -16,7 +16,7 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.agents.agent_manager import (
+from coding_agent.agents.agent_manager import (
     _cleanup_dead_sessions,
     _ensure_session_cache_loaded,
     _get_session_file_path,
@@ -136,17 +136,17 @@ class TestSessionDataPersistence:
         """Test that session file path is correctly constructed."""
         session_file = _get_session_file_path()
         assert session_file.name == "terminal_sessions.json"
-        assert "coco_codes" in str(session_file)
+        assert "coding_agent" in str(session_file)
 
     def test_save_session_data_creates_directory(self, temp_session_dir):
         """Test that save_session_data creates directory if missing."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             session_file = temp_session_dir / "sessions" / "terminal_sessions.json"
             mock_path.return_value = session_file
 
-            _save_session_data({"session_123": "coco-codes"})
+            _save_session_data({"session_123": "coding-agent"})
 
             assert session_file.parent.exists()
             assert session_file.exists()
@@ -154,38 +154,38 @@ class TestSessionDataPersistence:
     def test_save_session_data_writes_json(self, temp_session_dir):
         """Test that save_session_data writes valid JSON."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             session_file = temp_session_dir / "terminal_sessions.json"
             mock_path.return_value = session_file
 
-            sessions = {"session_123": "coco-codes", "session_456": "planning-agent"}
+            sessions = {"session_123": "coding-agent", "session_456": "planning-agent"}
             # Mock _is_process_alive to return True so sessions aren't filtered out during cleanup
             with patch(
-                "coco_codes.agents.agent_manager._is_process_alive", return_value=True
+                "coding_agent.agents.agent_manager._is_process_alive", return_value=True
             ):
                 _save_session_data(sessions)
 
             with open(session_file, "r") as f:
                 loaded = json.load(f)
 
-            assert loaded["session_123"] == "coco-codes"
+            assert loaded["session_123"] == "coding-agent"
             assert loaded["session_456"] == "planning-agent"
 
     def test_save_session_data_handles_io_error(self):
         """Test that save_session_data handles IO errors gracefully."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             session_file = Path("/invalid/path/sessions.json")
             mock_path.return_value = session_file
             # Should not raise even with invalid path
-            _save_session_data({"session_123": "coco-codes"})
+            _save_session_data({"session_123": "coding-agent"})
 
     def test_load_session_data_returns_empty_dict_if_file_missing(self):
         """Test that load returns empty dict if file doesn't exist."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             mock_path.return_value = Path("/nonexistent/path/sessions.json")
             result = _load_session_data()
@@ -194,7 +194,7 @@ class TestSessionDataPersistence:
     def test_load_session_data_parses_valid_json(self, temp_session_dir):
         """Test that load_session_data parses valid JSON."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             session_file = temp_session_dir / "terminal_sessions.json"
             mock_path.return_value = session_file
@@ -207,7 +207,7 @@ class TestSessionDataPersistence:
 
             # Mock _is_process_alive to return True (so cleanup doesn't remove it)
             with patch(
-                "coco_codes.agents.agent_manager._is_process_alive", return_value=True
+                "coding_agent.agents.agent_manager._is_process_alive", return_value=True
             ):
                 result = _load_session_data()
                 assert result["session_789"] == "python-programmer"
@@ -215,7 +215,7 @@ class TestSessionDataPersistence:
     def test_load_session_data_handles_corrupted_json(self, temp_session_dir):
         """Test that load handles corrupted JSON gracefully."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             session_file = temp_session_dir / "terminal_sessions.json"
             mock_path.return_value = session_file
@@ -230,7 +230,7 @@ class TestSessionDataPersistence:
     def test_load_session_data_handles_io_error(self):
         """Test that load handles IO errors gracefully."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             # Point to a path that doesn't exist
             mock_path.return_value = Path("/invalid/nonexistent/path.json")
@@ -240,14 +240,14 @@ class TestSessionDataPersistence:
     def test_save_load_roundtrip(self, temp_session_dir):
         """Test that data survives save -> load roundtrip."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             session_file = temp_session_dir / "terminal_sessions.json"
             mock_path.return_value = session_file
 
             # Use non-standard session format to avoid PID-based cleanup
             original = {
-                "fallback_111": "coco-codes",
+                "fallback_111": "coding-agent",
                 "fallback_222": "planning-agent",
                 "fallback_333": "code-reviewer",
             }
@@ -259,12 +259,12 @@ class TestSessionDataPersistence:
     def test_save_atomically_uses_temp_file(self, temp_session_dir):
         """Test that save uses atomic temp file approach."""
         with patch(
-            "coco_codes.agents.agent_manager._get_session_file_path"
+            "coding_agent.agents.agent_manager._get_session_file_path"
         ) as mock_path:
             session_file = temp_session_dir / "terminal_sessions.json"
             mock_path.return_value = session_file
 
-            _save_session_data({"session_123": "coco-codes"})
+            _save_session_data({"session_123": "coding-agent"})
 
             # Should not have created .tmp file (it should be renamed)
             temp_file = session_file.with_suffix(".tmp")
@@ -278,11 +278,11 @@ class TestDeadSessionCleanup:
     def test_cleanup_removes_dead_sessions(self):
         """Test that cleanup removes sessions for dead processes."""
         sessions = {
-            "session_12345": "coco-codes",  # Will be dead
+            "session_12345": "coding-agent",  # Will be dead
             "session_99999": "planning-agent",  # Will be dead
         }
 
-        with patch("coco_codes.agents.agent_manager._is_process_alive") as mock_alive:
+        with patch("coding_agent.agents.agent_manager._is_process_alive") as mock_alive:
             mock_alive.return_value = False  # All processes are dead
             result = _cleanup_dead_sessions(sessions)
             assert result == {}
@@ -290,11 +290,11 @@ class TestDeadSessionCleanup:
     def test_cleanup_preserves_live_sessions(self):
         """Test that cleanup preserves sessions for live processes."""
         sessions = {
-            "session_12345": "coco-codes",
+            "session_12345": "coding-agent",
             "session_99999": "planning-agent",
         }
 
-        with patch("coco_codes.agents.agent_manager._is_process_alive") as mock_alive:
+        with patch("coding_agent.agents.agent_manager._is_process_alive") as mock_alive:
             mock_alive.return_value = True  # All processes are alive
             result = _cleanup_dead_sessions(sessions)
             assert result == sessions
@@ -302,7 +302,7 @@ class TestDeadSessionCleanup:
     def test_cleanup_mixed_sessions(self):
         """Test cleanup with mix of live and dead processes."""
         sessions = {
-            "session_111": "coco-codes",  # alive
+            "session_111": "coding-agent",  # alive
             "session_222": "planning-agent",  # dead
             "session_333": "code-reviewer",  # alive
         }
@@ -311,7 +311,7 @@ class TestDeadSessionCleanup:
             return pid in [111, 333]  # Only these are alive
 
         with patch(
-            "coco_codes.agents.agent_manager._is_process_alive", side_effect=is_alive
+            "coding_agent.agents.agent_manager._is_process_alive", side_effect=is_alive
         ):
             result = _cleanup_dead_sessions(sessions)
             assert "session_111" in result
@@ -321,12 +321,12 @@ class TestDeadSessionCleanup:
     def test_cleanup_handles_invalid_session_format(self):
         """Test cleanup handles non-standard session ID formats."""
         sessions = {
-            "session_12345": "coco-codes",
+            "session_12345": "coding-agent",
             "fallback_99999": "planning-agent",  # Non-standard format
             "invalid": "code-reviewer",  # Also non-standard
         }
 
-        with patch("coco_codes.agents.agent_manager._is_process_alive") as mock_alive:
+        with patch("coding_agent.agents.agent_manager._is_process_alive") as mock_alive:
             mock_alive.return_value = False
             result = _cleanup_dead_sessions(sessions)
 
@@ -339,11 +339,11 @@ class TestDeadSessionCleanup:
     def test_cleanup_handles_invalid_pid_conversion(self):
         """Test cleanup when PID can't be converted to int."""
         sessions = {
-            "session_invalid": "coco-codes",  # Can't convert to int
+            "session_invalid": "coding-agent",  # Can't convert to int
             "session_12345": "planning-agent",
         }
 
-        with patch("coco_codes.agents.agent_manager._is_process_alive"):
+        with patch("coding_agent.agents.agent_manager._is_process_alive"):
             result = _cleanup_dead_sessions(sessions)
 
             # Invalid format should be kept
@@ -357,11 +357,11 @@ class TestDeadSessionCleanup:
     def test_cleanup_calls_is_process_alive(self):
         """Test that cleanup properly calls is_process_alive."""
         sessions = {
-            "session_123": "coco-codes",
+            "session_123": "coding-agent",
             "session_456": "planning-agent",
         }
 
-        with patch("coco_codes.agents.agent_manager._is_process_alive") as mock_alive:
+        with patch("coding_agent.agents.agent_manager._is_process_alive") as mock_alive:
             mock_alive.return_value = True
             _cleanup_dead_sessions(sessions)
 
@@ -377,13 +377,13 @@ class TestSessionCaching:
     def test_ensure_session_cache_loaded_loads_once(self):
         """Test that session cache is loaded only once."""
         # Reset module globals
-        import coco_codes.agents.agent_manager as am
+        import coding_agent.agents.agent_manager as am
 
         am._SESSION_FILE_LOADED = False
         am._SESSION_AGENTS_CACHE.clear()
 
-        with patch("coco_codes.agents.agent_manager._load_session_data") as mock_load:
-            mock_load.return_value = {"session_123": "coco-codes"}
+        with patch("coding_agent.agents.agent_manager._load_session_data") as mock_load:
+            mock_load.return_value = {"session_123": "coding-agent"}
 
             # First call should load
             _ensure_session_cache_loaded()
@@ -395,17 +395,17 @@ class TestSessionCaching:
 
     def test_ensure_session_cache_loaded_updates_cache(self):
         """Test that ensure updates the cache dict."""
-        import coco_codes.agents.agent_manager as am
+        import coding_agent.agents.agent_manager as am
 
         am._SESSION_FILE_LOADED = False
         am._SESSION_AGENTS_CACHE.clear()
 
         test_sessions = {
-            "session_111": "coco-codes",
+            "session_111": "coding-agent",
             "session_222": "planning-agent",
         }
 
-        with patch("coco_codes.agents.agent_manager._load_session_data") as mock_load:
+        with patch("coding_agent.agents.agent_manager._load_session_data") as mock_load:
             mock_load.return_value = test_sessions
 
             _ensure_session_cache_loaded()
@@ -414,11 +414,11 @@ class TestSessionCaching:
 
     def test_ensure_session_cache_loaded_marks_as_loaded(self):
         """Test that ensure sets the loaded flag."""
-        import coco_codes.agents.agent_manager as am
+        import coding_agent.agents.agent_manager as am
 
         am._SESSION_FILE_LOADED = False
 
-        with patch("coco_codes.agents.agent_manager._load_session_data") as mock_load:
+        with patch("coding_agent.agents.agent_manager._load_session_data") as mock_load:
             mock_load.return_value = {}
 
             _ensure_session_cache_loaded()

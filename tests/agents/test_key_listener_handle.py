@@ -12,7 +12,7 @@ import time
 
 import pytest
 
-from coco_codes.agents._key_listeners import (
+from coding_agent.agents._key_listeners import (
     KeyListenerHandle,
     get_active_handle,
     set_active_handle,

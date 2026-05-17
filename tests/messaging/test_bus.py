@@ -1,4 +1,4 @@
-"""Tests for coco_codes.messaging.bus - MessageBus and global functions."""
+"""Tests for coding_agent.messaging.bus - MessageBus and global functions."""
 
 import asyncio
 import queue
@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.messaging.bus import (
+from coding_agent.messaging.bus import (
     MessageBus,
     emit,
     emit_debug,
@@ -20,13 +20,13 @@ from coco_codes.messaging.bus import (
     reset_message_bus,
     set_session_context,
 )
-from coco_codes.messaging.commands import (
+from coding_agent.messaging.commands import (
     CancelAgentCommand,
     ConfirmationResponse,
     SelectionResponse,
     UserInputResponse,
 )
-from coco_codes.messaging.messages import (
+from coding_agent.messaging.messages import (
     MessageCategory,
     MessageLevel,
     ShellLineMessage,

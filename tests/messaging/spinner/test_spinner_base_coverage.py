@@ -1,6 +1,6 @@
-"""Tests for coco_codes.messaging.spinner.spinner_base."""
+"""Tests for coding_agent.messaging.spinner.spinner_base."""
 
-from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
 
 class ConcreteSpinner(SpinnerBase):

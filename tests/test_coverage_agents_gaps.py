@@ -1,4 +1,4 @@
-"""Coverage tests for agents & small gaps (coco_codes-ont).
+"""Coverage tests for agents & small gaps (coding_agent-ont).
 
 Targeted tests to reach 100% on specific missed lines.
 """
@@ -16,7 +16,7 @@ import pytest
 
 
 _REVIEWER_AGENTS = [
-    ("coco_codes.agents.agent_qa_automation", "QualityAssuranceKittenAgent"),
+    ("coding_agent.agents.agent_qa_automation", "QualityAssuranceKittenAgent"),
 ]
 
 
@@ -40,7 +40,7 @@ def test_reviewer_agent_tools_and_prompt(module_path, class_name):
 
 class TestPlanningAgent:
     def test_tools_and_prompt(self):
-        from coco_codes.agents.agent_planning import PlanningAgent
+        from coding_agent.agents.agent_planning import PlanningAgent
 
         agent = PlanningAgent()
         tools = agent.get_available_tools()
@@ -52,11 +52,11 @@ class TestPlanningAgent:
         assert "EXECUTION PLAN" in prompt
 
 
-class TestCocoCodesAgentTools:
+class TestCodingAgentAgentTools:
     def test_get_available_tools(self):
-        from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+        from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
-        agent = CocoCodesAgent()
+        agent = CodingAgentAgent()
         tools = agent.get_available_tools()
         assert "create_file" in tools
         assert "replace_in_file" in tools
@@ -72,7 +72,7 @@ class TestCocoCodesAgentTools:
 class TestSummarizationGaps:
     def test_ensure_thread_pool_recreates_after_shutdown(self):
         """Cover lines 38-40: pool._shutdown check."""
-        import coco_codes.summarization_agent as mod
+        import coding_agent.summarization_agent as mod
 
         pool = ThreadPoolExecutor(max_workers=1)
         pool.shutdown(wait=False)
@@ -84,7 +84,7 @@ class TestSummarizationGaps:
 
     def test_summarization_error_with_original(self):
         """Cover lines 66-67: SummarizationError.__init__."""
-        from coco_codes.summarization_agent import SummarizationError
+        from coding_agent.summarization_agent import SummarizationError
 
         orig = ValueError("boom")
         err = SummarizationError("wrapper", original_error=orig)
@@ -93,13 +93,13 @@ class TestSummarizationGaps:
 
     def test_run_summarization_sync_agent_init_failure(self):
         """Cover the except branch when get_summarization_agent raises."""
-        from coco_codes.summarization_agent import (
+        from coding_agent.summarization_agent import (
             SummarizationError,
             run_summarization_sync,
         )
 
         with patch(
-            "coco_codes.summarization_agent.get_summarization_agent",
+            "coding_agent.summarization_agent.get_summarization_agent",
             side_effect=RuntimeError("no model"),
         ):
             with pytest.raises(SummarizationError, match="Failed to initialize"):
@@ -107,7 +107,7 @@ class TestSummarizationGaps:
 
     def test_run_summarization_sync_llm_failure(self):
         """Cover lines 88-105: the _run_in_thread path and LLM error wrapping."""
-        from coco_codes.summarization_agent import (
+        from coding_agent.summarization_agent import (
             SummarizationError,
             run_summarization_sync,
         )
@@ -117,14 +117,14 @@ class TestSummarizationGaps:
 
         with (
             patch(
-                "coco_codes.summarization_agent.get_summarization_agent",
+                "coding_agent.summarization_agent.get_summarization_agent",
                 return_value=mock_agent,
             ),
             patch(
-                "coco_codes.summarization_agent.get_summarization_model_name",
+                "coding_agent.summarization_agent.get_summarization_model_name",
                 return_value="test",
             ),
-            patch("coco_codes.model_utils.prepare_prompt_for_model") as mock_prep,
+            patch("coding_agent.model_utils.prepare_prompt_for_model") as mock_prep,
         ):
             mock_prep.return_value = MagicMock(user_prompt="p", instructions="i")
             with pytest.raises(SummarizationError, match="LLM call failed"):
@@ -139,12 +139,12 @@ class TestSummarizationGaps:
 class TestDisplaySubagentSkip:
     def test_skips_when_subagent_not_verbose(self):
         """Cover line 39: early return for subagent without verbose."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         with (
-            patch("coco_codes.tools.display.is_subagent", return_value=True),
-            patch("coco_codes.tools.display.get_subagent_verbose", return_value=False),
-            patch("coco_codes.messaging.spinner.pause_all_spinners") as mock_pause,
+            patch("coding_agent.tools.display.is_subagent", return_value=True),
+            patch("coding_agent.tools.display.get_subagent_verbose", return_value=False),
+            patch("coding_agent.messaging.spinner.pause_all_spinners") as mock_pause,
         ):
             display_non_streamed_result("hello")
             mock_pause.assert_not_called()  # Should have returned early
@@ -162,20 +162,20 @@ class TestInitVersionFallback:
             # Re-exec the module code
             import importlib
 
-            import coco_codes
+            import coding_agent
 
-            importlib.reload(coco_codes)
-            assert coco_codes.__version__ == "0.0.0-dev"
+            importlib.reload(coding_agent)
+            assert coding_agent.__version__ == "0.0.0-dev"
 
     def test_version_fallback_on_empty(self):
         """Cover the empty-string branch."""
         with patch("importlib.metadata.version", return_value=""):
             import importlib
 
-            import coco_codes
+            import coding_agent
 
-            importlib.reload(coco_codes)
-            assert coco_codes.__version__ == "0.0.0-dev"
+            importlib.reload(coding_agent)
+            assert coding_agent.__version__ == "0.0.0-dev"
 
 
 # =============================================================================
@@ -186,7 +186,7 @@ class TestInitVersionFallback:
 class TestMainModule:
     def test_main_module_importable(self):
         """Cover the import of __main__ (lines 7-10 minus __name__ guard)."""
-        import coco_codes.__main__  # noqa: F401
+        import coding_agent.__main__  # noqa: F401
         # The if __name__ == '__main__' guard won't fire, but the import covers lines 7-8
 
 
@@ -198,7 +198,7 @@ class TestMainModule:
 class TestSpinnerBaseGaps:
     def _make_spinner(self):
         """Create a concrete spinner subclass for testing."""
-        from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+        from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
         class DummySpinner(SpinnerBase):
             def start(self):
@@ -227,7 +227,7 @@ class TestSpinnerBaseGaps:
 
     def test_clear_context_info(self):
         """Cover line 70: clear_context_info."""
-        from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+        from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
         SpinnerBase.set_context_info("something")
         assert SpinnerBase.get_context_info() == "something"
@@ -236,13 +236,13 @@ class TestSpinnerBaseGaps:
 
     def test_format_context_info_zero_capacity(self):
         """Cover line 93: capacity <= 0 returns empty."""
-        from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+        from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
         assert SpinnerBase.format_context_info(100, 0, 0.0) == ""
         assert SpinnerBase.format_context_info(100, -1, 0.0) == ""
 
     def test_format_context_info_normal(self):
-        from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+        from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
         result = SpinnerBase.format_context_info(5000, 10000, 0.5)
         assert "5,000" in result
@@ -257,7 +257,7 @@ class TestSpinnerBaseGaps:
 class TestAskUserQuestionModelsGaps:
     def test_timeout_response(self):
         """Cover lines 57-59: timeout_response classmethod."""
-        from coco_codes.tools.ask_user_question.models import AskUserQuestionOutput
+        from coding_agent.tools.ask_user_question.models import AskUserQuestionOutput
 
         resp = AskUserQuestionOutput.timeout_response(30)
         assert resp.timed_out is True
@@ -274,17 +274,17 @@ class TestAskUserQuestionModelsGaps:
 class TestAskUserRegistrationGap:
     def test_handler_called(self):
         """Cover line 87: the actual handler invocation."""
-        from coco_codes.tools.ask_user_question.models import AskUserQuestionOutput
+        from coding_agent.tools.ask_user_question.models import AskUserQuestionOutput
 
         mock_output = AskUserQuestionOutput(cancelled=True)
 
         with patch(
-            "coco_codes.tools.ask_user_question.registration._ask_user_question_impl",
+            "coding_agent.tools.ask_user_question.registration._ask_user_question_impl",
             return_value=mock_output,
         ) as mock_impl:
             # We need to register the tool on a real agent, or just call the inner function
             # Simplest: import and call the impl wrapper directly
-            from coco_codes.tools.ask_user_question.registration import (
+            from coding_agent.tools.ask_user_question.registration import (
                 register_ask_user_question,
             )
 
@@ -325,7 +325,7 @@ class TestAsyncLifecycleGaps:
     @pytest.mark.asyncio
     async def test_start_server_timeout(self):
         """Cover lines 99-103: timeout waiting for server to start."""
-        from coco_codes.mcp_.async_lifecycle import AsyncServerLifecycleManager
+        from coding_agent.mcp_.async_lifecycle import AsyncServerLifecycleManager
 
         manager = AsyncServerLifecycleManager()
         mock_server = MagicMock()
@@ -350,7 +350,7 @@ class TestAsyncLifecycleGaps:
     @pytest.mark.asyncio
     async def test_start_server_task_fails_during_startup(self):
         """Cover the task.done() + exception path after timeout."""
-        from coco_codes.mcp_.async_lifecycle import AsyncServerLifecycleManager
+        from coding_agent.mcp_.async_lifecycle import AsyncServerLifecycleManager
 
         manager = AsyncServerLifecycleManager()
         mock_server = MagicMock()

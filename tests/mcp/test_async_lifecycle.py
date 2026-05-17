@@ -12,7 +12,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from coco_codes.mcp_.async_lifecycle import (
+from coding_agent.mcp_.async_lifecycle import (
     AsyncServerLifecycleManager,
     ManagedServerContext,
     get_lifecycle_manager,
@@ -635,14 +635,14 @@ class TestGlobalLifecycleManager:
 
     def test_get_lifecycle_manager_returns_instance(self):
         """Test that get_lifecycle_manager returns an instance."""
-        with patch("coco_codes.mcp_.async_lifecycle._lifecycle_manager", None):
+        with patch("coding_agent.mcp_.async_lifecycle._lifecycle_manager", None):
             manager = get_lifecycle_manager()
             assert isinstance(manager, AsyncServerLifecycleManager)
 
     def test_get_lifecycle_manager_singleton(self):
         """Test that get_lifecycle_manager returns the same instance."""
         # Reset the global
-        import coco_codes.mcp_.async_lifecycle as lifecycle_module
+        import coding_agent.mcp_.async_lifecycle as lifecycle_module
 
         lifecycle_module._lifecycle_manager = None
 

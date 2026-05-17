@@ -1,13 +1,13 @@
-"""Tests for coco_codes/tools/__init__.py - 100% coverage."""
+"""Tests for coding_agent/tools/__init__.py - 100% coverage."""
 
 from unittest.mock import MagicMock, patch
 
 
 class TestLoadPluginTools:
     def test_loads_tools(self):
-        from coco_codes.tools import TOOL_REGISTRY, _load_plugin_tools
+        from coding_agent.tools import TOOL_REGISTRY, _load_plugin_tools
 
-        with patch("coco_codes.tools.on_register_tools") as mock_cb:
+        with patch("coding_agent.tools.on_register_tools") as mock_cb:
             mock_cb.return_value = [
                 [{"name": "test_tool", "register_func": lambda a: None}]
             ]
@@ -16,16 +16,16 @@ class TestLoadPluginTools:
             del TOOL_REGISTRY["test_tool"]
 
     def test_none_results(self):
-        from coco_codes.tools import _load_plugin_tools
+        from coding_agent.tools import _load_plugin_tools
 
-        with patch("coco_codes.tools.on_register_tools") as mock_cb:
+        with patch("coding_agent.tools.on_register_tools") as mock_cb:
             mock_cb.return_value = [None]
             _load_plugin_tools()  # should not raise
 
     def test_single_dict_result(self):
-        from coco_codes.tools import TOOL_REGISTRY, _load_plugin_tools
+        from coding_agent.tools import TOOL_REGISTRY, _load_plugin_tools
 
-        with patch("coco_codes.tools.on_register_tools") as mock_cb:
+        with patch("coding_agent.tools.on_register_tools") as mock_cb:
             mock_cb.return_value = [
                 {"name": "single_tool", "register_func": lambda a: None}
             ]
@@ -34,81 +34,81 @@ class TestLoadPluginTools:
             del TOOL_REGISTRY["single_tool"]
 
     def test_invalid_tool_def(self):
-        from coco_codes.tools import _load_plugin_tools
+        from coding_agent.tools import _load_plugin_tools
 
-        with patch("coco_codes.tools.on_register_tools") as mock_cb:
+        with patch("coding_agent.tools.on_register_tools") as mock_cb:
             mock_cb.return_value = [[{"name": "no_func"}]]  # missing register_func
             _load_plugin_tools()  # should not raise
 
     def test_non_callable(self):
-        from coco_codes.tools import _load_plugin_tools
+        from coding_agent.tools import _load_plugin_tools
 
-        with patch("coco_codes.tools.on_register_tools") as mock_cb:
+        with patch("coding_agent.tools.on_register_tools") as mock_cb:
             mock_cb.return_value = [[{"name": "x", "register_func": "not_callable"}]]
             _load_plugin_tools()  # should not add
 
     def test_exception_swallowed(self):
-        from coco_codes.tools import _load_plugin_tools
+        from coding_agent.tools import _load_plugin_tools
 
-        with patch("coco_codes.tools.on_register_tools", side_effect=Exception("boom")):
+        with patch("coding_agent.tools.on_register_tools", side_effect=Exception("boom")):
             _load_plugin_tools()  # should not raise
 
 
 class TestHasExtendedThinkingActive:
-    @patch("coco_codes.config.get_global_model_name", return_value=None)
+    @patch("coding_agent.config.get_global_model_name", return_value=None)
     def test_no_model(self, mock_model):
-        from coco_codes.tools import has_extended_thinking_active
+        from coding_agent.tools import has_extended_thinking_active
 
         assert not has_extended_thinking_active()
 
     def test_non_claude(self):
-        from coco_codes.tools import has_extended_thinking_active
+        from coding_agent.tools import has_extended_thinking_active
 
         assert not has_extended_thinking_active("gpt-4")
 
-    @patch("coco_codes.config.get_effective_model_settings", return_value={})
-    @patch("coco_codes.model_utils.get_default_extended_thinking", return_value=False)
+    @patch("coding_agent.config.get_effective_model_settings", return_value={})
+    @patch("coding_agent.model_utils.get_default_extended_thinking", return_value=False)
     def test_claude_disabled(self, mock_default, mock_settings):
-        from coco_codes.tools import has_extended_thinking_active
+        from coding_agent.tools import has_extended_thinking_active
 
         assert not has_extended_thinking_active("claude-3")
 
     @patch(
-        "coco_codes.config.get_effective_model_settings",
+        "coding_agent.config.get_effective_model_settings",
         return_value={"extended_thinking": True},
     )
-    @patch("coco_codes.model_utils.get_default_extended_thinking", return_value=False)
+    @patch("coding_agent.model_utils.get_default_extended_thinking", return_value=False)
     def test_claude_legacy_true(self, mock_default, mock_settings):
-        from coco_codes.tools import has_extended_thinking_active
+        from coding_agent.tools import has_extended_thinking_active
 
         assert has_extended_thinking_active("claude-3")
 
     @patch(
-        "coco_codes.config.get_effective_model_settings",
+        "coding_agent.config.get_effective_model_settings",
         return_value={"extended_thinking": "enabled"},
     )
-    @patch("coco_codes.model_utils.get_default_extended_thinking", return_value=False)
+    @patch("coding_agent.model_utils.get_default_extended_thinking", return_value=False)
     def test_claude_enabled(self, mock_default, mock_settings):
-        from coco_codes.tools import has_extended_thinking_active
+        from coding_agent.tools import has_extended_thinking_active
 
         assert has_extended_thinking_active("claude-3")
 
     @patch(
-        "coco_codes.config.get_effective_model_settings",
+        "coding_agent.config.get_effective_model_settings",
         return_value={"extended_thinking": "adaptive"},
     )
-    @patch("coco_codes.model_utils.get_default_extended_thinking", return_value=False)
+    @patch("coding_agent.model_utils.get_default_extended_thinking", return_value=False)
     def test_claude_adaptive(self, mock_default, mock_settings):
-        from coco_codes.tools import has_extended_thinking_active
+        from coding_agent.tools import has_extended_thinking_active
 
         assert has_extended_thinking_active("anthropic-model")
 
 
 class TestRegisterToolsForAgent:
-    @patch("coco_codes.tools._load_plugin_tools")
-    @patch("coco_codes.tools.has_extended_thinking_active", return_value=False)
+    @patch("coding_agent.tools._load_plugin_tools")
+    @patch("coding_agent.tools.has_extended_thinking_active", return_value=False)
     def test_register_known_tool(self, mock_ext, mock_load):
-        from coco_codes.tools import TOOL_REGISTRY, register_tools_for_agent
+        from coding_agent.tools import TOOL_REGISTRY, register_tools_for_agent
 
         agent = MagicMock()
         mock_fn = MagicMock()
@@ -119,30 +119,30 @@ class TestRegisterToolsForAgent:
         finally:
             del TOOL_REGISTRY["__test_tool"]
 
-    @patch("coco_codes.tools._load_plugin_tools")
-    @patch("coco_codes.tools.has_extended_thinking_active", return_value=False)
-    @patch("coco_codes.tools.emit_warning")
+    @patch("coding_agent.tools._load_plugin_tools")
+    @patch("coding_agent.tools.has_extended_thinking_active", return_value=False)
+    @patch("coding_agent.tools.emit_warning")
     def test_unknown_tool(self, mock_warn, mock_ext, mock_load):
-        from coco_codes.tools import register_tools_for_agent
+        from coding_agent.tools import register_tools_for_agent
 
         agent = MagicMock()
         register_tools_for_agent(agent, ["__nonexistent_tool"])
         mock_warn.assert_called()
 
-    @patch("coco_codes.tools._load_plugin_tools")
-    @patch("coco_codes.tools.has_extended_thinking_active", return_value=False)
+    @patch("coding_agent.tools._load_plugin_tools")
+    @patch("coding_agent.tools.has_extended_thinking_active", return_value=False)
     def test_register_legacy_reasoning_tool(self, mock_ext, mock_load):
-        from coco_codes.tools import register_tools_for_agent
+        from coding_agent.tools import register_tools_for_agent
 
         agent = MagicMock()
         register_tools_for_agent(agent, ["agent_share_your_reasoning"])
         agent.tool.assert_called()
 
-    @patch("coco_codes.tools._load_plugin_tools")
-    @patch("coco_codes.tools.has_extended_thinking_active", return_value=False)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=False)
+    @patch("coding_agent.tools._load_plugin_tools")
+    @patch("coding_agent.tools.has_extended_thinking_active", return_value=False)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=False)
     def test_skip_uc_disabled(self, mock_uc, mock_ext, mock_load):
-        from coco_codes.tools import TOOL_REGISTRY, register_tools_for_agent
+        from coding_agent.tools import TOOL_REGISTRY, register_tools_for_agent
 
         mock_fn = MagicMock()
         original = TOOL_REGISTRY.get("universal_constructor")
@@ -155,22 +155,22 @@ class TestRegisterToolsForAgent:
             if original:
                 TOOL_REGISTRY["universal_constructor"] = original
 
-    @patch("coco_codes.tools._load_plugin_tools")
-    @patch("coco_codes.tools.has_extended_thinking_active", return_value=False)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=False)
+    @patch("coding_agent.tools._load_plugin_tools")
+    @patch("coding_agent.tools.has_extended_thinking_active", return_value=False)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=False)
     def test_skip_uc_prefixed_disabled(self, mock_uc, mock_ext, mock_load):
-        from coco_codes.tools import register_tools_for_agent
+        from coding_agent.tools import register_tools_for_agent
 
         agent = MagicMock()
         register_tools_for_agent(agent, ["uc:api.weather"])
         # Should skip silently
 
-    @patch("coco_codes.tools._load_plugin_tools")
-    @patch("coco_codes.tools.has_extended_thinking_active", return_value=False)
-    @patch("coco_codes.config.get_universal_constructor_enabled", return_value=True)
-    @patch("coco_codes.tools._register_uc_tool_wrapper")
+    @patch("coding_agent.tools._load_plugin_tools")
+    @patch("coding_agent.tools.has_extended_thinking_active", return_value=False)
+    @patch("coding_agent.config.get_universal_constructor_enabled", return_value=True)
+    @patch("coding_agent.tools._register_uc_tool_wrapper")
     def test_uc_prefixed_enabled(self, mock_uc_reg, mock_uc, mock_ext, mock_load):
-        from coco_codes.tools import register_tools_for_agent
+        from coding_agent.tools import register_tools_for_agent
 
         agent = MagicMock()
         register_tools_for_agent(agent, ["uc:api.weather"])
@@ -178,19 +178,19 @@ class TestRegisterToolsForAgent:
 
 
 class TestRegisterUcToolWrapper:
-    @patch("coco_codes.plugins.universal_constructor.registry.get_registry")
-    @patch("coco_codes.tools.emit_warning")
+    @patch("coding_agent.plugins.universal_constructor.registry.get_registry")
+    @patch("coding_agent.tools.emit_warning")
     def test_tool_not_found(self, mock_warn, mock_reg):
-        from coco_codes.tools import _register_uc_tool_wrapper
+        from coding_agent.tools import _register_uc_tool_wrapper
 
         mock_reg.return_value.get_tool.return_value = None
         _register_uc_tool_wrapper(MagicMock(), "bad")
         mock_warn.assert_called()
 
-    @patch("coco_codes.plugins.universal_constructor.registry.get_registry")
-    @patch("coco_codes.tools.emit_warning")
+    @patch("coding_agent.plugins.universal_constructor.registry.get_registry")
+    @patch("coding_agent.tools.emit_warning")
     def test_func_not_found(self, mock_warn, mock_reg):
-        from coco_codes.tools import _register_uc_tool_wrapper
+        from coding_agent.tools import _register_uc_tool_wrapper
 
         tool = MagicMock()
         tool.meta.description = "d"
@@ -200,9 +200,9 @@ class TestRegisterUcToolWrapper:
         _register_uc_tool_wrapper(MagicMock(), "t")
         mock_warn.assert_called()
 
-    @patch("coco_codes.plugins.universal_constructor.registry.get_registry")
+    @patch("coding_agent.plugins.universal_constructor.registry.get_registry")
     def test_success(self, mock_reg):
-        from coco_codes.tools import _register_uc_tool_wrapper
+        from coding_agent.tools import _register_uc_tool_wrapper
 
         tool = MagicMock()
         tool.meta.description = "d"
@@ -218,20 +218,20 @@ class TestRegisterUcToolWrapper:
         agent.tool.assert_called_once()
 
     @patch(
-        "coco_codes.plugins.universal_constructor.registry.get_registry",
+        "coding_agent.plugins.universal_constructor.registry.get_registry",
         side_effect=Exception("boom"),
     )
-    @patch("coco_codes.tools.emit_warning")
+    @patch("coding_agent.tools.emit_warning")
     def test_exception(self, mock_warn, mock_reg):
-        from coco_codes.tools import _register_uc_tool_wrapper
+        from coding_agent.tools import _register_uc_tool_wrapper
 
         _register_uc_tool_wrapper(MagicMock(), "t")
         mock_warn.assert_called()
 
-    @patch("coco_codes.plugins.universal_constructor.registry.get_registry")
-    @patch("coco_codes.tools.emit_warning")
+    @patch("coding_agent.plugins.universal_constructor.registry.get_registry")
+    @patch("coding_agent.tools.emit_warning")
     def test_register_fails(self, mock_warn, mock_reg):
-        from coco_codes.tools import _register_uc_tool_wrapper
+        from coding_agent.tools import _register_uc_tool_wrapper
 
         tool = MagicMock()
         tool.meta.description = "d"
@@ -245,17 +245,17 @@ class TestRegisterUcToolWrapper:
 
 
 class TestRegisterAllToolsAndGetNames:
-    @patch("coco_codes.tools.register_tools_for_agent")
+    @patch("coding_agent.tools.register_tools_for_agent")
     def test_register_all(self, mock_reg):
-        from coco_codes.tools import register_all_tools
+        from coding_agent.tools import register_all_tools
 
         agent = MagicMock()
         register_all_tools(agent, model_name="test")
         mock_reg.assert_called_once()
 
-    @patch("coco_codes.tools._load_plugin_tools")
+    @patch("coding_agent.tools._load_plugin_tools")
     def test_get_names(self, mock_load):
-        from coco_codes.tools import get_available_tool_names
+        from coding_agent.tools import get_available_tool_names
 
         names = get_available_tool_names()
         assert isinstance(names, list)
@@ -264,6 +264,6 @@ class TestRegisterAllToolsAndGetNames:
 
 class TestExtendedThinkingPromptNote:
     def test_constant_exists(self):
-        from coco_codes.tools import EXTENDED_THINKING_PROMPT_NOTE
+        from coding_agent.tools import EXTENDED_THINKING_PROMPT_NOTE
 
         assert "extended thinking" in EXTENDED_THINKING_PROMPT_NOTE.lower()

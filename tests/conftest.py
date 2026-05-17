@@ -1,4 +1,4 @@
-"""Pytest configuration and fixtures for coco-codes tests.
+"""Pytest configuration and fixtures for coding-agent tests.
 
 This file intentionally keeps the test environment lean (no extra deps).
 To support `async def` tests without pytest-asyncio, we provide a minimal
@@ -13,7 +13,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from coco_codes import config as cp_config
+from coding_agent import config as cp_config
 
 # Integration test fixtures - only import if pexpect.spawn is available (Unix)
 # On Windows, pexpect doesn't have spawn attribute, so skip these imports
@@ -51,10 +51,10 @@ def isolate_config_between_tests(tmp_path_factory):
 
     # Create a completely separate temp directory for config isolation
     # (not using tmp_path which tests may use for their own purposes)
-    config_temp_dir = tempfile.mkdtemp(prefix="coco_codes_test_config_")
-    temp_config_dir = os.path.join(config_temp_dir, ".coco_codes")
+    config_temp_dir = tempfile.mkdtemp(prefix="coding_agent_test_config_")
+    temp_config_dir = os.path.join(config_temp_dir, ".coding_agent")
     os.makedirs(temp_config_dir, exist_ok=True)
-    temp_config_file = os.path.join(temp_config_dir, "coco.cfg")
+    temp_config_file = os.path.join(temp_config_dir, "coding_agent.cfg")
 
     # Copy existing config if it exists (so tests start with real settings)
     if os.path.exists(original_config_file):

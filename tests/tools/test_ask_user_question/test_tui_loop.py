@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
-from coco_codes.tools.ask_user_question.tui_loop import TUIResult, run_question_tui
+from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
+from coding_agent.tools.ask_user_question.tui_loop import TUIResult, run_question_tui
 
 
 def _make_questions(multi_select=False, count=1):
@@ -65,8 +65,8 @@ async def _run_with_handler_callback(state, callback):
     captured_kb = None
 
     with (
-        patch("coco_codes.tools.ask_user_question.tui_loop.Application") as MockApp,
-        patch("coco_codes.tools.ask_user_question.tui_loop.create_output"),
+        patch("coding_agent.tools.ask_user_question.tui_loop.Application") as MockApp,
+        patch("coding_agent.tools.ask_user_question.tui_loop.create_output"),
         patch("sys.__stdout__", new=MagicMock()),
     ):
 
@@ -118,8 +118,8 @@ class TestRunQuestionTUI:
         state.last_activity_time = time.monotonic() - 1000
 
         with (
-            patch("coco_codes.tools.ask_user_question.tui_loop.Application") as MockApp,
-            patch("coco_codes.tools.ask_user_question.tui_loop.create_output"),
+            patch("coding_agent.tools.ask_user_question.tui_loop.Application") as MockApp,
+            patch("coding_agent.tools.ask_user_question.tui_loop.create_output"),
             patch("sys.__stdout__", new=MagicMock()),
         ):
             app_inst = MagicMock()
@@ -140,8 +140,8 @@ class TestRunQuestionTUI:
     async def test_exception_reraised(self):
         state = _make_state()
         with (
-            patch("coco_codes.tools.ask_user_question.tui_loop.Application") as MockApp,
-            patch("coco_codes.tools.ask_user_question.tui_loop.create_output"),
+            patch("coding_agent.tools.ask_user_question.tui_loop.Application") as MockApp,
+            patch("coding_agent.tools.ask_user_question.tui_loop.create_output"),
             patch("sys.__stdout__", new=MagicMock()),
         ):
             MockApp.return_value.run_async = AsyncMock(side_effect=RuntimeError("boom"))
@@ -649,8 +649,8 @@ class TestPanelRendering:
         captured_lambdas = []
 
         with (
-            patch("coco_codes.tools.ask_user_question.tui_loop.Application") as MockApp,
-            patch("coco_codes.tools.ask_user_question.tui_loop.create_output"),
+            patch("coding_agent.tools.ask_user_question.tui_loop.Application") as MockApp,
+            patch("coding_agent.tools.ask_user_question.tui_loop.create_output"),
             patch("sys.__stdout__", new=MagicMock()),
         ):
 
@@ -660,22 +660,22 @@ class TestPanelRendering:
 
             with (
                 patch(
-                    "coco_codes.tools.ask_user_question.tui_loop.FormattedTextControl",
+                    "coding_agent.tools.ask_user_question.tui_loop.FormattedTextControl",
                     CaptureFTC,
                 ),
                 patch(
-                    "coco_codes.tools.ask_user_question.tui_loop.Window",
+                    "coding_agent.tools.ask_user_question.tui_loop.Window",
                     return_value=MagicMock(),
                 ),
                 patch(
-                    "coco_codes.tools.ask_user_question.tui_loop.VSplit",
+                    "coding_agent.tools.ask_user_question.tui_loop.VSplit",
                     return_value=MagicMock(),
                 ),
                 patch(
-                    "coco_codes.tools.ask_user_question.tui_loop.Frame",
+                    "coding_agent.tools.ask_user_question.tui_loop.Frame",
                     return_value=MagicMock(),
                 ),
-                patch("coco_codes.tools.ask_user_question.tui_loop.Layout"),
+                patch("coding_agent.tools.ask_user_question.tui_loop.Layout"),
             ):
                 MockApp.side_effect = lambda **kw: MagicMock(run_async=AsyncMock())
                 await run_question_tui(state)

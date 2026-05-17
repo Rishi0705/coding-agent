@@ -2,7 +2,7 @@
 
 import pytest
 
-from coco_codes.callbacks import (
+from coding_agent.callbacks import (
     clear_callbacks,
     get_callbacks,
     on_agent_run_end,
@@ -13,7 +13,7 @@ from coco_codes.callbacks import (
 
 # Check if BaseAgent can be imported (requires MCP)
 try:
-    from coco_codes.agents.base_agent import BaseAgent
+    from coding_agent.agents.base_agent import BaseAgent
 
     HAS_BASE_AGENT = True
 except ImportError:
@@ -22,7 +22,7 @@ except ImportError:
 
 # Check if ralph_test plugin exists
 try:
-    from coco_codes.plugins import ralph_test  # noqa: F401
+    from coding_agent.plugins import ralph_test  # noqa: F401
 
     HAS_RALPH_TEST_PLUGIN = True
 except ImportError:
@@ -287,7 +287,7 @@ class TestRalphTestPluginIntegration:
     def test_ralph_test_plugin_loads_successfully(self):
         """Test that the ralph_test plugin loads without errors."""
         # Import should trigger callback registration
-        from coco_codes.plugins.ralph_test import register_callbacks  # noqa: F401
+        from coding_agent.plugins.ralph_test import register_callbacks  # noqa: F401
 
         # Verify callbacks were registered
         tools_callbacks = get_callbacks("register_tools")
@@ -296,21 +296,21 @@ class TestRalphTestPluginIntegration:
 
         # Check that our plugin's callbacks are in there
         assert any(
-            cb.__module__ == "coco_codes.plugins.ralph_test.register_callbacks"
+            cb.__module__ == "coding_agent.plugins.ralph_test.register_callbacks"
             for cb in tools_callbacks
         )
         assert any(
-            cb.__module__ == "coco_codes.plugins.ralph_test.register_callbacks"
+            cb.__module__ == "coding_agent.plugins.ralph_test.register_callbacks"
             for cb in agents_callbacks
         )
         assert any(
-            cb.__module__ == "coco_codes.plugins.ralph_test.register_callbacks"
+            cb.__module__ == "coding_agent.plugins.ralph_test.register_callbacks"
             for cb in complete_callbacks
         )
 
     def test_ralph_test_plugin_provides_dummy_tool(self):
         """Test that the plugin provides the dummy echo tool."""
-        from coco_codes.plugins.ralph_test.register_callbacks import _provide_tools
+        from coding_agent.plugins.ralph_test.register_callbacks import _provide_tools
 
         tools = _provide_tools()
         assert len(tools) == 1
@@ -319,7 +319,7 @@ class TestRalphTestPluginIntegration:
 
     def test_ralph_test_plugin_provides_dummy_agent(self):
         """Test that the plugin provides the dummy agent."""
-        from coco_codes.plugins.ralph_test.register_callbacks import (
+        from coding_agent.plugins.ralph_test.register_callbacks import (
             DummyRalphTestAgent,
             _provide_agents,
         )
@@ -331,7 +331,7 @@ class TestRalphTestPluginIntegration:
 
     def test_dummy_agent_has_correct_properties(self):
         """Test that the dummy agent is properly configured."""
-        from coco_codes.plugins.ralph_test.register_callbacks import DummyRalphTestAgent
+        from coding_agent.plugins.ralph_test.register_callbacks import DummyRalphTestAgent
 
         agent = DummyRalphTestAgent()
         assert agent.name == "ralph-test-dummy"
@@ -342,7 +342,7 @@ class TestRalphTestPluginIntegration:
     @pytest.mark.asyncio
     async def test_ralph_test_plugin_logs_completions(self):
         """Test that the plugin logs agent completions."""
-        from coco_codes.plugins.ralph_test.register_callbacks import (
+        from coding_agent.plugins.ralph_test.register_callbacks import (
             _on_agent_complete,
             clear_response_log,
             get_response_log,

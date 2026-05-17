@@ -1,4 +1,4 @@
-"""Tests for coco_codes.messaging.rich_renderer."""
+"""Tests for coding_agent.messaging.rich_renderer."""
 
 import asyncio
 import time
@@ -8,8 +8,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from rich.console import Console
 
-from coco_codes.messaging.bus import MessageBus
-from coco_codes.messaging.messages import (
+from coding_agent.messaging.bus import MessageBus
+from coding_agent.messaging.messages import (
     AgentReasoningMessage,
     AgentResponseMessage,
     ConfirmationRequest,
@@ -38,7 +38,7 @@ from coco_codes.messaging.messages import (
     UserInputRequest,
     VersionCheckMessage,
 )
-from coco_codes.messaging.rich_renderer import (
+from coding_agent.messaging.rich_renderer import (
     RendererProtocol,
     RichConsoleRenderer,
 )
@@ -157,7 +157,7 @@ def test_get_level_prefix(renderer):
 # =========================================================================
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_file_listing(mock_sub, renderer, console):
     msg = FileListingMessage(
         directory="/tmp/test",
@@ -176,8 +176,8 @@ def test_render_file_listing(mock_sub, renderer, console):
     assert "file.py" in out or "DIRECTORY" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_render_file_listing_suppressed(mock_v, mock_sub, renderer, console):
     msg = FileListingMessage(
         directory="/tmp",
@@ -191,7 +191,7 @@ def test_render_file_listing_suppressed(mock_v, mock_sub, renderer, console):
     assert output(console) == ""
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_file_content(mock_sub, renderer, console):
     msg = FileContentMessage(
         path="/tmp/test.py",
@@ -207,7 +207,7 @@ def test_render_file_content(mock_sub, renderer, console):
     assert "10" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_file_content_no_lines(mock_sub, renderer, console):
     msg = FileContentMessage(
         path="/tmp/test.py",
@@ -225,7 +225,7 @@ def test_render_file_content_no_lines(mock_sub, renderer, console):
 # =========================================================================
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_grep_result_no_matches(mock_sub, renderer, console):
     msg = GrepResultMessage(
         directory="/tmp",
@@ -240,7 +240,7 @@ def test_render_grep_result_no_matches(mock_sub, renderer, console):
     assert "No matches" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_grep_result_concise(mock_sub, renderer, console):
     msg = GrepResultMessage(
         directory="/tmp",
@@ -258,7 +258,7 @@ def test_render_grep_result_concise(mock_sub, renderer, console):
     assert "2 matches" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_grep_result_verbose(mock_sub, renderer, console):
     msg = GrepResultMessage(
         directory="/tmp",
@@ -275,7 +275,7 @@ def test_render_grep_result_verbose(mock_sub, renderer, console):
     assert "1 match" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_grep_result_verbose_flag_search(mock_sub, renderer, console):
     msg = GrepResultMessage(
         directory="/tmp",
@@ -290,7 +290,7 @@ def test_render_grep_result_verbose_flag_search(mock_sub, renderer, console):
     renderer._render_grep_result(msg)
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_grep_result_verbose_all_flags(mock_sub, renderer, console):
     """When all parts start with -, highlighted_line = line."""
     msg = GrepResultMessage(
@@ -311,7 +311,7 @@ def test_render_grep_result_verbose_all_flags(mock_sub, renderer, console):
 # =========================================================================
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_diff(mock_sub, renderer, console):
     msg = DiffMessage(
         path="test.py",
@@ -330,7 +330,7 @@ def test_render_diff(mock_sub, renderer, console):
     assert "EDIT FILE" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_diff_create(mock_sub, renderer, console):
     msg = DiffMessage(path="new.py", operation="create", diff_lines=[])
     renderer._render_diff(msg)
@@ -338,7 +338,7 @@ def test_render_diff_create(mock_sub, renderer, console):
     assert "CREATE" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_diff_delete(mock_sub, renderer, console):
     msg = DiffMessage(path="old.py", operation="delete", diff_lines=[])
     renderer._render_diff(msg)
@@ -349,7 +349,7 @@ def test_render_diff_delete(mock_sub, renderer, console):
 # =========================================================================
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_shell_start(mock_sub, renderer, console):
     msg = ShellStartMessage(command="ls -la", cwd="/tmp", timeout=30, background=False)
     renderer._render_shell_start(msg)
@@ -359,7 +359,7 @@ def test_render_shell_start(mock_sub, renderer, console):
     assert "30" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_shell_start_background(mock_sub, renderer, console):
     msg = ShellStartMessage(command="server", cwd=None, timeout=60, background=True)
     renderer._render_shell_start(msg)
@@ -415,7 +415,7 @@ def test_render_agent_response_plain(renderer, console):
     renderer._render_agent_response(msg)
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_subagent_invocation(mock_sub, renderer, console):
     msg = SubAgentInvocationMessage(
         agent_name="qa-agent",
@@ -429,7 +429,7 @@ def test_render_subagent_invocation(mock_sub, renderer, console):
     assert "qa-agent" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_subagent_invocation_continuing(mock_sub, renderer, console):
     msg = SubAgentInvocationMessage(
         agent_name="qa",
@@ -460,7 +460,7 @@ def test_render_subagent_response(renderer, console):
 # =========================================================================
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_universal_constructor_success(mock_sub, renderer, console):
     msg = UniversalConstructorMessage(
         action="build",
@@ -475,7 +475,7 @@ def test_render_universal_constructor_success(mock_sub, renderer, console):
     assert "my_tool" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_universal_constructor_failure(mock_sub, renderer, console):
     msg = UniversalConstructorMessage(
         action="build",
@@ -681,7 +681,7 @@ def test_render_version_check_current(renderer, console):
 # =========================================================================
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_skill_list(mock_sub, renderer, console):
     msg = SkillListMessage(
         skills=[
@@ -708,7 +708,7 @@ def test_render_skill_list(mock_sub, renderer, console):
     assert "skill1" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_skill_list_empty(mock_sub, renderer, console):
     msg = SkillListMessage(skills=[], total_count=0, query=None)
     renderer._render_skill_list(msg)
@@ -716,7 +716,7 @@ def test_render_skill_list_empty(mock_sub, renderer, console):
     assert "No skills" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_skill_activate_success(mock_sub, renderer, console):
     msg = SkillActivateMessage(
         skill_name="skill1",
@@ -730,7 +730,7 @@ def test_render_skill_activate_success(mock_sub, renderer, console):
     assert "skill1" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_skill_activate_failure(mock_sub, renderer, console):
     msg = SkillActivateMessage(
         skill_name="skill1",
@@ -744,7 +744,7 @@ def test_render_skill_activate_failure(mock_sub, renderer, console):
     assert "failed" in out.lower()
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_skill_activate_no_resources(mock_sub, renderer, console):
     msg = SkillActivateMessage(
         skill_name="skill1",
@@ -817,7 +817,7 @@ def test_do_render_all_message_types(renderer, console):
         renderer._do_render(msg)
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_do_render_file_listing_dispatch(mock_sub, renderer, console):
     msg = FileListingMessage(
         directory="/tmp",
@@ -830,7 +830,7 @@ def test_do_render_file_listing_dispatch(mock_sub, renderer, console):
     renderer._do_render(msg)
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_do_render_subagent_invocation_dispatch(mock_sub, renderer, console):
     msg = SubAgentInvocationMessage(
         agent_name="a",
@@ -842,7 +842,7 @@ def test_do_render_subagent_invocation_dispatch(mock_sub, renderer, console):
     renderer._do_render(msg)
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_do_render_universal_constructor_dispatch(mock_sub, renderer, console):
     msg = UniversalConstructorMessage(
         action="test",
@@ -852,13 +852,13 @@ def test_do_render_universal_constructor_dispatch(mock_sub, renderer, console):
     renderer._do_render(msg)
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_do_render_skill_list_dispatch(mock_sub, renderer, console):
     msg = SkillListMessage(skills=[], total_count=0)
     renderer._do_render(msg)
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_do_render_skill_activate_dispatch(mock_sub, renderer, console):
     msg = SkillActivateMessage(
         skill_name="s",
@@ -911,28 +911,28 @@ def test_get_file_icon(renderer):
 
 
 def test_get_banner_color(renderer):
-    with patch("coco_codes.config.get_banner_color", return_value="blue"):
+    with patch("coding_agent.config.get_banner_color", return_value="blue"):
         assert renderer._get_banner_color("test") == "blue"
 
 
 def test_format_banner(renderer):
-    with patch("coco_codes.config.get_banner_color", return_value="blue"):
+    with patch("coding_agent.config.get_banner_color", return_value="blue"):
         result = renderer._format_banner("test", "HELLO")
         assert "HELLO" in result
         assert "blue" in result
 
 
 def test_should_suppress_subagent_output(renderer):
-    with patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False):
+    with patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False):
         assert not renderer._should_suppress_subagent_output()
-    with patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True):
+    with patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True):
         with patch(
-            "coco_codes.messaging.rich_renderer.get_subagent_verbose",
+            "coding_agent.messaging.rich_renderer.get_subagent_verbose",
             return_value=True,
         ):
             assert not renderer._should_suppress_subagent_output()
         with patch(
-            "coco_codes.messaging.rich_renderer.get_subagent_verbose",
+            "coding_agent.messaging.rich_renderer.get_subagent_verbose",
             return_value=False,
         ):
             assert renderer._should_suppress_subagent_output()
@@ -1032,16 +1032,16 @@ def test_render_sync_error(bus):
 # =========================================================================
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_suppress_file_content(mv, ms, renderer, console):
     msg = FileContentMessage(path="f.py", content="x", total_lines=1, num_tokens=1)
     renderer._render_file_content(msg)
     assert output(console) == ""
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_suppress_grep_result(mv, ms, renderer, console):
     msg = GrepResultMessage(
         directory=".",
@@ -1055,24 +1055,24 @@ def test_suppress_grep_result(mv, ms, renderer, console):
     assert output(console) == ""
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_suppress_diff(mv, ms, renderer, console):
     msg = DiffMessage(path="f.py", operation="modify", diff_lines=[])
     renderer._render_diff(msg)
     assert output(console) == ""
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_suppress_shell_start(mv, ms, renderer, console):
     msg = ShellStartMessage(command="ls", timeout=30, background=False)
     renderer._render_shell_start(msg)
     assert output(console) == ""
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_suppress_subagent_invocation(mv, ms, renderer, console):
     msg = SubAgentInvocationMessage(
         agent_name="a",
@@ -1085,8 +1085,8 @@ def test_suppress_subagent_invocation(mv, ms, renderer, console):
     assert output(console) == ""
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_suppress_universal_constructor(mv, ms, renderer, console):
     msg = UniversalConstructorMessage(
         action="test",
@@ -1097,16 +1097,16 @@ def test_suppress_universal_constructor(mv, ms, renderer, console):
     assert output(console) == ""
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_suppress_skill_list(mv, ms, renderer, console):
     msg = SkillListMessage(skills=[], total_count=0)
     renderer._render_skill_list(msg)
     assert output(console) == ""
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=True)
-@patch("coco_codes.messaging.rich_renderer.get_subagent_verbose", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=True)
+@patch("coding_agent.messaging.rich_renderer.get_subagent_verbose", return_value=False)
 def test_suppress_skill_activate(mv, ms, renderer, console):
     msg = SkillActivateMessage(
         skill_name="s",
@@ -1124,7 +1124,7 @@ def test_suppress_skill_activate(mv, ms, renderer, console):
 # =========================================================================
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_file_listing_nested_dirs(mock_sub, renderer, console):
     msg = FileListingMessage(
         directory="/project",
@@ -1145,7 +1145,7 @@ def test_render_file_listing_nested_dirs(mock_sub, renderer, console):
     assert "Summary" in out
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_file_listing_root_files_only(mock_sub, renderer, console):
     msg = FileListingMessage(
         directory="/project",
@@ -1161,7 +1161,7 @@ def test_render_file_listing_root_files_only(mock_sub, renderer, console):
     renderer._render_file_listing(msg)
 
 
-@patch("coco_codes.messaging.rich_renderer.is_subagent", return_value=False)
+@patch("coding_agent.messaging.rich_renderer.is_subagent", return_value=False)
 def test_render_file_listing_single_file_single_dir(mock_sub, renderer, console):
     """Test singular forms in summary."""
     msg = FileListingMessage(

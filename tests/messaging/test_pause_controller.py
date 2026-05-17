@@ -1,11 +1,11 @@
-"""Tests for coco_codes.messaging.pause_controller - PauseController + singleton."""
+"""Tests for coding_agent.messaging.pause_controller - PauseController + singleton."""
 
 import asyncio
 import time
 
 import pytest
 
-from coco_codes.messaging.pause_controller import (
+from coding_agent.messaging.pause_controller import (
     PauseController,
     get_pause_controller,
     reset_pause_controller,

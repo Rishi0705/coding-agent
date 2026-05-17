@@ -1,4 +1,4 @@
-from coco_codes.list_filtering import normalize_filter_text, query_matches_text
+from coding_agent.list_filtering import normalize_filter_text, query_matches_text
 
 
 def test_normalize_filter_text_collapses_case_and_punctuation():

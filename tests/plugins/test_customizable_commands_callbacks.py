@@ -10,9 +10,9 @@ from unittest.mock import patch
 
 import pytest
 
-import coco_codes.plugins.customizable_commands.register_callbacks as callbacks_module
-from coco_codes.callbacks import get_callbacks, register_callback
-from coco_codes.plugins.customizable_commands.register_callbacks import (
+import coding_agent.plugins.customizable_commands.register_callbacks as callbacks_module
+from coding_agent.callbacks import get_callbacks, register_callback
+from coding_agent.plugins.customizable_commands.register_callbacks import (
     MarkdownCommandResult,
     _command_descriptions,
     _custom_commands,
@@ -124,7 +124,7 @@ class TestLoadMarkdownCommands:
 
             # Patch the command directories to use our temp dir
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(cmd_dir)],
             ):
                 _load_markdown_commands()
@@ -145,7 +145,7 @@ class TestLoadMarkdownCommands:
 
             # Patch to use .github/prompts pattern
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [".github/prompts"],
             ):
                 with patch.object(Path, "expanduser", return_value=prompts_dir):
@@ -169,7 +169,7 @@ class TestLoadMarkdownCommands:
             empty_file.write_text("   \n   ")
 
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(cmd_dir)],
             ):
                 _load_markdown_commands()
@@ -186,7 +186,7 @@ class TestLoadMarkdownCommands:
             test_file.write_text("# Heading\nActual description\nMore content")
 
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(cmd_dir)],
             ):
                 _load_markdown_commands()
@@ -205,7 +205,7 @@ class TestLoadMarkdownCommands:
             test_file.write_text(long_desc)
 
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(cmd_dir)],
             ):
                 _load_markdown_commands()
@@ -233,12 +233,12 @@ class TestLoadMarkdownCommands:
                 return original_read_text(self, *args, **kwargs)
 
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(cmd_dir)],
             ):
                 with patch.object(Path, "read_text", mock_read_text):
                     with patch(
-                        "coco_codes.plugins.customizable_commands.register_callbacks.emit_error"
+                        "coding_agent.plugins.customizable_commands.register_callbacks.emit_error"
                     ) as mock_emit:
                         _load_markdown_commands()
 
@@ -261,7 +261,7 @@ class TestLoadMarkdownCommands:
             (dir2 / "dupe.md").write_text("Project content")
 
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(dir1), str(dir2)],
             ):
                 _load_markdown_commands()
@@ -282,7 +282,7 @@ class TestLoadMarkdownCommands:
             test_file.write_text("# Heading 1\n## Heading 2")
 
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(cmd_dir)],
             ):
                 _load_markdown_commands()
@@ -316,7 +316,7 @@ class TestCustomHelp:
             (cmd_dir / "middle.md").write_text("Middle command")
 
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(cmd_dir)],
             ):
                 result = _custom_help()
@@ -331,7 +331,7 @@ class TestCustomHelp:
             (cmd_dir / "test.md").write_text("Test description here")
 
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(cmd_dir)],
             ):
                 result = _custom_help()
@@ -345,7 +345,7 @@ class TestCustomHelp:
     def test_reloads_commands_on_each_call(self):
         """Test that _custom_help reloads commands each time."""
         with patch(
-            "coco_codes.plugins.customizable_commands.register_callbacks._load_markdown_commands"
+            "coding_agent.plugins.customizable_commands.register_callbacks._load_markdown_commands"
         ) as mock_load:
             mock_load.return_value = None
             _custom_help()
@@ -378,7 +378,7 @@ class TestHandleCustomCommand:
         _reset_commands_cache()  # Reset both dict and sentinel
 
         with patch(
-            "coco_codes.plugins.customizable_commands.register_callbacks._load_markdown_commands"
+            "coding_agent.plugins.customizable_commands.register_callbacks._load_markdown_commands"
         ) as mock_load:
             _handle_custom_command("/test", "test")
 
@@ -391,7 +391,7 @@ class TestHandleCustomCommand:
         _custom_commands["mytest"] = "Test content"
 
         with patch(
-            "coco_codes.plugins.customizable_commands.register_callbacks.emit_info"
+            "coding_agent.plugins.customizable_commands.register_callbacks.emit_info"
         ):
             result = _handle_custom_command("/mytest", "mytest")
 
@@ -404,7 +404,7 @@ class TestHandleCustomCommand:
         _custom_commands["cmd"] = "Base content"
 
         with patch(
-            "coco_codes.plugins.customizable_commands.register_callbacks.emit_info"
+            "coding_agent.plugins.customizable_commands.register_callbacks.emit_info"
         ):
             result = _handle_custom_command("/cmd extra args here", "cmd")
 
@@ -419,7 +419,7 @@ class TestHandleCustomCommand:
         _custom_commands["simple"] = "Just the content"
 
         with patch(
-            "coco_codes.plugins.customizable_commands.register_callbacks.emit_info"
+            "coding_agent.plugins.customizable_commands.register_callbacks.emit_info"
         ):
             result = _handle_custom_command("/simple", "simple")
 
@@ -432,7 +432,7 @@ class TestHandleCustomCommand:
         _custom_commands["info_test"] = "Content"
 
         with patch(
-            "coco_codes.plugins.customizable_commands.register_callbacks.emit_info"
+            "coding_agent.plugins.customizable_commands.register_callbacks.emit_info"
         ) as mock_emit:
             _handle_custom_command("/info_test", "info_test")
 
@@ -447,7 +447,7 @@ class TestHandleCustomCommand:
         _custom_commands["ws"] = "Content"
 
         with patch(
-            "coco_codes.plugins.customizable_commands.register_callbacks.emit_info"
+            "coding_agent.plugins.customizable_commands.register_callbacks.emit_info"
         ):
             result = _handle_custom_command("/ws   arg1  arg2  ", "ws")
 
@@ -460,7 +460,7 @@ class TestCallbackRegistration:
 
     def test_custom_help_callback_registered(self):
         """Test that custom_command_help callback is registered."""
-        from coco_codes.callbacks import get_callbacks
+        from coding_agent.callbacks import get_callbacks
 
         callbacks = get_callbacks("custom_command_help")
         # _custom_help should be registered
@@ -471,7 +471,7 @@ class TestCallbackRegistration:
 
     def test_custom_command_callback_registered(self):
         """Test that custom_command callback is registered."""
-        from coco_codes.callbacks import get_callbacks
+        from coding_agent.callbacks import get_callbacks
 
         callbacks = get_callbacks("custom_command")
         # _handle_custom_command should be registered
@@ -487,7 +487,7 @@ class TestModuleExports:
 
     def test_markdown_command_result_in_all(self):
         """Test that MarkdownCommandResult is exported in __all__."""
-        from coco_codes.plugins.customizable_commands import register_callbacks
+        from coding_agent.plugins.customizable_commands import register_callbacks
 
         assert "MarkdownCommandResult" in register_callbacks.__all__
 
@@ -497,13 +497,13 @@ class TestGlobalCommands:
 
     def test_global_directory_in_command_directories(self):
         """Test that global directory is included in _COMMAND_DIRECTORIES."""
-        from coco_codes.plugins.customizable_commands.register_callbacks import (
+        from coding_agent.plugins.customizable_commands.register_callbacks import (
             _COMMAND_DIRECTORIES,
         )
 
-        assert "~/.coco-codes/commands" in _COMMAND_DIRECTORIES
+        assert "~/.coding-agent/commands" in _COMMAND_DIRECTORIES
         # Global should be first (lowest priority, gets overridden by project)
-        assert _COMMAND_DIRECTORIES[0] == "~/.coco-codes/commands"
+        assert _COMMAND_DIRECTORIES[0] == "~/.coding-agent/commands"
 
     def test_global_commands_work_with_expanduser(self):
         """Test that global path with ~ expands correctly."""
@@ -515,7 +515,7 @@ class TestGlobalCommands:
 
             # Patch with a ~-prefixed path to actually test expanduser()
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 ["~/fake_global_commands"],
             ):
                 with patch.object(Path, "expanduser", return_value=global_dir):
@@ -538,7 +538,7 @@ class TestGlobalCommands:
 
             # Global first, project second (project wins)
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 [str(global_dir), str(project_dir)],
             ):
                 _load_markdown_commands()
@@ -555,7 +555,7 @@ class TestGlobalCommands:
 
             # Non-existent global dir, existing project dir
             with patch(
-                "coco_codes.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
+                "coding_agent.plugins.customizable_commands.register_callbacks._COMMAND_DIRECTORIES",
                 ["/nonexistent/path/commands", str(project_dir)],
             ):
                 _load_markdown_commands()  # Should not raise
@@ -568,7 +568,7 @@ class TestCommandsLoadedAtImport:
 
     def test_commands_dict_exists(self):
         """Test that _custom_commands dict exists after import."""
-        from coco_codes.plugins.customizable_commands import register_callbacks
+        from coding_agent.plugins.customizable_commands import register_callbacks
 
         assert hasattr(register_callbacks, "_custom_commands")
         assert isinstance(register_callbacks._custom_commands, dict)

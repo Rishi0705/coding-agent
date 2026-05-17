@@ -5,8 +5,8 @@ import tempfile
 
 import pytest
 
-from coco_codes.agents.agent_coco_codes import CocoCodesAgent
-from coco_codes.config import (
+from coding_agent.agents.agent_coding_agent import CodingAgentAgent
+from coding_agent.config import (
     clear_agent_pinned_model,
     get_agent_pinned_model,
     get_agents_pinned_to_model,
@@ -20,10 +20,10 @@ from coco_codes.config import (
 def mock_config_paths(monkeypatch):
     """Fixture to monkeypatch config paths to temporary locations for all tests in this class."""
     with tempfile.TemporaryDirectory() as tmp_dir:
-        tmp_config_dir = os.path.join(tmp_dir, ".coco_codes")
-        tmp_config_file = os.path.join(tmp_config_dir, "coco.cfg")
-        monkeypatch.setattr("coco_codes.config.CONFIG_DIR", tmp_config_dir)
-        monkeypatch.setattr("coco_codes.config.CONFIG_FILE", tmp_config_file)
+        tmp_config_dir = os.path.join(tmp_dir, ".coding_agent")
+        tmp_config_file = os.path.join(tmp_config_dir, "coding_agent.cfg")
+        monkeypatch.setattr("coding_agent.config.CONFIG_DIR", tmp_config_dir)
+        monkeypatch.setattr("coding_agent.config.CONFIG_FILE", tmp_config_file)
         # Ensure the directory exists for the patched paths
         os.makedirs(tmp_config_dir, exist_ok=True)
         yield
@@ -65,8 +65,8 @@ class TestAgentPinnedModels:
 
     def test_base_agent_get_model_name(self):
         """Test BaseAgent.get_model_name() returns pinned model."""
-        agent = CocoCodesAgent()
-        agent_name = agent.name  # "coco-codes"
+        agent = CodingAgentAgent()
+        agent_name = agent.name  # "coding-agent"
         model_name = "gpt-4o-mini"
 
         # Initially no pinned model - should return global model

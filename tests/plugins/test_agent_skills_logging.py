@@ -3,15 +3,15 @@
 import logging
 import sys
 
-from coco_codes.plugins.agent_skills.metadata import parse_skill_metadata
+from coding_agent.plugins.agent_skills.metadata import parse_skill_metadata
 
-_REGISTER_CALLBACKS_MODULE = "coco_codes.plugins.agent_skills.register_callbacks"
-_AGENT_SKILLS_PACKAGE = "coco_codes.plugins.agent_skills"
+_REGISTER_CALLBACKS_MODULE = "coding_agent.plugins.agent_skills.register_callbacks"
+_AGENT_SKILLS_PACKAGE = "coding_agent.plugins.agent_skills"
 
 
 def _snapshot_callbacks():
     """Snapshot callback registry so importing plugin callbacks stays harmless."""
-    from coco_codes import callbacks
+    from coding_agent import callbacks
 
     snapshot = {phase: list(funcs) for phase, funcs in callbacks._callbacks.items()}
     return callbacks, snapshot, _REGISTER_CALLBACKS_MODULE in sys.modules
@@ -36,7 +36,7 @@ def test_parse_skill_metadata_invalid_content_is_quiet(tmp_path, caplog):
     """Invalid skill metadata is an expected skip, not terminal confetti."""
     skill_dir = tmp_path / "invalid-skill"
     skill_dir.mkdir()
-    (skill_dir / "SKILL.md").write_text("## Overview\nNot Coco Codes metadata.\n")
+    (skill_dir / "SKILL.md").write_text("## Overview\nNot Coding Agent metadata.\n")
 
     with caplog.at_level(logging.WARNING):
         metadata = parse_skill_metadata(skill_dir)
@@ -52,22 +52,22 @@ def test_prompt_section_skips_invalid_skill_metadata_quietly(
     skills_root = tmp_path / "skills"
     skill_dir = skills_root / "concord"
     skill_dir.mkdir(parents=True)
-    (skill_dir / "SKILL.md").write_text("## Overview\nNot Coco Codes metadata.\n")
+    (skill_dir / "SKILL.md").write_text("## Overview\nNot Coding Agent metadata.\n")
 
     callbacks, snapshot, was_imported = _snapshot_callbacks()
     try:
-        from coco_codes.plugins.agent_skills import register_callbacks
+        from coding_agent.plugins.agent_skills import register_callbacks
 
         monkeypatch.setattr(
-            "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+            "coding_agent.plugins.agent_skills.config.get_skills_enabled",
             lambda: True,
         )
         monkeypatch.setattr(
-            "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+            "coding_agent.plugins.agent_skills.config.get_disabled_skills",
             lambda: set(),
         )
         monkeypatch.setattr(
-            "coco_codes.plugins.agent_skills.config.get_skill_directories",
+            "coding_agent.plugins.agent_skills.config.get_skill_directories",
             lambda: [str(skills_root)],
         )
 

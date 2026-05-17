@@ -1,4 +1,4 @@
-"""Tests for coco_codes.messaging.spinner.console_spinner."""
+"""Tests for coding_agent.messaging.spinner.console_spinner."""
 
 import time
 from io import StringIO
@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from rich.console import Console
 
-from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def console():
 def reset_user_input():
     """Ensure awaiting_user_input is reset."""
     with patch(
-        "coco_codes.tools.command_runner.is_awaiting_user_input",
+        "coding_agent.tools.command_runner.is_awaiting_user_input",
         return_value=False,
     ):
         yield
@@ -87,7 +87,7 @@ def test_generate_spinner_panel_paused(console):
 
 
 def test_generate_spinner_panel_with_context(console):
-    from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+    from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
     SpinnerBase.set_context_info("test context")
     spinner = ConsoleSpinner(console=console)
@@ -126,7 +126,7 @@ def test_resume_when_awaiting_user_input(console):
     spinner.start()
     spinner._paused = True
     with patch(
-        "coco_codes.tools.command_runner.is_awaiting_user_input",
+        "coding_agent.tools.command_runner.is_awaiting_user_input",
         return_value=True,
     ):
         spinner.resume()
@@ -172,7 +172,7 @@ def test_spinner_thread_error_handling(console):
 def test_generate_spinner_panel_awaiting_input(console):
     spinner = ConsoleSpinner(console=console)
     with patch(
-        "coco_codes.tools.command_runner.is_awaiting_user_input",
+        "coding_agent.tools.command_runner.is_awaiting_user_input",
         return_value=True,
     ):
         panel = spinner._generate_spinner_panel()
@@ -196,11 +196,11 @@ def test_resume_live_start_exception(console):
     spinner._paused = True
     spinner._live = None
     with patch(
-        "coco_codes.tools.command_runner.is_awaiting_user_input",
+        "coding_agent.tools.command_runner.is_awaiting_user_input",
         return_value=False,
     ):
         with patch(
-            "coco_codes.messaging.spinner.console_spinner.Live",
+            "coding_agent.messaging.spinner.console_spinner.Live",
             side_effect=RuntimeError("live fail"),
         ):
             spinner.resume()  # Should not raise
@@ -214,7 +214,7 @@ def test_resume_live_update_exception(console):
     spinner._live = MagicMock()
     spinner._live.update.side_effect = RuntimeError("update fail")
     with patch(
-        "coco_codes.tools.command_runner.is_awaiting_user_input",
+        "coding_agent.tools.command_runner.is_awaiting_user_input",
         return_value=False,
     ):
         spinner.resume()  # Should not raise

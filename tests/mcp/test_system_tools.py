@@ -11,7 +11,7 @@ This module tests the SystemToolDetector class which provides:
 import subprocess
 from unittest.mock import MagicMock, Mock, patch
 
-from coco_codes.mcp_.system_tools import (
+from coding_agent.mcp_.system_tools import (
     SystemToolDetector,
     ToolInfo,
     detector,

@@ -1,6 +1,6 @@
 """Tests for hook configuration validator."""
 
-from coco_codes.hook_engine.validator import (
+from coding_agent.hook_engine.validator import (
     format_validation_report,
     validate_hooks_config,
 )

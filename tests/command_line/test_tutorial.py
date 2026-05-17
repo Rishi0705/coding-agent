@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.command_line.core_commands import handle_tutorial_command
+from coding_agent.command_line.core_commands import handle_tutorial_command
 
 
 def _mock_tutorial_result(mock_executor_class: Any, result: str) -> None:
@@ -26,15 +26,15 @@ def test_tutorial_chatgpt_flow() -> None:
         _mock_tutorial_result(mock_executor_class, "chatgpt")
 
         with patch(
-            "coco_codes.command_line.onboarding_wizard.reset_onboarding"
+            "coding_agent.command_line.onboarding_wizard.reset_onboarding"
         ) as mock_reset:
             with patch(
-                "coco_codes.plugins.chatgpt_oauth.oauth_flow.run_oauth_flow"
+                "coding_agent.plugins.chatgpt_oauth.oauth_flow.run_oauth_flow"
             ) as mock_oauth:
                 with patch(
-                    "coco_codes.model_switching.set_model_and_reload_agent"
+                    "coding_agent.model_switching.set_model_and_reload_agent"
                 ) as mock_set_model:
-                    with patch("coco_codes.command_line.core_commands.emit_info"):
+                    with patch("coding_agent.command_line.core_commands.emit_info"):
                         result = handle_tutorial_command("/tutorial")
 
     assert result is True
@@ -49,15 +49,15 @@ def test_tutorial_claude_flow() -> None:
         _mock_tutorial_result(mock_executor_class, "claude")
 
         with patch(
-            "coco_codes.command_line.onboarding_wizard.reset_onboarding"
+            "coding_agent.command_line.onboarding_wizard.reset_onboarding"
         ) as mock_reset:
             with patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._perform_authentication"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._perform_authentication"
             ) as mock_auth:
                 with patch(
-                    "coco_codes.model_switching.set_model_and_reload_agent"
+                    "coding_agent.model_switching.set_model_and_reload_agent"
                 ) as mock_set_model:
-                    with patch("coco_codes.command_line.core_commands.emit_info"):
+                    with patch("coding_agent.command_line.core_commands.emit_info"):
                         result = handle_tutorial_command("/tutorial")
 
     assert result is True
@@ -79,19 +79,19 @@ def test_tutorial_terminal_paths(wizard_result: str, expected_message: str) -> N
         _mock_tutorial_result(mock_executor_class, wizard_result)
 
         with patch(
-            "coco_codes.command_line.onboarding_wizard.reset_onboarding"
+            "coding_agent.command_line.onboarding_wizard.reset_onboarding"
         ) as mock_reset:
             with patch(
-                "coco_codes.plugins.chatgpt_oauth.oauth_flow.run_oauth_flow"
+                "coding_agent.plugins.chatgpt_oauth.oauth_flow.run_oauth_flow"
             ) as mock_oauth:
                 with patch(
-                    "coco_codes.plugins.claude_code_oauth.register_callbacks._perform_authentication"
+                    "coding_agent.plugins.claude_code_oauth.register_callbacks._perform_authentication"
                 ) as mock_auth:
                     with patch(
-                        "coco_codes.model_switching.set_model_and_reload_agent"
+                        "coding_agent.model_switching.set_model_and_reload_agent"
                     ) as mock_set_model:
                         with patch(
-                            "coco_codes.command_line.core_commands.emit_info"
+                            "coding_agent.command_line.core_commands.emit_info"
                         ) as mock_emit_info:
                             result = handle_tutorial_command("/tutorial")
 

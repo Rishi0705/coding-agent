@@ -1,4 +1,4 @@
-"""Tests for coco_codes.tools.subagent_context.
+"""Tests for coding_agent.tools.subagent_context.
 
 This module tests the sub-agent context management functionality including
 ContextVar state tracking, context manager behavior, and async isolation.
@@ -14,7 +14,7 @@ import pytest
 spec = importlib.util.spec_from_file_location(
     "subagent_context_module",
     Path(__file__).parent.parent.parent
-    / "coco_codes"
+    / "coding_agent"
     / "tools"
     / "subagent_context.py",
 )
@@ -55,9 +55,9 @@ class TestSubagentContextBasics:
         initial_depth = get_subagent_depth()
         initial_name = get_subagent_name()
 
-        with subagent_context("coco-codes"):
+        with subagent_context("coding-agent"):
             assert get_subagent_depth() == initial_depth + 1
-            assert get_subagent_name() == "coco-codes"
+            assert get_subagent_name() == "coding-agent"
 
         assert get_subagent_depth() == initial_depth
         assert get_subagent_name() == initial_name
@@ -92,9 +92,9 @@ class TestNestedSubagents:
                 assert get_subagent_depth() == 2
                 assert get_subagent_name() == "terrier"
 
-                with subagent_context("coco-codes"):
+                with subagent_context("coding-agent"):
                     assert get_subagent_depth() == 3
-                    assert get_subagent_name() == "coco-codes"
+                    assert get_subagent_name() == "coding-agent"
 
                 # Back to terrier
                 assert get_subagent_depth() == 2

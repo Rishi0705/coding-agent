@@ -19,7 +19,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.mcp_ import agent_bindings
+from coding_agent.mcp_ import agent_bindings
 
 
 @pytest.fixture
@@ -36,11 +36,11 @@ def _write_file_bindings(path: Path, data: dict) -> None:
 
 def _stub_json_agent(declared: dict):
     """Return a context that makes ``load_agent`` yield a JSONAgent stub."""
-    from coco_codes.agents.json_agent import JSONAgent
+    from coding_agent.agents.json_agent import JSONAgent
 
     fake_agent = MagicMock(spec=JSONAgent)
     fake_agent.get_declared_mcp_bindings.return_value = declared
-    return patch("coco_codes.agents.agent_manager.load_agent", return_value=fake_agent)
+    return patch("coding_agent.agents.agent_manager.load_agent", return_value=fake_agent)
 
 
 class TestJsonOnly:
@@ -57,13 +57,13 @@ class TestJsonOnly:
 class TestFileOnly:
     def test_file_bindings_when_no_json(self, tmp_bindings_file):
         _write_file_bindings(
-            tmp_bindings_file, {"coco-codes": {"sqlite": {"auto_start": True}}}
+            tmp_bindings_file, {"coding-agent": {"sqlite": {"auto_start": True}}}
         )
         # Non-JSON agent: load_agent returns something that isn't a JSONAgent.
         with patch(
-            "coco_codes.agents.agent_manager.load_agent", return_value=MagicMock()
+            "coding_agent.agents.agent_manager.load_agent", return_value=MagicMock()
         ):
-            result = agent_bindings.get_bound_servers("coco-codes")
+            result = agent_bindings.get_bound_servers("coding-agent")
         assert result == {"sqlite": {"auto_start": True}}
 
 
@@ -98,14 +98,14 @@ class TestDefensiveDegradation:
             tmp_bindings_file, {"clone-1": {"sqlite": {"auto_start": True}}}
         )
         with patch(
-            "coco_codes.agents.agent_manager.load_agent",
+            "coding_agent.agents.agent_manager.load_agent",
             side_effect=RuntimeError("boom"),
         ):
             result = agent_bindings.get_bound_servers("clone-1")
         assert result == {"sqlite": {"auto_start": True}}
 
     def test_get_declared_raises_falls_back_to_file(self, tmp_bindings_file):
-        from coco_codes.agents.json_agent import JSONAgent
+        from coding_agent.agents.json_agent import JSONAgent
 
         _write_file_bindings(
             tmp_bindings_file, {"clone-1": {"sqlite": {"auto_start": True}}}
@@ -113,7 +113,7 @@ class TestDefensiveDegradation:
         bad_agent = MagicMock(spec=JSONAgent)
         bad_agent.get_declared_mcp_bindings.side_effect = RuntimeError("kaboom")
         with patch(
-            "coco_codes.agents.agent_manager.load_agent", return_value=bad_agent
+            "coding_agent.agents.agent_manager.load_agent", return_value=bad_agent
         ):
             result = agent_bindings.get_bound_servers("clone-1")
         assert result == {"sqlite": {"auto_start": True}}

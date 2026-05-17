@@ -9,8 +9,8 @@ import tempfile
 import pytest
 from unittest.mock import patch
 
-from coco_codes.plugins.wiggum import judge_config
-from coco_codes.plugins.wiggum.judge_config import (
+from coding_agent.plugins.wiggum import judge_config
+from coding_agent.plugins.wiggum.judge_config import (
     DEFAULT_JUDGE_PROMPT,
     JudgeConfig,
     add_judge,

@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
-from coco_codes.agents.agent_creator_agent import AgentCreatorAgent
+from coding_agent.agents.agent_creator_agent import AgentCreatorAgent
 
 
 class TestAgentCreatorAgent:
@@ -27,14 +27,14 @@ class TestAgentCreatorAgent:
         agent = AgentCreatorAgent()
         with (
             patch(
-                "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+                "coding_agent.agents.agent_creator_agent.get_available_tool_names",
                 return_value=["read_file"],
             ),
             patch(
-                "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+                "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
                 return_value="/tmp/agents",
             ),
-            patch("coco_codes.agents.agent_creator_agent.ModelFactory") as mock_factory,
+            patch("coding_agent.agents.agent_creator_agent.ModelFactory") as mock_factory,
         ):
             mock_factory.load_config.return_value = {
                 "gpt-4": {"type": "openai", "context_length": 128000}
@@ -55,16 +55,16 @@ class TestAgentCreatorAgent:
 
         with (
             patch(
-                "coco_codes.agents.agent_creator_agent.get_available_tool_names",
+                "coding_agent.agents.agent_creator_agent.get_available_tool_names",
                 return_value=[],
             ),
             patch(
-                "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+                "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
                 return_value="/tmp",
             ),
-            patch("coco_codes.agents.agent_creator_agent.ModelFactory") as mock_factory,
+            patch("coding_agent.agents.agent_creator_agent.ModelFactory") as mock_factory,
             patch(
-                "coco_codes.plugins.universal_constructor.registry.get_registry",
+                "coding_agent.plugins.universal_constructor.registry.get_registry",
                 return_value=mock_registry,
             ),
         ):
@@ -75,7 +75,7 @@ class TestAgentCreatorAgent:
     def test_get_available_tools(self):
         agent = AgentCreatorAgent()
         with patch(
-            "coco_codes.config.get_universal_constructor_enabled", return_value=True
+            "coding_agent.config.get_universal_constructor_enabled", return_value=True
         ):
             tools = agent.get_available_tools()
             assert "universal_constructor" in tools
@@ -83,7 +83,7 @@ class TestAgentCreatorAgent:
     def test_get_available_tools_uc_disabled(self):
         agent = AgentCreatorAgent()
         with patch(
-            "coco_codes.config.get_universal_constructor_enabled", return_value=False
+            "coding_agent.config.get_universal_constructor_enabled", return_value=False
         ):
             tools = agent.get_available_tools()
             assert "universal_constructor" not in tools
@@ -173,7 +173,7 @@ class TestAgentCreatorAgent:
     def test_get_agent_file_path(self):
         agent = AgentCreatorAgent()
         with patch(
-            "coco_codes.agents.agent_creator_agent.get_user_agents_directory",
+            "coding_agent.agents.agent_creator_agent.get_user_agents_directory",
             return_value="/tmp/agents",
         ):
             path = agent.get_agent_file_path("my-agent")

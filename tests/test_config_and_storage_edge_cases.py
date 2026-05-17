@@ -16,18 +16,18 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes import callbacks, session_storage
-from coco_codes import config as cp_config
+from coding_agent import callbacks, session_storage
+from coding_agent import config as cp_config
 
 
 @pytest.fixture
 def mock_config_paths(monkeypatch, tmp_path):
     """Mock XDG paths for isolated testing."""
-    mock_config_dir = str(tmp_path / ".config" / "coco_codes")
-    mock_config_file = os.path.join(mock_config_dir, "coco.cfg")
-    mock_data_dir = str(tmp_path / ".local" / "share" / "coco_codes")
-    mock_cache_dir = str(tmp_path / ".cache" / "coco_codes")
-    mock_state_dir = str(tmp_path / ".local" / "state" / "coco_codes")
+    mock_config_dir = str(tmp_path / ".config" / "coding_agent")
+    mock_config_file = os.path.join(mock_config_dir, "coding_agent.cfg")
+    mock_data_dir = str(tmp_path / ".local" / "share" / "coding_agent")
+    mock_cache_dir = str(tmp_path / ".cache" / "coding_agent")
+    mock_state_dir = str(tmp_path / ".local" / "state" / "coding_agent")
 
     monkeypatch.setattr(cp_config, "CONFIG_DIR", mock_config_dir)
     monkeypatch.setattr(cp_config, "CONFIG_FILE", mock_config_file)
@@ -188,15 +188,15 @@ class TestXDGDirectoryHandling:
         """Test that explicit XDG env var is respected."""
         with patch.dict(os.environ, {"XDG_CONFIG_HOME": "/custom/config"}):
             result = cp_config._get_xdg_dir("XDG_CONFIG_HOME", ".config")
-            assert result == "/custom/config/coco_codes"
+            assert result == "/custom/config/coding_agent"
 
     def test_get_xdg_dir_defaults_to_home_when_no_env_var(self):
-        """Test fallback to ~/.coco_codes when env var not set."""
+        """Test fallback to ~/.coding_agent when env var not set."""
         with patch.dict(os.environ, {}, clear=True):
             with patch("os.path.expanduser") as mock_expand:
                 mock_expand.return_value = "/home/user"
                 result = cp_config._get_xdg_dir("XDG_CONFIG_HOME", ".config")
-                assert result == "/home/user/.coco_codes"
+                assert result == "/home/user/.coding_agent"
 
 
 class TestConfigKeys:

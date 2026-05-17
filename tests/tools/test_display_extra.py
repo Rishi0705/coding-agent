@@ -4,10 +4,10 @@ from unittest.mock import patch
 
 
 class TestDisplaySubagentSkip:
-    @patch("coco_codes.tools.display.get_subagent_verbose", return_value=False)
-    @patch("coco_codes.tools.display.is_subagent", return_value=True)
+    @patch("coding_agent.tools.display.get_subagent_verbose", return_value=False)
+    @patch("coding_agent.tools.display.is_subagent", return_value=True)
     def test_skips_for_subagent(self, mock_sub, mock_verbose):
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Should return early without doing anything
         result = display_non_streamed_result("test content")

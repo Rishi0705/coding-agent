@@ -23,7 +23,7 @@ import pytest
 
 CONFIG_TEMPLATE: Final[str] = """[puppy]
 assistant_name = IntegrationPup
-owner_name = CocoCodesTester
+owner_name = CodingAgentTester
 auto_save_session = true
 max_saved_sessions = 5
 model = synthetic-GLM-5.1
@@ -192,7 +192,7 @@ def dump_dbos_report(temp_home: pathlib.Path) -> None:
     Appends human-readable text to a global report buffer.
     """
     try:
-        db_path = temp_home / ".coco_codes" / "dbos_store.sqlite"
+        db_path = temp_home / ".coding_agent" / "dbos_store.sqlite"
         if not db_path.exists():
             return
         conn = sqlite3.connect(str(db_path))
@@ -257,40 +257,40 @@ class CliHarness:
         """Spawn the CLI, optionally reusing an existing HOME for autosave tests."""
         if existing_home is not None:
             temp_home = pathlib.Path(existing_home)
-            config_dir = temp_home / ".config" / "coco_codes"
-            coco_codes_dir = temp_home / ".coco_codes"
+            config_dir = temp_home / ".config" / "coding_agent"
+            coding_agent_dir = temp_home / ".coding_agent"
             config_dir.mkdir(parents=True, exist_ok=True)
-            coco_codes_dir.mkdir(parents=True, exist_ok=True)
-            write_config = not (config_dir / "coco.cfg").exists()
+            coding_agent_dir.mkdir(parents=True, exist_ok=True)
+            write_config = not (config_dir / "coding_agent.cfg").exists()
         else:
             temp_home = pathlib.Path(
-                tempfile.mkdtemp(prefix=f"coco_codes_home_{_random_name()}_")
+                tempfile.mkdtemp(prefix=f"coding_agent_home_{_random_name()}_")
             )
-            config_dir = temp_home / ".config" / "coco_codes"
-            coco_codes_dir = temp_home / ".coco_codes"
+            config_dir = temp_home / ".config" / "coding_agent"
+            coding_agent_dir = temp_home / ".coding_agent"
             config_dir.mkdir(parents=True, exist_ok=True)
-            coco_codes_dir.mkdir(parents=True, exist_ok=True)
+            coding_agent_dir.mkdir(parents=True, exist_ok=True)
             write_config = True
 
         if write_config:
-            # Write config to both XDG config dir and ~/.coco_codes for compatibility
-            (config_dir / "coco.cfg").write_text(CONFIG_TEMPLATE, encoding="utf-8")
-            (coco_codes_dir / "coco.cfg").write_text(CONFIG_TEMPLATE, encoding="utf-8")
+            # Write config to both XDG config dir and ~/.coding_agent for compatibility
+            (config_dir / "coding_agent.cfg").write_text(CONFIG_TEMPLATE, encoding="utf-8")
+            (coding_agent_dir / "coding_agent.cfg").write_text(CONFIG_TEMPLATE, encoding="utf-8")
 
         log_path = temp_home / f"cli_output_{uuid.uuid4().hex}.log"
-        cmd_args = ["coco-codes"] + (args or [])
+        cmd_args = ["coding-agent"] + (args or [])
 
         spawn_env = os.environ.copy()
         spawn_env.update(env or {})
         spawn_env["HOME"] = str(temp_home)
         spawn_env.pop("PYTHONPATH", None)  # avoid accidental venv confusion
-        # Clear XDG vars so the spawned CLI uses ~/.coco_codes (temp home)
+        # Clear XDG vars so the spawned CLI uses ~/.coding_agent (temp home)
         spawn_env.pop("XDG_CONFIG_HOME", None)
         spawn_env.pop("XDG_DATA_HOME", None)
         spawn_env.pop("XDG_CACHE_HOME", None)
         spawn_env.pop("XDG_STATE_HOME", None)
         # Ensure DBOS uses a temp sqlite under this HOME
-        dbos_sqlite = coco_codes_dir / "dbos_store.sqlite"
+        dbos_sqlite = coding_agent_dir / "dbos_store.sqlite"
         spawn_env["DBOS_SYSTEM_DATABASE_URL"] = f"sqlite:///{dbos_sqlite}"
         spawn_env.setdefault("DBOS_LOG_LEVEL", "ERROR")
         # Skip the interactive tutorial wizard in tests

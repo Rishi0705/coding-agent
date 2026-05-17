@@ -1,4 +1,4 @@
-"""Tests targeting remaining uncovered lines in coco_codes/tools/ask_user_question/."""
+"""Tests targeting remaining uncovered lines in coding_agent/tools/ask_user_question/."""
 
 import os
 from unittest.mock import MagicMock, patch
@@ -12,7 +12,7 @@ import pytest
 
 def test_is_interactive_non_tty():
     """Cover is_interactive when stdin is not a TTY."""
-    from coco_codes.tools.ask_user_question.handler import is_interactive
+    from coding_agent.tools.ask_user_question.handler import is_interactive
 
     with patch("sys.stdin") as mock_stdin:
         mock_stdin.isatty.return_value = False
@@ -21,7 +21,7 @@ def test_is_interactive_non_tty():
 
 def test_is_interactive_attribute_error():
     """Cover is_interactive when stdin has no isatty."""
-    from coco_codes.tools.ask_user_question.handler import is_interactive
+    from coding_agent.tools.ask_user_question.handler import is_interactive
 
     with patch("sys.stdin") as mock_stdin:
         mock_stdin.isatty.side_effect = AttributeError
@@ -30,7 +30,7 @@ def test_is_interactive_attribute_error():
 
 def test_is_interactive_ci_env():
     """Cover is_interactive in CI environment."""
-    from coco_codes.tools.ask_user_question.handler import is_interactive
+    from coding_agent.tools.ask_user_question.handler import is_interactive
 
     with patch("sys.stdin") as mock_stdin:
         mock_stdin.isatty.return_value = True
@@ -40,7 +40,7 @@ def test_is_interactive_ci_env():
 
 def test_ask_user_question_validation_error():
     """Cover validation error path."""
-    from coco_codes.tools.ask_user_question.handler import ask_user_question
+    from coding_agent.tools.ask_user_question.handler import ask_user_question
 
     # Missing required fields
     result = ask_user_question([{"bad": "data"}])
@@ -49,10 +49,10 @@ def test_ask_user_question_validation_error():
 
 def test_ask_user_question_type_error():
     """Cover TypeError/ValueError in validation."""
-    from coco_codes.tools.ask_user_question.handler import ask_user_question
+    from coding_agent.tools.ask_user_question.handler import ask_user_question
 
     with patch(
-        "coco_codes.tools.ask_user_question.handler._validate_input",
+        "coding_agent.tools.ask_user_question.handler._validate_input",
         side_effect=TypeError("bad type"),
     ):
         result = ask_user_question([{}])
@@ -62,15 +62,15 @@ def test_ask_user_question_type_error():
 def _mock_interactive(fn):
     """Helper to patch is_interactive to True."""
     return patch(
-        "coco_codes.tools.ask_user_question.handler.is_interactive", return_value=True
+        "coding_agent.tools.ask_user_question.handler.is_interactive", return_value=True
     )(fn)
 
 
 @_mock_interactive
 def test_ask_user_question_timeout(_):
     """Cover timeout response."""
-    from coco_codes.tools.ask_user_question.handler import ask_user_question
-    from coco_codes.tools.ask_user_question.models import (
+    from coding_agent.tools.ask_user_question.handler import ask_user_question
+    from coding_agent.tools.ask_user_question.models import (
         AskUserQuestionInput,
         Question,
         QuestionOption,
@@ -85,11 +85,11 @@ def test_ask_user_question_timeout(_):
 
     with (
         patch(
-            "coco_codes.tools.ask_user_question.handler._validate_input",
+            "coding_agent.tools.ask_user_question.handler._validate_input",
             return_value=validated,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.handler._run_interactive_picker",
+            "coding_agent.tools.ask_user_question.handler._run_interactive_picker",
             return_value=([], False, True),
         ),
     ):
@@ -100,8 +100,8 @@ def test_ask_user_question_timeout(_):
 @_mock_interactive
 def test_ask_user_question_cancelled(_):
     """Cover cancelled response."""
-    from coco_codes.tools.ask_user_question.handler import ask_user_question
-    from coco_codes.tools.ask_user_question.models import (
+    from coding_agent.tools.ask_user_question.handler import ask_user_question
+    from coding_agent.tools.ask_user_question.models import (
         AskUserQuestionInput,
         Question,
         QuestionOption,
@@ -116,11 +116,11 @@ def test_ask_user_question_cancelled(_):
 
     with (
         patch(
-            "coco_codes.tools.ask_user_question.handler._validate_input",
+            "coding_agent.tools.ask_user_question.handler._validate_input",
             return_value=validated,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.handler._run_interactive_picker",
+            "coding_agent.tools.ask_user_question.handler._run_interactive_picker",
             return_value=([], True, False),
         ),
     ):
@@ -131,8 +131,8 @@ def test_ask_user_question_cancelled(_):
 @_mock_interactive
 def test_ask_user_question_keyboard_interrupt(_):
     """Cover KeyboardInterrupt path."""
-    from coco_codes.tools.ask_user_question.handler import ask_user_question
-    from coco_codes.tools.ask_user_question.models import (
+    from coding_agent.tools.ask_user_question.handler import ask_user_question
+    from coding_agent.tools.ask_user_question.models import (
         AskUserQuestionInput,
         Question,
         QuestionOption,
@@ -147,11 +147,11 @@ def test_ask_user_question_keyboard_interrupt(_):
 
     with (
         patch(
-            "coco_codes.tools.ask_user_question.handler._validate_input",
+            "coding_agent.tools.ask_user_question.handler._validate_input",
             return_value=validated,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.handler._run_interactive_picker",
+            "coding_agent.tools.ask_user_question.handler._run_interactive_picker",
             side_effect=KeyboardInterrupt,
         ),
     ):
@@ -162,8 +162,8 @@ def test_ask_user_question_keyboard_interrupt(_):
 @_mock_interactive
 def test_ask_user_question_os_error(_):
     """Cover OSError path."""
-    from coco_codes.tools.ask_user_question.handler import ask_user_question
-    from coco_codes.tools.ask_user_question.models import (
+    from coding_agent.tools.ask_user_question.handler import ask_user_question
+    from coding_agent.tools.ask_user_question.models import (
         AskUserQuestionInput,
         Question,
         QuestionOption,
@@ -178,11 +178,11 @@ def test_ask_user_question_os_error(_):
 
     with (
         patch(
-            "coco_codes.tools.ask_user_question.handler._validate_input",
+            "coding_agent.tools.ask_user_question.handler._validate_input",
             return_value=validated,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.handler._run_interactive_picker",
+            "coding_agent.tools.ask_user_question.handler._run_interactive_picker",
             side_effect=OSError("terminal error"),
         ),
     ):
@@ -193,8 +193,8 @@ def test_ask_user_question_os_error(_):
 @_mock_interactive
 def test_ask_user_question_success(_):
     """Cover successful answer collection."""
-    from coco_codes.tools.ask_user_question.handler import ask_user_question
-    from coco_codes.tools.ask_user_question.models import (
+    from coding_agent.tools.ask_user_question.handler import ask_user_question
+    from coding_agent.tools.ask_user_question.models import (
         AskUserQuestionInput,
         Question,
         QuestionAnswer,
@@ -211,11 +211,11 @@ def test_ask_user_question_success(_):
 
     with (
         patch(
-            "coco_codes.tools.ask_user_question.handler._validate_input",
+            "coding_agent.tools.ask_user_question.handler._validate_input",
             return_value=validated,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.handler._run_interactive_picker",
+            "coding_agent.tools.ask_user_question.handler._run_interactive_picker",
             return_value=([answer], False, False),
         ),
     ):
@@ -225,7 +225,7 @@ def test_ask_user_question_success(_):
 
 def test_async_context_error_is_runtime_error():
     """Verify AsyncContextError is a RuntimeError subclass."""
-    from coco_codes.tools.ask_user_question.handler import AsyncContextError
+    from coding_agent.tools.ask_user_question.handler import AsyncContextError
 
     assert issubclass(AsyncContextError, RuntimeError)
 
@@ -234,7 +234,7 @@ def test_format_validation_error():
     """Cover _format_validation_error (lines 220, 230)."""
     from pydantic import BaseModel, ValidationError
 
-    from coco_codes.tools.ask_user_question.handler import _format_validation_error
+    from coding_agent.tools.ask_user_question.handler import _format_validation_error
 
     class Dummy(BaseModel):
         x: int
@@ -248,7 +248,7 @@ def test_format_validation_error():
 
 def test_format_validation_error_empty():
     """Cover empty errors list."""
-    from coco_codes.tools.ask_user_question.handler import _format_validation_error
+    from coding_agent.tools.ask_user_question.handler import _format_validation_error
 
     mock_err = MagicMock()
     mock_err.errors.return_value = []
@@ -258,7 +258,7 @@ def test_format_validation_error_empty():
 
 def test_format_validation_error_many():
     """Cover truncation of many errors."""
-    from coco_codes.tools.ask_user_question.handler import (
+    from coding_agent.tools.ask_user_question.handler import (
         MAX_VALIDATION_ERRORS_SHOWN,
         _format_validation_error,
     )
@@ -280,7 +280,7 @@ def test_format_validation_error_many():
 
 def test_sanitizer_none_not_allowed():
     """Cover sanitizer when None is not allowed."""
-    from coco_codes.tools.ask_user_question.models import _make_sanitizer
+    from coding_agent.tools.ask_user_question.models import _make_sanitizer
 
     sanitizer = _make_sanitizer(allow_none=False)
     with pytest.raises(ValueError, match="cannot be None"):
@@ -289,7 +289,7 @@ def test_sanitizer_none_not_allowed():
 
 def test_sanitizer_none_allowed():
     """Cover sanitizer when None is allowed."""
-    from coco_codes.tools.ask_user_question.models import _make_sanitizer
+    from coding_agent.tools.ask_user_question.models import _make_sanitizer
 
     sanitizer = _make_sanitizer(allow_none=True, default="default_val")
     result = sanitizer(None)
@@ -305,7 +305,7 @@ def test_register_ask_user_question():
     """Cover the registration function and verify schema."""
     from pydantic_ai import Agent
 
-    from coco_codes.tools.ask_user_question.registration import (
+    from coding_agent.tools.ask_user_question.registration import (
         register_ask_user_question,
     )
 
@@ -333,8 +333,8 @@ def test_register_ask_user_question():
 
 def test_question_ui_state_is_question_answered():
     """Cover is_question_answered for multi-select."""
-    from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-    from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
+    from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+    from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
 
     q1 = Question(
         question="test?",
@@ -370,8 +370,8 @@ def test_question_ui_state_is_question_answered():
 
 def test_question_ui_state_other_text():
     """Cover enter_other_text_mode and commit_other_text."""
-    from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-    from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
+    from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+    from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
 
     q = Question(
         question="test?",
@@ -397,8 +397,8 @@ def test_question_ui_state_other_text():
 
 def test_question_ui_state_select_all_none():
     """Cover select_all_options and select_no_options."""
-    from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-    from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
+    from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+    from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
 
     q = Question(
         question="test?",
@@ -432,8 +432,8 @@ def test_question_ui_state_select_all_none():
 
 def test_question_ui_state_navigation():
     """Cover next_question and prev_question."""
-    from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-    from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
+    from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+    from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
 
     q1 = Question(
         question="q1?",
@@ -460,8 +460,8 @@ def test_question_ui_state_navigation():
 
 def test_question_ui_state_toggle_select():
     """Cover toggle_current_option and select_current_option."""
-    from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-    from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
+    from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+    from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
 
     q1 = Question(
         question="q?",
@@ -498,8 +498,8 @@ def test_question_ui_state_toggle_select():
 
 def test_question_ui_state_get_answers():
     """Cover get_answers with multi and single select."""
-    from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-    from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
+    from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+    from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
 
     q1 = Question(
         question="q1?",
@@ -527,8 +527,8 @@ def test_question_ui_state_get_answers():
 
 def test_question_ui_state_is_option_selected():
     """Cover is_option_selected."""
-    from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-    from coco_codes.tools.ask_user_question.terminal_ui import QuestionUIState
+    from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+    from coding_agent.tools.ask_user_question.terminal_ui import QuestionUIState
 
     q = Question(
         question="q?",
@@ -549,7 +549,7 @@ def test_question_ui_state_is_option_selected():
 
 def test_demo_tui_main():
     """Cover demo_tui main function."""
-    from coco_codes.tools.ask_user_question import demo_tui
+    from coding_agent.tools.ask_user_question import demo_tui
 
     # The if __name__ == '__main__' guard won't fire on import
     assert hasattr(demo_tui, "main")
@@ -562,6 +562,6 @@ def test_demo_tui_main():
 
 def test_tui_loop_module_import():
     """Cover tui_loop module import."""
-    from coco_codes.tools.ask_user_question import tui_loop
+    from coding_agent.tools.ask_user_question import tui_loop
 
     assert hasattr(tui_loop, "run_question_tui")

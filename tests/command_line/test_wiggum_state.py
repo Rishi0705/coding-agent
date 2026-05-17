@@ -1,6 +1,6 @@
 """Tests for wiggum_state.py - 100% coverage."""
 
-from coco_codes.command_line.wiggum_state import (
+from coding_agent.command_line.wiggum_state import (
     WiggumState,
     get_wiggum_count,
     get_wiggum_prompt,

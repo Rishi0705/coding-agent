@@ -12,12 +12,12 @@ import pytest
 def _plugin_module():
     sys.modules.setdefault("dbos", MagicMock())
     return importlib.import_module(
-        "coco_codes.plugins.prompt_newline.register_callbacks"
+        "coding_agent.plugins.prompt_newline.register_callbacks"
     )
 
 
 def _config_module():
-    return importlib.import_module("coco_codes.plugins.prompt_newline.config")
+    return importlib.import_module("coding_agent.plugins.prompt_newline.config")
 
 
 def test_custom_help_lists_command():
@@ -66,7 +66,7 @@ def test_append_newline_returns_formatted_text_with_trailing_newline():
 
 def test_install_prompt_patch_is_idempotent():
     module = _plugin_module()
-    from coco_codes.command_line import prompt_toolkit_completion as ptc
+    from coding_agent.command_line import prompt_toolkit_completion as ptc
 
     original = ptc.get_prompt_with_active_model
     try:
@@ -85,20 +85,20 @@ def test_install_prompt_patch_is_idempotent():
 
 def test_patched_prompt_appends_newline_only_when_enabled():
     module = _plugin_module()
-    from coco_codes.command_line import prompt_toolkit_completion as ptc
+    from coding_agent.command_line import prompt_toolkit_completion as ptc
 
     original = ptc.get_prompt_with_active_model
     try:
         module._install_prompt_patch()
 
         with patch(
-            "coco_codes.plugins.prompt_newline.register_callbacks.is_enabled",
+            "coding_agent.plugins.prompt_newline.register_callbacks.is_enabled",
             return_value=False,
         ):
             disabled_result = ptc.get_prompt_with_active_model()
 
         with patch(
-            "coco_codes.plugins.prompt_newline.register_callbacks.is_enabled",
+            "coding_agent.plugins.prompt_newline.register_callbacks.is_enabled",
             return_value=True,
         ):
             enabled_result = ptc.get_prompt_with_active_model()
@@ -112,18 +112,18 @@ def test_patched_prompt_appends_newline_only_when_enabled():
 
 
 def test_handle_command_persists_explicit_on(tmp_path, monkeypatch):
-    # Point the config at a throwaway file so we don't trash real coco.cfg
-    cfg_file = tmp_path / "coco.cfg"
-    monkeypatch.setattr("coco_codes.config.CONFIG_FILE", str(cfg_file))
+    # Point the config at a throwaway file so we don't trash real coding_agent.cfg
+    cfg_file = tmp_path / "coding_agent.cfg"
+    monkeypatch.setattr("coding_agent.config.CONFIG_FILE", str(cfg_file))
 
     module = _plugin_module()
     cfg = _config_module()
 
     with (
         patch(
-            "coco_codes.plugins.prompt_newline.register_callbacks._emit_success"
+            "coding_agent.plugins.prompt_newline.register_callbacks._emit_success"
         ) as mock_success,
-        patch("coco_codes.plugins.prompt_newline.register_callbacks._emit_info"),
+        patch("coding_agent.plugins.prompt_newline.register_callbacks._emit_info"),
     ):
         result = module._handle_custom_command("/prompt_newline on", "prompt_newline")
 
@@ -133,36 +133,36 @@ def test_handle_command_persists_explicit_on(tmp_path, monkeypatch):
 
 
 def test_handle_command_flips_when_no_arg(tmp_path, monkeypatch):
-    cfg_file = tmp_path / "coco.cfg"
-    monkeypatch.setattr("coco_codes.config.CONFIG_FILE", str(cfg_file))
+    cfg_file = tmp_path / "coding_agent.cfg"
+    monkeypatch.setattr("coding_agent.config.CONFIG_FILE", str(cfg_file))
 
     module = _plugin_module()
     cfg = _config_module()
 
     cfg.set_enabled(False)
     with (
-        patch("coco_codes.plugins.prompt_newline.register_callbacks._emit_success"),
-        patch("coco_codes.plugins.prompt_newline.register_callbacks._emit_info"),
+        patch("coding_agent.plugins.prompt_newline.register_callbacks._emit_success"),
+        patch("coding_agent.plugins.prompt_newline.register_callbacks._emit_info"),
     ):
         module._handle_custom_command("/prompt_newline", "prompt_newline")
     assert cfg.is_enabled() is True
 
     with (
-        patch("coco_codes.plugins.prompt_newline.register_callbacks._emit_success"),
-        patch("coco_codes.plugins.prompt_newline.register_callbacks._emit_info"),
+        patch("coding_agent.plugins.prompt_newline.register_callbacks._emit_success"),
+        patch("coding_agent.plugins.prompt_newline.register_callbacks._emit_info"),
     ):
         module._handle_custom_command("/prompt_newline", "prompt_newline")
     assert cfg.is_enabled() is False
 
 
 def test_handle_command_rejects_garbage_arg(tmp_path, monkeypatch):
-    cfg_file = tmp_path / "coco.cfg"
-    monkeypatch.setattr("coco_codes.config.CONFIG_FILE", str(cfg_file))
+    cfg_file = tmp_path / "coding_agent.cfg"
+    monkeypatch.setattr("coding_agent.config.CONFIG_FILE", str(cfg_file))
 
     module = _plugin_module()
 
     with patch(
-        "coco_codes.plugins.prompt_newline.register_callbacks._emit_error"
+        "coding_agent.plugins.prompt_newline.register_callbacks._emit_error"
     ) as mock_error:
         result = module._handle_custom_command(
             "/prompt_newline banana", "prompt_newline"
@@ -174,8 +174,8 @@ def test_handle_command_rejects_garbage_arg(tmp_path, monkeypatch):
 
 
 def test_is_enabled_defaults_to_false(tmp_path, monkeypatch):
-    cfg_file = tmp_path / "coco.cfg"
-    monkeypatch.setattr("coco_codes.config.CONFIG_FILE", str(cfg_file))
+    cfg_file = tmp_path / "coding_agent.cfg"
+    monkeypatch.setattr("coding_agent.config.CONFIG_FILE", str(cfg_file))
 
     cfg = _config_module()
     assert cfg.is_enabled() is False

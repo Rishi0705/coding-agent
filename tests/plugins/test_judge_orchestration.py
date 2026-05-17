@@ -9,9 +9,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.plugins.wiggum import judge_config, register_callbacks
-from coco_codes.plugins.wiggum.judge import GoalJudgement
-from coco_codes.plugins.wiggum.judge_config import JudgeConfig
+from coding_agent.plugins.wiggum import judge_config, register_callbacks
+from coding_agent.plugins.wiggum.judge import GoalJudgement
+from coding_agent.plugins.wiggum.judge_config import JudgeConfig
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def isolated_judges():
             yield path
 
 
-def _fake_agent(name: str = "coco-codes", history: list | None = None):
+def _fake_agent(name: str = "coding-agent", history: list | None = None):
     agent = MagicMock()
     agent.name = name
     agent.get_message_history = MagicMock(return_value=history or [])
@@ -140,7 +140,7 @@ async def test_judge_exception_becomes_abstaining_verdict(isolated_judges):
     with (
         patch.object(register_callbacks, "judge_goal", new=fake_judge_goal),
         patch.object(register_callbacks, "_display_llm_judge"),
-        patch("coco_codes.error_logging.log_error"),
+        patch("coding_agent.error_logging.log_error"),
     ):
         all_complete, notes, verdicts = await register_callbacks._run_goal_judges(
             agent=_fake_agent(),
@@ -239,7 +239,7 @@ async def test_remediation_notes_format(isolated_judges):
 @pytest.mark.asyncio
 async def test_turn_end_feeds_remediation_notes_to_next_iteration(isolated_judges):
     """When goal is incomplete, the next iteration's prompt must include the notes."""
-    from coco_codes.plugins.wiggum import state
+    from coding_agent.plugins.wiggum import state
 
     state.start("fix the bug", mode="goal")
 
@@ -271,7 +271,7 @@ async def test_turn_end_feeds_remediation_notes_to_next_iteration(isolated_judge
 
 @pytest.mark.asyncio
 async def test_turn_end_stops_loop_on_full_success(isolated_judges):
-    from coco_codes.plugins.wiggum import state
+    from coding_agent.plugins.wiggum import state
 
     state.start("ship it", mode="goal")
 
@@ -319,7 +319,7 @@ async def test_judges_running_in_parallel_dont_share_failure_state(isolated_judg
     with (
         patch.object(register_callbacks, "judge_goal", new=fake_judge_goal),
         patch.object(register_callbacks, "_display_llm_judge"),
-        patch("coco_codes.error_logging.log_error"),
+        patch("coding_agent.error_logging.log_error"),
     ):
         all_complete, _, verdicts = await register_callbacks._run_goal_judges(
             agent=_fake_agent(),
@@ -481,7 +481,7 @@ async def test_final_complete_banner_omits_notes_body(isolated_judges):
     notes block again into the final '✅ GOAL COMPLETE!' banner was the
     'output shown twice' bug.
     """
-    from coco_codes.plugins.wiggum import state
+    from coding_agent.plugins.wiggum import state
 
     state.start("say hi", mode="goal")
     judge_config.add_judge(JudgeConfig(name="judy", model="m"))
@@ -529,8 +529,8 @@ async def test_judge_runs_inside_subagent_context(isolated_judges):
     This is what suppresses the judge's tool-call banners and intermediate
     chatter (read_file, grep, agent reasoning, etc.) in the goal-loop UI.
     """
-    from coco_codes.plugins.wiggum import judge as judge_module
-    from coco_codes.tools.subagent_context import is_subagent
+    from coding_agent.plugins.wiggum import judge as judge_module
+    from coding_agent.tools.subagent_context import is_subagent
 
     judge_config.add_judge(JudgeConfig(name="checker", model="fake-model"))
 
@@ -562,7 +562,7 @@ async def test_judge_runs_inside_subagent_context(isolated_judges):
             "load_agent",
             return_value=MagicMock(get_available_tools=lambda: []),
         ),
-        patch("coco_codes.tools.register_tools_for_agent"),
+        patch("coding_agent.tools.register_tools_for_agent"),
         patch.object(judge_module, "Agent") as mock_agent_cls,
     ):
         mock_agent = MagicMock()
@@ -731,7 +731,7 @@ async def test_turn_end_swallows_cancellation_and_stops_goal_mode(isolated_judge
     """Same regression at the higher level: _on_interactive_turn_end must
     catch cancellation, stop goal mode, and return None (no continuation).
     """
-    from coco_codes.plugins.wiggum import state
+    from coding_agent.plugins.wiggum import state
 
     state.start("do a thing", mode="goal")
     judge_config.add_judge(JudgeConfig(name="slow", model="m"))

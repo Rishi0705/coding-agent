@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from coco_codes.tools.ask_user_question.models import (
+from coding_agent.tools.ask_user_question.models import (
     AskUserQuestionInput,
     AskUserQuestionOutput,
     Question,

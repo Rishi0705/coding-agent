@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.browser.browser_scripts import (
+from coding_agent.tools.browser.browser_scripts import (
     clear_highlights,
     execute_javascript,
     highlight_element,
@@ -21,7 +21,7 @@ from coco_codes.tools.browser.browser_scripts import (
     wait_for_element,
 )
 
-MOD = "coco_codes.tools.browser.browser_scripts"
+MOD = "coding_agent.tools.browser.browser_scripts"
 
 
 @pytest.fixture(autouse=True)

@@ -2,7 +2,7 @@
 
 import pytest
 
-from coco_codes.command_line.command_registry import (
+from coding_agent.command_line.command_registry import (
     _COMMAND_REGISTRY,
     CommandInfo,
     clear_registry,

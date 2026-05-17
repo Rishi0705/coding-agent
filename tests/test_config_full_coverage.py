@@ -1,4 +1,4 @@
-"""Full coverage tests for coco_codes/config.py.
+"""Full coverage tests for coding_agent/config.py.
 
 Targets all uncovered lines from existing test suites.
 """
@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes import config as cp_config
+from coding_agent import config as cp_config
 
 
 # ---------------------------------------------------------------------------
@@ -21,12 +21,12 @@ class TestGetXdgDir:
     def test_returns_xdg_path_when_env_set(self, monkeypatch):
         monkeypatch.setenv("XDG_CONFIG_HOME", "/custom/config")
         result = cp_config._get_xdg_dir("XDG_CONFIG_HOME", ".config")
-        assert result == "/custom/config/coco_codes"
+        assert result == "/custom/config/coding_agent"
 
     def test_returns_legacy_path_when_env_not_set(self, monkeypatch):
         monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
         result = cp_config._get_xdg_dir("XDG_CONFIG_HOME", ".config")
-        assert result == os.path.join(os.path.expanduser("~"), ".coco_codes")
+        assert result == os.path.join(os.path.expanduser("~"), ".coding_agent")
 
 
 # ---------------------------------------------------------------------------
@@ -448,7 +448,7 @@ class TestModelSupportsSetting:
     def test_with_supported_settings_list(self):
         mock_config = {"test-model": {"supported_settings": ["temperature", "seed"]}}
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value=mock_config,
         ):
             assert cp_config.model_supports_setting("test-model", "temperature") is True
@@ -457,7 +457,7 @@ class TestModelSupportsSetting:
     def test_claude_default_settings(self):
         mock_config = {"claude-test": {}}
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value=mock_config,
         ):
             assert (
@@ -471,7 +471,7 @@ class TestModelSupportsSetting:
     def test_claude_opus_4_6_effort(self):
         mock_config = {"claude-opus-4-6": {}}
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value=mock_config,
         ):
             assert cp_config.model_supports_setting("claude-opus-4-6", "effort") is True
@@ -479,7 +479,7 @@ class TestModelSupportsSetting:
     def test_generic_model_defaults(self):
         mock_config = {"generic": {}}
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value=mock_config,
         ):
             assert cp_config.model_supports_setting("generic", "temperature") is True
@@ -488,7 +488,7 @@ class TestModelSupportsSetting:
 
     def test_exception_returns_true(self):
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", side_effect=Exception
+            "coding_agent.model_factory.ModelFactory.load_config", side_effect=Exception
         ):
             assert cp_config.model_supports_setting("any", "any") is True
 
@@ -544,7 +544,7 @@ class TestDefaultModel:
     def test_default_model_from_config(self):
         cp_config._default_model_cache = None
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"first": {}, "second": {}},
         ):
             result = cp_config._default_model_from_models_json()
@@ -554,7 +554,7 @@ class TestDefaultModel:
     def test_default_model_empty_config(self):
         cp_config._default_model_cache = None
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", return_value={}
+            "coding_agent.model_factory.ModelFactory.load_config", return_value={}
         ):
             result = cp_config._default_model_from_models_json()
             assert result == "gpt-5"
@@ -563,7 +563,7 @@ class TestDefaultModel:
     def test_default_model_exception(self):
         cp_config._default_model_cache = None
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", side_effect=Exception
+            "coding_agent.model_factory.ModelFactory.load_config", side_effect=Exception
         ):
             result = cp_config._default_model_from_models_json()
             assert result == "gpt-5"
@@ -582,7 +582,7 @@ class TestDefaultVisionModel:
     def test_supports_vision_tag(self):
         cp_config._default_vision_model_cache = None
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"model-a": {"supports_vision": True}},
         ):
             assert cp_config._default_vision_model_from_models_json() == "model-a"
@@ -591,7 +591,7 @@ class TestDefaultVisionModel:
     def test_preferred_candidates(self):
         cp_config._default_vision_model_cache = None
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"gpt-4.1": {}, "other": {}},
         ):
             assert cp_config._default_vision_model_from_models_json() == "gpt-4.1"
@@ -600,7 +600,7 @@ class TestDefaultVisionModel:
     def test_fallback_to_general_default(self):
         cp_config._default_vision_model_cache = None
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"some-model": {}},
         ):
             with patch.object(
@@ -614,7 +614,7 @@ class TestDefaultVisionModel:
     def test_empty_config(self):
         cp_config._default_vision_model_cache = None
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", return_value={}
+            "coding_agent.model_factory.ModelFactory.load_config", return_value={}
         ):
             assert cp_config._default_vision_model_from_models_json() == "gpt-4.1"
         cp_config._default_vision_model_cache = None
@@ -622,7 +622,7 @@ class TestDefaultVisionModel:
     def test_exception(self):
         cp_config._default_vision_model_cache = None
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", side_effect=Exception
+            "coding_agent.model_factory.ModelFactory.load_config", side_effect=Exception
         ):
             assert cp_config._default_vision_model_from_models_json() == "gpt-4.1"
         cp_config._default_vision_model_cache = None
@@ -640,21 +640,21 @@ class TestValidateModel:
     def test_found(self):
         cp_config._model_validation_cache.clear()
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", return_value={"m": {}}
+            "coding_agent.model_factory.ModelFactory.load_config", return_value={"m": {}}
         ):
             assert cp_config._validate_model_exists("m") is True
 
     def test_not_found(self):
         cp_config._model_validation_cache.clear()
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", return_value={}
+            "coding_agent.model_factory.ModelFactory.load_config", return_value={}
         ):
             assert cp_config._validate_model_exists("missing") is False
 
     def test_exception(self):
         cp_config._model_validation_cache.clear()
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", side_effect=Exception
+            "coding_agent.model_factory.ModelFactory.load_config", side_effect=Exception
         ):
             assert cp_config._validate_model_exists("any") is True
 
@@ -665,7 +665,7 @@ class TestValidateModel:
 class TestModelContextLength:
     def test_from_config(self):
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"m": {"context_length": 32000}},
         ):
             with patch.object(cp_config, "get_global_model_name", return_value="m"):
@@ -673,14 +673,14 @@ class TestModelContextLength:
 
     def test_default(self):
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", return_value={}
+            "coding_agent.model_factory.ModelFactory.load_config", return_value={}
         ):
             with patch.object(cp_config, "get_global_model_name", return_value="m"):
                 assert cp_config.get_model_context_length() == 128000
 
     def test_exception(self):
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config", side_effect=Exception
+            "coding_agent.model_factory.ModelFactory.load_config", side_effect=Exception
         ):
             assert cp_config.get_model_context_length() == 128000
 
@@ -704,7 +704,7 @@ class TestMCPServerConfigs:
         f = tmp_path / "mcp_servers.json"
         f.write_text("not json")
         with patch.object(cp_config, "MCP_SERVERS_FILE", str(f)):
-            with patch("coco_codes.messaging.message_queue.emit_error"):
+            with patch("coding_agent.messaging.message_queue.emit_error"):
                 result = cp_config.load_mcp_server_configs()
                 assert result == {}
 
@@ -889,7 +889,7 @@ class TestAutosaveSession:
         mock_agent = MagicMock()
         mock_agent.get_message_history.return_value = []
         with patch(
-            "coco_codes.agents.agent_manager.get_current_agent", return_value=mock_agent
+            "coding_agent.agents.agent_manager.get_current_agent", return_value=mock_agent
         ):
             assert cp_config.auto_save_session_if_enabled() is False
 
@@ -903,10 +903,10 @@ class TestAutosaveSession:
         mock_metadata.message_count = 1
         mock_metadata.total_tokens = 100
         with patch(
-            "coco_codes.agents.agent_manager.get_current_agent", return_value=mock_agent
+            "coding_agent.agents.agent_manager.get_current_agent", return_value=mock_agent
         ):
-            with patch("coco_codes.config.save_session", return_value=mock_metadata):
-                with patch("coco_codes.messaging.emit_info"):
+            with patch("coding_agent.config.save_session", return_value=mock_metadata):
+                with patch("coding_agent.messaging.emit_info"):
                     assert cp_config.auto_save_session_if_enabled() is True
 
     def test_finalize_autosave_session(self):
@@ -921,7 +921,7 @@ class TestAutosaveSession:
 class TestEnsureConfigExists:
     def test_creates_dirs_and_prompts(self, monkeypatch, tmp_path):
         cfg_dir = str(tmp_path / "config")
-        cfg_file = os.path.join(cfg_dir, "coco.cfg")
+        cfg_file = os.path.join(cfg_dir, "coding_agent.cfg")
         monkeypatch.setattr(cp_config, "CONFIG_DIR", cfg_dir)
         monkeypatch.setattr(cp_config, "CONFIG_FILE", cfg_file)
         monkeypatch.setattr(cp_config, "DATA_DIR", str(tmp_path / "data"))
@@ -938,7 +938,7 @@ class TestEnsureConfigExists:
 
     def test_existing_config_no_prompt(self, tmp_path, monkeypatch):
         cfg_dir = str(tmp_path)
-        cfg_file = os.path.join(cfg_dir, "coco.cfg")
+        cfg_file = os.path.join(cfg_dir, "coding_agent.cfg")
         cp = configparser.ConfigParser()
         cp["puppy"] = {"assistant_name": "Buddy", "owner_name": "Alice"}
         with open(cfg_file, "w") as f:
@@ -969,7 +969,7 @@ class TestCommandHistory:
         with patch.object(
             cp_config, "COMMAND_HISTORY_FILE", "/nonexistent/dir/hist.txt"
         ):
-            with patch("coco_codes.messaging.emit_error"):
+            with patch("coding_agent.messaging.emit_error"):
                 cp_config.save_command_to_history("test")  # Should not raise
 
     def test_initialize_command_history_file_new(self, tmp_path, monkeypatch):
@@ -984,7 +984,7 @@ class TestCommandHistory:
         state_dir = str(tmp_path / "state")
         os.makedirs(state_dir, exist_ok=True)
         hist_file = os.path.join(state_dir, "history.txt")
-        old_file = os.path.join(str(tmp_path), ".coco_codes_history.txt")
+        old_file = os.path.join(str(tmp_path), ".coding_agent_history.txt")
         with open(old_file, "w") as f:
             f.write("old history")
 
@@ -1006,7 +1006,7 @@ class TestAgentsDirectories:
         assert os.path.isdir(d)
 
     def test_get_project_agents_directory_exists(self, tmp_path, monkeypatch):
-        agents_dir = tmp_path / ".coco_codes" / "agents"
+        agents_dir = tmp_path / ".coding_agent" / "agents"
         agents_dir.mkdir(parents=True)
         monkeypatch.chdir(tmp_path)
         assert cp_config.get_project_agents_directory() is not None
@@ -1021,7 +1021,7 @@ class TestAgentsDirectories:
 # ---------------------------------------------------------------------------
 class TestDefaultAgent:
     def test_default(self):
-        assert cp_config.get_default_agent() == "coco-codes"
+        assert cp_config.get_default_agent() == "coding-agent"
 
     def test_set_and_get(self):
         cp_config.set_default_agent("custom-agent")

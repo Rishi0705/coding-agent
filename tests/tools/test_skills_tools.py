@@ -1,4 +1,4 @@
-"""Tests for coco_codes/tools/skills_tools.py - 100% coverage."""
+"""Tests for coding_agent/tools/skills_tools.py - 100% coverage."""
 
 from unittest.mock import MagicMock, patch
 
@@ -19,13 +19,13 @@ def _make_agent():
 
 class TestSkillModels:
     def test_skill_list_output(self):
-        from coco_codes.tools.skills_tools import SkillListOutput
+        from coding_agent.tools.skills_tools import SkillListOutput
 
         out = SkillListOutput(skills=[], total_count=0, query="test", error=None)
         assert out.total_count == 0
 
     def test_skill_activate_output(self):
-        from coco_codes.tools.skills_tools import SkillActivateOutput
+        from coding_agent.tools.skills_tools import SkillActivateOutput
 
         out = SkillActivateOutput(skill_name="x", content="c", resources=[], error=None)
         assert out.skill_name == "x"
@@ -34,10 +34,10 @@ class TestSkillModels:
 class TestActivateSkill:
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=False
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=False
     )
     async def test_disabled(self, mock_enabled):
-        from coco_codes.tools.skills_tools import register_activate_skill
+        from coding_agent.tools.skills_tools import register_activate_skill
 
         agent, cap = _make_agent()
         register_activate_skill(agent)
@@ -47,18 +47,18 @@ class TestActivateSkill:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.discovery.discover_skills",
+        "coding_agent.plugins.agent_skills.discovery.discover_skills",
         side_effect=Exception("boom"),
     )
     async def test_discover_error(self, mock_disc, mock_dirs, mock_enabled):
-        from coco_codes.tools.skills_tools import register_activate_skill
+        from coding_agent.tools.skills_tools import register_activate_skill
 
         agent, cap = _make_agent()
         register_activate_skill(agent)
@@ -68,16 +68,16 @@ class TestActivateSkill:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     async def test_skill_not_found(self, mock_disc, mock_dirs, mock_enabled):
         mock_disc.return_value = []
-        from coco_codes.tools.skills_tools import register_activate_skill
+        from coding_agent.tools.skills_tools import register_activate_skill
 
         agent, cap = _make_agent()
         register_activate_skill(agent)
@@ -86,21 +86,21 @@ class TestActivateSkill:
         assert result.error and "not found" in result.error
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.skills_tools.get_message_bus")
+    @patch("coding_agent.tools.skills_tools.get_message_bus")
     @patch(
-        "coco_codes.plugins.agent_skills.metadata.get_skill_resources", return_value=[]
+        "coding_agent.plugins.agent_skills.metadata.get_skill_resources", return_value=[]
     )
     @patch(
-        "coco_codes.plugins.agent_skills.metadata.load_full_skill_content",
+        "coding_agent.plugins.agent_skills.metadata.load_full_skill_content",
         return_value=None,
     )
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     async def test_load_content_fails(
         self, mock_en, mock_dirs, mock_disc, mock_load, mock_res, mock_bus
@@ -110,7 +110,7 @@ class TestActivateSkill:
         skill.has_skill_md = True
         skill.path = "/tmp/test"
         mock_disc.return_value = [skill]
-        from coco_codes.tools.skills_tools import register_activate_skill
+        from coding_agent.tools.skills_tools import register_activate_skill
 
         agent, cap = _make_agent()
         register_activate_skill(agent)
@@ -119,22 +119,22 @@ class TestActivateSkill:
         assert result.error and "Failed to load" in result.error
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.skills_tools.get_message_bus")
+    @patch("coding_agent.tools.skills_tools.get_message_bus")
     @patch(
-        "coco_codes.plugins.agent_skills.metadata.get_skill_resources",
+        "coding_agent.plugins.agent_skills.metadata.get_skill_resources",
         return_value=["/tmp/r.txt"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.metadata.load_full_skill_content",
+        "coding_agent.plugins.agent_skills.metadata.load_full_skill_content",
         return_value="# Skill content",
     )
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     async def test_success(
         self, mock_en, mock_dirs, mock_disc, mock_load, mock_res, mock_bus
@@ -144,7 +144,7 @@ class TestActivateSkill:
         skill.has_skill_md = True
         skill.path = "/tmp/test"
         mock_disc.return_value = [skill]
-        from coco_codes.tools.skills_tools import register_activate_skill
+        from coding_agent.tools.skills_tools import register_activate_skill
 
         agent, cap = _make_agent()
         register_activate_skill(agent)
@@ -157,10 +157,10 @@ class TestActivateSkill:
 class TestListOrSearchSkills:
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=False
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=False
     )
     async def test_disabled(self, mock_enabled):
-        from coco_codes.tools.skills_tools import register_list_or_search_skills
+        from coding_agent.tools.skills_tools import register_list_or_search_skills
 
         agent, cap = _make_agent()
         register_list_or_search_skills(agent)
@@ -170,21 +170,21 @@ class TestListOrSearchSkills:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_disabled_skills", return_value=set()
+        "coding_agent.plugins.agent_skills.config.get_disabled_skills", return_value=set()
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.discovery.discover_skills",
+        "coding_agent.plugins.agent_skills.discovery.discover_skills",
         side_effect=Exception("boom"),
     )
     async def test_discover_error(self, mock_disc, mock_dirs, mock_dis, mock_en):
-        from coco_codes.tools.skills_tools import register_list_or_search_skills
+        from coding_agent.tools.skills_tools import register_list_or_search_skills
 
         agent, cap = _make_agent()
         register_list_or_search_skills(agent)
@@ -193,19 +193,19 @@ class TestListOrSearchSkills:
         assert result.error
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.skills_tools.get_message_bus")
-    @patch("coco_codes.plugins.agent_skills.metadata.parse_skill_metadata")
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.tools.skills_tools.get_message_bus")
+    @patch("coding_agent.plugins.agent_skills.metadata.parse_skill_metadata")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+        "coding_agent.plugins.agent_skills.config.get_disabled_skills",
         return_value={"disabled-skill"},
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     async def test_list_with_filter(
         self, mock_en, mock_dis, mock_dirs, mock_disc, mock_meta, mock_bus
@@ -236,7 +236,7 @@ class TestListOrSearchSkills:
         meta.author = "test"
         mock_meta.return_value = meta
 
-        from coco_codes.tools.skills_tools import register_list_or_search_skills
+        from coding_agent.tools.skills_tools import register_list_or_search_skills
 
         agent, cap = _make_agent()
         register_list_or_search_skills(agent)
@@ -246,18 +246,18 @@ class TestListOrSearchSkills:
         assert result.skills[0]["name"] == "good-skill"
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.skills_tools.get_message_bus")
-    @patch("coco_codes.plugins.agent_skills.metadata.parse_skill_metadata")
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.tools.skills_tools.get_message_bus")
+    @patch("coding_agent.plugins.agent_skills.metadata.parse_skill_metadata")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_disabled_skills", return_value=set()
+        "coding_agent.plugins.agent_skills.config.get_disabled_skills", return_value=set()
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     async def test_search_by_name(
         self, mock_en, mock_dis, mock_dirs, mock_disc, mock_meta, mock_bus
@@ -277,7 +277,7 @@ class TestListOrSearchSkills:
         meta.author = "test"
         mock_meta.return_value = meta
 
-        from coco_codes.tools.skills_tools import register_list_or_search_skills
+        from coding_agent.tools.skills_tools import register_list_or_search_skills
 
         agent, cap = _make_agent()
         register_list_or_search_skills(agent)
@@ -288,18 +288,18 @@ class TestListOrSearchSkills:
         assert result.total_count == 1
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.skills_tools.get_message_bus")
-    @patch("coco_codes.plugins.agent_skills.metadata.parse_skill_metadata")
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.tools.skills_tools.get_message_bus")
+    @patch("coding_agent.plugins.agent_skills.metadata.parse_skill_metadata")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_disabled_skills", return_value=set()
+        "coding_agent.plugins.agent_skills.config.get_disabled_skills", return_value=set()
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     async def test_search_by_description(
         self, mock_en, mock_dis, mock_dirs, mock_disc, mock_meta, mock_bus
@@ -319,7 +319,7 @@ class TestListOrSearchSkills:
         meta.author = "test"
         mock_meta.return_value = meta
 
-        from coco_codes.tools.skills_tools import register_list_or_search_skills
+        from coding_agent.tools.skills_tools import register_list_or_search_skills
 
         agent, cap = _make_agent()
         register_list_or_search_skills(agent)
@@ -329,18 +329,18 @@ class TestListOrSearchSkills:
         assert result.total_count == 1
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.skills_tools.get_message_bus")
-    @patch("coco_codes.plugins.agent_skills.metadata.parse_skill_metadata")
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.tools.skills_tools.get_message_bus")
+    @patch("coding_agent.plugins.agent_skills.metadata.parse_skill_metadata")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_disabled_skills", return_value=set()
+        "coding_agent.plugins.agent_skills.config.get_disabled_skills", return_value=set()
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     async def test_search_by_tag(
         self, mock_en, mock_dis, mock_dirs, mock_disc, mock_meta, mock_bus
@@ -360,7 +360,7 @@ class TestListOrSearchSkills:
         meta.author = "test"
         mock_meta.return_value = meta
 
-        from coco_codes.tools.skills_tools import register_list_or_search_skills
+        from coding_agent.tools.skills_tools import register_list_or_search_skills
 
         agent, cap = _make_agent()
         register_list_or_search_skills(agent)
@@ -370,18 +370,18 @@ class TestListOrSearchSkills:
         assert result.total_count == 1
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.skills_tools.get_message_bus")
-    @patch("coco_codes.plugins.agent_skills.metadata.parse_skill_metadata")
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.tools.skills_tools.get_message_bus")
+    @patch("coding_agent.plugins.agent_skills.metadata.parse_skill_metadata")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_disabled_skills", return_value=set()
+        "coding_agent.plugins.agent_skills.config.get_disabled_skills", return_value=set()
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     async def test_search_no_match(
         self, mock_en, mock_dis, mock_dirs, mock_disc, mock_meta, mock_bus
@@ -401,7 +401,7 @@ class TestListOrSearchSkills:
         meta.author = "test"
         mock_meta.return_value = meta
 
-        from coco_codes.tools.skills_tools import register_list_or_search_skills
+        from coding_agent.tools.skills_tools import register_list_or_search_skills
 
         agent, cap = _make_agent()
         register_list_or_search_skills(agent)
@@ -411,21 +411,21 @@ class TestListOrSearchSkills:
         assert result.total_count == 0
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.skills_tools.get_message_bus")
+    @patch("coding_agent.tools.skills_tools.get_message_bus")
     @patch(
-        "coco_codes.plugins.agent_skills.metadata.parse_skill_metadata",
+        "coding_agent.plugins.agent_skills.metadata.parse_skill_metadata",
         return_value=None,
     )
-    @patch("coco_codes.plugins.agent_skills.discovery.discover_skills")
+    @patch("coding_agent.plugins.agent_skills.discovery.discover_skills")
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skill_directories",
+        "coding_agent.plugins.agent_skills.config.get_skill_directories",
         return_value=["/tmp"],
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_disabled_skills", return_value=set()
+        "coding_agent.plugins.agent_skills.config.get_disabled_skills", return_value=set()
     )
     @patch(
-        "coco_codes.plugins.agent_skills.config.get_skills_enabled", return_value=True
+        "coding_agent.plugins.agent_skills.config.get_skills_enabled", return_value=True
     )
     async def test_no_metadata(
         self, mock_en, mock_dis, mock_dirs, mock_disc, mock_meta, mock_bus
@@ -436,7 +436,7 @@ class TestListOrSearchSkills:
         skill.path = "/tmp/bad"
         mock_disc.return_value = [skill]
 
-        from coco_codes.tools.skills_tools import register_list_or_search_skills
+        from coding_agent.tools.skills_tools import register_list_or_search_skills
 
         agent, cap = _make_agent()
         register_list_or_search_skills(agent)

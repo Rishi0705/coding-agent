@@ -8,10 +8,10 @@ from prompt_toolkit.document import Document
 
 class TestLoadModelNames:
     def test_returns_model_list(self):
-        from coco_codes.command_line.model_picker_completion import load_model_names
+        from coding_agent.command_line.model_picker_completion import load_model_names
 
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"gpt-4": {}, "claude-3": {}},
         ):
             result = load_model_names()
@@ -21,10 +21,10 @@ class TestLoadModelNames:
 
 class TestGetActiveModel:
     def test_returns_model_name(self):
-        from coco_codes.command_line.model_picker_completion import get_active_model
+        from coding_agent.command_line.model_picker_completion import get_active_model
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_global_model_name",
+            "coding_agent.command_line.model_picker_completion.get_global_model_name",
             return_value="gpt-4",
         ):
             assert get_active_model() == "gpt-4"
@@ -32,10 +32,10 @@ class TestGetActiveModel:
 
 class TestSetActiveModel:
     def test_delegates_to_set_model(self):
-        from coco_codes.command_line.model_picker_completion import set_active_model
+        from coding_agent.command_line.model_picker_completion import set_active_model
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.set_model_and_reload_agent"
+            "coding_agent.command_line.model_picker_completion.set_model_and_reload_agent"
         ) as mock_set:
             set_active_model("gpt-4")
             mock_set.assert_called_once_with("gpt-4")
@@ -48,10 +48,10 @@ class TestModelNameCompleter:
         return Document(text=text, cursor_position=cursor_pos)
 
     def test_no_trigger(self):
-        from coco_codes.command_line.model_picker_completion import ModelNameCompleter
+        from coding_agent.command_line.model_picker_completion import ModelNameCompleter
 
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"gpt-4": {}},
         ):
             c = ModelNameCompleter(trigger="/model")
@@ -59,15 +59,15 @@ class TestModelNameCompleter:
             assert completions == []
 
     def test_shows_all_models(self):
-        from coco_codes.command_line.model_picker_completion import ModelNameCompleter
+        from coding_agent.command_line.model_picker_completion import ModelNameCompleter
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}, "claude-3": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.get_active_model",
+                "coding_agent.command_line.model_picker_completion.get_active_model",
                 return_value="gpt-4",
             ),
         ):
@@ -80,15 +80,15 @@ class TestModelNameCompleter:
             assert "selected" not in metas["claude-3"]
 
     def test_filters_by_prefix(self):
-        from coco_codes.command_line.model_picker_completion import ModelNameCompleter
+        from coding_agent.command_line.model_picker_completion import ModelNameCompleter
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}, "claude-3": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.get_active_model",
+                "coding_agent.command_line.model_picker_completion.get_active_model",
                 return_value="gpt-4",
             ),
         ):
@@ -100,21 +100,21 @@ class TestModelNameCompleter:
 
 class TestFindMatchingModel:
     def test_exact_match(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             _find_matching_model,
         )
 
         assert _find_matching_model("gpt-4", ["gpt-4", "claude-3"]) == "gpt-4"
 
     def test_case_insensitive(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             _find_matching_model,
         )
 
         assert _find_matching_model("GPT-4", ["gpt-4"]) == "gpt-4"
 
     def test_input_starts_with_model(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             _find_matching_model,
         )
 
@@ -123,28 +123,28 @@ class TestFindMatchingModel:
         )
 
     def test_prefix_match(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             _find_matching_model,
         )
 
         assert _find_matching_model("gpt", ["gpt-4", "claude-3"]) == "gpt-4"
 
     def test_query_match_fallback(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             _find_matching_model,
         )
 
         assert _find_matching_model("4.1", ["gpt-4o", "gpt-4.1-mini"]) == "gpt-4.1-mini"
 
     def test_no_match(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             _find_matching_model,
         )
 
         assert _find_matching_model("xyz", ["gpt-4", "claude-3"]) is None
 
     def test_longest_model_wins(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             _find_matching_model,
         )
 
@@ -157,17 +157,17 @@ class TestFindMatchingModel:
 
 class TestUpdateModelInInput:
     def test_model_command(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.set_model_and_reload_agent"
+                "coding_agent.command_line.model_picker_completion.set_model_and_reload_agent"
             ) as mock_set,
         ):
             result = update_model_in_input("/model gpt-4")
@@ -176,63 +176,63 @@ class TestUpdateModelInInput:
             assert result is not None  # Empty string after strip
 
     def test_m_command(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.set_model_and_reload_agent"
+                "coding_agent.command_line.model_picker_completion.set_model_and_reload_agent"
             ) as mock_set,
         ):
             update_model_in_input("/m gpt-4")
             mock_set.assert_called_once_with("gpt-4")
 
     def test_no_model_command(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         assert update_model_in_input("hello world") is None
 
     def test_model_command_no_match(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"gpt-4": {}},
         ):
             assert update_model_in_input("/model xyz") is None
 
     def test_m_command_no_match(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         with patch(
-            "coco_codes.model_factory.ModelFactory.load_config",
+            "coding_agent.model_factory.ModelFactory.load_config",
             return_value={"gpt-4": {}},
         ):
             assert update_model_in_input("/m xyz") is None
 
     def test_model_with_trailing_text(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.set_model_and_reload_agent"
+                "coding_agent.command_line.model_picker_completion.set_model_and_reload_agent"
             ),
         ):
             result = update_model_in_input("/model gpt-4 tell me a joke")
@@ -242,7 +242,7 @@ class TestUpdateModelInInput:
 
 class TestModelSelectionMenu:
     def test_preselects_active_model_page(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             MODEL_PICKER_PAGE_SIZE,
             ModelSelectionMenu,
         )
@@ -251,7 +251,7 @@ class TestModelSelectionMenu:
         active_model = models[-1]
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_active_model",
+            "coding_agent.command_line.model_picker_completion.get_active_model",
             return_value=active_model,
         ):
             menu = ModelSelectionMenu(models)
@@ -261,7 +261,7 @@ class TestModelSelectionMenu:
         assert active_model in menu.models_on_page
 
     def test_page_navigation_moves_selection_to_page_start(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             MODEL_PICKER_PAGE_SIZE,
             ModelSelectionMenu,
         )
@@ -269,7 +269,7 @@ class TestModelSelectionMenu:
         models = [f"model-{i}" for i in range(MODEL_PICKER_PAGE_SIZE * 2 + 1)]
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_active_model",
+            "coding_agent.command_line.model_picker_completion.get_active_model",
             return_value="missing-model",
         ):
             menu = ModelSelectionMenu(models)
@@ -283,7 +283,7 @@ class TestModelSelectionMenu:
         assert menu.selected_index == 0
 
     def test_move_down_keeps_selection_visible(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             MODEL_PICKER_PAGE_SIZE,
             ModelSelectionMenu,
         )
@@ -291,7 +291,7 @@ class TestModelSelectionMenu:
         models = [f"model-{i}" for i in range(MODEL_PICKER_PAGE_SIZE + 1)]
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_active_model",
+            "coding_agent.command_line.model_picker_completion.get_active_model",
             return_value="missing-model",
         ):
             menu = ModelSelectionMenu(models)
@@ -304,10 +304,10 @@ class TestModelSelectionMenu:
         assert menu.page == 1
 
     def test_filter_keeps_current_model_selected_when_visible(self):
-        from coco_codes.command_line.model_picker_completion import ModelSelectionMenu
+        from coding_agent.command_line.model_picker_completion import ModelSelectionMenu
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_active_model",
+            "coding_agent.command_line.model_picker_completion.get_active_model",
             return_value="claude-3-sonnet",
         ):
             menu = ModelSelectionMenu(
@@ -320,10 +320,10 @@ class TestModelSelectionMenu:
         assert menu.selected_index == 0
 
     def test_filter_resets_to_first_visible_match_when_selection_disappears(self):
-        from coco_codes.command_line.model_picker_completion import ModelSelectionMenu
+        from coding_agent.command_line.model_picker_completion import ModelSelectionMenu
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_active_model",
+            "coding_agent.command_line.model_picker_completion.get_active_model",
             return_value="gpt-5-mini",
         ):
             menu = ModelSelectionMenu(
@@ -336,10 +336,10 @@ class TestModelSelectionMenu:
         assert menu.selected_index == 0
 
     def test_accept_selection_returns_false_when_filter_has_no_matches(self):
-        from coco_codes.command_line.model_picker_completion import ModelSelectionMenu
+        from coding_agent.command_line.model_picker_completion import ModelSelectionMenu
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_active_model",
+            "coding_agent.command_line.model_picker_completion.get_active_model",
             return_value="missing-model",
         ):
             menu = ModelSelectionMenu(["gpt-5-mini", "claude-3-sonnet"])
@@ -350,10 +350,10 @@ class TestModelSelectionMenu:
         assert menu.result is None
 
     def test_accept_selection_guards_invalid_selected_index(self):
-        from coco_codes.command_line.model_picker_completion import ModelSelectionMenu
+        from coding_agent.command_line.model_picker_completion import ModelSelectionMenu
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_active_model",
+            "coding_agent.command_line.model_picker_completion.get_active_model",
             return_value="missing-model",
         ):
             menu = ModelSelectionMenu(["gpt-5-mini"])
@@ -364,10 +364,10 @@ class TestModelSelectionMenu:
         assert menu.result is None
 
     def test_render_no_matches_mentions_filter_and_clear_shortcut(self):
-        from coco_codes.command_line.model_picker_completion import ModelSelectionMenu
+        from coding_agent.command_line.model_picker_completion import ModelSelectionMenu
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.get_active_model",
+            "coding_agent.command_line.model_picker_completion.get_active_model",
             return_value="missing-model",
         ):
             menu = ModelSelectionMenu(["gpt-5-mini", "claude-3-sonnet"])
@@ -383,17 +383,17 @@ class TestModelSelectionMenu:
 class TestInteractiveModelPicker:
     @pytest.mark.asyncio
     async def test_sets_awaiting_user_input_around_picker(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             interactive_model_picker,
         )
 
         with (
             patch(
-                "coco_codes.command_line.model_picker_completion.ModelSelectionMenu.run_async",
+                "coding_agent.command_line.model_picker_completion.ModelSelectionMenu.run_async",
                 return_value="gpt-4",
             ) as mock_run,
             patch(
-                "coco_codes.tools.command_runner.set_awaiting_user_input"
+                "coding_agent.tools.command_runner.set_awaiting_user_input"
             ) as mock_set,
         ):
             result = await interactive_model_picker()
@@ -407,17 +407,17 @@ class TestInteractiveModelPicker:
 class TestGetInputWithModelCompletion:
     @pytest.mark.asyncio
     async def test_basic(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             get_input_with_model_completion,
         )
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.PromptSession"
+                "coding_agent.command_line.model_picker_completion.PromptSession"
             ) as mock_session_cls,
         ):
             mock_session = MagicMock()
@@ -430,20 +430,20 @@ class TestGetInputWithModelCompletion:
 
     @pytest.mark.asyncio
     async def test_with_model_command(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             get_input_with_model_completion,
         )
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.PromptSession"
+                "coding_agent.command_line.model_picker_completion.PromptSession"
             ) as mock_session_cls,
             patch(
-                "coco_codes.command_line.model_picker_completion.set_model_and_reload_agent"
+                "coding_agent.command_line.model_picker_completion.set_model_and_reload_agent"
             ),
         ):
             mock_session = MagicMock()
@@ -456,18 +456,18 @@ class TestGetInputWithModelCompletion:
 
     @pytest.mark.asyncio
     async def test_with_history_file(self, tmp_path):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             get_input_with_model_completion,
         )
 
         hfile = str(tmp_path / "history.txt")
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.PromptSession"
+                "coding_agent.command_line.model_picker_completion.PromptSession"
             ) as mock_session_cls,
         ):
             mock_session = MagicMock()
@@ -482,17 +482,17 @@ class TestGetInputWithModelCompletion:
 
     def test_model_idx_not_found(self):
         """Cover the return None when idx == -1 for /model."""
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.set_model_and_reload_agent"
+                "coding_agent.command_line.model_picker_completion.set_model_and_reload_agent"
             ),
         ):
             # Create a case where text.find won't match the pattern
@@ -509,34 +509,34 @@ class TestGetInputWithModelCompletion:
 
     def test_m_idx_not_found(self):
         """Cover the return None when idx == -1 for /m."""
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.set_model_and_reload_agent"
+                "coding_agent.command_line.model_picker_completion.set_model_and_reload_agent"
             ),
         ):
             result = update_model_in_input("  /m  gpt-4")
             assert result is None
 
     def test_m_with_trailing_text(self):
-        from coco_codes.command_line.model_picker_completion import (
+        from coding_agent.command_line.model_picker_completion import (
             update_model_in_input,
         )
 
         with (
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={"gpt-4": {}},
             ),
             patch(
-                "coco_codes.command_line.model_picker_completion.set_model_and_reload_agent"
+                "coding_agent.command_line.model_picker_completion.set_model_and_reload_agent"
             ),
         ):
             result = update_model_in_input("/m gpt-4 tell me a joke")

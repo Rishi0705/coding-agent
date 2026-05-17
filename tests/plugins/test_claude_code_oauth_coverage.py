@@ -13,7 +13,7 @@ import pytest
 
 class TestOAuthResult:
     def test_init(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _OAuthResult,
         )
 
@@ -25,7 +25,7 @@ class TestOAuthResult:
 
 class TestCallbackHandler:
     def test_do_get_success(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _CallbackHandler,
             _OAuthResult,
         )
@@ -50,7 +50,7 @@ class TestCallbackHandler:
         assert event.is_set()
 
     def test_do_get_missing_params(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _CallbackHandler,
             _OAuthResult,
         )
@@ -73,7 +73,7 @@ class TestCallbackHandler:
         assert result.error == "Missing code or state"
 
     def test_log_message_noop(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _CallbackHandler,
         )
 
@@ -83,26 +83,26 @@ class TestCallbackHandler:
 
 class TestStartCallbackServer:
     def test_all_ports_busy(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _start_callback_server,
         )
 
         ctx = MagicMock()
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
                 {"callback_port_range": [19000, 19001]},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.HTTPServer",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.HTTPServer",
                 side_effect=OSError("port busy"),
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_error"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_error"),
         ):
             assert _start_callback_server(ctx) is None
 
     def test_success(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _start_callback_server,
         )
 
@@ -110,15 +110,15 @@ class TestStartCallbackServer:
         mock_server = MagicMock(spec=HTTPServer)
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
                 {"callback_port_range": [19000, 19000]},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.HTTPServer",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.HTTPServer",
                 return_value=mock_server,
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.assign_redirect_uri"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.assign_redirect_uri"
             ),
             patch("threading.Thread"),
         ):
@@ -129,19 +129,19 @@ class TestStartCallbackServer:
 
 class TestAwaitCallback:
     def test_server_start_fails(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _await_callback,
         )
 
         ctx = MagicMock()
         with patch(
-            "coco_codes.plugins.claude_code_oauth.register_callbacks._start_callback_server",
+            "coding_agent.plugins.claude_code_oauth.register_callbacks._start_callback_server",
             return_value=None,
         ):
             assert _await_callback(ctx) is None
 
     def test_no_redirect_uri(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _await_callback,
             _OAuthResult,
         )
@@ -151,16 +151,16 @@ class TestAwaitCallback:
         mock_server = MagicMock()
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._start_callback_server",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._start_callback_server",
                 return_value=(mock_server, _OAuthResult(), threading.Event()),
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_error"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_error"),
         ):
             assert _await_callback(ctx) is None
             mock_server.shutdown.assert_called_once()
 
     def test_timeout(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _await_callback,
             _OAuthResult,
         )
@@ -172,28 +172,28 @@ class TestAwaitCallback:
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._start_callback_server",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._start_callback_server",
                 return_value=(mock_server, _OAuthResult(), event),
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
                 {"callback_timeout": 0.01},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
                 return_value="http://auth.url",
             ),
             patch(
-                "coco_codes.tools.common.should_suppress_browser",
+                "coding_agent.tools.common.should_suppress_browser",
                 return_value=True,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_error"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_error"),
         ):
             assert _await_callback(ctx) is None
 
     def test_result_error(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _await_callback,
             _OAuthResult,
         )
@@ -208,28 +208,28 @@ class TestAwaitCallback:
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._start_callback_server",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._start_callback_server",
                 return_value=(mock_server, result, event),
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
                 {"callback_timeout": 5},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
                 return_value="http://auth.url",
             ),
             patch(
-                "coco_codes.tools.common.should_suppress_browser",
+                "coding_agent.tools.common.should_suppress_browser",
                 return_value=True,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_error"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_error"),
         ):
             assert _await_callback(ctx) is None
 
     def test_state_mismatch(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _await_callback,
             _OAuthResult,
         )
@@ -246,28 +246,28 @@ class TestAwaitCallback:
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._start_callback_server",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._start_callback_server",
                 return_value=(mock_server, result, event),
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
                 {"callback_timeout": 5},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
                 return_value="http://auth.url",
             ),
             patch(
-                "coco_codes.tools.common.should_suppress_browser",
+                "coding_agent.tools.common.should_suppress_browser",
                 return_value=True,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_error"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_error"),
         ):
             assert _await_callback(ctx) is None
 
     def test_success_headless(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _await_callback,
             _OAuthResult,
         )
@@ -284,27 +284,27 @@ class TestAwaitCallback:
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._start_callback_server",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._start_callback_server",
                 return_value=(mock_server, result, event),
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
                 {"callback_timeout": 5},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
                 return_value="http://auth.url",
             ),
             patch(
-                "coco_codes.tools.common.should_suppress_browser",
+                "coding_agent.tools.common.should_suppress_browser",
                 return_value=True,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
         ):
             assert _await_callback(ctx) == "the_code"
 
     def test_success_browser(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _await_callback,
             _OAuthResult,
         )
@@ -321,30 +321,30 @@ class TestAwaitCallback:
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._start_callback_server",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._start_callback_server",
                 return_value=(mock_server, result, event),
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.CLAUDE_CODE_OAUTH_CONFIG",
                 {"callback_timeout": 5},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.build_authorization_url",
                 return_value="http://auth.url",
             ),
             patch(
-                "coco_codes.tools.common.should_suppress_browser",
+                "coding_agent.tools.common.should_suppress_browser",
                 return_value=False,
             ),
             patch("webbrowser.open"),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
         ):
             assert _await_callback(ctx) == "c"
 
 
 class TestCustomHelp:
     def test_returns_entries(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _custom_help,
         )
 
@@ -357,167 +357,167 @@ class TestCustomHelp:
 
 class TestPerformAuthentication:
     def test_no_code(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _perform_authentication,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._await_callback",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._await_callback",
                 return_value=None,
             ),
         ):
             _perform_authentication()  # should return early
 
     def test_token_exchange_fails(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _perform_authentication,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._await_callback",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._await_callback",
                 return_value="code123",
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
                 return_value=None,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_error"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_error"),
         ):
             _perform_authentication()
 
     def test_save_fails(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _perform_authentication,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._await_callback",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._await_callback",
                 return_value="code123",
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
                 return_value={"access_token": "at"},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.save_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.save_tokens",
                 return_value=False,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_error"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_error"),
         ):
             _perform_authentication()
 
     def test_no_access_token(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _perform_authentication,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._await_callback",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._await_callback",
                 return_value="code123",
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
                 return_value={"refresh_token": "rt"},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.save_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.save_tokens",
                 return_value=True,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_success"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_success"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_warning"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_warning"
             ),
         ):
             _perform_authentication()
 
     def test_no_models_returned(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _perform_authentication,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._await_callback",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._await_callback",
                 return_value="code123",
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
                 return_value={"access_token": "at"},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.save_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.save_tokens",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.fetch_claude_code_models",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.fetch_claude_code_models",
                 return_value=[],
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_success"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_success"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_warning"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_warning"
             ),
         ):
             _perform_authentication()
 
     def test_full_success(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _perform_authentication,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.prepare_oauth_context"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._await_callback",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._await_callback",
                 return_value="code123",
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.exchange_code_for_tokens",
                 return_value={"access_token": "at"},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.save_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.save_tokens",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.fetch_claude_code_models",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.fetch_claude_code_models",
                 return_value=["model-a", "model-b"],
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.add_models_to_extra_config",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.add_models_to_extra_config",
                 return_value=True,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_success"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_success"
             ),
         ):
             _perform_authentication()
@@ -525,38 +525,38 @@ class TestPerformAuthentication:
 
 class TestHandleCustomCommand:
     def test_empty_name(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
         assert _handle_custom_command("/x", "") is None
 
     def test_unknown(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
         assert _handle_custom_command("/x", "unknown") is None
 
     def test_auth(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
         with (
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_warning"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_warning"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
                 return_value={"access_token": "at"},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._perform_authentication"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._perform_authentication"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.set_model_and_reload_agent"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.set_model_and_reload_agent"
             ),
         ):
             assert (
@@ -564,21 +564,21 @@ class TestHandleCustomCommand:
             )
 
     def test_auth_no_existing_tokens(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
         with (
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
                 return_value=None,
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._perform_authentication"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._perform_authentication"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.set_model_and_reload_agent"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.set_model_and_reload_agent"
             ),
         ):
             assert (
@@ -586,25 +586,25 @@ class TestHandleCustomCommand:
             )
 
     def test_status_authenticated(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
                 return_value={"access_token": "at", "expires_at": time.time() + 3600},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.load_claude_models_filtered",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.load_claude_models_filtered",
                 return_value={
                     "claude-code-opus": {"oauth_source": "claude-code-plugin"}
                 },
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_success"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_success"
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
         ):
             assert (
                 _handle_custom_command("/claude-code-status", "claude-code-status")
@@ -612,24 +612,24 @@ class TestHandleCustomCommand:
             )
 
     def test_status_no_models(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
                 return_value={"access_token": "at"},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.load_claude_models_filtered",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.load_claude_models_filtered",
                 return_value={},
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_success"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_success"
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_warning"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_warning"
             ),
         ):
             assert (
@@ -638,19 +638,19 @@ class TestHandleCustomCommand:
             )
 
     def test_status_not_authenticated(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.load_stored_tokens",
                 return_value=None,
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_warning"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_warning"
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
         ):
             assert (
                 _handle_custom_command("/claude-code-status", "claude-code-status")
@@ -658,7 +658,7 @@ class TestHandleCustomCommand:
             )
 
     def test_logout(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
@@ -667,16 +667,16 @@ class TestHandleCustomCommand:
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.get_token_storage_path",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.get_token_storage_path",
                 return_value=mock_path,
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.remove_claude_code_models",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.remove_claude_code_models",
                 return_value=3,
             ),
-            patch("coco_codes.plugins.claude_code_oauth.register_callbacks.emit_info"),
+            patch("coding_agent.plugins.claude_code_oauth.register_callbacks.emit_info"),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_success"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_success"
             ),
         ):
             assert (
@@ -685,7 +685,7 @@ class TestHandleCustomCommand:
             )
 
     def test_logout_no_tokens(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _handle_custom_command,
         )
 
@@ -694,15 +694,15 @@ class TestHandleCustomCommand:
 
         with (
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.get_token_storage_path",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.get_token_storage_path",
                 return_value=mock_path,
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.remove_claude_code_models",
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.remove_claude_code_models",
                 return_value=0,
             ),
             patch(
-                "coco_codes.plugins.claude_code_oauth.register_callbacks.emit_success"
+                "coding_agent.plugins.claude_code_oauth.register_callbacks.emit_success"
             ),
         ):
             assert (
@@ -712,11 +712,11 @@ class TestHandleCustomCommand:
 
 
 # Patch targets for lazy imports in _create_claude_code_model
-_MF = "coco_codes.model_factory"
-_CFG = "coco_codes.config"
-_HU = "coco_codes.http_utils"
-_CC = "coco_codes.claude_cache_client"
-_RC = "coco_codes.plugins.claude_code_oauth.register_callbacks"
+_MF = "coding_agent.model_factory"
+_CFG = "coding_agent.config"
+_HU = "coding_agent.http_utils"
+_CC = "coding_agent.claude_cache_client"
+_RC = "coding_agent.plugins.claude_code_oauth.register_callbacks"
 
 
 @contextmanager
@@ -755,7 +755,7 @@ def _model_patches(
 
 class TestCreateClaudeCodeModel:
     def test_no_api_key(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _create_claude_code_model,
         )
 
@@ -769,7 +769,7 @@ class TestCreateClaudeCodeModel:
             assert _create_claude_code_model("m", {"name": "m"}, {}) is None
 
     def test_oauth_source_refresh(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _create_claude_code_model,
         )
 
@@ -791,7 +791,7 @@ class TestCreateClaudeCodeModel:
             assert result is mock_model
 
     def test_interleaved_thinking_false_removes_beta(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _create_claude_code_model,
         )
 
@@ -807,7 +807,7 @@ class TestCreateClaudeCodeModel:
             assert result is mock_model
 
     def test_interleaved_thinking_false_removes_all_beta(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _create_claude_code_model,
         )
 
@@ -823,7 +823,7 @@ class TestCreateClaudeCodeModel:
             assert result is mock_model
 
     def test_1m_context_beta(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _create_claude_code_model,
         )
 
@@ -840,7 +840,7 @@ class TestCreateClaudeCodeModel:
             assert result is mock_model
 
     def test_1m_context_no_existing_beta(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _create_claude_code_model,
         )
 
@@ -854,7 +854,7 @@ class TestCreateClaudeCodeModel:
 
 class TestRegisterModelTypes:
     def test_returns_handler(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _register_model_types,
         )
 
@@ -866,7 +866,7 @@ class TestRegisterModelTypes:
 class TestAgentRunCallbacks:
     @pytest.mark.asyncio
     async def test_start_non_claude_model(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _on_agent_run_start,
         )
 
@@ -874,14 +874,14 @@ class TestAgentRunCallbacks:
 
     @pytest.mark.asyncio
     async def test_start_claude_model(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _active_heartbeats,
             _on_agent_run_start,
         )
 
         mock_heartbeat = AsyncMock()
         with patch(
-            "coco_codes.plugins.claude_code_oauth.token_refresh_heartbeat.TokenRefreshHeartbeat",
+            "coding_agent.plugins.claude_code_oauth.token_refresh_heartbeat.TokenRefreshHeartbeat",
             return_value=mock_heartbeat,
         ):
             await _on_agent_run_start("agent", "claude-code-opus", "sess1")
@@ -891,32 +891,32 @@ class TestAgentRunCallbacks:
 
     @pytest.mark.asyncio
     async def test_start_import_error(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _on_agent_run_start,
         )
 
         with patch.dict(
             "sys.modules",
-            {"coco_codes.plugins.claude_code_oauth.token_refresh_heartbeat": None},
+            {"coding_agent.plugins.claude_code_oauth.token_refresh_heartbeat": None},
         ):
             # ImportError should be handled gracefully
             await _on_agent_run_start("agent", "claude-code-x", "sess")
 
     @pytest.mark.asyncio
     async def test_start_exception(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _on_agent_run_start,
         )
 
         with patch(
-            "coco_codes.plugins.claude_code_oauth.token_refresh_heartbeat.TokenRefreshHeartbeat",
+            "coding_agent.plugins.claude_code_oauth.token_refresh_heartbeat.TokenRefreshHeartbeat",
             side_effect=RuntimeError("boom"),
         ):
             await _on_agent_run_start("agent", "claude-code-x", "sess")
 
     @pytest.mark.asyncio
     async def test_end_with_heartbeat(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _active_heartbeats,
             _on_agent_run_end,
         )
@@ -930,7 +930,7 @@ class TestAgentRunCallbacks:
 
     @pytest.mark.asyncio
     async def test_end_no_heartbeat(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _on_agent_run_end,
         )
 
@@ -938,7 +938,7 @@ class TestAgentRunCallbacks:
 
     @pytest.mark.asyncio
     async def test_end_default_session(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _active_heartbeats,
             _on_agent_run_end,
         )
@@ -951,7 +951,7 @@ class TestAgentRunCallbacks:
 
     @pytest.mark.asyncio
     async def test_end_stop_exception(self):
-        from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+        from coding_agent.plugins.claude_code_oauth.register_callbacks import (
             _active_heartbeats,
             _on_agent_run_end,
         )

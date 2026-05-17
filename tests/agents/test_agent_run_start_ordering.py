@@ -16,8 +16,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.agents.agent_coco_codes import CocoCodesAgent
-from coco_codes.callbacks import (
+from coding_agent.agents.agent_coding_agent import CodingAgentAgent
+from coding_agent.callbacks import (
     clear_callbacks,
     register_callback,
 )
@@ -28,7 +28,7 @@ class TestAgentRunStartOrdering:
 
     @pytest.fixture
     def agent(self):
-        return CocoCodesAgent()
+        return CodingAgentAgent()
 
     @pytest.fixture(autouse=True)
     def _clean_callbacks(self):

@@ -1,6 +1,6 @@
 <div align="center">
 
-# Coco Codes 🤖
+# Coding Agent 🤖
 
 **A professional AI-powered code generation agent for software engineering**
 
@@ -13,7 +13,7 @@
 
 ## Overview
 
-Coco Codes is an AI-powered agentic coding tool that understands programming tasks, generates high-quality code, and executes changes directly in your codebase. It provides a terminal-based interface similar to tools like Cursor or Windsurf, but runs entirely in your CLI with full transparency.
+Coding Agent is an AI-powered agentic coding tool that understands programming tasks, generates high-quality code, and executes changes directly in your codebase. It provides a terminal-based interface similar to tools like Cursor or Windsurf, but runs entirely in your CLI with full transparency.
 
 ### Key Features
 
@@ -31,7 +31,7 @@ Coco Codes is an AI-powered agentic coding tool that understands programming tas
 ## Quick Start
 
 ```bash
-uvx coco-codes
+uvx coding-agent
 ```
 
 ## Installation
@@ -43,7 +43,7 @@ uvx coco-codes
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Run directly
-uvx coco-codes
+uvx coding-agent
 ```
 
 ### Windows
@@ -52,13 +52,13 @@ uvx coco-codes
 # Install UV
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-uvx coco-codes
+uvx coding-agent
 ```
 
 ### pip
 
 ```bash
-pip install coco-codes
+pip install coding-agent
 ```
 
 ---
@@ -78,7 +78,7 @@ export CEREBRAS_API_KEY="csk-..."
 
 ### Custom Models
 
-Add custom model configurations in `~/.coco_codes/extra_models.json`:
+Add custom model configurations in `~/.coding_agent/extra_models.json`:
 
 ```json
 {
@@ -120,15 +120,15 @@ Browse and add models from 65+ providers with an interactive TUI.
 
 ### Agent System
 
-Coco Codes supports multiple specialized agents:
+Coding Agent supports multiple specialized agents:
 
-- **coco-codes** (default) — General-purpose coding assistant
+- **coding-agent** (default) — General-purpose coding assistant
 - **agent-creator** — Build custom agents interactively
-- Custom JSON agents — Define in `~/.coco_codes/agents/`
+- Custom JSON agents — Define in `~/.coding_agent/agents/`
 
 #### Creating Custom Agents
 
-Create a JSON file in `~/.coco_codes/agents/`:
+Create a JSON file in `~/.coding_agent/agents/`:
 
 ```json
 {
@@ -146,7 +146,7 @@ Create a JSON file in `~/.coco_codes/agents/`:
 
 ### MCP Servers
 
-Extend Coco Codes with external tools via MCP:
+Extend Coding Agent with external tools via MCP:
 
 ```bash
 /mcp install    # Install a new MCP server
@@ -170,14 +170,14 @@ Distribute requests across multiple API keys to manage rate limits:
 
 ## Agent Rules
 
-Coco Codes supports `AGENTS.md` files for defining project-specific coding standards and conventions.
+Coding Agent supports `AGENTS.md` files for defining project-specific coding standards and conventions.
 
 ### Search Order
 
 | Priority | Location | Purpose |
 |----------|----------|---------|
-| 1 | `~/.coco_codes/AGENTS.md` | Global rules |
-| 2 | `.coco_codes/AGENTS.md` | Project rules (preferred) |
+| 1 | `~/.coding_agent/AGENTS.md` | Global rules |
+| 2 | `.coding_agent/AGENTS.md` | Project rules (preferred) |
 | 3 | `./AGENTS.md` | Project rules (alternate) |
 
 ---
@@ -185,7 +185,7 @@ Coco Codes supports `AGENTS.md` files for defining project-specific coding stand
 ## Architecture
 
 ```
-coco_codes/
+coding_agent/
 ├── agents/          # Agent definitions and management
 ├── command_line/    # CLI commands and TUI components
 ├── hook_engine/     # Hook/event system
@@ -200,8 +200,8 @@ coco_codes/
 All new functionality is implemented as plugins:
 
 ```python
-# coco_codes/plugins/my_feature/register_callbacks.py
-from coco_codes.callbacks import register_callback
+# coding_agent/plugins/my_feature/register_callbacks.py
+from coding_agent.callbacks import register_callback
 
 def _on_startup():
     print("my_feature loaded!")

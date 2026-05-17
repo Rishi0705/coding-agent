@@ -6,7 +6,7 @@ the TUI display (and "reset to default") agrees with what the runtime
 model_factory actually sends to Anthropic.
 """
 
-from coco_codes.command_line.model_settings_menu import (
+from coding_agent.command_line.model_settings_menu import (
     SETTING_DEFINITIONS,
     _get_setting_default,
 )

@@ -1,4 +1,4 @@
-"""Tests for coco_codes/gemini_code_assist.py - full coverage."""
+"""Tests for coding_agent/gemini_code_assist.py - full coverage."""
 
 import json
 from datetime import datetime
@@ -19,7 +19,7 @@ from pydantic_ai.models import ModelRequestParameters
 from pydantic_ai.settings import ModelSettings
 from pydantic_ai.tools import ToolDefinition
 
-from coco_codes.gemini_code_assist import GeminiCodeAssistModel, StreamedResponse
+from coding_agent.gemini_code_assist import GeminiCodeAssistModel, StreamedResponse
 
 
 @pytest.fixture
@@ -202,7 +202,7 @@ class TestGeminiCodeAssistModel:
             )
         ]
         with patch(
-            "coco_codes.gemini_code_assist.json.dumps", side_effect=TypeError("bad")
+            "coding_agent.gemini_code_assist.json.dumps", side_effect=TypeError("bad")
         ):
             body = model._build_request(msgs, None, default_params)
         fr = body["request"]["contents"][0]["parts"][0]["functionResponse"]

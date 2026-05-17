@@ -17,8 +17,8 @@ from rich.text import Text
 def mock_spinner_registration():
     """Mock spinner registration for all tests."""
     with (
-        patch("coco_codes.messaging.spinner.register_spinner"),
-        patch("coco_codes.messaging.spinner.unregister_spinner"),
+        patch("coding_agent.messaging.spinner.register_spinner"),
+        patch("coding_agent.messaging.spinner.unregister_spinner"),
     ):
         yield
 
@@ -28,7 +28,7 @@ class TestConsoleSpinnerInit:
 
     def test_init_creates_console_if_not_provided(self):
         """Test that a Console is created when none is provided."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner()
 
@@ -37,7 +37,7 @@ class TestConsoleSpinnerInit:
 
     def test_init_uses_provided_console(self):
         """Test that provided console is used."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
@@ -46,7 +46,7 @@ class TestConsoleSpinnerInit:
 
     def test_init_sets_default_state(self):
         """Test initialization sets correct default state."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner()
 
@@ -57,8 +57,8 @@ class TestConsoleSpinnerInit:
 
     def test_init_registers_spinner(self):
         """Test that spinner is registered on init."""
-        with patch("coco_codes.messaging.spinner.register_spinner") as mock_register:
-            from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        with patch("coding_agent.messaging.spinner.register_spinner") as mock_register:
+            from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
             spinner = ConsoleSpinner()
 
@@ -70,13 +70,13 @@ class TestConsoleSpinnerStart:
 
     def test_start_sets_spinning_state(self):
         """Test that start() sets is_spinning to True."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live_cls,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live_cls,
             patch.object(spinner, "_generate_spinner_panel", return_value=Text("test")),
         ):
             mock_live = MagicMock()
@@ -89,14 +89,14 @@ class TestConsoleSpinnerStart:
 
     def test_start_clears_stop_event(self):
         """Test that start() clears the stop event."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
         spinner._stop_event.set()  # Set it first
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live_cls,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live_cls,
             patch.object(spinner, "_generate_spinner_panel", return_value=Text("test")),
         ):
             mock_live = MagicMock()
@@ -110,13 +110,13 @@ class TestConsoleSpinnerStart:
 
     def test_start_creates_live_display(self):
         """Test that start() creates a Live display."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live_cls,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live_cls,
             patch.object(spinner, "_generate_spinner_panel", return_value=Text("test")),
         ):
             mock_live = MagicMock()
@@ -130,13 +130,13 @@ class TestConsoleSpinnerStart:
 
     def test_start_prints_blank_line(self):
         """Test that start() prints blank line for visual separation."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live_cls,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live_cls,
             patch.object(spinner, "_generate_spinner_panel", return_value=Text("test")),
         ):
             mock_live = MagicMock()
@@ -149,13 +149,13 @@ class TestConsoleSpinnerStart:
 
     def test_start_creates_daemon_thread(self):
         """Test that start() creates a daemon thread."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live_cls,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live_cls,
             patch.object(spinner, "_generate_spinner_panel", return_value=Text("test")),
         ):
             mock_live = MagicMock()
@@ -170,7 +170,7 @@ class TestConsoleSpinnerStart:
 
     def test_start_does_not_create_thread_if_already_running(self):
         """Test that start() doesn't create new thread if one exists."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
@@ -192,13 +192,13 @@ class TestConsoleSpinnerStop:
 
     def test_stop_when_not_spinning_returns_early(self):
         """Test that stop() returns early if not spinning."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
         spinner._is_spinning = False
 
-        with patch("coco_codes.messaging.spinner.unregister_spinner") as mock_unreg:
+        with patch("coding_agent.messaging.spinner.unregister_spinner") as mock_unreg:
             spinner.stop()
 
         # Should not try to unregister if not spinning
@@ -206,7 +206,7 @@ class TestConsoleSpinnerStop:
 
     def test_stop_sets_stop_event(self):
         """Test that stop() sets the stop event."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
@@ -218,7 +218,7 @@ class TestConsoleSpinnerStop:
 
     def test_stop_sets_is_spinning_false(self):
         """Test that stop() sets is_spinning to False."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
@@ -230,7 +230,7 @@ class TestConsoleSpinnerStop:
 
     def test_stop_stops_live_display(self):
         """Test that stop() stops the Live display."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
@@ -245,7 +245,7 @@ class TestConsoleSpinnerStop:
 
     def test_stop_joins_thread(self):
         """Test that stop() joins the thread."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
@@ -261,20 +261,20 @@ class TestConsoleSpinnerStop:
 
     def test_stop_unregisters_spinner(self):
         """Test that stop() unregisters the spinner."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
         spinner._is_spinning = True
 
-        with patch("coco_codes.messaging.spinner.unregister_spinner") as mock_unreg:
+        with patch("coding_agent.messaging.spinner.unregister_spinner") as mock_unreg:
             spinner.stop()
 
         mock_unreg.assert_called_once_with(spinner)
 
     def test_stop_windows_cleanup(self):
         """Test Windows-specific cleanup on stop."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
@@ -296,7 +296,7 @@ class TestConsoleSpinnerStop:
 
     def test_stop_non_windows_no_special_cleanup(self):
         """Test that non-Windows doesn't do special cleanup."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock(spec=Console)
         spinner = ConsoleSpinner(console=mock_console)
@@ -319,7 +319,7 @@ class TestConsoleSpinnerUpdateFrame:
 
     def test_update_frame_advances_index(self):
         """Test that update_frame advances the frame index."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -331,8 +331,8 @@ class TestConsoleSpinnerUpdateFrame:
 
     def test_update_frame_wraps_around(self):
         """Test that update_frame wraps around at end of frames."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
-        from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -348,13 +348,13 @@ class TestConsoleSpinnerGeneratePanel:
 
     def test_generate_panel_when_paused_returns_empty(self):
         """Test that paused spinner returns empty Text."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._paused = True
 
         with patch(
-            "coco_codes.tools.command_runner.is_awaiting_user_input", return_value=False
+            "coding_agent.tools.command_runner.is_awaiting_user_input", return_value=False
         ):
             result = spinner._generate_spinner_panel()
 
@@ -363,13 +363,13 @@ class TestConsoleSpinnerGeneratePanel:
 
     def test_generate_panel_when_awaiting_input_returns_empty(self):
         """Test that spinner returns empty when awaiting user input."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._paused = False
 
         with patch(
-            "coco_codes.tools.command_runner.is_awaiting_user_input", return_value=True
+            "coding_agent.tools.command_runner.is_awaiting_user_input", return_value=True
         ):
             result = spinner._generate_spinner_panel()
 
@@ -378,14 +378,14 @@ class TestConsoleSpinnerGeneratePanel:
 
     def test_generate_panel_includes_thinking_message(self):
         """Test that panel includes thinking message."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._paused = False
         spinner._frame_index = 0
 
         with patch(
-            "coco_codes.tools.command_runner.is_awaiting_user_input", return_value=False
+            "coding_agent.tools.command_runner.is_awaiting_user_input", return_value=False
         ):
             result = spinner._generate_spinner_panel()
 
@@ -394,15 +394,15 @@ class TestConsoleSpinnerGeneratePanel:
 
     def test_generate_panel_includes_current_frame(self):
         """Test that panel includes current spinner frame."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
-        from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._paused = False
         spinner._frame_index = 0
 
         with patch(
-            "coco_codes.tools.command_runner.is_awaiting_user_input", return_value=False
+            "coding_agent.tools.command_runner.is_awaiting_user_input", return_value=False
         ):
             result = spinner._generate_spinner_panel()
 
@@ -411,8 +411,8 @@ class TestConsoleSpinnerGeneratePanel:
 
     def test_generate_panel_includes_context_info(self):
         """Test that panel includes context info when set."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
-        from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._paused = False
@@ -420,7 +420,7 @@ class TestConsoleSpinnerGeneratePanel:
 
         with (
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
             patch.object(
@@ -436,8 +436,8 @@ class TestConsoleSpinnerGeneratePanel:
 
     def test_generate_panel_no_context_info(self):
         """Test panel without context info."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
-        from coco_codes.messaging.spinner.spinner_base import SpinnerBase
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.spinner_base import SpinnerBase
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._paused = False
@@ -445,7 +445,7 @@ class TestConsoleSpinnerGeneratePanel:
 
         with (
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
             patch.object(SpinnerBase, "get_context_info", return_value=""),
@@ -461,7 +461,7 @@ class TestConsoleSpinnerUpdateSpinner:
 
     def test_update_spinner_stops_on_event(self):
         """Test that _update_spinner stops when stop event is set."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._stop_event.set()
@@ -473,7 +473,7 @@ class TestConsoleSpinnerUpdateSpinner:
 
     def test_update_spinner_updates_frame(self):
         """Test that _update_spinner calls update_frame."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._live = MagicMock()
@@ -490,7 +490,7 @@ class TestConsoleSpinnerUpdateSpinner:
             patch.object(spinner, "update_frame", side_effect=stop_after_calls),
             patch.object(spinner, "_generate_spinner_panel", return_value=Text("test")),
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
         ):
@@ -500,7 +500,7 @@ class TestConsoleSpinnerUpdateSpinner:
 
     def test_update_spinner_skips_update_when_paused(self):
         """Test that _update_spinner skips display update when paused."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._paused = True
@@ -516,7 +516,7 @@ class TestConsoleSpinnerUpdateSpinner:
         with (
             patch.object(spinner, "update_frame", side_effect=stop_after_calls),
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
         ):
@@ -527,7 +527,7 @@ class TestConsoleSpinnerUpdateSpinner:
 
     def test_update_spinner_skips_when_awaiting_input(self):
         """Test that _update_spinner skips display update when awaiting input."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._paused = False
@@ -543,7 +543,7 @@ class TestConsoleSpinnerUpdateSpinner:
         with (
             patch.object(spinner, "update_frame", side_effect=stop_after_calls),
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=True,
             ),
         ):
@@ -554,7 +554,7 @@ class TestConsoleSpinnerUpdateSpinner:
 
     def test_update_spinner_handles_exception(self):
         """Test that _update_spinner handles exceptions gracefully."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._live = MagicMock()
@@ -579,7 +579,7 @@ class TestConsoleSpinnerPause:
 
     def test_pause_sets_paused_flag(self):
         """Test that pause sets the paused flag."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -590,7 +590,7 @@ class TestConsoleSpinnerPause:
 
     def test_pause_stops_live_display(self):
         """Test that pause stops the live display."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -605,7 +605,7 @@ class TestConsoleSpinnerPause:
 
     def test_pause_clears_line(self):
         """Test that pause clears the terminal line."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -622,7 +622,7 @@ class TestConsoleSpinnerPause:
 
     def test_pause_does_nothing_when_not_spinning(self):
         """Test that pause does nothing when not spinning."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = False
@@ -634,7 +634,7 @@ class TestConsoleSpinnerPause:
 
     def test_pause_handles_exception(self):
         """Test that pause handles exceptions gracefully."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -651,7 +651,7 @@ class TestConsoleSpinnerResume:
 
     def test_resume_clears_paused_flag(self):
         """Test that resume clears the paused flag."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -659,7 +659,7 @@ class TestConsoleSpinnerResume:
         spinner._live = MagicMock()
 
         with patch(
-            "coco_codes.tools.command_runner.is_awaiting_user_input", return_value=False
+            "coding_agent.tools.command_runner.is_awaiting_user_input", return_value=False
         ):
             spinner.resume()
 
@@ -667,14 +667,14 @@ class TestConsoleSpinnerResume:
 
     def test_resume_does_nothing_when_awaiting_input(self):
         """Test that resume does nothing when awaiting user input."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
         spinner._paused = True
 
         with patch(
-            "coco_codes.tools.command_runner.is_awaiting_user_input", return_value=True
+            "coding_agent.tools.command_runner.is_awaiting_user_input", return_value=True
         ):
             spinner.resume()
 
@@ -683,7 +683,7 @@ class TestConsoleSpinnerResume:
 
     def test_resume_restarts_live_display(self):
         """Test that resume restarts the live display."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock()
         spinner = ConsoleSpinner(console=mock_console)
@@ -695,11 +695,11 @@ class TestConsoleSpinnerResume:
 
         with (
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
             patch(
-                "coco_codes.messaging.spinner.console_spinner.Live"
+                "coding_agent.messaging.spinner.console_spinner.Live"
             ) as mock_live_class,
             patch.object(sys, "stdout", mock_stdout),
         ):
@@ -712,7 +712,7 @@ class TestConsoleSpinnerResume:
 
     def test_resume_updates_existing_live_display(self):
         """Test that resume updates existing live display."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock()
         mock_console.file = MagicMock()
@@ -724,7 +724,7 @@ class TestConsoleSpinnerResume:
 
         with (
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
             patch.object(spinner, "_generate_spinner_panel", return_value=Text("test")),
@@ -736,14 +736,14 @@ class TestConsoleSpinnerResume:
 
     def test_resume_does_nothing_when_not_spinning(self):
         """Test that resume does nothing when not spinning."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = False
         spinner._paused = True
 
         with patch(
-            "coco_codes.tools.command_runner.is_awaiting_user_input", return_value=False
+            "coding_agent.tools.command_runner.is_awaiting_user_input", return_value=False
         ):
             spinner.resume()
 
@@ -752,7 +752,7 @@ class TestConsoleSpinnerResume:
 
     def test_resume_does_nothing_when_not_paused(self):
         """Test that resume does nothing when not paused."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -760,11 +760,11 @@ class TestConsoleSpinnerResume:
 
         with (
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
             patch(
-                "coco_codes.messaging.spinner.console_spinner.Live"
+                "coding_agent.messaging.spinner.console_spinner.Live"
             ) as mock_live_class,
         ):
             spinner.resume()
@@ -774,7 +774,7 @@ class TestConsoleSpinnerResume:
 
     def test_resume_handles_exception(self):
         """Test that resume handles exceptions gracefully."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
         spinner._is_spinning = True
@@ -785,11 +785,11 @@ class TestConsoleSpinnerResume:
 
         with (
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
             patch(
-                "coco_codes.messaging.spinner.console_spinner.Live",
+                "coding_agent.messaging.spinner.console_spinner.Live",
                 side_effect=RuntimeError("test"),
             ),
             patch.object(sys, "stdout", mock_stdout),
@@ -799,7 +799,7 @@ class TestConsoleSpinnerResume:
 
     def test_resume_clears_console_buffer_if_exists(self):
         """Test that resume clears console buffer if it exists."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock()
         mock_console._buffer = []
@@ -813,7 +813,7 @@ class TestConsoleSpinnerResume:
 
         with (
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
             patch.object(spinner, "_generate_spinner_panel", return_value=Text("test")),
@@ -829,7 +829,7 @@ class TestConsoleSpinnerContextManager:
 
     def test_enter_starts_spinner(self):
         """Test that __enter__ starts the spinner."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
 
@@ -841,7 +841,7 @@ class TestConsoleSpinnerContextManager:
 
     def test_exit_stops_spinner(self):
         """Test that __exit__ stops the spinner."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         spinner = ConsoleSpinner(console=MagicMock())
 
@@ -852,12 +852,12 @@ class TestConsoleSpinnerContextManager:
 
     def test_context_manager_full_cycle(self):
         """Test full context manager cycle."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock()
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live,
         ):
             mock_live_instance = MagicMock()
             mock_live.return_value = mock_live_instance
@@ -876,14 +876,14 @@ class TestConsoleSpinnerIntegration:
 
     def test_full_start_stop_cycle(self):
         """Test complete start/stop lifecycle."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock()
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live,
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
         ):
@@ -902,14 +902,14 @@ class TestConsoleSpinnerIntegration:
 
     def test_pause_resume_cycle(self):
         """Test pause and resume cycle."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock()
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live,
             patch(
-                "coco_codes.tools.command_runner.is_awaiting_user_input",
+                "coding_agent.tools.command_runner.is_awaiting_user_input",
                 return_value=False,
             ),
             patch.object(sys, "stdout"),
@@ -933,12 +933,12 @@ class TestConsoleSpinnerIntegration:
 
     def test_multiple_start_calls(self):
         """Test multiple start calls are handled."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock()
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live,
         ):
             mock_live_instance = MagicMock()
             mock_live.return_value = mock_live_instance
@@ -958,12 +958,12 @@ class TestConsoleSpinnerIntegration:
 
     def test_multiple_stop_calls(self):
         """Test multiple stop calls are handled."""
-        from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+        from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
         mock_console = MagicMock()
 
         with (
-            patch("coco_codes.messaging.spinner.console_spinner.Live") as mock_live,
+            patch("coding_agent.messaging.spinner.console_spinner.Live") as mock_live,
         ):
             mock_live_instance = MagicMock()
             mock_live.return_value = mock_live_instance

@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, Mock
 import httpx
 import pytest
 
-from coco_codes.mcp_.retry_manager import (
+from coding_agent.mcp_.retry_manager import (
     RetryManager,
     RetryStats,
     get_retry_manager,

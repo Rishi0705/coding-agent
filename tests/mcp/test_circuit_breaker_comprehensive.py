@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from coco_codes.mcp_.circuit_breaker import (
+from coding_agent.mcp_.circuit_breaker import (
     CircuitBreaker,
     CircuitOpenError,
     CircuitState,

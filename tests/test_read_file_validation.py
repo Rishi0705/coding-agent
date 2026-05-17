@@ -4,7 +4,7 @@ import os
 import tempfile
 from unittest.mock import MagicMock
 
-from coco_codes.tools.file_operations import _read_file
+from coding_agent.tools.file_operations import _read_file
 
 
 def _make_context():

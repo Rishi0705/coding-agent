@@ -1,4 +1,4 @@
-"""Tests for coco_codes.agents._compaction.
+"""Tests for coding_agent.agents._compaction.
 
 Covers:
 - truncate() — deterministic, offline
@@ -24,8 +24,8 @@ from pydantic_ai.messages import (
     UserPromptPart,
 )
 
-from coco_codes.agents import _compaction
-from coco_codes.agents._compaction import (
+from coding_agent.agents import _compaction
+from coding_agent.agents._compaction import (
     compact,
     make_history_processor,
     split_for_protected_summarization,
@@ -313,7 +313,7 @@ class TestCompact:
     def test_summarization_defers_only_on_truly_pending_post_prune(self):
         """Edge case: if `filter_huge_messages` leaves an orphan (shouldn't
         happen in practice but defensive), deferral should still fire."""
-        import coco_codes.agents._compaction as cm
+        import coding_agent.agents._compaction as cm
 
         sys_msg = _sys_msg()
         msgs = [sys_msg, _user_msg("q"), _tool_call("read_file", {}, "live_orphan")]
@@ -471,7 +471,7 @@ class TestMakeHistoryProcessor:
         yes_msg = _user_msg("yes")
 
         # Pretend "yes" was compacted previously
-        from coco_codes.agents._history import hash_message
+        from coding_agent.agents._history import hash_message
 
         agent._message_history = [sys_msg]
         agent._compacted_message_hashes = {hash_message(yes_msg)}

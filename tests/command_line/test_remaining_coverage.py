@@ -31,7 +31,7 @@ import pytest
 
 def test_clipboard_pil_import_failure():
     """Cover lines 27-30: PIL ImportError fallback."""
-    mod_name = "coco_codes.command_line.clipboard"
+    mod_name = "coding_agent.command_line.clipboard"
     saved = sys.modules.pop(mod_name, None)
     try:
         with patch.dict(
@@ -51,7 +51,7 @@ def test_clipboard_pil_import_failure():
 
 def test_clipboard_binary_content_import_failure():
     """Cover lines 37-39: BinaryContent ImportError fallback."""
-    mod_name = "coco_codes.command_line.clipboard"
+    mod_name = "coding_agent.command_line.clipboard"
     saved = sys.modules.pop(mod_name, None)
     try:
         with patch.dict(sys.modules, {"pydantic_ai": None}):
@@ -73,7 +73,7 @@ def test_clipboard_binary_content_import_failure():
 
 def test_load_context_completion_exception():
     """Cover lines 50-52: exception path in get_completions."""
-    from coco_codes.command_line.load_context_completion import LoadContextCompleter
+    from coding_agent.command_line.load_context_completion import LoadContextCompleter
 
     completer = LoadContextCompleter()
     doc = MagicMock()
@@ -82,7 +82,7 @@ def test_load_context_completion_exception():
     complete_event = MagicMock()
 
     # Make Path(...).exists() raise to trigger the except Exception branch
-    with patch("coco_codes.command_line.load_context_completion.Path") as mock_path:
+    with patch("coding_agent.command_line.load_context_completion.Path") as mock_path:
         mock_path.return_value.__truediv__ = MagicMock(
             side_effect=PermissionError("denied")
         )
@@ -102,7 +102,7 @@ def test_file_path_completion_absolute_and_tilde():
 
     from prompt_toolkit.document import Document
 
-    from coco_codes.command_line.file_path_completion import FilePathCompleter
+    from coding_agent.command_line.file_path_completion import FilePathCompleter
 
     completer = FilePathCompleter()
 
@@ -133,14 +133,14 @@ def test_file_path_completion_permission_error():
     """Cover lines 72-73: exception handling."""
     from prompt_toolkit.document import Document
 
-    from coco_codes.command_line.file_path_completion import FilePathCompleter
+    from coding_agent.command_line.file_path_completion import FilePathCompleter
 
     completer = FilePathCompleter()
     doc = Document("@somefile", cursor_position=len("@somefile"))
     event = MagicMock()
 
     with patch(
-        "coco_codes.command_line.file_path_completion.glob.glob",
+        "coding_agent.command_line.file_path_completion.glob.glob",
         side_effect=PermissionError("denied"),
     ):
         results = list(completer.get_completions(doc, event))
@@ -154,7 +154,7 @@ def test_file_path_completion_permission_error():
 
 def test_sanitize_for_encoding_unicode_error():
     """Cover lines 81-83: UnicodeEncodeError fallback in _sanitize_for_encoding."""
-    from coco_codes.command_line.prompt_toolkit_completion import (
+    from coding_agent.command_line.prompt_toolkit_completion import (
         _sanitize_for_encoding,
     )
 
@@ -167,7 +167,7 @@ def test_sanitize_for_encoding_unicode_error():
 
 def test_prompt_toolkit_main_block():
     """Cover lines 831-846: __main__ block."""
-    import coco_codes.command_line.prompt_toolkit_completion as mod
+    import coding_agent.command_line.prompt_toolkit_completion as mod
 
     source = Path(mod.__file__).read_text()
     assert 'if __name__ == "__main__"' in source
@@ -180,20 +180,20 @@ def test_prompt_toolkit_main_block():
 
 def test_command_handler_markdown_import_failure():
     """Cover lines 241-242: MarkdownCommandResult ImportError fallback."""
-    from coco_codes.command_line.command_handler import handle_command
+    from coding_agent.command_line.command_handler import handle_command
 
     mock_context = MagicMock()
     mock_context.current_agent = MagicMock()
 
     # Patch callbacks at the source module level
     with patch(
-        "coco_codes.callbacks.on_custom_command", return_value=["some result"]
+        "coding_agent.callbacks.on_custom_command", return_value=["some result"]
     ) as _mock_cb:
         with patch.dict(
             sys.modules,
             {
-                "coco_codes.plugins.customizable_commands": None,
-                "coco_codes.plugins.customizable_commands.register_callbacks": None,
+                "coding_agent.plugins.customizable_commands": None,
+                "coding_agent.plugins.customizable_commands.register_callbacks": None,
             },
         ):
             result = handle_command("/unknowncmd_xyz")
@@ -213,7 +213,7 @@ def test_pin_completion_empty_partial_model():
     """
     from prompt_toolkit.document import Document
 
-    from coco_codes.command_line.pin_command_completion import PinCompleter
+    from coding_agent.command_line.pin_command_completion import PinCompleter
 
     completer = PinCompleter()
 
@@ -222,11 +222,11 @@ def test_pin_completion_empty_partial_model():
     # produce empty strings, we monkey-patch the split to inject it.
     with (
         patch(
-            "coco_codes.command_line.pin_command_completion.load_model_names",
+            "coding_agent.command_line.pin_command_completion.load_model_names",
             return_value=["gpt-4", "claude-3"],
         ),
         patch(
-            "coco_codes.command_line.pin_command_completion.load_agent_names",
+            "coding_agent.command_line.pin_command_completion.load_agent_names",
             return_value=["default"],
         ),
     ):
@@ -249,13 +249,13 @@ async def test_diff_menu_keybindings():
     """Cover lines 565-569: keybinding handlers (accept/cancel) and line 620."""
     from prompt_toolkit.formatted_text import ANSI
 
-    from coco_codes.command_line.diff_menu import _split_panel_selector
+    from coding_agent.command_line.diff_menu import _split_panel_selector
 
     choices = ["option1", "option2"]
     on_change = MagicMock()
     get_preview = MagicMock(return_value=ANSI("preview"))
 
-    with patch("coco_codes.command_line.diff_menu.Application") as mock_app_cls:
+    with patch("coding_agent.command_line.diff_menu.Application") as mock_app_cls:
         mock_app = AsyncMock()
         mock_app_cls.return_value = mock_app
         mock_app.run_async = AsyncMock()
@@ -274,10 +274,10 @@ async def test_diff_menu_keybindings():
 
 def test_config_set_compaction_strategy_not_in_keys():
     """Cover line 204: compaction_strategy added when not in config_keys."""
-    from coco_codes.command_line.config_commands import handle_set_command
+    from coding_agent.command_line.config_commands import handle_set_command
 
     with patch(
-        "coco_codes.command_line.config_commands.get_config_keys", return_value=[]
+        "coding_agent.command_line.config_commands.get_config_keys", return_value=[]
     ):
         result = handle_set_command("/set")
         assert result is True
@@ -285,17 +285,17 @@ def test_config_set_compaction_strategy_not_in_keys():
 
 def test_config_set_agent_reload_failure():
     """Cover lines 258: reload fails after config set."""
-    from coco_codes.command_line.config_commands import handle_set_command
+    from coding_agent.command_line.config_commands import handle_set_command
 
     mock_agent = MagicMock()
     mock_agent.reload_code_generation_agent.side_effect = Exception("reload fail")
 
     with (
-        patch("coco_codes.config.set_config_value"),
-        patch("coco_codes.messaging.emit_success"),
-        patch("coco_codes.messaging.emit_warning") as _mock_warn,
-        patch("coco_codes.messaging.emit_info"),
-        patch("coco_codes.agents.get_current_agent", return_value=mock_agent),
+        patch("coding_agent.config.set_config_value"),
+        patch("coding_agent.messaging.emit_success"),
+        patch("coding_agent.messaging.emit_warning") as _mock_warn,
+        patch("coding_agent.messaging.emit_info"),
+        patch("coding_agent.agents.get_current_agent", return_value=mock_agent),
     ):
         result = handle_set_command("/set yolo_mode true")
         assert result is True
@@ -304,20 +304,20 @@ def test_config_set_agent_reload_failure():
 
 def test_config_pin_list_agents():
     """Cover lines 356-358: /pin_model with no args shows list."""
-    from coco_codes.command_line.config_commands import handle_pin_model_command
+    from coding_agent.command_line.config_commands import handle_pin_model_command
 
     with (
         patch(
-            "coco_codes.command_line.model_picker_completion.load_model_names",
+            "coding_agent.command_line.model_picker_completion.load_model_names",
             return_value=["gpt-4"],
         ),
-        patch("coco_codes.agents.json_agent.discover_json_agents", return_value={}),
+        patch("coding_agent.agents.json_agent.discover_json_agents", return_value={}),
         patch(
-            "coco_codes.agents.agent_manager.get_agent_descriptions",
+            "coding_agent.agents.agent_manager.get_agent_descriptions",
             return_value={"default": "Default agent"},
         ),
-        patch("coco_codes.messaging.emit_info"),
-        patch("coco_codes.messaging.emit_warning"),
+        patch("coding_agent.messaging.emit_info"),
+        patch("coding_agent.messaging.emit_warning"),
     ):
         result = handle_pin_model_command("/pin_model")
         assert result is True
@@ -326,7 +326,7 @@ def test_config_pin_list_agents():
 def test_config_pin_json_agent_reload_failure():
     """Cover lines 395-396: reload failure after pin."""
 
-    from coco_codes.command_line.config_commands import handle_pin_model_command
+    from coding_agent.command_line.config_commands import handle_pin_model_command
 
     mock_agent = MagicMock()
     mock_agent.name = "myagent"
@@ -334,20 +334,20 @@ def test_config_pin_json_agent_reload_failure():
 
     with (
         patch(
-            "coco_codes.command_line.model_picker_completion.load_model_names",
+            "coding_agent.command_line.model_picker_completion.load_model_names",
             return_value=["gpt-4"],
         ),
         patch(
-            "coco_codes.agents.json_agent.discover_json_agents",
+            "coding_agent.agents.json_agent.discover_json_agents",
             return_value={"myagent": "/path"},
         ),
         patch(
-            "coco_codes.agents.agent_manager.get_agent_descriptions", return_value={}
+            "coding_agent.agents.agent_manager.get_agent_descriptions", return_value={}
         ),
-        patch("coco_codes.messaging.emit_info"),
-        patch("coco_codes.messaging.emit_success"),
-        patch("coco_codes.messaging.emit_warning") as _mock_warn,
-        patch("coco_codes.agents.get_current_agent", return_value=mock_agent),
+        patch("coding_agent.messaging.emit_info"),
+        patch("coding_agent.messaging.emit_success"),
+        patch("coding_agent.messaging.emit_warning") as _mock_warn,
+        patch("coding_agent.agents.get_current_agent", return_value=mock_agent),
         patch("builtins.open", mock_open(read_data="{}")),
         patch("json.load", return_value={}),
         patch("json.dump"),
@@ -359,24 +359,24 @@ def test_config_pin_json_agent_reload_failure():
 def test_config_pin_list_json_agents_with_pinned():
     """Cover lines 450, 495-497: show JSON agents with pinned models."""
 
-    from coco_codes.command_line.config_commands import handle_pin_model_command
+    from coding_agent.command_line.config_commands import handle_pin_model_command
 
     _agent_config = {"model": "gpt-4"}
 
     with (
         patch(
-            "coco_codes.command_line.model_picker_completion.load_model_names",
+            "coding_agent.command_line.model_picker_completion.load_model_names",
             return_value=["gpt-4"],
         ),
         patch(
-            "coco_codes.agents.json_agent.discover_json_agents",
+            "coding_agent.agents.json_agent.discover_json_agents",
             return_value={"myagent": "/path/agent.json"},
         ),
         patch(
-            "coco_codes.agents.agent_manager.get_agent_descriptions", return_value={}
+            "coding_agent.agents.agent_manager.get_agent_descriptions", return_value={}
         ),
-        patch("coco_codes.messaging.emit_info") as _mock_info,
-        patch("coco_codes.messaging.emit_warning"),
+        patch("coding_agent.messaging.emit_info") as _mock_info,
+        patch("coding_agent.messaging.emit_warning"),
     ):
         result = handle_pin_model_command("/pin_model")
         assert result is True
@@ -390,12 +390,12 @@ def test_config_pin_list_json_agents_with_pinned():
 @pytest.mark.asyncio
 async def test_colors_menu_split_panel_selector():
     """Cover colors_menu keybinding lines."""
-    from coco_codes.command_line.colors_menu import _split_panel_selector
+    from coding_agent.command_line.colors_menu import _split_panel_selector
 
     choices = ["option1", "option2"]
     on_change = MagicMock()
 
-    with patch("coco_codes.command_line.colors_menu.Application") as mock_app_cls:
+    with patch("coding_agent.command_line.colors_menu.Application") as mock_app_cls:
         mock_app = AsyncMock()
         mock_app_cls.return_value = mock_app
         mock_app.run_async = AsyncMock()
@@ -411,7 +411,7 @@ async def test_colors_menu_split_panel_selector():
 
 def test_colors_menu_get_preview_text():
     """Cover line 383: _get_preview_text_for_prompt_toolkit."""
-    from coco_codes.command_line.colors_menu import (
+    from coding_agent.command_line.colors_menu import (
         ColorConfiguration,
         _get_preview_text_for_prompt_toolkit,
     )
@@ -428,7 +428,7 @@ def test_colors_menu_get_preview_text():
 
 def test_add_model_menu_run():
     """Cover lines 900-975: keybinding handler definitions via run()."""
-    from coco_codes.command_line.add_model_menu import AddModelMenu
+    from coding_agent.command_line.add_model_menu import AddModelMenu
 
     menu = AddModelMenu.__new__(AddModelMenu)
     # Minimal init
@@ -451,8 +451,8 @@ def test_add_model_menu_run():
     menu.pending_provider = None
 
     with (
-        patch("coco_codes.command_line.add_model_menu.Application") as mock_app_cls,
-        patch("coco_codes.command_line.add_model_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.add_model_menu.Application") as mock_app_cls,
+        patch("coding_agent.command_line.add_model_menu.set_awaiting_user_input"),
         patch("sys.stdout"),
         patch("time.sleep"),
     ):
@@ -466,7 +466,7 @@ def test_add_model_menu_run():
 
 def test_add_model_menu_line_736():
     """Cover line 736: env var hint display."""
-    from coco_codes.command_line.add_model_menu import AddModelMenu
+    from coding_agent.command_line.add_model_menu import AddModelMenu
 
     menu = AddModelMenu.__new__(AddModelMenu)
     hint = menu._get_env_var_hint("OPENAI_API_KEY")
@@ -475,7 +475,7 @@ def test_add_model_menu_line_736():
 
 def test_add_model_menu_pending_credentials_flow():
     """Cover lines 1046, 1080: pending credentials flow in run()."""
-    from coco_codes.command_line.add_model_menu import AddModelMenu
+    from coding_agent.command_line.add_model_menu import AddModelMenu
 
     menu = AddModelMenu.__new__(AddModelMenu)
     provider = MagicMock()
@@ -502,8 +502,8 @@ def test_add_model_menu_pending_credentials_flow():
         menu.result = "pending_credentials"
 
     with (
-        patch("coco_codes.command_line.add_model_menu.Application") as mock_app_cls,
-        patch("coco_codes.command_line.add_model_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.add_model_menu.Application") as mock_app_cls,
+        patch("coding_agent.command_line.add_model_menu.set_awaiting_user_input"),
         patch("sys.stdout"),
         patch("time.sleep"),
     ):
@@ -525,19 +525,19 @@ def test_add_model_menu_pending_credentials_flow():
 
 def test_model_settings_menu_keybindings():
     """Cover lines 760-853: keybinding handler definitions via run()."""
-    from coco_codes.command_line.model_settings_menu import ModelSettingsMenu
+    from coding_agent.command_line.model_settings_menu import ModelSettingsMenu
 
     with patch(
-        "coco_codes.command_line.model_settings_menu._load_all_model_names",
+        "coding_agent.command_line.model_settings_menu._load_all_model_names",
         return_value=["gpt-4"],
     ):
         menu = ModelSettingsMenu()
 
     with (
         patch(
-            "coco_codes.command_line.model_settings_menu.Application"
+            "coding_agent.command_line.model_settings_menu.Application"
         ) as mock_app_cls,
-        patch("coco_codes.command_line.model_settings_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.model_settings_menu.set_awaiting_user_input"),
         patch("sys.stdout"),
         patch("time.sleep"),
     ):
@@ -551,12 +551,12 @@ def test_model_settings_menu_keybindings():
 
 def test_model_settings_start_editing_choice():
     """Cover lines 602-603: _start_editing with choice type."""
-    from coco_codes.command_line.model_settings_menu import (
+    from coding_agent.command_line.model_settings_menu import (
         ModelSettingsMenu,
     )
 
     with patch(
-        "coco_codes.command_line.model_settings_menu._load_all_model_names",
+        "coding_agent.command_line.model_settings_menu._load_all_model_names",
         return_value=["gpt-4"],
     ):
         menu = ModelSettingsMenu()
@@ -570,7 +570,7 @@ def test_model_settings_start_editing_choice():
     menu.model_settings = {}  # No current value
 
     with patch(
-        "coco_codes.command_line.model_settings_menu._get_setting_choices",
+        "coding_agent.command_line.model_settings_menu._get_setting_choices",
         return_value=["low", "medium", "high"],
     ):
         menu._start_editing()
@@ -585,18 +585,18 @@ def test_model_settings_start_editing_choice():
 @pytest.mark.asyncio
 async def test_autosave_menu_keybindings():
     """Cover lines 540-663: keybinding handlers in interactive_session_picker."""
-    from coco_codes.command_line.autosave_menu import interactive_autosave_picker
+    from coding_agent.command_line.autosave_menu import interactive_autosave_picker
 
     with (
         patch(
-            "coco_codes.command_line.autosave_menu._get_session_entries",
+            "coding_agent.command_line.autosave_menu._get_session_entries",
             return_value=[
                 ("session1", {"timestamp": "2024-01-01T12:00:00", "messages": 10}),
                 ("session2", {"timestamp": "2024-01-02T13:00:00", "messages": 20}),
             ],
         ),
-        patch("coco_codes.command_line.autosave_menu.Application") as mock_app_cls,
-        patch("coco_codes.command_line.autosave_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.autosave_menu.Application") as mock_app_cls,
+        patch("coding_agent.command_line.autosave_menu.set_awaiting_user_input"),
         patch("sys.stdout"),
         patch("asyncio.sleep", new_callable=AsyncMock),
     ):
@@ -614,7 +614,7 @@ async def test_autosave_menu_keybindings():
 
 def test_autosave_render_message_browser():
     """Cover line 527, 540-542: message browser rendering."""
-    from coco_codes.command_line.autosave_menu import _render_message_browser_panel
+    from coding_agent.command_line.autosave_menu import _render_message_browser_panel
 
     # Create mock message objects with parts attribute
     msg1 = MagicMock()
@@ -634,7 +634,7 @@ def test_autosave_line_144():
     import os
     import tempfile
 
-    from coco_codes.command_line.autosave_menu import _get_session_entries
+    from coding_agent.command_line.autosave_menu import _get_session_entries
 
     with tempfile.TemporaryDirectory() as tmpdir:
         session_file = os.path.join(tmpdir, "empty_session.json")
@@ -646,7 +646,7 @@ def test_autosave_line_144():
 
 def test_autosave_line_317():
     """Cover lines 317-319: _render_preview_panel with no entry."""
-    from coco_codes.command_line.autosave_menu import _render_preview_panel
+    from coding_agent.command_line.autosave_menu import _render_preview_panel
 
     result = _render_preview_panel("/tmp", None)
     assert result is not None
@@ -659,7 +659,7 @@ def test_autosave_line_317():
 
 def test_agent_menu_render_preview_no_entry():
     """Cover line 470: preview with no entry."""
-    from coco_codes.command_line.agent_menu import _render_preview_panel
+    from coding_agent.command_line.agent_menu import _render_preview_panel
 
     result = _render_preview_panel(None, "default")
     assert result is not None
@@ -668,18 +668,18 @@ def test_agent_menu_render_preview_no_entry():
 @pytest.mark.asyncio
 async def test_agent_menu_interactive_picker():
     """Cover lines 475-648: interactive_agent_picker keybindings and action flow."""
-    from coco_codes.command_line.agent_menu import interactive_agent_picker
+    from coding_agent.command_line.agent_menu import interactive_agent_picker
 
     with (
         patch(
-            "coco_codes.command_line.agent_menu._get_agent_entries",
+            "coding_agent.command_line.agent_menu._get_agent_entries",
             return_value=[
                 ("default", "Default Agent", "builtin"),
                 ("custom", "Custom Agent", "json"),
             ],
         ),
-        patch("coco_codes.command_line.agent_menu.Application") as mock_app_cls,
-        patch("coco_codes.command_line.agent_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.agent_menu.Application") as mock_app_cls,
+        patch("coding_agent.command_line.agent_menu.set_awaiting_user_input"),
         patch("sys.stdout"),
         patch("asyncio.sleep", new_callable=AsyncMock),
     ):
@@ -704,8 +704,8 @@ def test_uc_menu_toggle_tool_meta_not_found():
     """Cover lines 115-116: TOOL_META not found in file."""
     import tempfile
 
-    from coco_codes.command_line.uc_menu import _toggle_tool_enabled
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import _toggle_tool_enabled
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write("# no TOOL_META here\ndef my_tool(): pass\n")
@@ -723,7 +723,7 @@ def test_uc_menu_toggle_tool_meta_not_found():
             function_name="test",
             docstring="test",
         )
-        with patch("coco_codes.command_line.uc_menu.emit_error"):
+        with patch("coding_agent.command_line.uc_menu.emit_error"):
             result = _toggle_tool_enabled(tool)
             assert result is False
     import os
@@ -736,8 +736,8 @@ def test_uc_menu_delete_tool():
     import os
     import tempfile
 
-    from coco_codes.command_line.uc_menu import _delete_tool
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import _delete_tool
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tool_file = os.path.join(tmpdir, "sub", "test_tool.py")
@@ -760,8 +760,8 @@ def test_uc_menu_delete_tool():
         )
 
         with (
-            patch("coco_codes.plugins.universal_constructor.USER_UC_DIR", Path(tmpdir)),
-            patch("coco_codes.command_line.uc_menu.emit_success"),
+            patch("coding_agent.plugins.universal_constructor.USER_UC_DIR", Path(tmpdir)),
+            patch("coding_agent.command_line.uc_menu.emit_success"),
         ):
             result = _delete_tool(tool)
             assert result is True
@@ -770,8 +770,8 @@ def test_uc_menu_delete_tool():
 
 def test_uc_menu_delete_tool_not_found():
     """Cover _delete_tool when file doesn't exist."""
-    from coco_codes.command_line.uc_menu import _delete_tool
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import _delete_tool
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     tool = UCToolInfo(
         meta=ToolMeta(
@@ -782,15 +782,15 @@ def test_uc_menu_delete_tool_not_found():
         function_name="test",
         docstring="test",
     )
-    with patch("coco_codes.command_line.uc_menu.emit_error"):
+    with patch("coding_agent.command_line.uc_menu.emit_error"):
         result = _delete_tool(tool)
         assert result is False
 
 
 def test_uc_menu_delete_tool_exception():
     """Cover _delete_tool exception handling."""
-    from coco_codes.command_line.uc_menu import _delete_tool
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import _delete_tool
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     tool = UCToolInfo(
         meta=ToolMeta(
@@ -802,8 +802,8 @@ def test_uc_menu_delete_tool_exception():
         docstring="test",
     )
     with (
-        patch("coco_codes.command_line.uc_menu.Path") as mock_path,
-        patch("coco_codes.command_line.uc_menu.emit_error"),
+        patch("coding_agent.command_line.uc_menu.Path") as mock_path,
+        patch("coding_agent.command_line.uc_menu.emit_error"),
     ):
         mock_path.return_value.exists.return_value = True
         mock_path.return_value.unlink.side_effect = Exception("perm denied")
@@ -813,7 +813,7 @@ def test_uc_menu_delete_tool_exception():
 
 def test_uc_menu_highlight_python_line():
     """Cover lines 498-530: _highlight_python_line."""
-    from coco_codes.command_line.uc_menu import _highlight_python_line
+    from coding_agent.command_line.uc_menu import _highlight_python_line
 
     # Comment
     result = _highlight_python_line("# this is a comment")
@@ -846,8 +846,8 @@ def test_uc_menu_highlight_python_line():
 
 def test_uc_menu_render_source_panel():
     """Cover line 602: _render_source_panel."""
-    from coco_codes.command_line.uc_menu import _render_source_panel
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import _render_source_panel
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     tool = UCToolInfo(
         meta=ToolMeta(
@@ -869,8 +869,8 @@ def test_uc_menu_render_source_panel():
 
 def test_uc_menu_render_preview_panel_with_author():
     """Cover line 297: _render_preview_panel with author."""
-    from coco_codes.command_line.uc_menu import _render_preview_panel
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import _render_preview_panel
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     tool = UCToolInfo(
         meta=ToolMeta(
@@ -895,8 +895,8 @@ def test_uc_menu_render_preview_panel_with_author():
 
 def test_uc_menu_render_menu_panel_variants():
     """Cover lines 324-326, 341: _render_menu_panel."""
-    from coco_codes.command_line.uc_menu import _render_menu_panel
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import _render_menu_panel
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     tools = [
         UCToolInfo(
@@ -937,8 +937,8 @@ def test_uc_menu_render_menu_panel_variants():
 @pytest.mark.asyncio
 async def test_uc_menu_interactive_picker():
     """Cover lines 607-716: interactive_uc_picker keybindings."""
-    from coco_codes.command_line.uc_menu import interactive_uc_picker
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import interactive_uc_picker
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     tools = [
         UCToolInfo(
@@ -957,9 +957,9 @@ async def test_uc_menu_interactive_picker():
     ]
 
     with (
-        patch("coco_codes.command_line.uc_menu._get_tool_entries", return_value=tools),
-        patch("coco_codes.command_line.uc_menu.Application") as mock_app_cls,
-        patch("coco_codes.command_line.uc_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.uc_menu._get_tool_entries", return_value=tools),
+        patch("coding_agent.command_line.uc_menu.Application") as mock_app_cls,
+        patch("coding_agent.command_line.uc_menu.set_awaiting_user_input"),
         patch("sys.stdout"),
         patch("asyncio.sleep", new_callable=AsyncMock),
     ):
@@ -980,8 +980,8 @@ def test_uc_load_source_code():
     import os
     import tempfile
 
-    from coco_codes.command_line.uc_menu import _load_source_code
-    from coco_codes.plugins.universal_constructor.models import ToolMeta, UCToolInfo
+    from coding_agent.command_line.uc_menu import _load_source_code
+    from coding_agent.plugins.universal_constructor.models import ToolMeta, UCToolInfo
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write("def test():\n    pass\n")
@@ -1040,12 +1040,12 @@ def test_diff_menu_enter_empty_choices():
 
     from prompt_toolkit.formatted_text import ANSI
 
-    from coco_codes.command_line.diff_menu import _split_panel_selector
+    from coding_agent.command_line.diff_menu import _split_panel_selector
 
     on_change = MagicMock()
     get_preview = MagicMock(return_value=ANSI("preview"))
 
-    with patch("coco_codes.command_line.diff_menu.Application") as mock_app_cls:
+    with patch("coding_agent.command_line.diff_menu.Application") as mock_app_cls:
         mock_app = AsyncMock()
         mock_app_cls.return_value = mock_app
 
@@ -1083,10 +1083,10 @@ def test_diff_menu_enter_empty_choices():
 
 def test_core_commands_shlex_fallback():
     """Cover core_commands lines 62-64: shlex.split ValueError."""
-    from coco_codes.command_line.core_commands import handle_cd_command
+    from coding_agent.command_line.core_commands import handle_cd_command
 
     # Unbalanced quotes will cause shlex.split to fail, triggering fallback
-    with patch("coco_codes.command_line.core_commands.emit_error"):
+    with patch("coding_agent.command_line.core_commands.emit_error"):
         result = handle_cd_command("/cd 'unclosed")
         assert result is True
 
@@ -1100,7 +1100,7 @@ def test_onboarding_slides_import_error():
     """Cover onboarding_slides lines 57-58: ImportError for banner."""
     with patch.dict("sys.modules", {"rich.text": None}):
         # Force ImportError in the banner generation
-        from coco_codes.command_line import onboarding_slides
+        from coding_agent.command_line import onboarding_slides
 
         # Call the function that generates banner text
         # The ImportError path returns a simple fallback string
@@ -1120,7 +1120,7 @@ def test_pin_command_completion_empty_partial_model():
     from prompt_toolkit.completion import CompleteEvent
     from prompt_toolkit.document import Document
 
-    from coco_codes.command_line.pin_command_completion import PinCompleter
+    from coding_agent.command_line.pin_command_completion import PinCompleter
 
     completer = PinCompleter()
 
@@ -1131,11 +1131,11 @@ def test_pin_command_completion_empty_partial_model():
 
     with (
         patch(
-            "coco_codes.command_line.pin_command_completion.load_model_names",
+            "coding_agent.command_line.pin_command_completion.load_model_names",
             return_value=["gpt-4", "claude-3"],
         ),
         patch(
-            "coco_codes.command_line.pin_command_completion.load_agent_names",
+            "coding_agent.command_line.pin_command_completion.load_agent_names",
             return_value=["default"],
         ),
     ):
@@ -1157,7 +1157,7 @@ def test_file_path_completion_absolute_path():
     from prompt_toolkit.completion import CompleteEvent
     from prompt_toolkit.document import Document
 
-    from coco_codes.command_line.file_path_completion import FilePathCompleter
+    from coding_agent.command_line.file_path_completion import FilePathCompleter
 
     completer = FilePathCompleter()
 
@@ -1188,7 +1188,7 @@ def test_file_path_completion_absolute_path():
 
 def test_config_commands_set_no_key():
     """Cover config_commands line 258: /set with no arguments."""
-    from coco_codes.command_line.config_commands import handle_set_command
+    from coding_agent.command_line.config_commands import handle_set_command
 
     # "/set =value" -> key="" (empty after split on =) -> "You must supply a key."
     result = handle_set_command("/set =value")
@@ -1197,23 +1197,23 @@ def test_config_commands_set_no_key():
 
 def test_config_commands_pin_json_agents():
     """Cover config_commands lines 356-358, 490-492, 495-497."""
-    from coco_codes.command_line.config_commands import handle_pin_model_command
+    from coding_agent.command_line.config_commands import handle_pin_model_command
 
     with (
-        patch("coco_codes.messaging.emit_info"),
-        patch("coco_codes.messaging.emit_error"),
-        patch("coco_codes.messaging.emit_success"),
-        patch("coco_codes.messaging.emit_warning"),
+        patch("coding_agent.messaging.emit_info"),
+        patch("coding_agent.messaging.emit_error"),
+        patch("coding_agent.messaging.emit_success"),
+        patch("coding_agent.messaging.emit_warning"),
         patch(
-            "coco_codes.command_line.model_picker_completion.load_model_names",
+            "coding_agent.command_line.model_picker_completion.load_model_names",
             return_value=["gpt-4"],
         ),
         patch(
-            "coco_codes.agents.json_agent.discover_json_agents",
+            "coding_agent.agents.json_agent.discover_json_agents",
             return_value={"custom": "/path/to/agent.json"},
         ),
         patch(
-            "coco_codes.agents.agent_manager.get_agent_descriptions",
+            "coding_agent.agents.agent_manager.get_agent_descriptions",
             return_value={"default": "Default"},
         ),
     ):
@@ -1229,7 +1229,7 @@ def test_config_commands_pin_json_agents():
 
 def test_add_model_menu_pending_custom_model():
     """Cover add_model_menu line 1046: pending_custom_model flow."""
-    from coco_codes.command_line.add_model_menu import AddModelMenu
+    from coding_agent.command_line.add_model_menu import AddModelMenu
 
     menu = AddModelMenu.__new__(AddModelMenu)
     provider = MagicMock()
@@ -1252,8 +1252,8 @@ def test_add_model_menu_pending_custom_model():
         menu.result = "pending_custom_model"
 
     with (
-        patch("coco_codes.command_line.add_model_menu.Application") as mock_app_cls,
-        patch("coco_codes.command_line.add_model_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.add_model_menu.Application") as mock_app_cls,
+        patch("coding_agent.command_line.add_model_menu.set_awaiting_user_input"),
         patch("sys.stdout"),
         patch("time.sleep"),
     ):
@@ -1272,7 +1272,7 @@ def test_add_model_menu_pending_custom_model():
 
 def test_add_model_menu_non_tool_calling_confirm():
     """Cover add_model_menu line 1080: non-tool-calling model warning."""
-    from coco_codes.command_line.add_model_menu import AddModelMenu
+    from coding_agent.command_line.add_model_menu import AddModelMenu
 
     menu = AddModelMenu.__new__(AddModelMenu)
     provider = MagicMock()
@@ -1297,10 +1297,10 @@ def test_add_model_menu_non_tool_calling_confirm():
         menu.result = "pending_credentials"
 
     with (
-        patch("coco_codes.command_line.add_model_menu.Application") as mock_app_cls,
-        patch("coco_codes.command_line.add_model_menu.set_awaiting_user_input"),
-        patch("coco_codes.command_line.add_model_menu.safe_input", return_value="y"),
-        patch("coco_codes.command_line.add_model_menu.emit_warning"),
+        patch("coding_agent.command_line.add_model_menu.Application") as mock_app_cls,
+        patch("coding_agent.command_line.add_model_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.add_model_menu.safe_input", return_value="y"),
+        patch("coding_agent.command_line.add_model_menu.emit_warning"),
         patch("sys.stdout"),
         patch("time.sleep"),
     ):
@@ -1322,7 +1322,7 @@ def test_add_model_menu_non_tool_calling_confirm():
 
 def test_add_model_menu_right_page_models():
     """Cover add_model_menu line 942, 946-952: right page in models view."""
-    from coco_codes.command_line.add_model_menu import AddModelMenu
+    from coding_agent.command_line.add_model_menu import AddModelMenu
 
     menu = AddModelMenu.__new__(AddModelMenu)
     # Create enough models for multiple pages
@@ -1345,8 +1345,8 @@ def test_add_model_menu_right_page_models():
     menu.pending_provider = None
 
     with (
-        patch("coco_codes.command_line.add_model_menu.Application") as mock_app_cls,
-        patch("coco_codes.command_line.add_model_menu.set_awaiting_user_input"),
+        patch("coding_agent.command_line.add_model_menu.Application") as mock_app_cls,
+        patch("coding_agent.command_line.add_model_menu.set_awaiting_user_input"),
         patch("sys.stdout"),
         patch("time.sleep"),
     ):

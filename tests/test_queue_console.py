@@ -16,8 +16,8 @@ from rich.syntax import Syntax
 from rich.table import Table
 from rich.text import Text
 
-from coco_codes.messaging.message_queue import MessageQueue, MessageType
-from coco_codes.messaging.queue_console import QueueConsole, get_queue_console
+from coding_agent.messaging.message_queue import MessageQueue, MessageType
+from coding_agent.messaging.queue_console import QueueConsole, get_queue_console
 
 
 class TestQueueConsoleInitialization:
@@ -26,7 +26,7 @@ class TestQueueConsoleInitialization:
     def test_init_default_queue(self):
         """Test initialization with default global queue."""
         with patch(
-            "coco_codes.messaging.queue_console.get_global_queue"
+            "coding_agent.messaging.queue_console.get_global_queue"
         ) as mock_get_queue:
             mock_queue = Mock(spec=MessageQueue)
             mock_get_queue.return_value = mock_queue
@@ -540,7 +540,7 @@ class TestInputMethod:
         console = QueueConsole(queue=mock_queue)
 
         with patch("builtins.input", return_value="user response"):
-            with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+            with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                 result = console.input("Enter name: ")
 
         assert result == "user response"
@@ -557,7 +557,7 @@ class TestInputMethod:
         console = QueueConsole(queue=mock_queue)
 
         with patch("builtins.input", return_value="test"):
-            with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+            with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                 result = console.input()
 
         assert result == "test"
@@ -571,7 +571,7 @@ class TestInputMethod:
         console = QueueConsole(queue=mock_queue)
 
         with patch("builtins.input", side_effect=KeyboardInterrupt):
-            with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+            with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                 result = console.input("Prompt: ")
 
         assert result == ""
@@ -587,7 +587,7 @@ class TestInputMethod:
         console = QueueConsole(queue=mock_queue)
 
         with patch("builtins.input", side_effect=EOFError):
-            with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+            with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                 result = console.input("Prompt: ")
 
         assert result == ""
@@ -600,7 +600,7 @@ class TestInputMethod:
 
         with patch("builtins.input", return_value="test"):
             with patch(
-                "coco_codes.tools.command_runner.set_awaiting_user_input"
+                "coding_agent.tools.command_runner.set_awaiting_user_input"
             ) as mock_set_flag:
                 result = console.input("test: ")
 

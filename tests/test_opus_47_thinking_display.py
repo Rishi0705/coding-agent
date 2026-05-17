@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 
-from coco_codes.claude_cache_client import (
+from coding_agent.claude_cache_client import (
     ClaudeCacheAsyncClient,
     _enforce_thinking_display_summary,
     _inject_cache_control_in_payload,

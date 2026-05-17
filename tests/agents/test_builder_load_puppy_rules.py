@@ -1,8 +1,8 @@
-"""Tests for load_agent_rules() in coco_codes.agents._builder.
+"""Tests for load_agent_rules() in coding_agent.agents._builder.
 
-Covers the .coco_codes/ directory feature (PUP-34):
-- Loading from .coco_codes/AGENTS.md (preferred)
-- Precedence: .coco_codes/ over project root
+Covers the .coding_agent/ directory feature (PUP-34):
+- Loading from .coding_agent/AGENTS.md (preferred)
+- Precedence: .coding_agent/ over project root
 - Backwards compatibility with root AGENTS.md
 - Combining global + project rules
 - Edge cases (dir is file, empty dir, etc.)
@@ -13,8 +13,8 @@ from unittest.mock import patch
 import pytest
 
 
-class TestLoadPuppyRulesCocoCodesDir:
-    """Tests for .coco_codes/ directory support in load_agent_rules()."""
+class TestLoadPuppyRulesCodingAgentDir:
+    """Tests for .coding_agent/ directory support in load_agent_rules()."""
 
     @pytest.fixture
     def temp_project(self, tmp_path, monkeypatch):
@@ -29,63 +29,63 @@ class TestLoadPuppyRulesCocoCodesDir:
         config_dir.mkdir()
         return config_dir
 
-    def test_load_from_coco_codes_dir(self, temp_project, mock_config_dir):
-        """Load AGENTS.md from .coco_codes/ directory."""
-        from coco_codes.agents._builder import load_agent_rules
+    def test_load_from_coding_agent_dir(self, temp_project, mock_config_dir):
+        """Load AGENTS.md from .coding_agent/ directory."""
+        from coding_agent.agents._builder import load_agent_rules
 
-        # Create .coco_codes/AGENTS.md
-        coco_codes_dir = temp_project / ".coco_codes"
-        coco_codes_dir.mkdir()
-        agents_file = coco_codes_dir / "AGENTS.md"
-        agents_file.write_text("# Rules from .coco_codes dir")
+        # Create .coding_agent/AGENTS.md
+        coding_agent_dir = temp_project / ".coding_agent"
+        coding_agent_dir.mkdir()
+        agents_file = coding_agent_dir / "AGENTS.md"
+        agents_file.write_text("# Rules from .coding_agent dir")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
-        assert result == "# Rules from .coco_codes dir"
+        assert result == "# Rules from .coding_agent dir"
 
-    def test_precedence_coco_codes_over_root(self, temp_project, mock_config_dir):
-        """Files in .coco_codes/ take precedence over project root."""
-        from coco_codes.agents._builder import load_agent_rules
+    def test_precedence_coding_agent_over_root(self, temp_project, mock_config_dir):
+        """Files in .coding_agent/ take precedence over project root."""
+        from coding_agent.agents._builder import load_agent_rules
 
         # Create both locations
-        coco_codes_dir = temp_project / ".coco_codes"
-        coco_codes_dir.mkdir()
-        (coco_codes_dir / "AGENTS.md").write_text("# Preferred rules")
+        coding_agent_dir = temp_project / ".coding_agent"
+        coding_agent_dir.mkdir()
+        (coding_agent_dir / "AGENTS.md").write_text("# Preferred rules")
         (temp_project / "AGENTS.md").write_text("# Root rules")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
-        # Should use .coco_codes/ version, NOT root
+        # Should use .coding_agent/ version, NOT root
         assert result == "# Preferred rules"
         assert "Root rules" not in (result or "")
 
     def test_fallback_to_root(self, temp_project, mock_config_dir):
-        """Fall back to root AGENTS.md if .coco_codes/ doesn't exist."""
-        from coco_codes.agents._builder import load_agent_rules
+        """Fall back to root AGENTS.md if .coding_agent/ doesn't exist."""
+        from coding_agent.agents._builder import load_agent_rules
 
         # Only create root AGENTS.md
         (temp_project / "AGENTS.md").write_text("# Root rules")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         assert result == "# Root rules"
 
-    def test_global_and_coco_codes_combined(self, temp_project, mock_config_dir):
-        """Global rules and .coco_codes rules are combined."""
-        from coco_codes.agents._builder import load_agent_rules
+    def test_global_and_coding_agent_combined(self, temp_project, mock_config_dir):
+        """Global rules and .coding_agent rules are combined."""
+        from coding_agent.agents._builder import load_agent_rules
 
         # Create global rules
         (mock_config_dir / "AGENTS.md").write_text("# Global rules")
 
-        # Create .coco_codes rules
-        coco_codes_dir = temp_project / ".coco_codes"
-        coco_codes_dir.mkdir()
-        (coco_codes_dir / "AGENTS.md").write_text("# Project rules")
+        # Create .coding_agent rules
+        coding_agent_dir = temp_project / ".coding_agent"
+        coding_agent_dir.mkdir()
+        (coding_agent_dir / "AGENTS.md").write_text("# Project rules")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         # Both should be present, global first
@@ -95,7 +95,7 @@ class TestLoadPuppyRulesCocoCodesDir:
 
     def test_global_and_root_combined(self, temp_project, mock_config_dir):
         """Global rules + root rules work together."""
-        from coco_codes.agents._builder import load_agent_rules
+        from coding_agent.agents._builder import load_agent_rules
 
         # Create global rules
         (mock_config_dir / "AGENTS.md").write_text("# Global rules")
@@ -103,40 +103,40 @@ class TestLoadPuppyRulesCocoCodesDir:
         # Create root rules
         (temp_project / "AGENTS.md").write_text("# Root rules")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         # Both should be combined
         assert "# Global rules" in result
         assert "# Root rules" in result
 
-    def test_coco_codes_is_file_not_dir(self, temp_project, mock_config_dir):
-        """If .coco_codes is a file (not directory), fall back to root."""
-        from coco_codes.agents._builder import load_agent_rules
+    def test_coding_agent_is_file_not_dir(self, temp_project, mock_config_dir):
+        """If .coding_agent is a file (not directory), fall back to root."""
+        from coding_agent.agents._builder import load_agent_rules
 
-        # Create .coco_codes as a FILE, not directory
-        (temp_project / ".coco_codes").write_text("I'm a file, not a dir!")
+        # Create .coding_agent as a FILE, not directory
+        (temp_project / ".coding_agent").write_text("I'm a file, not a dir!")
 
         # Create root AGENTS.md as fallback
         (temp_project / "AGENTS.md").write_text("# Root fallback")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         # Should use root fallback
         assert result == "# Root fallback"
 
-    def test_coco_codes_dir_exists_but_empty(self, temp_project, mock_config_dir):
-        """Empty .coco_codes/ dir falls back to root AGENTS.md."""
-        from coco_codes.agents._builder import load_agent_rules
+    def test_coding_agent_dir_exists_but_empty(self, temp_project, mock_config_dir):
+        """Empty .coding_agent/ dir falls back to root AGENTS.md."""
+        from coding_agent.agents._builder import load_agent_rules
 
-        # Create empty .coco_codes directory
-        (temp_project / ".coco_codes").mkdir()
+        # Create empty .coding_agent directory
+        (temp_project / ".coding_agent").mkdir()
 
         # Create root AGENTS.md as fallback
         (temp_project / "AGENTS.md").write_text("# Root fallback")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         # Should use root fallback
@@ -144,23 +144,23 @@ class TestLoadPuppyRulesCocoCodesDir:
 
     def test_no_agents_files_anywhere(self, temp_project, mock_config_dir):
         """Returns None if no AGENTS.md files exist anywhere."""
-        from coco_codes.agents._builder import load_agent_rules
+        from coding_agent.agents._builder import load_agent_rules
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         assert result is None
 
-    def test_agent_md_variant_in_coco_codes_dir(self, temp_project, mock_config_dir):
-        """Also supports AGENT.md (singular) in .coco_codes/."""
-        from coco_codes.agents._builder import load_agent_rules
+    def test_agent_md_variant_in_coding_agent_dir(self, temp_project, mock_config_dir):
+        """Also supports AGENT.md (singular) in .coding_agent/."""
+        from coding_agent.agents._builder import load_agent_rules
 
-        coco_codes_dir = temp_project / ".coco_codes"
-        coco_codes_dir.mkdir()
+        coding_agent_dir = temp_project / ".coding_agent"
+        coding_agent_dir.mkdir()
         # Use singular AGENT.md instead of AGENTS.md
-        (coco_codes_dir / "AGENT.md").write_text("# Singular agent rules")
+        (coding_agent_dir / "AGENT.md").write_text("# Singular agent rules")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         assert result == "# Singular agent rules"
@@ -169,26 +169,26 @@ class TestLoadPuppyRulesCocoCodesDir:
         self, temp_project, mock_config_dir
     ):
         """AGENTS.md (plural) takes precedence over AGENT.md (singular)."""
-        from coco_codes.agents._builder import load_agent_rules
+        from coding_agent.agents._builder import load_agent_rules
 
-        coco_codes_dir = temp_project / ".coco_codes"
-        coco_codes_dir.mkdir()
-        (coco_codes_dir / "AGENTS.md").write_text("# Plural wins")
-        (coco_codes_dir / "AGENT.md").write_text("# Singular loses")
+        coding_agent_dir = temp_project / ".coding_agent"
+        coding_agent_dir.mkdir()
+        (coding_agent_dir / "AGENTS.md").write_text("# Plural wins")
+        (coding_agent_dir / "AGENT.md").write_text("# Singular loses")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         assert result == "# Plural wins"
 
     def test_only_global_rules(self, temp_project, mock_config_dir):
         """Only global rules loaded when no project rules exist."""
-        from coco_codes.agents._builder import load_agent_rules
+        from coding_agent.agents._builder import load_agent_rules
 
         # Create only global rules
         (mock_config_dir / "AGENTS.md").write_text("# Global only")
 
-        with patch("coco_codes.agents._builder.CONFIG_DIR", str(mock_config_dir)):
+        with patch("coding_agent.agents._builder.CONFIG_DIR", str(mock_config_dir)):
             result = load_agent_rules()
 
         assert result == "# Global only"

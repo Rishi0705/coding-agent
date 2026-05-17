@@ -11,7 +11,7 @@ import builtins
 
 import pytest
 
-from coco_codes.plugins.agent_steering import steering_prompt as prompt
+from coding_agent.plugins.agent_steering import steering_prompt as prompt
 
 
 @pytest.fixture

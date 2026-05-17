@@ -11,7 +11,7 @@ Tests interactive TUI for banner color configuration including:
 
 from unittest.mock import patch
 
-from coco_codes.command_line.colors_menu import (
+from coding_agent.command_line.colors_menu import (
     BANNER_COLORS,
     BANNER_DISPLAY_INFO,
     BANNER_SAMPLE_CONTENT,
@@ -223,18 +223,18 @@ class TestColorSelection:
 class TestColorPersistence:
     """Test color settings persistence."""
 
-    @patch("coco_codes.config.set_config_value")
+    @patch("coding_agent.config.set_config_value")
     def test_save_color_for_banner(self, mock_set_config):
         """Test saving color selection for a banner."""
-        from coco_codes.config import set_config_value
+        from coding_agent.config import set_config_value
 
         set_config_value("banner_colors.thinking", "blue")
         mock_set_config.assert_called_once_with("banner_colors.thinking", "blue")
 
-    @patch("coco_codes.config.set_config_value")
+    @patch("coding_agent.config.set_config_value")
     def test_multiple_color_saves(self, mock_set_config):
         """Test saving colors for multiple banners."""
-        from coco_codes.config import set_config_value
+        from coding_agent.config import set_config_value
 
         set_config_value("banner_colors.thinking", "blue")
         set_config_value("banner_colors.shell_command", "green")
@@ -265,10 +265,10 @@ class TestColorPreview:
 class TestThemeManagement:
     """Test theme management functionality."""
 
-    @patch("coco_codes.config.set_config_value")
+    @patch("coding_agent.config.set_config_value")
     def test_save_theme_settings(self, mock_set_config):
         """Test saving theme settings."""
-        from coco_codes.config import set_config_value
+        from coding_agent.config import set_config_value
 
         theme_data = {"thinking": "blue", "shell_command": "green"}
         for banner, color in theme_data.items():
@@ -316,10 +316,10 @@ class TestMenuExit:
         # No changes made, just exit
         assert config is not None
 
-    @patch("coco_codes.config.set_config_value")
+    @patch("coding_agent.config.set_config_value")
     def test_exit_after_changes(self, mock_set_config):
         """Test exiting menu after making changes."""
-        from coco_codes.config import set_config_value
+        from coding_agent.config import set_config_value
 
         ColorConfiguration()
         set_config_value("banner_colors.thinking", "purple")

@@ -7,7 +7,7 @@ import time
 
 import pytest
 
-from coco_codes.tools.command_runner import _win32_pipe_has_data
+from coding_agent.tools.command_runner import _win32_pipe_has_data
 
 
 @pytest.mark.skipif(not sys.platform.startswith("win"), reason="Windows only")

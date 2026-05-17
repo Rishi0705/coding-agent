@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.tools.file_operations import (
+from coding_agent.tools.file_operations import (
     ListFileOutput,
     ReadFileOutput,
     _list_files,

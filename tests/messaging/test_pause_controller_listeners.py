@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from coco_codes.messaging.pause_controller import (
+from coding_agent.messaging.pause_controller import (
     PauseController,
     reset_pause_controller,
 )

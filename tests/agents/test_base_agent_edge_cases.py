@@ -14,7 +14,7 @@ Focuses on ensuring error handling doesn't crash and provides graceful degradati
 
 import pytest
 
-from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
 
 class TestBaseAgentEdgeCases:
@@ -23,7 +23,7 @@ class TestBaseAgentEdgeCases:
     @pytest.fixture
     def agent(self):
         """Create a fresh agent instance for each test."""
-        return CocoCodesAgent()
+        return CodingAgentAgent()
 
         # Should filter out the huge message or handle it
 

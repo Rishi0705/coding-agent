@@ -1,6 +1,6 @@
 """Tests for hook engine pattern matcher."""
 
-from coco_codes.hook_engine.matcher import _extract_file_path, matches
+from coding_agent.hook_engine.matcher import _extract_file_path, matches
 
 
 class TestMatches:

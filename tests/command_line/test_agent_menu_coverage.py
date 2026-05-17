@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.command_line.agent_menu import (
+from coding_agent.command_line.agent_menu import (
     PAGE_SIZE,
     _apply_pinned_model,
     _build_model_picker_choices,
@@ -30,8 +30,8 @@ class TestSanitizeDisplayText:
         assert _sanitize_display_text("Hello World") == "Hello World"
 
     def test_strips_emojis(self):
-        result = _sanitize_display_text("Coco Codes \U0001f436")
-        assert "Coco Codes" in result
+        result = _sanitize_display_text("Coding Agent \U0001f436")
+        assert "Coding Agent" in result
 
     def test_keeps_punctuation(self):
         result = _sanitize_display_text("hello-world_v2.0")
@@ -56,54 +56,54 @@ class TestSanitizeDisplayText:
 
 class TestGetPinnedModel:
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_pinned_model",
+        "coding_agent.command_line.agent_menu.get_agent_pinned_model",
         return_value="gpt-4",
     )
     def test_builtin_pinned(self, mock_pin):
         assert _get_pinned_model("agent1") == "gpt-4"
 
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_pinned_model", return_value=None
+        "coding_agent.command_line.agent_menu.get_agent_pinned_model", return_value=None
     )
-    @patch("coco_codes.agents.json_agent.discover_json_agents", return_value={})
+    @patch("coding_agent.agents.json_agent.discover_json_agents", return_value={})
     def test_no_pinned(self, mock_json, mock_pin):
         assert _get_pinned_model("agent1") is None
 
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_pinned_model", return_value=None
+        "coding_agent.command_line.agent_menu.get_agent_pinned_model", return_value=None
     )
     def test_json_agent_pinned(self, mock_pin):
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump({"model": "claude-3"}, f)
             f.flush()
             with patch(
-                "coco_codes.agents.json_agent.discover_json_agents",
+                "coding_agent.agents.json_agent.discover_json_agents",
                 return_value={"agent1": f.name},
             ):
                 assert _get_pinned_model("agent1") == "claude-3"
         os.unlink(f.name)
 
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_pinned_model", return_value=None
+        "coding_agent.command_line.agent_menu.get_agent_pinned_model", return_value=None
     )
     def test_json_agent_no_model(self, mock_pin):
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump({}, f)
             f.flush()
             with patch(
-                "coco_codes.agents.json_agent.discover_json_agents",
+                "coding_agent.agents.json_agent.discover_json_agents",
                 return_value={"agent1": f.name},
             ):
                 assert _get_pinned_model("agent1") is None
         os.unlink(f.name)
 
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_pinned_model",
+        "coding_agent.command_line.agent_menu.get_agent_pinned_model",
         side_effect=Exception,
     )
     def test_exception_in_builtin(self, mock_pin):
         with patch(
-            "coco_codes.agents.json_agent.discover_json_agents", side_effect=Exception
+            "coding_agent.agents.json_agent.discover_json_agents", side_effect=Exception
         ):
             assert _get_pinned_model("agent1") is None
 
@@ -142,12 +142,12 @@ class TestNormalizeModelChoice:
 
 class TestSelectPinnedModel:
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.agent_menu.arrow_select_async")
+    @patch("coding_agent.command_line.agent_menu.arrow_select_async")
     @patch(
-        "coco_codes.command_line.agent_menu.load_model_names", return_value=["m1", "m2"]
+        "coding_agent.command_line.agent_menu.load_model_names", return_value=["m1", "m2"]
     )
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_pinned_model", return_value=None
+        "coding_agent.command_line.agent_menu.get_agent_pinned_model", return_value=None
     )
     async def test_success(self, mock_pin, mock_load, mock_select):
         mock_select.return_value = "  m1"
@@ -156,12 +156,12 @@ class TestSelectPinnedModel:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.command_line.agent_menu.arrow_select_async",
+        "coding_agent.command_line.agent_menu.arrow_select_async",
         side_effect=KeyboardInterrupt,
     )
-    @patch("coco_codes.command_line.agent_menu.load_model_names", return_value=["m1"])
+    @patch("coding_agent.command_line.agent_menu.load_model_names", return_value=["m1"])
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_pinned_model", return_value=None
+        "coding_agent.command_line.agent_menu.get_agent_pinned_model", return_value=None
     )
     async def test_cancelled(self, mock_pin, mock_load, mock_select):
         result = await _select_pinned_model("agent1")
@@ -169,7 +169,7 @@ class TestSelectPinnedModel:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.command_line.agent_menu.load_model_names",
+        "coding_agent.command_line.agent_menu.load_model_names",
         side_effect=Exception("fail"),
     )
     async def test_load_error(self, mock_load):
@@ -177,13 +177,13 @@ class TestSelectPinnedModel:
         assert result is None
 
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.agent_menu.load_model_names", return_value=[])
+    @patch("coding_agent.command_line.agent_menu.load_model_names", return_value=[])
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_pinned_model", return_value=None
+        "coding_agent.command_line.agent_menu.get_agent_pinned_model", return_value=None
     )
     async def test_empty_models(self, mock_pin, mock_load):
         with patch(
-            "coco_codes.command_line.agent_menu.arrow_select_async",
+            "coding_agent.command_line.agent_menu.arrow_select_async",
             return_value="✓ (unpin)",
         ):
             result = await _select_pinned_model("agent1")
@@ -194,15 +194,15 @@ class TestSelectPinnedModel:
 
 
 class TestReloadAgentIfCurrent:
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
     def test_not_current(self, mock_get):
         agent = MagicMock()
         agent.name = "other"
         mock_get.return_value = agent
         _reload_agent_if_current("agent1", "m1")
 
-    @patch("coco_codes.command_line.agent_menu.emit_info")
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu.emit_info")
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
     def test_current_with_pinned(self, mock_get, mock_emit):
         agent = MagicMock()
         agent.name = "agent1"
@@ -210,8 +210,8 @@ class TestReloadAgentIfCurrent:
         _reload_agent_if_current("agent1", "m1")
         agent.reload_code_generation_agent.assert_called()
 
-    @patch("coco_codes.command_line.agent_menu.emit_info")
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu.emit_info")
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
     def test_current_no_pinned(self, mock_get, mock_emit):
         agent = MagicMock()
         agent.name = "agent1"
@@ -219,8 +219,8 @@ class TestReloadAgentIfCurrent:
         _reload_agent_if_current("agent1", None)
         assert any("default" in str(c) for c in mock_emit.call_args_list)
 
-    @patch("coco_codes.command_line.agent_menu.emit_warning")
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu.emit_warning")
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
     def test_reload_fails(self, mock_get, mock_warn):
         agent = MagicMock()
         agent.name = "agent1"
@@ -229,13 +229,13 @@ class TestReloadAgentIfCurrent:
         _reload_agent_if_current("agent1", "m1")
         mock_warn.assert_called()
 
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
     def test_no_current_agent(self, mock_get):
         mock_get.return_value = None
         _reload_agent_if_current("agent1", "m1")
 
-    @patch("coco_codes.command_line.agent_menu.emit_info")
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu.emit_info")
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
     def test_refresh_config(self, mock_get, mock_emit):
         agent = MagicMock()
         agent.name = "agent1"
@@ -249,34 +249,34 @@ class TestReloadAgentIfCurrent:
 
 
 class TestApplyPinnedModel:
-    @patch("coco_codes.command_line.agent_menu._reload_agent_if_current")
-    @patch("coco_codes.command_line.agent_menu.emit_success")
-    @patch("coco_codes.command_line.agent_menu.set_agent_pinned_model")
-    @patch("coco_codes.agents.json_agent.discover_json_agents", return_value={})
+    @patch("coding_agent.command_line.agent_menu._reload_agent_if_current")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu.set_agent_pinned_model")
+    @patch("coding_agent.agents.json_agent.discover_json_agents", return_value={})
     def test_builtin_pin(self, mock_json, mock_set, mock_emit, mock_reload):
         _apply_pinned_model("agent1", "gpt-4")
         mock_set.assert_called_with("agent1", "gpt-4")
         mock_emit.assert_called()
         mock_reload.assert_called_with("agent1", "gpt-4")
 
-    @patch("coco_codes.command_line.agent_menu._reload_agent_if_current")
-    @patch("coco_codes.command_line.agent_menu.emit_success")
-    @patch("coco_codes.command_line.agent_menu.clear_agent_pinned_model")
-    @patch("coco_codes.agents.json_agent.discover_json_agents", return_value={})
+    @patch("coding_agent.command_line.agent_menu._reload_agent_if_current")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu.clear_agent_pinned_model")
+    @patch("coding_agent.agents.json_agent.discover_json_agents", return_value={})
     def test_builtin_unpin(self, mock_json, mock_clear, mock_emit, mock_reload):
         _apply_pinned_model("agent1", "(unpin)")
         mock_clear.assert_called_with("agent1")
         mock_emit.assert_called()
         mock_reload.assert_called_with("agent1", None)
 
-    @patch("coco_codes.command_line.agent_menu._reload_agent_if_current")
-    @patch("coco_codes.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu._reload_agent_if_current")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
     def test_json_agent_pin(self, mock_emit, mock_reload):
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump({"name": "test"}, f)
             f.flush()
             with patch(
-                "coco_codes.agents.json_agent.discover_json_agents",
+                "coding_agent.agents.json_agent.discover_json_agents",
                 return_value={"agent1": f.name},
             ):
                 _apply_pinned_model("agent1", "claude-3")
@@ -285,14 +285,14 @@ class TestApplyPinnedModel:
             assert data["model"] == "claude-3"
         os.unlink(f.name)
 
-    @patch("coco_codes.command_line.agent_menu._reload_agent_if_current")
-    @patch("coco_codes.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu._reload_agent_if_current")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
     def test_json_agent_unpin(self, mock_emit, mock_reload):
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump({"name": "test", "model": "gpt-4"}, f)
             f.flush()
             with patch(
-                "coco_codes.agents.json_agent.discover_json_agents",
+                "coding_agent.agents.json_agent.discover_json_agents",
                 return_value={"agent1": f.name},
             ):
                 _apply_pinned_model("agent1", "(unpin)")
@@ -301,13 +301,13 @@ class TestApplyPinnedModel:
             assert "model" not in data
         os.unlink(f.name)
 
-    @patch("coco_codes.command_line.agent_menu.emit_warning")
+    @patch("coding_agent.command_line.agent_menu.emit_warning")
     @patch(
-        "coco_codes.agents.json_agent.discover_json_agents",
+        "coding_agent.agents.json_agent.discover_json_agents",
         side_effect=Exception("fail"),
     )
     @patch(
-        "coco_codes.command_line.agent_menu.set_agent_pinned_model",
+        "coding_agent.command_line.agent_menu.set_agent_pinned_model",
         side_effect=Exception("fail"),
     )
     def test_exception(self, mock_set, mock_json, mock_warn):
@@ -320,11 +320,11 @@ class TestApplyPinnedModel:
 
 class TestGetAgentEntries:
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_descriptions",
+        "coding_agent.command_line.agent_menu.get_agent_descriptions",
         return_value={"a": "Desc A", "b": "Desc B"},
     )
     @patch(
-        "coco_codes.command_line.agent_menu.get_available_agents",
+        "coding_agent.command_line.agent_menu.get_available_agents",
         return_value={"b": "B Agent", "a": "A Agent"},
     )
     def test_sorted(self, mock_avail, mock_desc):
@@ -332,9 +332,9 @@ class TestGetAgentEntries:
         assert entries[0][0] == "a"
         assert entries[1][0] == "b"
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions", return_value={})
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions", return_value={})
     @patch(
-        "coco_codes.command_line.agent_menu.get_available_agents",
+        "coding_agent.command_line.agent_menu.get_available_agents",
         return_value={"a": "A"},
     )
     def test_missing_description(self, mock_avail, mock_desc):
@@ -346,13 +346,13 @@ class TestGetAgentEntries:
 
 
 class TestRenderMenuPanel:
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
     def test_empty_entries(self, mock_pin):
         lines = _render_menu_panel([], 0, 0, "current")
         text = "".join(t for _, t in lines)
         assert "No agents found" in text
 
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
     def test_with_entries_selected_current(self, mock_pin):
         entries = [("agent1", "Agent One", "desc")]
         lines = _render_menu_panel(entries, 0, 0, "agent1")
@@ -361,14 +361,14 @@ class TestRenderMenuPanel:
         assert "current" in text
         assert "▶" in text
 
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value="gpt-4")
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value="gpt-4")
     def test_with_pinned_model(self, mock_pin):
         entries = [("agent1", "Agent One", "desc")]
         lines = _render_menu_panel(entries, 0, 0, "other")
         text = "".join(t for _, t in lines)
         assert "gpt-4" in text
 
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
     def test_not_selected(self, mock_pin):
         entries = [("a1", "A1", "d"), ("a2", "A2", "d")]
         lines = _render_menu_panel(entries, 0, 1, "other")
@@ -376,7 +376,7 @@ class TestRenderMenuPanel:
         assert "A1" in text
         assert "A2" in text
 
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
     def test_pagination(self, mock_pin):
         entries = [(f"a{i}", f"Agent {i}", "d") for i in range(PAGE_SIZE + 3)]
         lines = _render_menu_panel(entries, 1, PAGE_SIZE, "")
@@ -393,7 +393,7 @@ class TestRenderPreviewPanel:
         text = "".join(t for _, t in lines)
         assert "No agent selected" in text
 
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
     def test_with_entry_current(self, mock_pin):
         lines = _render_preview_panel(("a1", "Agent 1", "A great agent"), "a1")
         text = "".join(t for _, t in lines)
@@ -402,21 +402,21 @@ class TestRenderPreviewPanel:
         assert "Currently Active" in text
         assert "default" in text
 
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value="gpt-4")
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value="gpt-4")
     def test_with_pinned_not_current(self, mock_pin):
         lines = _render_preview_panel(("a1", "Agent 1", "desc"), "other")
         text = "".join(t for _, t in lines)
         assert "gpt-4" in text
         assert "Not active" in text
 
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
     def test_long_description_wraps(self, mock_pin):
         long_desc = "word " * 50
         lines = _render_preview_panel(("a1", "A1", long_desc), "a1")
         text = "".join(t for _, t in lines)
         assert "word" in text
 
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
     def test_multiline_description(self, mock_pin):
         desc = "Line one\nLine two"
         lines = _render_preview_panel(("a1", "A1", desc), "a1")
@@ -430,27 +430,27 @@ class TestRenderPreviewPanel:
 
 class TestInteractiveAgentPicker:
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions", return_value={})
-    @patch("coco_codes.command_line.agent_menu.get_available_agents", return_value={})
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions", return_value={})
+    @patch("coding_agent.command_line.agent_menu.get_available_agents", return_value={})
     async def test_no_agents(self, mock_avail, mock_desc, mock_current):
         result = await interactive_agent_picker()
         assert result is None
 
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.agent_menu.set_awaiting_user_input")
-    @patch("coco_codes.command_line.agent_menu.emit_info")
-    @patch("coco_codes.command_line.agent_menu.Application")
+    @patch("coding_agent.command_line.agent_menu.set_awaiting_user_input")
+    @patch("coding_agent.command_line.agent_menu.emit_info")
+    @patch("coding_agent.command_line.agent_menu.Application")
     @patch("sys.stdout")
     @patch("asyncio.sleep", new_callable=AsyncMock)
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_descriptions",
+        "coding_agent.command_line.agent_menu.get_agent_descriptions",
         return_value={"a1": "Desc"},
     )
     @patch(
-        "coco_codes.command_line.agent_menu.get_available_agents",
+        "coding_agent.command_line.agent_menu.get_available_agents",
         return_value={"a1": "Agent 1"},
     )
     async def test_select_agent_result_none(
@@ -477,19 +477,19 @@ class TestInteractiveAgentPicker:
         assert result is None
 
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.agent_menu.set_awaiting_user_input")
-    @patch("coco_codes.command_line.agent_menu.emit_info")
-    @patch("coco_codes.command_line.agent_menu.Application")
+    @patch("coding_agent.command_line.agent_menu.set_awaiting_user_input")
+    @patch("coding_agent.command_line.agent_menu.emit_info")
+    @patch("coding_agent.command_line.agent_menu.Application")
     @patch("sys.stdout")
     @patch("asyncio.sleep", new_callable=AsyncMock)
-    @patch("coco_codes.command_line.agent_menu._get_pinned_model", return_value=None)
-    @patch("coco_codes.command_line.agent_menu.get_current_agent")
+    @patch("coding_agent.command_line.agent_menu._get_pinned_model", return_value=None)
+    @patch("coding_agent.command_line.agent_menu.get_current_agent")
     @patch(
-        "coco_codes.command_line.agent_menu.get_agent_descriptions",
+        "coding_agent.command_line.agent_menu.get_agent_descriptions",
         return_value={"a1": "Desc"},
     )
     @patch(
-        "coco_codes.command_line.agent_menu.get_available_agents",
+        "coding_agent.command_line.agent_menu.get_available_agents",
         return_value={"a1": "Agent 1"},
     )
     async def test_current_agent_none(

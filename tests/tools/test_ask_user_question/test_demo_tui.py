@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from coco_codes.tools.ask_user_question.models import AskUserQuestionOutput
+from coding_agent.tools.ask_user_question.models import AskUserQuestionOutput
 
 
 class TestDemoTuiMain:
@@ -11,10 +11,10 @@ class TestDemoTuiMain:
             answers=[], cancelled=True, error=None, timed_out=False
         )
         with patch(
-            "coco_codes.tools.ask_user_question.demo_tui.ask_user_question",
+            "coding_agent.tools.ask_user_question.demo_tui.ask_user_question",
             return_value=mock_output,
         ) as mock_ask:
-            from coco_codes.tools.ask_user_question.demo_tui import main
+            from coding_agent.tools.ask_user_question.demo_tui import main
 
             main()
             mock_ask.assert_called_once()

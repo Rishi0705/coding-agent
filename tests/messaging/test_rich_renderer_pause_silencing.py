@@ -13,19 +13,19 @@ import io
 import pytest
 from rich.console import Console
 
-from coco_codes.messaging.bus import MessageBus
-from coco_codes.messaging.messages import (
+from coding_agent.messaging.bus import MessageBus
+from coding_agent.messaging.messages import (
     MessageLevel,
     ShellLineMessage,
     ShellOutputMessage,
     ShellStartMessage,
     TextMessage,
 )
-from coco_codes.messaging.pause_controller import (
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
-from coco_codes.messaging.rich_renderer import RichConsoleRenderer
+from coding_agent.messaging.rich_renderer import RichConsoleRenderer
 
 
 @pytest.fixture(autouse=True)
@@ -181,7 +181,7 @@ def test_is_paused_helper_never_raises(monkeypatch):
     """The ``_is_paused`` helper must swallow any internal failure and
     return a bool — a broken pause-controller singleton must never take
     down the renderer's hot path."""
-    from coco_codes.messaging import rich_renderer as rr
+    from coding_agent.messaging import rich_renderer as rr
 
     def _boom():
         raise RuntimeError("pause controller exploded")
@@ -197,7 +197,7 @@ def test_is_paused_helper_never_raises(monkeypatch):
             raise RuntimeError("broken")
 
     monkeypatch.setitem(
-        sys.modules, "coco_codes.messaging.pause_controller", _BrokenModule()
+        sys.modules, "coding_agent.messaging.pause_controller", _BrokenModule()
     )
 
     # Should still return a bool, never raise.

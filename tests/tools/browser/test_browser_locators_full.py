@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.browser.browser_locators import (
+from coding_agent.tools.browser.browser_locators import (
     find_buttons,
     find_by_label,
     find_by_placeholder,
@@ -23,7 +23,7 @@ from coco_codes.tools.browser.browser_locators import (
     run_xpath_query,
 )
 
-MOD = "coco_codes.tools.browser.browser_locators"
+MOD = "coding_agent.tools.browser.browser_locators"
 
 
 @pytest.fixture(autouse=True)

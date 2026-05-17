@@ -15,8 +15,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.ask_user_question.models import Question, QuestionOption
-from coco_codes.tools.ask_user_question.terminal_ui import interactive_question_picker
+from coding_agent.tools.ask_user_question.models import Question, QuestionOption
+from coding_agent.tools.ask_user_question.terminal_ui import interactive_question_picker
 
 
 def _make_questions() -> list[Question]:
@@ -44,11 +44,11 @@ async def test_suspends_and_resumes_key_listener_when_present():
 
     with (
         patch(
-            "coco_codes.agents._key_listeners.get_active_handle",
+            "coding_agent.agents._key_listeners.get_active_handle",
             return_value=fake_handle,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.tui_loop.run_question_tui",
+            "coding_agent.tools.ask_user_question.tui_loop.run_question_tui",
             fake_run,
         ),
     ):
@@ -65,11 +65,11 @@ async def test_no_listener_handle_is_a_noop():
 
     with (
         patch(
-            "coco_codes.agents._key_listeners.get_active_handle",
+            "coding_agent.agents._key_listeners.get_active_handle",
             return_value=None,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.tui_loop.run_question_tui",
+            "coding_agent.tools.ask_user_question.tui_loop.run_question_tui",
             fake_run,
         ),
     ):
@@ -90,11 +90,11 @@ async def test_resume_called_when_suspend_succeeds_even_if_tui_raises():
 
     with (
         patch(
-            "coco_codes.agents._key_listeners.get_active_handle",
+            "coding_agent.agents._key_listeners.get_active_handle",
             return_value=fake_handle,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.tui_loop.run_question_tui",
+            "coding_agent.tools.ask_user_question.tui_loop.run_question_tui",
             fake_run,
         ),
         pytest.raises(RuntimeError, match="tui exploded"),
@@ -119,11 +119,11 @@ async def test_no_resume_when_suspend_timed_out():
 
     with (
         patch(
-            "coco_codes.agents._key_listeners.get_active_handle",
+            "coding_agent.agents._key_listeners.get_active_handle",
             return_value=fake_handle,
         ),
         patch(
-            "coco_codes.tools.ask_user_question.tui_loop.run_question_tui",
+            "coding_agent.tools.ask_user_question.tui_loop.run_question_tui",
             fake_run,
         ),
     ):

@@ -4,14 +4,14 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 
-from coco_codes.model_factory import ModelFactory
+from coding_agent.model_factory import ModelFactory
 
 
 class TestModelFactoryBasics:
     """Test core functionality of ModelFactory."""
 
-    @patch("coco_codes.model_factory.pathlib.Path.exists", return_value=False)
-    @patch("coco_codes.model_factory.callbacks.get_callbacks", return_value=[])
+    @patch("coding_agent.model_factory.pathlib.Path.exists", return_value=False)
+    @patch("coding_agent.model_factory.callbacks.get_callbacks", return_value=[])
     def test_load_config_basic(self, mock_callbacks, mock_exists):
         """Test basic config loading from models.json."""
         test_config = {
@@ -32,11 +32,11 @@ class TestModelFactoryBasics:
             assert config["claude-3-5-sonnet"]["type"] == "anthropic"
 
     @patch(
-        "coco_codes.plugins.claude_code_oauth.utils.load_claude_models_filtered",
+        "coding_agent.plugins.claude_code_oauth.utils.load_claude_models_filtered",
         return_value={},
     )
-    @patch("coco_codes.model_factory.pathlib.Path")
-    @patch("coco_codes.model_factory.callbacks.get_callbacks", return_value=[])
+    @patch("coding_agent.model_factory.pathlib.Path")
+    @patch("coding_agent.model_factory.callbacks.get_callbacks", return_value=[])
     def test_load_config_with_extra_models(
         self,
         mock_callbacks,
@@ -104,11 +104,11 @@ class TestModelFactoryBasics:
         assert "custom-model" in config
 
     @patch(
-        "coco_codes.plugins.claude_code_oauth.utils.load_claude_models_filtered",
+        "coding_agent.plugins.claude_code_oauth.utils.load_claude_models_filtered",
         return_value={},
     )
-    @patch("coco_codes.model_factory.pathlib.Path")
-    @patch("coco_codes.model_factory.callbacks.get_callbacks", return_value=[])
+    @patch("coding_agent.model_factory.pathlib.Path")
+    @patch("coding_agent.model_factory.callbacks.get_callbacks", return_value=[])
     def test_load_config_invalid_json(
         self,
         mock_callbacks,
@@ -217,8 +217,8 @@ class TestModelFactoryBasics:
         config = {"gpt-4": {"type": "openai", "name": "gpt-4"}}
 
         # Mock get_api_key to return None (simulating missing API key)
-        with patch("coco_codes.model_factory.get_api_key", return_value=None):
-            with patch("coco_codes.model_factory.emit_warning") as mock_warn:
+        with patch("coding_agent.model_factory.get_api_key", return_value=None):
+            with patch("coding_agent.model_factory.emit_warning") as mock_warn:
                 model = ModelFactory.get_model("gpt-4", config)
                 assert model is None
                 mock_warn.assert_called_once()
@@ -299,7 +299,7 @@ class TestModelFactoryBasics:
         }
 
         with patch.dict(os.environ, {}, clear=True):
-            with patch("coco_codes.model_factory.emit_warning") as mock_warn:
+            with patch("coding_agent.model_factory.emit_warning") as mock_warn:
                 model = ModelFactory.get_model("custom-model", config)
 
                 # Model should still be created but with empty header value
@@ -341,19 +341,19 @@ class TestModelFactoryBasics:
             assert model1.model_name == model2.model_name
 
     @patch(
-        "coco_codes.model_factory.callbacks.get_callbacks",
+        "coding_agent.model_factory.callbacks.get_callbacks",
         return_value=["test_callback"],
     )
     @patch(
-        "coco_codes.model_factory.callbacks.on_load_model_config",
+        "coding_agent.model_factory.callbacks.on_load_model_config",
         return_value=[{"test": "config"}],
     )
     @patch(
-        "coco_codes.model_factory.callbacks.on_load_models_config",
+        "coding_agent.model_factory.callbacks.on_load_models_config",
         return_value=[],
     )
     @patch("builtins.open", new_callable=mock_open, read_data="{}")
-    @patch("coco_codes.model_factory.pathlib.Path.exists", return_value=False)
+    @patch("coding_agent.model_factory.pathlib.Path.exists", return_value=False)
     def test_load_config_with_callbacks(
         self,
         mock_exists,

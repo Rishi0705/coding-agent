@@ -1,7 +1,7 @@
 """Tests for the built-in Obsidian Agent plugin."""
 
-from coco_codes.plugins.obsidian_agent.agent_obsidian import ObsidianAgent
-from coco_codes.plugins.obsidian_agent.register_callbacks import register_agents
+from coding_agent.plugins.obsidian_agent.agent_obsidian import ObsidianAgent
+from coding_agent.plugins.obsidian_agent.register_callbacks import register_agents
 
 
 PRIVATE_DEFAULT_MARKERS = [

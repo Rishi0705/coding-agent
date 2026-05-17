@@ -5,13 +5,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
-from coco_codes.plugins.synthetic_status import status_api
-from coco_codes.plugins.synthetic_status.register_callbacks import (
+from coding_agent.plugins.synthetic_status import status_api
+from coding_agent.plugins.synthetic_status.register_callbacks import (
     _custom_help,
     _handle_custom_command,
     _is_synthetic_only_provider_configured,
 )
-from coco_codes.plugins.synthetic_status.status_api import (
+from coding_agent.plugins.synthetic_status.status_api import (
     SyntheticQuota,
     SyntheticQuotaResult,
 )
@@ -36,7 +36,7 @@ def test_fetch_synthetic_quota_success():
     }
 
     with patch(
-        "coco_codes.plugins.synthetic_status.status_api.requests.get"
+        "coding_agent.plugins.synthetic_status.status_api.requests.get"
     ) as mock_get:
         mock_get.return_value = mock_response
         result = status_api.fetch_synthetic_quota("test-key")
@@ -54,7 +54,7 @@ def test_fetch_synthetic_quota_auth_error():
     mock_response.status_code = 401
 
     with patch(
-        "coco_codes.plugins.synthetic_status.status_api.requests.get"
+        "coding_agent.plugins.synthetic_status.status_api.requests.get"
     ) as mock_get:
         mock_get.return_value = mock_response
         result = status_api.fetch_synthetic_quota("bad-key")
@@ -69,7 +69,7 @@ def test_fetch_synthetic_quota_invalid_payload():
     mock_response.json.return_value = {"subscription": {"limit": "abc"}}
 
     with patch(
-        "coco_codes.plugins.synthetic_status.status_api.requests.get"
+        "coding_agent.plugins.synthetic_status.status_api.requests.get"
     ) as mock_get:
         mock_get.return_value = mock_response
         result = status_api.fetch_synthetic_quota("test-key")
@@ -80,7 +80,7 @@ def test_fetch_synthetic_quota_invalid_payload():
 
 def test_fetch_synthetic_quota_timeout():
     with patch(
-        "coco_codes.plugins.synthetic_status.status_api.requests.get",
+        "coding_agent.plugins.synthetic_status.status_api.requests.get",
         side_effect=status_api.requests.Timeout(),
     ):
         result = status_api.fetch_synthetic_quota("test-key")
@@ -94,7 +94,7 @@ def test_is_synthetic_only_provider_configured_true():
         return "x" if env_name == "SYN_API_KEY" else None
 
     with patch(
-        "coco_codes.plugins.synthetic_status.register_callbacks.get_api_key",
+        "coding_agent.plugins.synthetic_status.register_callbacks.get_api_key",
         side_effect=fake_get_api_key,
     ):
         assert _is_synthetic_only_provider_configured() is True
@@ -107,7 +107,7 @@ def test_is_synthetic_only_provider_configured_false():
         return None
 
     with patch(
-        "coco_codes.plugins.synthetic_status.register_callbacks.get_api_key",
+        "coding_agent.plugins.synthetic_status.register_callbacks.get_api_key",
         side_effect=fake_get_api_key,
     ):
         assert _is_synthetic_only_provider_configured() is False
@@ -122,15 +122,15 @@ def test_handle_provider_synthetic_status_command():
 
     with (
         patch(
-            "coco_codes.plugins.synthetic_status.register_callbacks.resolve_syn_api_key",
+            "coding_agent.plugins.synthetic_status.register_callbacks.resolve_syn_api_key",
             return_value="test-key",
         ),
         patch(
-            "coco_codes.plugins.synthetic_status.register_callbacks.fetch_synthetic_quota",
+            "coding_agent.plugins.synthetic_status.register_callbacks.fetch_synthetic_quota",
             return_value=SyntheticQuotaResult(quota=quota),
         ),
         patch(
-            "coco_codes.plugins.synthetic_status.register_callbacks.emit_info"
+            "coding_agent.plugins.synthetic_status.register_callbacks.emit_info"
         ) as mock_info,
     ):
         result = _handle_custom_command("/provider synthetic status", "provider")
@@ -147,11 +147,11 @@ def test_handle_provider_other_is_not_owned():
 def test_handle_status_ambiguous_provider_message():
     with (
         patch(
-            "coco_codes.plugins.synthetic_status.register_callbacks._is_synthetic_only_provider_configured",
+            "coding_agent.plugins.synthetic_status.register_callbacks._is_synthetic_only_provider_configured",
             return_value=False,
         ),
         patch(
-            "coco_codes.plugins.synthetic_status.register_callbacks.emit_warning"
+            "coding_agent.plugins.synthetic_status.register_callbacks.emit_warning"
         ) as mock_warning,
     ):
         result = _handle_custom_command("/status", "status")

@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
-from coco_codes.command_line.model_settings_menu import (
+from coding_agent.command_line.model_settings_menu import (
     MODELS_PER_PAGE,
     SETTING_DEFINITIONS,
     ModelSettingsMenu,
@@ -18,11 +18,11 @@ def _make_menu(models=None, current="gpt-5", supported_settings=None):
     models = models if models is not None else ["gpt-5", "claude-opus", "grok"]
     with (
         patch(
-            "coco_codes.command_line.model_settings_menu._load_all_model_names",
+            "coding_agent.command_line.model_settings_menu._load_all_model_names",
             return_value=models,
         ),
         patch(
-            "coco_codes.command_line.model_settings_menu.get_global_model_name",
+            "coding_agent.command_line.model_settings_menu.get_global_model_name",
             return_value=current,
         ),
     ):
@@ -34,7 +34,7 @@ def _make_menu(models=None, current="gpt-5", supported_settings=None):
 
 
 class TestLoadAllModelNames:
-    @patch("coco_codes.command_line.model_settings_menu.ModelFactory")
+    @patch("coding_agent.command_line.model_settings_menu.ModelFactory")
     def test_load_model_names(self, mock_factory):
         mock_factory.load_config.return_value = {"m1": {}, "m2": {}}
         result = _load_all_model_names()
@@ -45,7 +45,7 @@ class TestLoadAllModelNames:
 
 
 class TestGetSettingChoices:
-    @patch("coco_codes.command_line.model_settings_menu.ModelFactory")
+    @patch("coding_agent.command_line.model_settings_menu.ModelFactory")
     def test_reasoning_effort_without_xhigh(self, mock_factory):
         mock_factory.load_config.return_value = {
             "gpt-5": {"supports_xhigh_reasoning": False}
@@ -54,7 +54,7 @@ class TestGetSettingChoices:
         assert "xhigh" not in choices
         assert "high" in choices
 
-    @patch("coco_codes.command_line.model_settings_menu.ModelFactory")
+    @patch("coding_agent.command_line.model_settings_menu.ModelFactory")
     def test_reasoning_effort_with_xhigh(self, mock_factory):
         mock_factory.load_config.return_value = {
             "codex": {"supports_xhigh_reasoning": True}
@@ -66,7 +66,7 @@ class TestGetSettingChoices:
         choices = _get_setting_choices("temperature")
         assert choices == []
 
-    @patch("coco_codes.command_line.model_settings_menu.ModelFactory")
+    @patch("coding_agent.command_line.model_settings_menu.ModelFactory")
     def test_reasoning_effort_no_model_name(self, mock_factory):
         choices = _get_setting_choices("reasoning_effort")
         assert "xhigh" in choices  # no filtering without model
@@ -127,7 +127,7 @@ class TestMenuProperties:
 
 
 class TestModelSettings:
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     def test_get_supported_settings(self, mock_supports):
         mock_supports.side_effect = lambda m, s: s in ("temperature", "seed")
         menu = _make_menu()
@@ -136,18 +136,18 @@ class TestModelSettings:
         assert "seed" in supported
 
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_openai_verbosity",
+        "coding_agent.command_line.model_settings_menu.get_openai_verbosity",
         return_value="high",
     )
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_openai_reasoning_effort",
+        "coding_agent.command_line.model_settings_menu.get_openai_reasoning_effort",
         return_value="medium",
     )
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     def test_load_model_settings_with_openai(
         self, mock_supports, mock_get_all, mock_effort, mock_verb
     ):
@@ -213,7 +213,7 @@ class TestFormatValue:
 
 class TestRenderMainList:
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_render_models_view(self, mock_settings):
@@ -223,7 +223,7 @@ class TestRenderMainList:
         text = "".join(t for _, t in lines)
         assert "Select a Model" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.get_all_model_settings")
+    @patch("coding_agent.command_line.model_settings_menu.get_all_model_settings")
     def test_render_models_with_settings(self, mock_settings):
         mock_settings.return_value = {"temperature": 0.5}
         menu = _make_menu(models=["m1"])
@@ -240,7 +240,7 @@ class TestRenderMainList:
         assert "No models" in text
 
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_render_models_pagination(self, mock_settings):
@@ -250,9 +250,9 @@ class TestRenderMainList:
         text = "".join(t for _, t in lines)
         assert "Page" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_render_settings_view(self, mock_settings, mock_supports):
@@ -266,11 +266,11 @@ class TestRenderMainList:
         assert "Temperature" in text
 
     @patch(
-        "coco_codes.command_line.model_settings_menu.model_supports_setting",
+        "coding_agent.command_line.model_settings_menu.model_supports_setting",
         return_value=False,
     )
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_render_settings_view_no_settings(self, mock_settings, mock_supports):
@@ -281,9 +281,9 @@ class TestRenderMainList:
         text = "".join(t for _, t in lines)
         assert "No configurable settings" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={"temperature": 0.5},
     )
     def test_render_settings_editing_mode(self, mock_settings, mock_supports):
@@ -303,7 +303,7 @@ class TestRenderMainList:
 
 class TestRenderDetailsPanel:
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_models_view_no_models(self, mock_settings):
@@ -312,8 +312,8 @@ class TestRenderDetailsPanel:
         text = "".join(t for _, t in lines)
         assert "No models" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
-    @patch("coco_codes.command_line.model_settings_menu.get_all_model_settings")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.get_all_model_settings")
     def test_models_view_with_settings(self, mock_settings, mock_supports):
         mock_settings.return_value = {"temperature": 0.5}
         mock_supports.side_effect = lambda m, s: s == "temperature"
@@ -326,11 +326,11 @@ class TestRenderDetailsPanel:
         assert "Effective Settings" in text
 
     @patch(
-        "coco_codes.command_line.model_settings_menu.model_supports_setting",
+        "coding_agent.command_line.model_settings_menu.model_supports_setting",
         return_value=False,
     )
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_models_view_no_custom_settings(self, mock_settings, mock_supports):
@@ -340,11 +340,11 @@ class TestRenderDetailsPanel:
         assert "default settings" in text
 
     @patch(
-        "coco_codes.command_line.model_settings_menu.model_supports_setting",
+        "coding_agent.command_line.model_settings_menu.model_supports_setting",
         return_value=False,
     )
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_models_view_no_supported_settings(self, mock_settings, mock_supports):
@@ -353,9 +353,9 @@ class TestRenderDetailsPanel:
         text = "".join(t for _, t in lines)
         assert "None" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_models_view_pagination_info(self, mock_settings, mock_supports):
@@ -366,10 +366,10 @@ class TestRenderDetailsPanel:
         text = "".join(t for _, t in lines)
         assert "Model 1 of" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.ModelFactory")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.ModelFactory")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_settings_view_choice_type(
@@ -386,9 +386,9 @@ class TestRenderDetailsPanel:
         assert "Options" in text
         assert "Global setting" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_settings_view_boolean_type(self, mock_settings, mock_supports):
@@ -400,9 +400,9 @@ class TestRenderDetailsPanel:
         text = "".join(t for _, t in lines)
         assert "Enabled | Disabled" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_settings_view_numeric_type(self, mock_settings, mock_supports):
@@ -415,9 +415,9 @@ class TestRenderDetailsPanel:
         assert "Range" in text
         assert "Min" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={"temperature": 0.5},
     )
     def test_settings_view_with_value(self, mock_settings, mock_supports):
@@ -429,9 +429,9 @@ class TestRenderDetailsPanel:
         text = "".join(t for _, t in lines)
         assert "0.50" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_settings_view_no_settings(self, mock_settings, mock_supports):
@@ -443,9 +443,9 @@ class TestRenderDetailsPanel:
         text = "".join(t for _, t in lines)
         assert "doesn't expose" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_settings_view_editing_mode(self, mock_settings, mock_supports):
@@ -460,9 +460,9 @@ class TestRenderDetailsPanel:
         assert "EDITING MODE" in text
         assert "0.80" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_settings_view_editing_none_value(self, mock_settings, mock_supports):
@@ -476,9 +476,9 @@ class TestRenderDetailsPanel:
         text = "".join(t for _, t in lines)
         assert "model default" in text
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_settings_view_verbosity_global_warning(self, mock_settings, mock_supports):
@@ -495,9 +495,9 @@ class TestRenderDetailsPanel:
 
 
 class TestStateTransitions:
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_enter_settings_view(self, mock_settings, mock_supports):
@@ -524,9 +524,9 @@ class TestStateTransitions:
 
 
 class TestEditing:
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={"temperature": 0.5},
     )
     def test_start_editing_existing_value(self, mock_settings, mock_supports):
@@ -537,9 +537,9 @@ class TestEditing:
         assert menu.editing_mode is True
         assert menu.edit_value == 0.5
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_start_editing_temperature_default(self, mock_settings, mock_supports):
@@ -549,9 +549,9 @@ class TestEditing:
         menu._start_editing()
         assert menu.edit_value == 0.7
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_start_editing_seed_default(self, mock_settings, mock_supports):
@@ -561,9 +561,9 @@ class TestEditing:
         menu._start_editing()
         assert menu.edit_value == 42
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_start_editing_top_p_default(self, mock_settings, mock_supports):
@@ -573,9 +573,9 @@ class TestEditing:
         menu._start_editing()
         assert menu.edit_value == 0.9
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_start_editing_budget_tokens_default(self, mock_settings, mock_supports):
@@ -586,13 +586,13 @@ class TestEditing:
         assert menu.edit_value == 10000
 
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_openai_reasoning_effort",
+        "coding_agent.command_line.model_settings_menu.get_openai_reasoning_effort",
         return_value="medium",
     )
-    @patch("coco_codes.command_line.model_settings_menu.ModelFactory")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.ModelFactory")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_start_editing_choice_default(
@@ -605,9 +605,9 @@ class TestEditing:
         menu._start_editing()
         assert menu.edit_value == "medium"
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_start_editing_boolean_default(self, mock_settings, mock_supports):
@@ -623,9 +623,9 @@ class TestEditing:
         menu._start_editing()
         assert menu.editing_mode is False
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_start_editing_generic_numeric_default(self, mock_settings, mock_supports):
@@ -661,10 +661,10 @@ class TestEditing:
 
 
 class TestAdjustValue:
-    @patch("coco_codes.command_line.model_settings_menu.ModelFactory")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.ModelFactory")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_adjust_choice(self, mock_settings, mock_supports, mock_factory):
@@ -677,9 +677,9 @@ class TestAdjustValue:
         menu._adjust_value(1)
         assert menu.edit_value == "high"  # next after medium
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_adjust_boolean(self, mock_settings, mock_supports):
@@ -691,9 +691,9 @@ class TestAdjustValue:
         menu._adjust_value(1)
         assert menu.edit_value is True
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_adjust_numeric(self, mock_settings, mock_supports):
@@ -705,9 +705,9 @@ class TestAdjustValue:
         menu._adjust_value(1)
         assert abs(menu.edit_value - 0.55) < 0.001
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_adjust_numeric_clamp_min(self, mock_settings, mock_supports):
@@ -719,9 +719,9 @@ class TestAdjustValue:
         menu._adjust_value(-1)
         assert menu.edit_value == 0.0
 
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_adjust_numeric_clamp_max(self, mock_settings, mock_supports):
@@ -749,10 +749,10 @@ class TestAdjustValue:
 
 
 class TestSaveCancel:
-    @patch("coco_codes.command_line.model_settings_menu.set_model_setting")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.set_model_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_save_temperature(self, mock_settings, mock_supports, mock_set):
@@ -766,10 +766,10 @@ class TestSaveCancel:
         assert menu.editing_mode is False
         assert menu.result_changed is True
 
-    @patch("coco_codes.command_line.model_settings_menu.set_openai_reasoning_effort")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.set_openai_reasoning_effort")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_save_reasoning_effort(self, mock_settings, mock_supports, mock_set):
@@ -781,10 +781,10 @@ class TestSaveCancel:
         menu._save_edit()
         mock_set.assert_called_with("high")
 
-    @patch("coco_codes.command_line.model_settings_menu.set_openai_verbosity")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.set_openai_verbosity")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_save_verbosity(self, mock_settings, mock_supports, mock_set):
@@ -796,10 +796,10 @@ class TestSaveCancel:
         menu._save_edit()
         mock_set.assert_called_with("low")
 
-    @patch("coco_codes.command_line.model_settings_menu.set_model_setting")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.set_model_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_save_none_value_deletes(self, mock_settings, mock_supports, mock_set):
@@ -830,9 +830,9 @@ class TestSaveCancel:
 
 
 class TestResetToDefault:
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_reset_editing_mode(self, mock_settings, mock_supports):
@@ -844,10 +844,10 @@ class TestResetToDefault:
         menu._reset_to_default()
         assert menu.edit_value is None  # temperature default is None
 
-    @patch("coco_codes.command_line.model_settings_menu.set_model_setting")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.set_model_setting")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_reset_not_editing(self, mock_settings, mock_supports, mock_set):
@@ -859,10 +859,10 @@ class TestResetToDefault:
         mock_set.assert_called_with("gpt-5", "temperature", None)
         assert menu.result_changed is True
 
-    @patch("coco_codes.command_line.model_settings_menu.set_openai_reasoning_effort")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.set_openai_reasoning_effort")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_reset_reasoning_effort(self, mock_settings, mock_supports, mock_set):
@@ -872,10 +872,10 @@ class TestResetToDefault:
         menu._reset_to_default()
         mock_set.assert_called_with("medium")
 
-    @patch("coco_codes.command_line.model_settings_menu.set_openai_verbosity")
-    @patch("coco_codes.command_line.model_settings_menu.model_supports_setting")
+    @patch("coding_agent.command_line.model_settings_menu.set_openai_verbosity")
+    @patch("coding_agent.command_line.model_settings_menu.model_supports_setting")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     def test_reset_verbosity(self, mock_settings, mock_supports, mock_set):
@@ -969,16 +969,16 @@ class TestNavigationHints:
 
 
 class TestRunAndInteractive:
-    @patch("coco_codes.command_line.model_settings_menu.set_awaiting_user_input")
-    @patch("coco_codes.command_line.model_settings_menu.Application")
+    @patch("coding_agent.command_line.model_settings_menu.set_awaiting_user_input")
+    @patch("coding_agent.command_line.model_settings_menu.Application")
     @patch("sys.stdout")
     @patch("time.sleep")
     @patch(
-        "coco_codes.command_line.model_settings_menu._load_all_model_names",
+        "coding_agent.command_line.model_settings_menu._load_all_model_names",
         return_value=["m1"],
     )
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_global_model_name",
+        "coding_agent.command_line.model_settings_menu.get_global_model_name",
         return_value="m1",
     )
     def test_run_returns_changed(
@@ -991,7 +991,7 @@ class TestRunAndInteractive:
         result = menu.run()
         assert result is True
 
-    @patch("coco_codes.command_line.model_settings_menu.ModelSettingsMenu")
+    @patch("coding_agent.command_line.model_settings_menu.ModelSettingsMenu")
     def test_interactive_model_settings(self, mock_cls):
         mock_menu = MagicMock()
         mock_menu.run.return_value = False
@@ -1004,13 +1004,13 @@ class TestRunAndInteractive:
 
 
 class TestShowModelSettingsSummary:
-    @patch("coco_codes.command_line.model_settings_menu.emit_info")
+    @patch("coding_agent.command_line.model_settings_menu.emit_info")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_all_model_settings",
+        "coding_agent.command_line.model_settings_menu.get_all_model_settings",
         return_value={},
     )
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_global_model_name",
+        "coding_agent.command_line.model_settings_menu.get_global_model_name",
         return_value="gpt-5",
     )
     def test_no_settings(self, mock_gn, mock_settings, mock_emit):
@@ -1018,10 +1018,10 @@ class TestShowModelSettingsSummary:
         mock_emit.assert_called_once()
         assert "No custom settings" in mock_emit.call_args[0][0]
 
-    @patch("coco_codes.command_line.model_settings_menu.emit_info")
-    @patch("coco_codes.command_line.model_settings_menu.get_all_model_settings")
+    @patch("coding_agent.command_line.model_settings_menu.emit_info")
+    @patch("coding_agent.command_line.model_settings_menu.get_all_model_settings")
     @patch(
-        "coco_codes.command_line.model_settings_menu.get_global_model_name",
+        "coding_agent.command_line.model_settings_menu.get_global_model_name",
         return_value="gpt-5",
     )
     def test_with_settings(self, mock_gn, mock_settings, mock_emit):
@@ -1036,8 +1036,8 @@ class TestShowModelSettingsSummary:
         assert any("high" in c for c in calls)
         assert any("Enabled" in c for c in calls)
 
-    @patch("coco_codes.command_line.model_settings_menu.emit_info")
-    @patch("coco_codes.command_line.model_settings_menu.get_all_model_settings")
+    @patch("coding_agent.command_line.model_settings_menu.emit_info")
+    @patch("coding_agent.command_line.model_settings_menu.get_all_model_settings")
     def test_with_model_name(self, mock_settings, mock_emit):
         mock_settings.return_value = {"temperature": 0.5}
         show_model_settings_summary("claude")

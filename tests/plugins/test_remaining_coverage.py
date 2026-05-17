@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, patch
 # ============================================================
 # shell_safety/command_cache.py - Full coverage
 # ============================================================
-from coco_codes.plugins.shell_safety.command_cache import (
+from coding_agent.plugins.shell_safety.command_cache import (
     CachedAssessment,
     CommandSafetyCache,
     cache_assessment,
@@ -133,14 +133,14 @@ class TestShellSafetyAgent:
         with patch.dict(
             "sys.modules",
             {
-                "coco_codes.agents.base_agent": mock_base,
-                "coco_codes.agents": MagicMock(),
+                "coding_agent.agents.base_agent": mock_base,
+                "coding_agent.agents": MagicMock(),
             },
         ):
             # Force reimport
             import importlib
 
-            import coco_codes.plugins.shell_safety.agent_shell_safety as mod
+            import coding_agent.plugins.shell_safety.agent_shell_safety as mod
 
             importlib.reload(mod)
 
@@ -156,7 +156,7 @@ class TestShellSafetyAgent:
 # shell_safety/register_callbacks.py - line 43 (is_oauth_model with None)
 # ============================================================
 
-from coco_codes.plugins.shell_safety.register_callbacks import (  # noqa: E402
+from coding_agent.plugins.shell_safety.register_callbacks import (  # noqa: E402
     is_oauth_model,
 )
 
@@ -176,7 +176,7 @@ class TestIsOauthModel:
 # agent_skills/discovery.py - lines 79, 95
 # ============================================================
 
-from coco_codes.plugins.agent_skills.discovery import discover_skills  # noqa: E402
+from coding_agent.plugins.agent_skills.discovery import discover_skills  # noqa: E402
 
 
 class TestDiscoveryMissingLines:
@@ -193,11 +193,11 @@ class TestDiscoveryMissingLines:
 
         with (
             patch(
-                "coco_codes.plugins.agent_skills.discovery.get_skill_directories",
+                "coding_agent.plugins.agent_skills.discovery.get_skill_directories",
                 return_value=[str(configured_dir)],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.get_default_skill_directories",
+                "coding_agent.plugins.agent_skills.discovery.get_default_skill_directories",
                 return_value=[default_dir],  # different dir, should be appended
             ),
         ):
@@ -231,7 +231,7 @@ class TestDiscoveryMissingLines:
 # agent_skills/metadata.py - missing lines
 # ============================================================
 
-from coco_codes.plugins.agent_skills.metadata import (  # noqa: E402
+from coding_agent.plugins.agent_skills.metadata import (  # noqa: E402
     get_skill_resources,
     load_full_skill_content,
     parse_skill_metadata,
@@ -338,7 +338,7 @@ class TestMetadataMissingLines:
 # agent_skills/skill_catalog.py - missing lines
 # ============================================================
 
-from coco_codes.plugins.agent_skills.skill_catalog import (  # noqa: E402
+from coding_agent.plugins.agent_skills.skill_catalog import (  # noqa: E402
     SkillCatalog,
     _format_display_name,
 )
@@ -358,7 +358,7 @@ class TestSkillCatalogMissing:
     def test_catalog_init_remote_exception(self):
         """Lines 139-142: fetch_remote_catalog raises exception."""
         with patch(
-            "coco_codes.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
+            "coding_agent.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
             side_effect=RuntimeError("network error"),
         ):
             cat = SkillCatalog()
@@ -367,7 +367,7 @@ class TestSkillCatalogMissing:
     def test_catalog_init_remote_none(self):
         """Lines 145-149: fetch returns None."""
         with patch(
-            "coco_codes.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
+            "coding_agent.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
             return_value=None,
         ):
             cat = SkillCatalog()
@@ -376,7 +376,7 @@ class TestSkillCatalogMissing:
     def test_catalog_list_categories(self):
         """Lines 201-202."""
         with patch(
-            "coco_codes.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
+            "coding_agent.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
             return_value=None,
         ):
             cat = SkillCatalog()
@@ -385,7 +385,7 @@ class TestSkillCatalogMissing:
     def test_catalog_get_by_category_empty(self):
         """Lines 207-209."""
         with patch(
-            "coco_codes.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
+            "coding_agent.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
             return_value=None,
         ):
             cat = SkillCatalog()
@@ -395,7 +395,7 @@ class TestSkillCatalogMissing:
     def test_catalog_search_empty_query(self):
         """Lines 214-232: search returns all when empty."""
         with patch(
-            "coco_codes.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
+            "coding_agent.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
             return_value=None,
         ):
             cat = SkillCatalog()
@@ -417,7 +417,7 @@ class TestSkillCatalogMissing:
         mock_remote.entries = [entry]
 
         with patch(
-            "coco_codes.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
+            "coding_agent.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
             return_value=mock_remote,
         ):
             cat = SkillCatalog()
@@ -429,7 +429,7 @@ class TestSkillCatalogMissing:
     def test_catalog_get_by_id_empty(self):
         """Lines 237-239."""
         with patch(
-            "coco_codes.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
+            "coding_agent.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
             return_value=None,
         ):
             cat = SkillCatalog()
@@ -451,7 +451,7 @@ class TestSkillCatalogMissing:
         mock_remote.entries = [entry]
 
         with patch(
-            "coco_codes.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
+            "coding_agent.plugins.agent_skills.skill_catalog.fetch_remote_catalog",
             return_value=mock_remote,
         ):
             cat = SkillCatalog()
@@ -469,21 +469,21 @@ class TestSkillCatalogMissing:
 class TestSkillsInstallMenuSizeFormat:
     def test_format_size_gb(self):
         """Line 60: format size that exceeds MB range."""
-        from coco_codes.plugins.agent_skills.skills_install_menu import _format_bytes
+        from coding_agent.plugins.agent_skills.skills_install_menu import _format_bytes
 
         # Large enough to be in GB
         result = _format_bytes(2 * 1024 * 1024 * 1024)  # 2 GB
         assert "GB" in result
 
     def test_format_size_bytes(self):
-        from coco_codes.plugins.agent_skills.skills_install_menu import _format_bytes
+        from coding_agent.plugins.agent_skills.skills_install_menu import _format_bytes
 
         result = _format_bytes(500)
         assert "B" in result
 
     def test_format_size_tb_fallthrough(self):
         """Line 60: the final return that's after the loop."""
-        from coco_codes.plugins.agent_skills.skills_install_menu import _format_bytes
+        from coding_agent.plugins.agent_skills.skills_install_menu import _format_bytes
 
         # The loop goes B, KB, MB, GB - GB always returns inside loop
         # So line 60 (return after loop) is unreachable in normal flow
@@ -496,7 +496,7 @@ class TestSkillsInstallMenuSizeFormat:
 # universal_constructor/registry.py - missing lines
 # ============================================================
 
-from coco_codes.plugins.universal_constructor.registry import UCRegistry  # noqa: E402
+from coding_agent.plugins.universal_constructor.registry import UCRegistry  # noqa: E402
 
 
 class TestUCRegistryMissing:
@@ -726,7 +726,7 @@ def sig_tool(*a, **kw): pass
         reg = UCRegistry(tools_dir=tmp_path)
         # Patch inspect.signature to raise
         with patch(
-            "coco_codes.plugins.universal_constructor.registry.inspect.signature",
+            "coding_agent.plugins.universal_constructor.registry.inspect.signature",
             side_effect=ValueError("no sig"),
         ):
             count = reg.scan()
@@ -762,7 +762,7 @@ def weather(): pass
 # universal_constructor/sandbox.py - missing lines
 # ============================================================
 
-from coco_codes.plugins.universal_constructor.sandbox import (  # noqa: E402
+from coding_agent.plugins.universal_constructor.sandbox import (  # noqa: E402
     FunctionInfo,
     _extract_tool_meta,
     _find_main_function,

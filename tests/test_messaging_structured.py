@@ -5,8 +5,8 @@ Tests for Pydantic message models and MessageBus functionality.
 
 from datetime import datetime, timezone
 
-from coco_codes.messaging import MessageBus
-from coco_codes.messaging.messages import (
+from coding_agent.messaging import MessageBus
+from coding_agent.messaging.messages import (
     AnyMessage,
     MessageCategory,
     MessageLevel,
@@ -227,7 +227,7 @@ class TestMixedMessageTypes:
 
     def test_global_emit_shell_line_function(self):
         """Test global emit_shell_line convenience function."""
-        from coco_codes.messaging import emit_shell_line, get_message_bus
+        from coding_agent.messaging import emit_shell_line, get_message_bus
 
         bus = get_message_bus()
         bus.mark_renderer_active()

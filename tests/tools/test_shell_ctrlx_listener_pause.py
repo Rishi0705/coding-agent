@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.messaging.pause_controller import (
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
@@ -44,7 +44,7 @@ def test_posix_listener_drops_cbreak_while_paused():
     the original terminal attrs (i.e. drop cbreak) so the steering editor
     can take over stdin cleanly.
     """
-    from coco_codes.tools import command_runner
+    from coding_agent.tools import command_runner
 
     stop_event = threading.Event()
     on_escape = MagicMock()
@@ -93,7 +93,7 @@ def test_posix_listener_reads_stdin_when_not_paused():
     select.select on stdin (i.e. it isn't permanently stuck in the
     paused branch).
     """
-    from coco_codes.tools import command_runner
+    from coding_agent.tools import command_runner
 
     stop_event = threading.Event()
     on_escape = MagicMock()
@@ -135,7 +135,7 @@ def test_windows_listener_skips_kbhit_while_paused(monkeypatch):
     fake_msvcrt.kbhit.return_value = False
     monkeypatch.setitem(sys.modules, "msvcrt", fake_msvcrt)
 
-    from coco_codes.tools import command_runner
+    from coding_agent.tools import command_runner
 
     stop_event = threading.Event()
     on_escape = MagicMock()

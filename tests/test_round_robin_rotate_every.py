@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from coco_codes.round_robin_model import RoundRobinModel
+from coding_agent.round_robin_model import RoundRobinModel
 
 
 class MockModel:

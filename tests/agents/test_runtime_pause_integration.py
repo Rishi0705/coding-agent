@@ -14,17 +14,17 @@ from pydantic_ai import PartStartEvent, RunContext
 from pydantic_ai.messages import TextPart
 from rich.console import Console
 
-from coco_codes.agents import _runtime
-from coco_codes.agents.event_stream_handler import (
+from coding_agent.agents import _runtime
+from coding_agent.agents.event_stream_handler import (
     event_stream_handler,
     set_streaming_console,
 )
-from coco_codes.callbacks import _callbacks, clear_callbacks
-from coco_codes.messaging.pause_controller import (
+from coding_agent.callbacks import _callbacks, clear_callbacks
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
-from coco_codes.messaging.spinner.console_spinner import ConsoleSpinner
+from coding_agent.messaging.spinner.console_spinner import ConsoleSpinner
 
 
 # =============================================================================
@@ -94,10 +94,10 @@ async def test_event_stream_handler_pause_gates_rendering_and_resumes():
     ev1 = PartStartEvent(index=0, part=TextPart(content="hello"))
     ev2 = PartStartEvent(index=1, part=TextPart(content="world"))
 
-    with patch("coco_codes.agents.event_stream_handler.pause_all_spinners"):
-        with patch("coco_codes.agents.event_stream_handler.resume_all_spinners"):
+    with patch("coding_agent.agents.event_stream_handler.pause_all_spinners"):
+        with patch("coding_agent.agents.event_stream_handler.resume_all_spinners"):
             with patch(
-                "coco_codes.agents.event_stream_handler.get_banner_color",
+                "coding_agent.agents.event_stream_handler.get_banner_color",
                 return_value="blue",
             ):
                 with patch("termflow.Parser"):
@@ -155,10 +155,10 @@ async def test_pause_timeout_auto_resumes_and_warns(monkeypatch):
         warnings.append(msg)
 
     # Patch the lazily-imported emit_warning the handler resolves.
-    monkeypatch.setattr("coco_codes.messaging.emit_warning", _capture)
+    monkeypatch.setattr("coding_agent.messaging.emit_warning", _capture)
     # Force a tiny max-pause via the config getter the handler uses.
     monkeypatch.setattr(
-        "coco_codes.config.get_value",
+        "coding_agent.config.get_value",
         lambda key, default=None: "0.1" if key == "max_pause_seconds" else default,
     )
 
@@ -173,10 +173,10 @@ async def test_pause_timeout_auto_resumes_and_warns(monkeypatch):
         get_pause_controller().pause()
         yield ev
 
-    with patch("coco_codes.agents.event_stream_handler.pause_all_spinners"):
-        with patch("coco_codes.agents.event_stream_handler.resume_all_spinners"):
+    with patch("coding_agent.agents.event_stream_handler.pause_all_spinners"):
+        with patch("coding_agent.agents.event_stream_handler.resume_all_spinners"):
             with patch(
-                "coco_codes.agents.event_stream_handler.get_banner_color",
+                "coding_agent.agents.event_stream_handler.get_banner_color",
                 return_value="blue",
             ):
                 with patch("termflow.Parser"):

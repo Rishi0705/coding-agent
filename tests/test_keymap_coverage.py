@@ -1,4 +1,4 @@
-"""Test coverage for coco_codes/keymap.py.
+"""Test coverage for coding_agent/keymap.py.
 
 This module tests keyboard shortcut configuration including:
 - Cancel agent key retrieval and validation
@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.keymap import (
+from coding_agent.keymap import (
     DEFAULT_CANCEL_AGENT_KEY,
     KEY_CODES,
     VALID_CANCEL_KEYS,
@@ -71,8 +71,8 @@ class TestKeymapError:
 class TestGetCancelAgentKey:
     """Test get_cancel_agent_key function."""
 
-    @patch("coco_codes.uvx_detection.should_use_alternate_cancel_key")
-    @patch("coco_codes.config.get_value")
+    @patch("coding_agent.uvx_detection.should_use_alternate_cancel_key")
+    @patch("coding_agent.config.get_value")
     def test_returns_ctrl_k_on_windows_uvx(self, mock_get_value, mock_should_use_alt):
         """Should return ctrl+k when Windows+uvx detection is true."""
         mock_should_use_alt.return_value = True
@@ -84,8 +84,8 @@ class TestGetCancelAgentKey:
         # get_value should NOT be called when uvx detection triggers
         mock_get_value.assert_not_called()
 
-    @patch("coco_codes.uvx_detection.should_use_alternate_cancel_key")
-    @patch("coco_codes.config.get_value")
+    @patch("coding_agent.uvx_detection.should_use_alternate_cancel_key")
+    @patch("coding_agent.config.get_value")
     def test_returns_default_when_config_is_none(
         self, mock_get_value, mock_should_use_alt
     ):
@@ -97,8 +97,8 @@ class TestGetCancelAgentKey:
 
         assert result == DEFAULT_CANCEL_AGENT_KEY
 
-    @patch("coco_codes.uvx_detection.should_use_alternate_cancel_key")
-    @patch("coco_codes.config.get_value")
+    @patch("coding_agent.uvx_detection.should_use_alternate_cancel_key")
+    @patch("coding_agent.config.get_value")
     def test_returns_default_when_config_is_empty(
         self, mock_get_value, mock_should_use_alt
     ):
@@ -110,8 +110,8 @@ class TestGetCancelAgentKey:
 
         assert result == DEFAULT_CANCEL_AGENT_KEY
 
-    @patch("coco_codes.uvx_detection.should_use_alternate_cancel_key")
-    @patch("coco_codes.config.get_value")
+    @patch("coding_agent.uvx_detection.should_use_alternate_cancel_key")
+    @patch("coding_agent.config.get_value")
     def test_returns_configured_key_normalized(
         self, mock_get_value, mock_should_use_alt
     ):
@@ -127,7 +127,7 @@ class TestGetCancelAgentKey:
 class TestValidateCancelAgentKey:
     """Test validate_cancel_agent_key function."""
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_valid_key_does_not_raise(self, mock_get_key):
         """Should not raise for valid keys."""
         for key in VALID_CANCEL_KEYS:
@@ -135,7 +135,7 @@ class TestValidateCancelAgentKey:
             # Should not raise
             validate_cancel_agent_key()
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_invalid_key_raises_keymap_error(self, mock_get_key):
         """Should raise KeymapError for invalid keys."""
         mock_get_key.return_value = "ctrl+z"  # Not in VALID_CANCEL_KEYS
@@ -146,7 +146,7 @@ class TestValidateCancelAgentKey:
         assert "ctrl+z" in str(exc_info.value)
         assert "Invalid cancel_agent_key" in str(exc_info.value)
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_error_message_lists_valid_options(self, mock_get_key):
         """Error message should list valid key options."""
         mock_get_key.return_value = "invalid"
@@ -162,7 +162,7 @@ class TestValidateCancelAgentKey:
 class TestCancelAgentUsesSignal:
     """Test cancel_agent_uses_signal function."""
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_returns_true_for_ctrl_c(self, mock_get_key):
         """Should return True when cancel key is ctrl+c."""
         mock_get_key.return_value = "ctrl+c"
@@ -171,7 +171,7 @@ class TestCancelAgentUsesSignal:
 
         assert result is True
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_returns_false_for_ctrl_k(self, mock_get_key):
         """Should return False when cancel key is ctrl+k."""
         mock_get_key.return_value = "ctrl+k"
@@ -180,7 +180,7 @@ class TestCancelAgentUsesSignal:
 
         assert result is False
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_returns_false_for_ctrl_q(self, mock_get_key):
         """Should return False when cancel key is ctrl+q."""
         mock_get_key.return_value = "ctrl+q"
@@ -193,7 +193,7 @@ class TestCancelAgentUsesSignal:
 class TestGetCancelAgentCharCode:
     """Test get_cancel_agent_char_code function."""
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_returns_correct_char_code_for_ctrl_c(self, mock_get_key):
         """Should return correct character code for ctrl+c."""
         mock_get_key.return_value = "ctrl+c"
@@ -202,7 +202,7 @@ class TestGetCancelAgentCharCode:
 
         assert result == "\x03"
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_returns_correct_char_code_for_ctrl_k(self, mock_get_key):
         """Should return correct character code for ctrl+k."""
         mock_get_key.return_value = "ctrl+k"
@@ -211,7 +211,7 @@ class TestGetCancelAgentCharCode:
 
         assert result == "\x0b"
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_raises_for_unknown_key(self, mock_get_key):
         """Should raise KeymapError for unknown key."""
         mock_get_key.return_value = "unknown_key"
@@ -226,7 +226,7 @@ class TestGetCancelAgentCharCode:
 class TestGetCancelAgentDisplayName:
     """Test get_cancel_agent_display_name function."""
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_formats_ctrl_c_correctly(self, mock_get_key):
         """Should format ctrl+c as Ctrl+C."""
         mock_get_key.return_value = "ctrl+c"
@@ -235,7 +235,7 @@ class TestGetCancelAgentDisplayName:
 
         assert result == "Ctrl+C"
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_formats_ctrl_k_correctly(self, mock_get_key):
         """Should format ctrl+k as Ctrl+K."""
         mock_get_key.return_value = "ctrl+k"
@@ -244,7 +244,7 @@ class TestGetCancelAgentDisplayName:
 
         assert result == "Ctrl+K"
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_formats_escape_correctly(self, mock_get_key):
         """Should format escape as ESCAPE."""
         mock_get_key.return_value = "escape"
@@ -253,7 +253,7 @@ class TestGetCancelAgentDisplayName:
 
         assert result == "ESCAPE"
 
-    @patch("coco_codes.keymap.get_cancel_agent_key")
+    @patch("coding_agent.keymap.get_cancel_agent_key")
     def test_formats_other_keys_uppercase(self, mock_get_key):
         """Should uppercase non-ctrl keys."""
         mock_get_key.return_value = "somekey"

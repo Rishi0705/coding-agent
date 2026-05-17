@@ -14,7 +14,7 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import httpx
 
-from coco_codes.reopenable_async_client import ReopenableAsyncClient
+from coding_agent.reopenable_async_client import ReopenableAsyncClient
 
 
 class TestReopenableAsyncClientInitialization:

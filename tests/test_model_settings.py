@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
-import coco_codes.config as cp_config
+import coding_agent.config as cp_config
 
 
 class TestPerModelSettings:

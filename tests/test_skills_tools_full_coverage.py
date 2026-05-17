@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.skills_tools import (
+from coding_agent.tools.skills_tools import (
     register_activate_skill,
     register_list_or_search_skills,
 )
@@ -30,7 +30,7 @@ class TestActivateSkill:
         fn = _register_and_get(register_activate_skill)
         ctx = MagicMock()
         with patch(
-            "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+            "coding_agent.plugins.agent_skills.config.get_skills_enabled",
             return_value=False,
         ):
             result = await fn(ctx, skill_name="test")
@@ -43,15 +43,15 @@ class TestActivateSkill:
         ctx = MagicMock()
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 side_effect=Exception("boom"),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 side_effect=Exception("boom"),
             ),
         ):
@@ -64,15 +64,15 @@ class TestActivateSkill:
         ctx = MagicMock()
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[],
             ),
         ):
@@ -89,19 +89,19 @@ class TestActivateSkill:
         mock_skill.path = "/path"
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[mock_skill],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.load_full_skill_content",
+                "coding_agent.plugins.agent_skills.metadata.load_full_skill_content",
                 return_value=None,
             ),
         ):
@@ -118,26 +118,26 @@ class TestActivateSkill:
         mock_skill.path = "/path"
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[mock_skill],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.load_full_skill_content",
+                "coding_agent.plugins.agent_skills.metadata.load_full_skill_content",
                 return_value="# Skill content",
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.get_skill_resources",
+                "coding_agent.plugins.agent_skills.metadata.get_skill_resources",
                 return_value=[],
             ),
-            patch("coco_codes.tools.skills_tools.get_message_bus"),
+            patch("coding_agent.tools.skills_tools.get_message_bus"),
         ):
             result = await fn(ctx, skill_name="test")
             assert result.error is None
@@ -150,7 +150,7 @@ class TestListOrSearchSkills:
         fn = _register_and_get(register_list_or_search_skills)
         ctx = MagicMock()
         with patch(
-            "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+            "coding_agent.plugins.agent_skills.config.get_skills_enabled",
             return_value=False,
         ):
             result = await fn(ctx)
@@ -162,15 +162,15 @@ class TestListOrSearchSkills:
         ctx = MagicMock()
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+                "coding_agent.plugins.agent_skills.config.get_disabled_skills",
                 return_value=set(),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 side_effect=Exception("boom"),
             ),
         ):
@@ -194,26 +194,26 @@ class TestListOrSearchSkills:
         mock_meta.author = "me"
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+                "coding_agent.plugins.agent_skills.config.get_disabled_skills",
                 return_value=set(),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[mock_skill],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.parse_skill_metadata",
+                "coding_agent.plugins.agent_skills.metadata.parse_skill_metadata",
                 return_value=mock_meta,
             ),
-            patch("coco_codes.tools.skills_tools.get_message_bus"),
+            patch("coding_agent.tools.skills_tools.get_message_bus"),
         ):
             result = await fn(ctx)
             assert result.error is None
@@ -236,26 +236,26 @@ class TestListOrSearchSkills:
         mock_meta.author = "me"
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+                "coding_agent.plugins.agent_skills.config.get_disabled_skills",
                 return_value=set(),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[mock_skill],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.parse_skill_metadata",
+                "coding_agent.plugins.agent_skills.metadata.parse_skill_metadata",
                 return_value=mock_meta,
             ),
-            patch("coco_codes.tools.skills_tools.get_message_bus"),
+            patch("coding_agent.tools.skills_tools.get_message_bus"),
         ):
             result = await fn(ctx, query="weath")
             assert result.total_count == 1
@@ -277,26 +277,26 @@ class TestListOrSearchSkills:
         mock_meta.author = "me"
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+                "coding_agent.plugins.agent_skills.config.get_disabled_skills",
                 return_value=set(),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[mock_skill],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.parse_skill_metadata",
+                "coding_agent.plugins.agent_skills.metadata.parse_skill_metadata",
                 return_value=mock_meta,
             ),
-            patch("coco_codes.tools.skills_tools.get_message_bus"),
+            patch("coding_agent.tools.skills_tools.get_message_bus"),
         ):
             result = await fn(ctx, query="auth")
             assert result.total_count == 1
@@ -318,26 +318,26 @@ class TestListOrSearchSkills:
         mock_meta.author = "me"
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+                "coding_agent.plugins.agent_skills.config.get_disabled_skills",
                 return_value=set(),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[mock_skill],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.parse_skill_metadata",
+                "coding_agent.plugins.agent_skills.metadata.parse_skill_metadata",
                 return_value=mock_meta,
             ),
-            patch("coco_codes.tools.skills_tools.get_message_bus"),
+            patch("coding_agent.tools.skills_tools.get_message_bus"),
         ):
             result = await fn(ctx, query="database")
             assert result.total_count == 1
@@ -359,26 +359,26 @@ class TestListOrSearchSkills:
         mock_meta.author = "me"
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+                "coding_agent.plugins.agent_skills.config.get_disabled_skills",
                 return_value=set(),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[mock_skill],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.parse_skill_metadata",
+                "coding_agent.plugins.agent_skills.metadata.parse_skill_metadata",
                 return_value=mock_meta,
             ),
-            patch("coco_codes.tools.skills_tools.get_message_bus"),
+            patch("coding_agent.tools.skills_tools.get_message_bus"),
         ):
             result = await fn(ctx, query="zzzzz")
             assert result.total_count == 0
@@ -395,22 +395,22 @@ class TestListOrSearchSkills:
         no_md_skill.has_skill_md = False
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+                "coding_agent.plugins.agent_skills.config.get_disabled_skills",
                 return_value={"disabled_one"},
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[disabled_skill, no_md_skill],
             ),
-            patch("coco_codes.tools.skills_tools.get_message_bus"),
+            patch("coding_agent.tools.skills_tools.get_message_bus"),
         ):
             result = await fn(ctx)
             assert result.total_count == 0
@@ -425,26 +425,26 @@ class TestListOrSearchSkills:
         mock_skill.path = "/path"
         with (
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skills_enabled",
+                "coding_agent.plugins.agent_skills.config.get_skills_enabled",
                 return_value=True,
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_disabled_skills",
+                "coding_agent.plugins.agent_skills.config.get_disabled_skills",
                 return_value=set(),
             ),
             patch(
-                "coco_codes.plugins.agent_skills.config.get_skill_directories",
+                "coding_agent.plugins.agent_skills.config.get_skill_directories",
                 return_value=[],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.discovery.discover_skills",
+                "coding_agent.plugins.agent_skills.discovery.discover_skills",
                 return_value=[mock_skill],
             ),
             patch(
-                "coco_codes.plugins.agent_skills.metadata.parse_skill_metadata",
+                "coding_agent.plugins.agent_skills.metadata.parse_skill_metadata",
                 return_value=None,
             ),
-            patch("coco_codes.tools.skills_tools.get_message_bus"),
+            patch("coding_agent.tools.skills_tools.get_message_bus"),
         ):
             result = await fn(ctx)
             assert result.total_count == 0

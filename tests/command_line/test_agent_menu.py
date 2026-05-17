@@ -6,7 +6,7 @@ pagination, current agent marking, and preview panel display.
 
 from unittest.mock import patch
 
-from coco_codes.command_line.agent_menu import (
+from coding_agent.command_line.agent_menu import (
     PAGE_SIZE,
     _apply_pinned_model,
     _get_agent_entries,
@@ -42,8 +42,8 @@ class TestPageSizeConstant:
 class TestGetAgentEntries:
     """Test the _get_agent_entries function."""
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions")
-    @patch("coco_codes.command_line.agent_menu.get_available_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions")
+    @patch("coding_agent.command_line.agent_menu.get_available_agents")
     def test_returns_empty_list_when_no_agents(self, mock_available, mock_descriptions):
         """Test that empty list is returned when no agents are available."""
         mock_available.return_value = {}
@@ -53,24 +53,24 @@ class TestGetAgentEntries:
 
         assert result == []
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions")
-    @patch("coco_codes.command_line.agent_menu.get_available_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions")
+    @patch("coding_agent.command_line.agent_menu.get_available_agents")
     def test_returns_single_agent(self, mock_available, mock_descriptions):
         """Test that single agent is returned correctly."""
-        mock_available.return_value = {"coco_codes": "Coco Codes 🐶"}
-        mock_descriptions.return_value = {"coco_codes": "A friendly coding assistant."}
+        mock_available.return_value = {"coding_agent": "Coding Agent 🐶"}
+        mock_descriptions.return_value = {"coding_agent": "A friendly coding assistant."}
 
         result = _get_agent_entries()
 
         assert len(result) == 1
         assert result[0] == (
-            "coco_codes",
-            "Coco Codes 🐶",
+            "coding_agent",
+            "Coding Agent 🐶",
             "A friendly coding assistant.",
         )
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions")
-    @patch("coco_codes.command_line.agent_menu.get_available_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions")
+    @patch("coding_agent.command_line.agent_menu.get_available_agents")
     def test_returns_multiple_agents_sorted(self, mock_available, mock_descriptions):
         """Test that multiple agents are returned sorted alphabetically."""
         mock_available.return_value = {
@@ -92,8 +92,8 @@ class TestGetAgentEntries:
         assert result[1][0] == "beta_agent"
         assert result[2][0] == "zebra_agent"
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions")
-    @patch("coco_codes.command_line.agent_menu.get_available_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions")
+    @patch("coding_agent.command_line.agent_menu.get_available_agents")
     def test_handles_missing_description(self, mock_available, mock_descriptions):
         """Test that missing descriptions get default value."""
         mock_available.return_value = {"test_agent": "Test Agent"}
@@ -104,8 +104,8 @@ class TestGetAgentEntries:
         assert len(result) == 1
         assert result[0] == ("test_agent", "Test Agent", "No description available")
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions")
-    @patch("coco_codes.command_line.agent_menu.get_available_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions")
+    @patch("coding_agent.command_line.agent_menu.get_available_agents")
     def test_handles_extra_descriptions(self, mock_available, mock_descriptions):
         """Test that extra descriptions (without matching agents) are ignored."""
         mock_available.return_value = {"agent1": "Agent One"}
@@ -119,8 +119,8 @@ class TestGetAgentEntries:
         assert len(result) == 1
         assert result[0][0] == "agent1"
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions")
-    @patch("coco_codes.command_line.agent_menu.get_available_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions")
+    @patch("coding_agent.command_line.agent_menu.get_available_agents")
     def test_sorts_case_insensitive(self, mock_available, mock_descriptions):
         """Test that sorting is case-insensitive."""
         mock_available.return_value = {
@@ -141,8 +141,8 @@ class TestGetAgentEntries:
         assert result[1][0] == "Mixed_Agent"
         assert result[2][0] == "UPPER_AGENT"
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions")
-    @patch("coco_codes.command_line.agent_menu.get_available_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions")
+    @patch("coding_agent.command_line.agent_menu.get_available_agents")
     def test_returns_more_than_page_size(self, mock_available, mock_descriptions):
         """Test handling of more agents than PAGE_SIZE."""
         # Create 15 agents (more than PAGE_SIZE of 10)
@@ -178,7 +178,7 @@ class TestRenderMenuPanel:
 
         Note: Emojis are stripped from display names for clean terminal rendering.
         """
-        entries = [("coco_codes", "Coco Codes 🐶", "A friendly assistant.")]
+        entries = [("coding_agent", "Coding Agent 🐶", "A friendly assistant.")]
 
         result = _render_menu_panel(
             entries, page=0, selected_idx=0, current_agent_name=""
@@ -186,7 +186,7 @@ class TestRenderMenuPanel:
 
         text = _get_text_from_formatted(result)
         # Emojis are sanitized for clean terminal rendering
-        assert "Coco Codes" in text
+        assert "Coding Agent" in text
         assert "Page 1/1" in text
 
     def test_highlights_selected_agent(self):
@@ -218,7 +218,7 @@ class TestRenderMenuPanel:
         text = _get_text_from_formatted(result)
         assert "current" in text
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_shows_pinned_model_marker(self, mock_pinned_model):
         """Test that pinned models are displayed in the menu."""
         mock_pinned_model.return_value = "gpt-4"
@@ -231,7 +231,7 @@ class TestRenderMenuPanel:
         text = _get_text_from_formatted(result)
         assert "gpt-4" in text
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_unpinned_model_shows_no_marker(self, mock_pinned_model):
         """Test that unpinned agents show no pinned model marker."""
         mock_pinned_model.return_value = None
@@ -369,33 +369,33 @@ class TestRenderPreviewPanel:
 
     def test_renders_agent_name(self):
         """Test that agent name is displayed."""
-        entry = ("coco_codes", "Coco Codes 🐶", "A friendly assistant.")
+        entry = ("coding_agent", "Coding Agent 🐶", "A friendly assistant.")
 
         result = _render_preview_panel(entry, current_agent_name="")
 
         text = _get_text_from_formatted(result)
         assert "Name:" in text
-        assert "coco_codes" in text
+        assert "coding_agent" in text
 
     def test_renders_display_name(self):
         """Test that display name is shown.
 
         Note: Emojis are stripped from display names for clean terminal rendering.
         """
-        entry = ("coco_codes", "Coco Codes 🐶", "A friendly assistant.")
+        entry = ("coding_agent", "Coding Agent 🐶", "A friendly assistant.")
 
         result = _render_preview_panel(entry, current_agent_name="")
 
         text = _get_text_from_formatted(result)
         assert "Display Name:" in text
         # Emojis are sanitized for clean terminal rendering
-        assert "Coco Codes" in text
+        assert "Coding Agent" in text
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_renders_pinned_model(self, mock_pinned_model):
         """Test that pinned model is shown in the preview panel."""
         mock_pinned_model.return_value = "gpt-4"
-        entry = ("coco_codes", "Coco Codes 🐶", "A friendly assistant.")
+        entry = ("coding_agent", "Coding Agent 🐶", "A friendly assistant.")
 
         result = _render_preview_panel(entry, current_agent_name="")
 
@@ -403,11 +403,11 @@ class TestRenderPreviewPanel:
         assert "Pinned Model:" in text
         assert "gpt-4" in text
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_renders_unpinned_model_shows_default(self, mock_pinned_model):
         """Test that unpinned model shows 'default' in preview."""
         mock_pinned_model.return_value = None
-        entry = ("coco_codes", "Coco Codes 🐶", "A friendly assistant.")
+        entry = ("coding_agent", "Coding Agent 🐶", "A friendly assistant.")
 
         result = _render_preview_panel(entry, current_agent_name="")
 
@@ -417,7 +417,7 @@ class TestRenderPreviewPanel:
 
     def test_renders_description(self):
         """Test that description is displayed."""
-        entry = ("coco_codes", "Coco Codes 🐶", "A friendly coding assistant dog.")
+        entry = ("coding_agent", "Coding Agent 🐶", "A friendly coding assistant dog.")
 
         result = _render_preview_panel(entry, current_agent_name="")
 
@@ -427,7 +427,7 @@ class TestRenderPreviewPanel:
 
     def test_renders_status_not_active(self):
         """Test that status shows 'Not active' for non-current agent."""
-        entry = ("coco_codes", "Coco Codes 🐶", "A friendly assistant.")
+        entry = ("coding_agent", "Coding Agent 🐶", "A friendly assistant.")
 
         result = _render_preview_panel(entry, current_agent_name="other_agent")
 
@@ -437,9 +437,9 @@ class TestRenderPreviewPanel:
 
     def test_renders_status_currently_active(self):
         """Test that status shows active for current agent."""
-        entry = ("coco_codes", "Coco Codes 🐶", "A friendly assistant.")
+        entry = ("coding_agent", "Coding Agent 🐶", "A friendly assistant.")
 
-        result = _render_preview_panel(entry, current_agent_name="coco_codes")
+        result = _render_preview_panel(entry, current_agent_name="coding_agent")
 
         text = _get_text_from_formatted(result)
         assert "Status:" in text
@@ -514,17 +514,17 @@ class TestRenderPreviewPanel:
 class TestGetAgentEntriesIntegration:
     """Integration-style tests for _get_agent_entries behavior."""
 
-    @patch("coco_codes.command_line.agent_menu.get_agent_descriptions")
-    @patch("coco_codes.command_line.agent_menu.get_available_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_descriptions")
+    @patch("coding_agent.command_line.agent_menu.get_available_agents")
     def test_typical_usage_scenario(self, mock_available, mock_descriptions):
         """Test a typical usage scenario with realistic agent data."""
         mock_available.return_value = {
-            "coco_codes": "Coco Codes 🐶",
+            "coding_agent": "Coding Agent 🐶",
             "pack_leader": "Pack Leader 🦮",
             "code_reviewer": "Code Reviewer 🔍",
         }
         mock_descriptions.return_value = {
-            "coco_codes": "A friendly AI coding assistant.",
+            "coding_agent": "A friendly AI coding assistant.",
             "pack_leader": "Coordinates the pack of specialized agents.",
             "code_reviewer": "Reviews code for quality and best practices.",
         }
@@ -533,14 +533,14 @@ class TestGetAgentEntriesIntegration:
 
         assert len(result) == 3
         # Should be sorted alphabetically
-        assert result[0][0] == "coco_codes"
+        assert result[0][0] == "coding_agent"
         assert result[1][0] == "code_reviewer"
         assert result[2][0] == "pack_leader"
 
         # Check full tuple structure
         assert result[0] == (
-            "coco_codes",
-            "Coco Codes 🐶",
+            "coding_agent",
+            "Coding Agent 🐶",
             "A friendly AI coding assistant.",
         )
 
@@ -662,19 +662,19 @@ class TestPreviewPanelStyling:
 class TestGetPinnedModelWithJSONAgents:
     """Test _get_pinned_model function with JSON agents."""
 
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_returns_builtin_agent_pinned_model(self, mock_builtin, mock_json_agents):
         """Test that built-in agent pinned model is returned."""
         mock_builtin.return_value = "gpt-4"
         mock_json_agents.return_value = {}
 
-        result = _get_pinned_model("coco_codes")
+        result = _get_pinned_model("coding_agent")
 
         assert result == "gpt-4"
 
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_returns_json_agent_pinned_model(self, mock_builtin, mock_json_agents):
         """Test that JSON agent pinned model is returned."""
         import json
@@ -698,8 +698,8 @@ class TestGetPinnedModelWithJSONAgents:
 
         os.unlink(json_file)
 
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_returns_none_for_unpinned_json_agent(self, mock_builtin, mock_json_agents):
         """Test that None is returned for JSON agent without pinned model."""
         import json
@@ -723,8 +723,8 @@ class TestGetPinnedModelWithJSONAgents:
 
         os.unlink(json_file)
 
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_handles_json_agent_read_error(self, mock_builtin, mock_json_agents):
         """Test that read errors are handled gracefully."""
         mock_builtin.return_value = None
@@ -734,8 +734,8 @@ class TestGetPinnedModelWithJSONAgents:
 
         assert result is None
 
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
-    @patch("coco_codes.command_line.agent_menu.get_agent_pinned_model")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.get_agent_pinned_model")
     def test_builtin_takes_precedence_over_json(self, mock_builtin, mock_json_agents):
         """Test that built-in pinned model takes precedence."""
         import json
@@ -745,12 +745,12 @@ class TestGetPinnedModelWithJSONAgents:
 
         # Create a temporary JSON agent file with different model
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
-            json.dump({"name": "coco_codes", "model": "claude-3-opus"}, f)
+            json.dump({"name": "coding_agent", "model": "claude-3-opus"}, f)
             json_file = f.name
 
-        mock_json_agents.return_value = {"coco_codes": json_file}
+        mock_json_agents.return_value = {"coding_agent": json_file}
 
-        result = _get_pinned_model("coco_codes")
+        result = _get_pinned_model("coding_agent")
 
         # Built-in should take precedence
         assert result == "gpt-4"
@@ -764,24 +764,24 @@ class TestGetPinnedModelWithJSONAgents:
 class TestApplyPinnedModelWithJSONAgents:
     """Test _apply_pinned_model function with JSON agents."""
 
-    @patch("coco_codes.command_line.agent_menu.set_agent_pinned_model")
-    @patch("coco_codes.command_line.agent_menu.emit_success")
-    @patch("coco_codes.command_line.agent_menu._reload_agent_if_current")
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.set_agent_pinned_model")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu._reload_agent_if_current")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
     def test_pins_builtin_agent(
         self, mock_json_agents, mock_reload, mock_emit, mock_set_pin
     ):
         """Test that built-in agents use config functions."""
         mock_json_agents.return_value = {}
 
-        _apply_pinned_model("coco_codes", "gpt-4")
+        _apply_pinned_model("coding_agent", "gpt-4")
 
-        mock_set_pin.assert_called_once_with("coco_codes", "gpt-4")
-        mock_reload.assert_called_once_with("coco_codes", "gpt-4")
+        mock_set_pin.assert_called_once_with("coding_agent", "gpt-4")
+        mock_reload.assert_called_once_with("coding_agent", "gpt-4")
 
-    @patch("coco_codes.command_line.agent_menu.emit_success")
-    @patch("coco_codes.command_line.agent_menu._reload_agent_if_current")
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu._reload_agent_if_current")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
     def test_pins_json_agent(self, mock_json_agents, mock_reload, mock_emit):
         """Test that JSON agents have model written to file."""
         import json
@@ -808,24 +808,24 @@ class TestApplyPinnedModelWithJSONAgents:
 
         os.unlink(json_file)
 
-    @patch("coco_codes.command_line.agent_menu.clear_agent_pinned_model")
-    @patch("coco_codes.command_line.agent_menu.emit_success")
-    @patch("coco_codes.command_line.agent_menu._reload_agent_if_current")
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.clear_agent_pinned_model")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu._reload_agent_if_current")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
     def test_unpins_builtin_agent(
         self, mock_json_agents, mock_reload, mock_emit, mock_clear_pin
     ):
         """Test that built-in agents have pin cleared via config."""
         mock_json_agents.return_value = {}
 
-        _apply_pinned_model("coco_codes", "(unpin)")
+        _apply_pinned_model("coding_agent", "(unpin)")
 
-        mock_clear_pin.assert_called_once_with("coco_codes")
-        mock_reload.assert_called_once_with("coco_codes", None)
+        mock_clear_pin.assert_called_once_with("coding_agent")
+        mock_reload.assert_called_once_with("coding_agent", None)
 
-    @patch("coco_codes.command_line.agent_menu.emit_success")
-    @patch("coco_codes.command_line.agent_menu._reload_agent_if_current")
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu._reload_agent_if_current")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
     def test_unpins_json_agent(self, mock_json_agents, mock_reload, mock_emit):
         """Test that JSON agents have model key removed."""
         import json
@@ -852,9 +852,9 @@ class TestApplyPinnedModelWithJSONAgents:
 
         os.unlink(json_file)
 
-    @patch("coco_codes.command_line.agent_menu.emit_success")
-    @patch("coco_codes.command_line.agent_menu.emit_warning")
-    @patch("coco_codes.agents.json_agent.discover_json_agents")
+    @patch("coding_agent.command_line.agent_menu.emit_success")
+    @patch("coding_agent.command_line.agent_menu.emit_warning")
+    @patch("coding_agent.agents.json_agent.discover_json_agents")
     def test_handles_json_agent_write_error(
         self, mock_json_agents, mock_emit_warning, mock_emit_success
     ):

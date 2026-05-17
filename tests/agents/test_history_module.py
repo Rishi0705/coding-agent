@@ -1,4 +1,4 @@
-"""Tests for coco_codes.agents._history — pure helper functions.
+"""Tests for coding_agent.agents._history — pure helper functions.
 
 These replace a pile of coverage-chasing tests of BaseAgent internals from
 before the Phase-1..3 refactor. They test the public-ish surface of the new
@@ -19,7 +19,7 @@ from pydantic_ai.messages import (
     ToolReturnPart,
 )
 
-from coco_codes.agents._history import (
+from coding_agent.agents._history import (
     estimate_context_overhead,
     estimate_tokens,
     estimate_tokens_for_message,

@@ -1,16 +1,16 @@
 """
 IMMUTABLE TEST FILE — DO NOT MODIFY.
 
-Tests for coco_codes.hook_engine.aliases
+Tests for coding_agent.hook_engine.aliases
 
 These tests define the contract that implementing agents must satisfy.
 Editing this file is cheating; all implementation work goes in
-coco_codes/hook_engine/aliases.py and coco_codes/hook_engine/matcher.py.
+coding_agent/hook_engine/aliases.py and coding_agent/hook_engine/matcher.py.
 """
 
 import pytest
 
-from coco_codes.hook_engine.aliases import (
+from coding_agent.hook_engine.aliases import (
     ALIAS_LOOKUP,
     CLAUDE_CODE_ALIASES,
     CODEX_ALIASES,

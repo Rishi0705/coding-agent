@@ -1,6 +1,6 @@
 """Live integration tests for message-history compaction.
 
-Drives a REAL ``CocoCodesAgent`` through ``run_with_mcp`` with a pre-populated
+Drives a REAL ``CodingAgentAgent`` through ``run_with_mcp`` with a pre-populated
 ~180k-token message history, pinned to ``firepass-kimi-k2p5-turbo`` (262k ctx window).
 Compaction MUST fire, the run MUST complete, and history MUST shrink.
 
@@ -37,11 +37,11 @@ from pydantic_ai.messages import (
 
 
 def _fireworks_key_available() -> bool:
-    """True if FIREWORKS_API_KEY is set via env OR in coco.cfg."""
+    """True if FIREWORKS_API_KEY is set via env OR in coding_agent.cfg."""
     if os.environ.get("FIREWORKS_API_KEY"):
         return True
     try:
-        from coco_codes.model_factory import get_api_key
+        from coding_agent.model_factory import get_api_key
 
         return bool(get_api_key("FIREWORKS_API_KEY"))
     except Exception:
@@ -50,7 +50,7 @@ def _fireworks_key_available() -> bool:
 
 pytestmark = pytest.mark.skipif(
     not _fireworks_key_available(),
-    reason="FIREWORKS_API_KEY not set (env or coco.cfg); live compaction tests skipped.",
+    reason="FIREWORKS_API_KEY not set (env or coding_agent.cfg); live compaction tests skipped.",
 )
 
 
@@ -215,19 +215,19 @@ def huge_history() -> List[ModelMessage]:
 
 
 @pytest.fixture
-def pinned_coco_codes_agent(monkeypatch):
-    """Fresh CocoCodesAgent pinned to firepass-kimi-k2p5-turbo.
+def pinned_coding_agent_agent(monkeypatch):
+    """Fresh CodingAgentAgent pinned to firepass-kimi-k2p5-turbo.
 
     Uses monkeypatch to override the global model getter so we don't touch
     the user's on-disk config during the test run.
     """
-    from coco_codes import config as cp_config
-    from coco_codes import summarization_agent as _sum_mod
-    from coco_codes.agents import _builder, _runtime
-    from coco_codes.agents import base_agent as _base_agent_mod
-    from coco_codes.agents.agent_coco_codes import CocoCodesAgent
+    from coding_agent import config as cp_config
+    from coding_agent import summarization_agent as _sum_mod
+    from coding_agent.agents import _builder, _runtime
+    from coding_agent.agents import base_agent as _base_agent_mod
+    from coding_agent.agents.agent_coding_agent import CodingAgentAgent
 
-    # `from coco_codes.config import foo` captures a binding at import time, so
+    # `from coding_agent.config import foo` captures a binding at import time, so
     # patching cp_config.foo alone doesnt propagate. Patch every site that
     # re-imports the model-name getters.
     for mod in (cp_config, _base_agent_mod):
@@ -256,24 +256,24 @@ def pinned_coco_codes_agent(monkeypatch):
         if hasattr(mod, "get_use_dbos"):
             monkeypatch.setattr(mod, "get_use_dbos", lambda: False)
 
-    agent = CocoCodesAgent()
+    agent = CodingAgentAgent()
     return agent
 
 
 @pytest.mark.asyncio
 async def test_live_compaction_truncation_strategy(
-    pinned_coco_codes_agent, huge_history, monkeypatch
+    pinned_coding_agent_agent, huge_history, monkeypatch
 ):
     """180k tokens + truncation strategy → run succeeds, history shrinks."""
-    from coco_codes.agents import _compaction
-    from coco_codes.agents._history import estimate_tokens_for_message
+    from coding_agent.agents import _compaction
+    from coding_agent.agents._history import estimate_tokens_for_message
 
     # Force truncation strategy + low threshold via monkeypatch (no disk writes)
     monkeypatch.setattr(_compaction, "get_compaction_strategy", lambda: "truncation")
     monkeypatch.setattr(_compaction, "get_compaction_threshold", lambda: 0.5)
     monkeypatch.setattr(_compaction, "get_protected_token_count", lambda: 20_000)
 
-    agent = pinned_coco_codes_agent
+    agent = pinned_coding_agent_agent
     agent.set_message_history(list(huge_history))
 
     before_tokens = sum(estimate_tokens_for_message(m) for m in huge_history)
@@ -342,7 +342,7 @@ async def test_live_compaction_truncation_strategy(
 
 @pytest.mark.asyncio
 async def test_live_compaction_summarization_strategy(
-    pinned_coco_codes_agent, huge_history, monkeypatch
+    pinned_coding_agent_agent, huge_history, monkeypatch
 ):
     """180k tokens + summarization strategy.
 
@@ -360,8 +360,8 @@ async def test_live_compaction_summarization_strategy(
       - History becomes corrupted (orphan tool pairs, trailing ModelResponse)
       - Summarization is skipped when it should fire (detectable via spy)
     """
-    from coco_codes.agents import _compaction
-    from coco_codes.agents._history import estimate_tokens_for_message
+    from coding_agent.agents import _compaction
+    from coding_agent.agents._history import estimate_tokens_for_message
 
     monkeypatch.setattr(_compaction, "get_compaction_strategy", lambda: "summarization")
     monkeypatch.setattr(_compaction, "get_compaction_threshold", lambda: 0.5)
@@ -380,7 +380,7 @@ async def test_live_compaction_summarization_strategy(
 
     monkeypatch.setattr(_compaction, "summarize", spy_summarize)
 
-    agent = pinned_coco_codes_agent
+    agent = pinned_coding_agent_agent
     agent.set_message_history(list(huge_history))
 
     before_tokens = sum(estimate_tokens_for_message(m) for m in huge_history)
@@ -437,16 +437,16 @@ async def test_live_compaction_summarization_strategy(
 
 
 @pytest.mark.asyncio
-async def test_live_no_compaction_under_threshold(pinned_coco_codes_agent, monkeypatch):
+async def test_live_no_compaction_under_threshold(pinned_coding_agent_agent, monkeypatch):
     """Small history + high threshold → compaction must NOT fire, run succeeds."""
-    from coco_codes.agents import _compaction
-    from coco_codes.agents._history import estimate_tokens_for_message
+    from coding_agent.agents import _compaction
+    from coding_agent.agents._history import estimate_tokens_for_message
 
     # High threshold — should never trip
     monkeypatch.setattr(_compaction, "get_compaction_threshold", lambda: 0.95)
     monkeypatch.setattr(_compaction, "get_compaction_strategy", lambda: "truncation")
 
-    agent = pinned_coco_codes_agent
+    agent = pinned_coding_agent_agent
     small_history = _build_huge_history(target_tokens=5_000)
     agent.set_message_history(list(small_history))
 
@@ -463,7 +463,7 @@ async def test_live_no_compaction_under_threshold(pinned_coco_codes_agent, monke
     # Under-threshold run should NOT cause a big drop. It may still grow from
     # the new prompt + response. Key invariant: all of the original messages
     # are still there (by hash).
-    from coco_codes.agents._history import hash_message
+    from coding_agent.agents._history import hash_message
 
     original_hashes = {hash_message(m) for m in small_history}
     after_hashes = {hash_message(m) for m in after_history}
@@ -477,7 +477,7 @@ async def test_live_no_compaction_under_threshold(pinned_coco_codes_agent, monke
 
 @pytest.mark.asyncio
 async def test_live_orphan_tool_call_does_not_block_compaction(
-    pinned_coco_codes_agent, monkeypatch
+    pinned_coding_agent_agent, monkeypatch
 ):
     """REGRESSION: orphan tool_calls in history must not permanently defer
     compaction. This is the actual bug the user hit in production.
@@ -496,8 +496,8 @@ async def test_live_orphan_tool_call_does_not_block_compaction(
       "Summarization deferred: pending tool call(s) detected"
     on every turn, forever.
     """
-    from coco_codes.agents import _compaction
-    from coco_codes.agents._history import estimate_tokens_for_message
+    from coding_agent.agents import _compaction
+    from coding_agent.agents._history import estimate_tokens_for_message
 
     monkeypatch.setattr(_compaction, "get_compaction_strategy", lambda: "summarization")
     monkeypatch.setattr(_compaction, "get_compaction_threshold", lambda: 0.5)
@@ -528,7 +528,7 @@ async def test_live_orphan_tool_call_does_not_block_compaction(
     # Insert between system message and the rest — permanent orphan
     history = [history[0], orphan] + history[1:]
 
-    agent = pinned_coco_codes_agent
+    agent = pinned_coding_agent_agent
     agent.set_message_history(list(history))
 
     before_tokens = sum(estimate_tokens_for_message(m) for m in history)

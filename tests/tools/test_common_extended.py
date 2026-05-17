@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes.tools.common import (
+from coding_agent.tools.common import (
     DIR_IGNORE_PATTERNS,
     FILE_IGNORE_PATTERNS,
     IGNORE_PATTERNS,
@@ -16,7 +16,7 @@ from coco_codes.tools.common import (
 
 
 class TestCommonExtended:
-    """Extended tests for coco_codes.tools.common utilities."""
+    """Extended tests for coding_agent.tools.common utilities."""
 
     # ==================== should_ignore_path() Tests ====================
 

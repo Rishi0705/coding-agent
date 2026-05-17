@@ -5,15 +5,15 @@ Tests cover command assessment, caching, risk level comparison,
 and safety thresholds.
 """
 
-from coco_codes.plugins.shell_safety.agent_shell_safety import ShellSafetyAgent
-from coco_codes.plugins.shell_safety.command_cache import (
+from coding_agent.plugins.shell_safety.agent_shell_safety import ShellSafetyAgent
+from coding_agent.plugins.shell_safety.command_cache import (
     CachedAssessment,
     CommandSafetyCache,
     cache_assessment,
     get_cache_stats,
     get_cached_assessment,
 )
-from coco_codes.plugins.shell_safety.register_callbacks import (
+from coding_agent.plugins.shell_safety.register_callbacks import (
     RISK_LEVELS,
     compare_risk_levels,
     is_oauth_model,
@@ -260,7 +260,7 @@ class TestGlobalCacheFunctions:
     def test_cache_assessment_and_retrieve(self):
         """Test caching and retrieving assessments."""
         # Clear cache first
-        import coco_codes.plugins.shell_safety.command_cache as cache_module
+        import coding_agent.plugins.shell_safety.command_cache as cache_module
 
         cache_module._cache.clear()
 
@@ -273,7 +273,7 @@ class TestGlobalCacheFunctions:
 
     def test_get_cache_stats(self):
         """Test getting cache statistics."""
-        import coco_codes.plugins.shell_safety.command_cache as cache_module
+        import coding_agent.plugins.shell_safety.command_cache as cache_module
 
         cache_module._cache.clear()
 

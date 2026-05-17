@@ -17,16 +17,16 @@ import time
 import pytest
 from rich.console import Console
 
-from coco_codes.messaging.message_queue import (
+from coding_agent.messaging.message_queue import (
     MessageQueue,
     MessageType,
     UIMessage,
 )
-from coco_codes.messaging.pause_controller import (
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
-from coco_codes.messaging.renderers import (
+from coding_agent.messaging.renderers import (
     _BUFFER_FLUSH_INDICATOR_THRESHOLD,
     SynchronousInteractiveRenderer,
 )

@@ -1,4 +1,4 @@
-"""Tests for coco_codes.command_line.utils.
+"""Tests for coding_agent.command_line.utils.
 
 This module tests directory listing and table generation utilities
 used in the command-line interface.
@@ -9,7 +9,7 @@ import os
 import pytest
 from rich.table import Table
 
-from coco_codes.command_line.utils import list_directory, make_directory_table
+from coding_agent.command_line.utils import list_directory, make_directory_table
 
 
 class TestListDirectory:

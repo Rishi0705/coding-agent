@@ -13,9 +13,9 @@ from typing import Any, List
 
 import pytest
 
-from coco_codes.agents import _runtime
-from coco_codes.callbacks import _callbacks, clear_callbacks
-from coco_codes.messaging.pause_controller import (
+from coding_agent.agents import _runtime
+from coding_agent.callbacks import _callbacks, clear_callbacks
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
@@ -107,7 +107,7 @@ async def test_stale_steer_drained_at_run_start(_isolated_runtime, monkeypatch):
     # ``reset_pause_state_at_run_start`` lives in _run_signals and calls
     # ``emit_warning`` imported there. Patch the imported reference.
     monkeypatch.setattr(
-        "coco_codes.agents._run_signals.emit_warning",
+        "coding_agent.agents._run_signals.emit_warning",
         lambda msg, *_a, **_k: warnings.append(msg),
     )
 
@@ -167,7 +167,7 @@ async def test_clean_state_at_run_start_emits_no_warning(
     """
     warnings: List[str] = []
     monkeypatch.setattr(
-        "coco_codes.agents._run_signals.emit_warning",
+        "coding_agent.agents._run_signals.emit_warning",
         lambda msg, *_a, **_k: warnings.append(msg),
     )
 
@@ -200,7 +200,7 @@ async def test_steer_drained_on_cancel(_isolated_runtime, monkeypatch):
     infos: List[str] = []
     # ``drain_pause_state_on_cancel`` lives in _run_signals.
     monkeypatch.setattr(
-        "coco_codes.agents._run_signals.emit_info",
+        "coding_agent.agents._run_signals.emit_info",
         lambda msg, *_a, **_k: infos.append(msg),
     )
 
@@ -233,7 +233,7 @@ async def test_paused_state_cleared_on_cancel(_isolated_runtime, monkeypatch):
     so the NEXT run isn't frozen.
     """
     monkeypatch.setattr(
-        "coco_codes.agents._run_signals.emit_info", lambda *_a, **_k: None
+        "coding_agent.agents._run_signals.emit_info", lambda *_a, **_k: None
     )
 
     pc = get_pause_controller()
@@ -273,7 +273,7 @@ def test_steer_queued_mid_run_is_injected_via_history_processor():
 
     from pydantic_ai.messages import ModelRequest, UserPromptPart
 
-    from coco_codes.agents._steer_processor import make_steer_history_processor
+    from coding_agent.agents._steer_processor import make_steer_history_processor
 
     agent = Mock()
     agent._message_history = []
@@ -300,7 +300,7 @@ def test_steer_processor_is_wired_into_builder_after_compaction():
     """
     import inspect
 
-    from coco_codes.agents import _builder
+    from coding_agent.agents import _builder
 
     src = inspect.getsource(_builder)
     # Both processors must be referenced in the builder.

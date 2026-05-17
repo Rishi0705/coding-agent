@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 
-from coco_codes.mcp_.managed_server import (
+from coding_agent.mcp_.managed_server import (
     ManagedMCPServer,
     ServerConfig,
     ServerState,
@@ -138,7 +138,7 @@ class TestManagedMCPServerInit:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -159,7 +159,7 @@ class TestManagedMCPServerInit:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.MCPServerSSE",
+            "coding_agent.mcp_.managed_server.MCPServerSSE",
             side_effect=Exception("Connection failed"),
         ):
             server = ManagedMCPServer(config)
@@ -187,7 +187,7 @@ class TestGetPydanticServer:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.MCPServerSSE",
+            "coding_agent.mcp_.managed_server.MCPServerSSE",
             side_effect=Exception("Failed"),
         ):
             server = ManagedMCPServer(config)
@@ -204,7 +204,7 @@ class TestGetPydanticServer:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -223,7 +223,7 @@ class TestGetPydanticServer:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -243,7 +243,7 @@ class TestGetPydanticServer:
         )
 
         mock_pydantic_server = MagicMock()
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = mock_pydantic_server
             server = ManagedMCPServer(config)
 
@@ -283,7 +283,7 @@ class TestCreateServerSSE:
             config={"url": "http://localhost:8080", "timeout": 30},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             ManagedMCPServer(config)
 
@@ -299,7 +299,7 @@ class TestCreateServerSSE:
             config={"url": "http://localhost:8080", "read_timeout": 120},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             ManagedMCPServer(config)
 
@@ -316,7 +316,7 @@ class TestCreateServerSSE:
             config={"url": "http://localhost:8080", "http_client": mock_client},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             ManagedMCPServer(config)
 
@@ -337,9 +337,9 @@ class TestCreateServerSSE:
 
         mock_http_client = MagicMock()
         with (
-            patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse,
+            patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse,
             patch(
-                "coco_codes.mcp_.managed_server.create_async_client",
+                "coding_agent.mcp_.managed_server.create_async_client",
                 return_value=mock_http_client,
             ),
         ):
@@ -381,7 +381,7 @@ class TestCreateServerStdio:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio"
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio"
         ) as mock_stdio:
             mock_stdio.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -399,7 +399,7 @@ class TestCreateServerStdio:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio"
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio"
         ) as mock_stdio:
             mock_stdio.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -417,7 +417,7 @@ class TestCreateServerStdio:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio"
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio"
         ) as mock_stdio:
             mock_stdio.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -435,7 +435,7 @@ class TestCreateServerStdio:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio"
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio"
         ) as mock_stdio:
             mock_stdio.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -453,7 +453,7 @@ class TestCreateServerStdio:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio"
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio"
         ) as mock_stdio:
             mock_stdio.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -471,7 +471,7 @@ class TestCreateServerStdio:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio"
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio"
         ) as mock_stdio:
             mock_stdio.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -489,7 +489,7 @@ class TestCreateServerStdio:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio"
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio"
         ) as mock_stdio:
             mock_stdio.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -529,7 +529,7 @@ class TestCreateServerHTTP:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.MCPServerStreamableHTTP"
+            "coding_agent.mcp_.managed_server.MCPServerStreamableHTTP"
         ) as mock_http:
             mock_http.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -547,7 +547,7 @@ class TestCreateServerHTTP:
         )
 
         with patch(
-            "coco_codes.mcp_.managed_server.MCPServerStreamableHTTP"
+            "coding_agent.mcp_.managed_server.MCPServerStreamableHTTP"
         ) as mock_http:
             mock_http.return_value = MagicMock()
             ManagedMCPServer(config)
@@ -600,8 +600,8 @@ class TestGetHttpClient:
 
         with (
             patch.dict(os.environ, {"TEST_TOKEN": "secret123"}),
-            patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse,
-            patch("coco_codes.mcp_.managed_server.create_async_client") as mock_create,
+            patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse,
+            patch("coding_agent.mcp_.managed_server.create_async_client") as mock_create,
         ):
             mock_sse.return_value = MagicMock()
             mock_create.return_value = MagicMock()
@@ -626,8 +626,8 @@ class TestGetHttpClient:
         )
 
         with (
-            patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse,
-            patch("coco_codes.mcp_.managed_server.create_async_client") as mock_create,
+            patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse,
+            patch("coding_agent.mcp_.managed_server.create_async_client") as mock_create,
         ):
             mock_sse.return_value = MagicMock()
             mock_create.return_value = MagicMock()
@@ -650,8 +650,8 @@ class TestGetHttpClient:
         )
 
         with (
-            patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse,
-            patch("coco_codes.mcp_.managed_server.create_async_client") as mock_create,
+            patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse,
+            patch("coding_agent.mcp_.managed_server.create_async_client") as mock_create,
         ):
             mock_sse.return_value = MagicMock()
             mock_create.return_value = MagicMock()
@@ -680,7 +680,7 @@ class TestEnableDisable:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -702,7 +702,7 @@ class TestEnableDisable:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -724,7 +724,7 @@ class TestEnableDisable:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -752,7 +752,7 @@ class TestQuarantine:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -771,7 +771,7 @@ class TestQuarantine:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -786,7 +786,7 @@ class TestQuarantine:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -809,7 +809,7 @@ class TestQuarantine:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -839,7 +839,7 @@ class TestGetCapturedStderr:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -847,7 +847,7 @@ class TestGetCapturedStderr:
 
     def test_returns_stderr_for_stdio_server(self):
         """Test returns captured stderr for stdio server."""
-        from coco_codes.mcp_.blocking_startup import BlockingMCPServerStdio
+        from coding_agent.mcp_.blocking_startup import BlockingMCPServerStdio
 
         config = ServerConfig(
             id="test-id",
@@ -861,7 +861,7 @@ class TestGetCapturedStderr:
         mock_stdio.get_captured_stderr.return_value = ["error line 1", "error line 2"]
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio",
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio",
             return_value=mock_stdio,
         ):
             server = ManagedMCPServer(config)
@@ -890,7 +890,7 @@ class TestWaitUntilReady:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -900,7 +900,7 @@ class TestWaitUntilReady:
     @pytest.mark.asyncio
     async def test_stdio_waits_for_ready(self):
         """Test stdio server waits for ready."""
-        from coco_codes.mcp_.blocking_startup import BlockingMCPServerStdio
+        from coding_agent.mcp_.blocking_startup import BlockingMCPServerStdio
 
         config = ServerConfig(
             id="test-id",
@@ -913,7 +913,7 @@ class TestWaitUntilReady:
         mock_stdio.wait_until_ready = AsyncMock()
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio",
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio",
             return_value=mock_stdio,
         ):
             server = ManagedMCPServer(config)
@@ -926,7 +926,7 @@ class TestWaitUntilReady:
     @pytest.mark.asyncio
     async def test_stdio_returns_false_on_exception(self):
         """Test stdio server returns False on exception."""
-        from coco_codes.mcp_.blocking_startup import BlockingMCPServerStdio
+        from coding_agent.mcp_.blocking_startup import BlockingMCPServerStdio
 
         config = ServerConfig(
             id="test-id",
@@ -939,7 +939,7 @@ class TestWaitUntilReady:
         mock_stdio.wait_until_ready = AsyncMock(side_effect=Exception("Timeout"))
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio",
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio",
             return_value=mock_stdio,
         ):
             server = ManagedMCPServer(config)
@@ -967,7 +967,7 @@ class TestEnsureReady:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -977,7 +977,7 @@ class TestEnsureReady:
     @pytest.mark.asyncio
     async def test_stdio_calls_ensure_ready(self):
         """Test ensure_ready calls underlying method for stdio."""
-        from coco_codes.mcp_.blocking_startup import BlockingMCPServerStdio
+        from coding_agent.mcp_.blocking_startup import BlockingMCPServerStdio
 
         config = ServerConfig(
             id="test-id",
@@ -990,7 +990,7 @@ class TestEnsureReady:
         mock_stdio.ensure_ready = AsyncMock()
 
         with patch(
-            "coco_codes.mcp_.managed_server.BlockingMCPServerStdio",
+            "coding_agent.mcp_.managed_server.BlockingMCPServerStdio",
             return_value=mock_stdio,
         ):
             server = ManagedMCPServer(config)
@@ -1017,7 +1017,7 @@ class TestGetStatus:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -1046,7 +1046,7 @@ class TestGetStatus:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -1069,7 +1069,7 @@ class TestGetStatus:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 
@@ -1108,7 +1108,7 @@ class TestGetStatus:
             config={"url": "http://localhost:8080"},
         )
 
-        with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+        with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
             mock_sse.return_value = MagicMock()
             server = ManagedMCPServer(config)
 

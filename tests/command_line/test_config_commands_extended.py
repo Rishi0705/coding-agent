@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 # Import the functions we need to test
-from coco_codes.command_line.config_commands import (
+from coding_agent.command_line.config_commands import (
     handle_diff_command,
     handle_pin_model_command,
     handle_reasoning_command,
@@ -32,7 +32,7 @@ from coco_codes.command_line.config_commands import (
 # Mock these functions if they don't exist
 def _get_agent_by_name(agent_name):
     """Mock implementation for testing."""
-    from coco_codes.agents.agent_manager import get_agent_descriptions
+    from coding_agent.agents.agent_manager import get_agent_descriptions
 
     agents = get_agent_descriptions()
     # Try exact match first
@@ -47,7 +47,7 @@ def _get_agent_by_name(agent_name):
 
 def _show_color_options(diff_type):
     """Mock implementation for testing."""
-    from coco_codes.messaging import emit_info
+    from coding_agent.messaging import emit_info
 
     if diff_type == "additions":
         emit_info("Recommended Colors for Additions:")
@@ -71,13 +71,13 @@ class TestReasoningCommand:
         valid_efforts = ["low", "medium", "high"]
 
         for effort in valid_efforts:
-            with patch("coco_codes.config.set_openai_reasoning_effort") as mock_set:
+            with patch("coding_agent.config.set_openai_reasoning_effort") as mock_set:
                 with patch(
-                    "coco_codes.config.get_openai_reasoning_effort",
+                    "coding_agent.config.get_openai_reasoning_effort",
                     return_value="medium",
                 ):
                     with patch(
-                        "coco_codes.agents.agent_manager.get_current_agent"
+                        "coding_agent.agents.agent_manager.get_current_agent"
                     ) as mock_get_agent:
                         mock_agent = MagicMock()
                         mock_agent.reload_code_generation_agent.return_value = None
@@ -98,10 +98,10 @@ class TestReasoningCommand:
                 f"Invalid reasoning effort '{effort}'. Allowed: high, low, medium"
             )
             with patch(
-                "coco_codes.config.set_openai_reasoning_effort",
+                "coding_agent.config.set_openai_reasoning_effort",
                 side_effect=ValueError(expected_error),
             ):
-                with patch("coco_codes.messaging.emit_error") as mock_error:
+                with patch("coding_agent.messaging.emit_error") as mock_error:
                     result = handle_reasoning_command(f"/reasoning {effort}")
                     assert result is True
 
@@ -109,7 +109,7 @@ class TestReasoningCommand:
 
     def test_reasoning_command_no_arguments(self):
         """Test reasoning command with no arguments."""
-        with patch("coco_codes.messaging.emit_warning") as mock_warning:
+        with patch("coding_agent.messaging.emit_warning") as mock_warning:
             result = handle_reasoning_command("/reasoning")
             assert result is True
 
@@ -119,7 +119,7 @@ class TestReasoningCommand:
 
     def test_reasoning_command_current_none(self):
         """Test reasoning command when current effort is None."""
-        with patch("coco_codes.messaging.emit_warning") as mock_warning:
+        with patch("coding_agent.messaging.emit_warning") as mock_warning:
             result = handle_reasoning_command("/reasoning")
             assert result is True
 
@@ -129,7 +129,7 @@ class TestReasoningCommand:
 
     def test_reasoning_command_wrong_argument_count(self):
         """Test reasoning command with incorrect number of arguments."""
-        with patch("coco_codes.messaging.emit_warning") as mock_warning:
+        with patch("coding_agent.messaging.emit_warning") as mock_warning:
             # Test with no arguments
             result = handle_reasoning_command("/reasoning")
             assert result is True
@@ -147,12 +147,12 @@ class TestReasoningCommand:
 
     def test_reasoning_command_agent_reload_failure(self):
         """Test reasoning command handles agent reload failures gracefully."""
-        with patch("coco_codes.config.set_openai_reasoning_effort"):
+        with patch("coding_agent.config.set_openai_reasoning_effort"):
             with patch(
-                "coco_codes.config.get_openai_reasoning_effort", return_value="medium"
+                "coding_agent.config.get_openai_reasoning_effort", return_value="medium"
             ):
                 with patch(
-                    "coco_codes.agents.agent_manager.get_current_agent"
+                    "coding_agent.agents.agent_manager.get_current_agent"
                 ) as mock_get_agent:
                     mock_agent = MagicMock()
                     mock_agent.reload_code_generation_agent.side_effect = Exception(
@@ -170,9 +170,9 @@ class TestSetCommand:
 
     def test_set_command_valid_key_value(self):
         """Test set command with valid key=value pairs."""
-        with patch("coco_codes.config.set_config_value") as mock_set:
-            with patch("coco_codes.config.get_config_keys", return_value=["test_key"]):
-                with patch("coco_codes.messaging.emit_success") as mock_success:
+        with patch("coding_agent.config.set_config_value") as mock_set:
+            with patch("coding_agent.config.get_config_keys", return_value=["test_key"]):
+                with patch("coding_agent.messaging.emit_success") as mock_success:
                     result = handle_set_command("/set test_key test_value")
                     assert result is True
 
@@ -181,9 +181,9 @@ class TestSetCommand:
 
     def test_set_command_empty_value(self):
         """Test set command with empty value."""
-        with patch("coco_codes.config.set_config_value") as mock_set:
-            with patch("coco_codes.config.get_config_keys", return_value=["test_key"]):
-                with patch("coco_codes.messaging.emit_success"):
+        with patch("coding_agent.config.set_config_value") as mock_set:
+            with patch("coding_agent.config.get_config_keys", return_value=["test_key"]):
+                with patch("coding_agent.messaging.emit_success"):
                     result = handle_set_command("/set test_key")
                     assert result is True
 
@@ -191,8 +191,8 @@ class TestSetCommand:
 
     def test_set_command_value_with_equals(self):
         """Test set command with value containing equals sign."""
-        with patch("coco_codes.config.set_config_value") as mock_set:
-            with patch("coco_codes.messaging.emit_success"):
+        with patch("coding_agent.config.set_config_value") as mock_set:
+            with patch("coding_agent.messaging.emit_success"):
                 result = handle_set_command("/set key=value=with=equals")
                 assert result is True
 
@@ -200,8 +200,8 @@ class TestSetCommand:
 
     def test_set_command_invalid_key(self):
         """Test set command with invalid configuration key."""
-        with patch("coco_codes.config.set_config_value") as mock_set:
-            with patch("coco_codes.messaging.emit_success"):
+        with patch("coding_agent.config.set_config_value") as mock_set:
+            with patch("coding_agent.messaging.emit_success"):
                 result = handle_set_command("/set invalid_key value")
                 assert result is True
 
@@ -210,8 +210,8 @@ class TestSetCommand:
 
     def test_set_command_no_arguments(self):
         """Test set command with no arguments."""
-        with patch("coco_codes.config.get_config_keys", return_value=["key"]):
-            with patch("coco_codes.messaging.emit_warning") as mock_warning:
+        with patch("coding_agent.config.get_config_keys", return_value=["key"]):
+            with patch("coding_agent.messaging.emit_warning") as mock_warning:
                 result = handle_set_command("/set")
                 assert result is True
 
@@ -220,7 +220,7 @@ class TestSetCommand:
     def test_set_command_configuration_failure(self):
         """Test set command when configuration fails to set."""
         with patch(
-            "coco_codes.config.set_config_value", side_effect=Exception("Set failed")
+            "coding_agent.config.set_config_value", side_effect=Exception("Set failed")
         ):
             # The actual implementation doesn't catch exceptions from set_config_value
             # it should propagate the exception
@@ -241,18 +241,18 @@ class TestPinModelCommand:
 
         try:
             with patch(
-                "coco_codes.command_line.model_picker_completion.load_model_names",
+                "coding_agent.command_line.model_picker_completion.load_model_names",
                 return_value=["gpt-4"],
             ):
                 with patch(
-                    "coco_codes.agents.json_agent.discover_json_agents",
+                    "coding_agent.agents.json_agent.discover_json_agents",
                     return_value={"test_agent": temp_path},
                 ):
                     with patch(
-                        "coco_codes.agents.agent_manager.get_agent_descriptions",
+                        "coding_agent.agents.agent_manager.get_agent_descriptions",
                         return_value={},
                     ):
-                        with patch("coco_codes.messaging.emit_success"):
+                        with patch("coding_agent.messaging.emit_success"):
                             result = handle_pin_model_command(
                                 "/pin_model test_agent gpt-4"
                             )
@@ -271,18 +271,18 @@ class TestPinModelCommand:
         mock_models = ["gpt-4"]
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.load_model_names",
+            "coding_agent.command_line.model_picker_completion.load_model_names",
             return_value=mock_models,
         ):
             with patch(
-                "coco_codes.agents.json_agent.discover_json_agents", return_value={}
+                "coding_agent.agents.json_agent.discover_json_agents", return_value={}
             ):
                 with patch(
-                    "coco_codes.agents.agent_manager.get_agent_descriptions",
+                    "coding_agent.agents.agent_manager.get_agent_descriptions",
                     return_value=mock_agents,
                 ):
-                    with patch("coco_codes.config.set_agent_pinned_model") as mock_pin:
-                        with patch("coco_codes.messaging.emit_success"):
+                    with patch("coding_agent.config.set_agent_pinned_model") as mock_pin:
+                        with patch("coding_agent.messaging.emit_success"):
                             result = handle_pin_model_command(
                                 "/pin_model test_agent gpt-4"
                             )
@@ -293,17 +293,17 @@ class TestPinModelCommand:
     def test_pin_model_agent_not_found(self):
         """Test pin model when agent is not found."""
         with patch(
-            "coco_codes.command_line.model_picker_completion.load_model_names",
+            "coding_agent.command_line.model_picker_completion.load_model_names",
             return_value=[],
         ):
             with patch(
-                "coco_codes.agents.json_agent.discover_json_agents", return_value={}
+                "coding_agent.agents.json_agent.discover_json_agents", return_value={}
             ):
                 with patch(
-                    "coco_codes.agents.agent_manager.get_agent_descriptions",
+                    "coding_agent.agents.agent_manager.get_agent_descriptions",
                     return_value={},
                 ):
-                    with patch("coco_codes.messaging.emit_error") as mock_error:
+                    with patch("coding_agent.messaging.emit_error") as mock_error:
                         result = handle_pin_model_command(
                             "/pin_model unknown_agent model"
                         )
@@ -317,17 +317,17 @@ class TestPinModelCommand:
         mock_models = []  # No models available
 
         with patch(
-            "coco_codes.command_line.model_picker_completion.load_model_names",
+            "coding_agent.command_line.model_picker_completion.load_model_names",
             return_value=mock_models,
         ):
             with patch(
-                "coco_codes.agents.json_agent.discover_json_agents", return_value={}
+                "coding_agent.agents.json_agent.discover_json_agents", return_value={}
             ):
                 with patch(
-                    "coco_codes.agents.agent_manager.get_agent_descriptions",
+                    "coding_agent.agents.agent_manager.get_agent_descriptions",
                     return_value=mock_agents,
                 ):
-                    with patch("coco_codes.messaging.emit_error") as mock_error:
+                    with patch("coding_agent.messaging.emit_error") as mock_error:
                         result = handle_pin_model_command(
                             "/pin_model test_agent unavailable_model"
                         )
@@ -346,18 +346,18 @@ class TestPinModelCommand:
 
         try:
             with patch(
-                "coco_codes.command_line.model_picker_completion.load_model_names",
+                "coding_agent.command_line.model_picker_completion.load_model_names",
                 return_value=["model"],
             ):
                 with patch(
-                    "coco_codes.agents.json_agent.discover_json_agents",
+                    "coding_agent.agents.json_agent.discover_json_agents",
                     return_value={"test_agent": temp_path},
                 ):
                     with patch(
-                        "coco_codes.agents.agent_manager.get_agent_descriptions",
+                        "coding_agent.agents.agent_manager.get_agent_descriptions",
                         return_value={},
                     ):
-                        with patch("coco_codes.messaging.emit_error") as mock_error:
+                        with patch("coding_agent.messaging.emit_error") as mock_error:
                             result = handle_pin_model_command(
                                 "/pin_model test_agent model"
                             )
@@ -371,10 +371,10 @@ class TestPinModelCommand:
     def test_pin_model_no_arguments(self):
         """Test pin model command with missing arguments."""
         with patch(
-            "coco_codes.command_line.model_picker_completion.load_model_names",
+            "coding_agent.command_line.model_picker_completion.load_model_names",
             return_value=[],
         ):
-            with patch("coco_codes.messaging.emit_warning") as mock_warning:
+            with patch("coding_agent.messaging.emit_warning") as mock_warning:
                 result = handle_pin_model_command("/pin_model")
                 assert result is True
 
@@ -389,14 +389,14 @@ class TestUnpinCommand:
         mock_agents = {"test_agent": "Test Description"}
 
         with patch(
-            "coco_codes.agents.json_agent.discover_json_agents", return_value={}
+            "coding_agent.agents.json_agent.discover_json_agents", return_value={}
         ):
             with patch(
-                "coco_codes.agents.agent_manager.get_agent_descriptions",
+                "coding_agent.agents.agent_manager.get_agent_descriptions",
                 return_value=mock_agents,
             ):
-                with patch("coco_codes.config.clear_agent_pinned_model") as mock_clear:
-                    with patch("coco_codes.messaging.emit_success") as mock_success:
+                with patch("coding_agent.config.clear_agent_pinned_model") as mock_clear:
+                    with patch("coding_agent.messaging.emit_success") as mock_success:
                         result = handle_unpin_command("/unpin test_agent")
                         assert result is True
 
@@ -417,18 +417,18 @@ class TestUnpinCommand:
 
         try:
             with patch(
-                "coco_codes.agents.json_agent.discover_json_agents",
+                "coding_agent.agents.json_agent.discover_json_agents",
                 return_value={"test_agent": temp_path},
             ):
                 with patch(
-                    "coco_codes.agents.agent_manager.get_agent_descriptions",
+                    "coding_agent.agents.agent_manager.get_agent_descriptions",
                     return_value={},
                 ):
                     with patch(
-                        "coco_codes.agents.get_current_agent",
+                        "coding_agent.agents.get_current_agent",
                         return_value=MagicMock(name="other_agent"),
                     ):
-                        with patch("coco_codes.messaging.emit_success"):
+                        with patch("coding_agent.messaging.emit_success"):
                             result = handle_unpin_command("/unpin test_agent")
                             assert result is True
 
@@ -442,14 +442,14 @@ class TestUnpinCommand:
     def test_unpin_model_usage_help(self):
         """Test unpin model command shows usage help when arguments are missing."""
         with patch(
-            "coco_codes.agents.json_agent.discover_json_agents", return_value={}
+            "coding_agent.agents.json_agent.discover_json_agents", return_value={}
         ):
             with patch(
-                "coco_codes.agents.agent_manager.get_agent_descriptions",
+                "coding_agent.agents.agent_manager.get_agent_descriptions",
                 return_value={"agent": "desc"},
             ):
-                with patch("coco_codes.messaging.emit_warning") as mock_warning:
-                    with patch("coco_codes.messaging.emit_info") as mock_info:
+                with patch("coding_agent.messaging.emit_warning") as mock_warning:
+                    with patch("coding_agent.messaging.emit_info") as mock_info:
                         result = handle_unpin_command("/unpin")
                         assert result is True
 
@@ -461,13 +461,13 @@ class TestUnpinCommand:
     def test_unpin_model_invalid_agent(self):
         """Test unpin model with invalid agent name."""
         with patch(
-            "coco_codes.agents.json_agent.discover_json_agents", return_value={}
+            "coding_agent.agents.json_agent.discover_json_agents", return_value={}
         ):
             with patch(
-                "coco_codes.agents.agent_manager.get_agent_descriptions",
+                "coding_agent.agents.agent_manager.get_agent_descriptions",
                 return_value={},
             ):
-                with patch("coco_codes.messaging.emit_error") as mock_error:
+                with patch("coding_agent.messaging.emit_error") as mock_error:
                     result = handle_unpin_command("/unpin invalid_agent")
                     assert result is True
 
@@ -484,11 +484,11 @@ class TestDiffCommand:
         mock_result = {"add_color": "#00ff00", "del_color": "#ff0000"}
 
         with patch(
-            "coco_codes.command_line.diff_menu.interactive_diff_picker",
+            "coding_agent.command_line.diff_menu.interactive_diff_picker",
             return_value=mock_result,
         ):
-            with patch("coco_codes.config.set_diff_addition_color") as mock_set_add:
-                with patch("coco_codes.config.set_diff_deletion_color") as mock_set_del:
+            with patch("coding_agent.config.set_diff_addition_color") as mock_set_add:
+                with patch("coding_agent.config.set_diff_deletion_color") as mock_set_del:
                     result = handle_diff_command("/diff")
                     assert result is True
 
@@ -498,7 +498,7 @@ class TestDiffCommand:
     def test_diff_command_cancelled_selection(self):
         """Test diff command when user cancels selection."""
         with patch(
-            "coco_codes.command_line.diff_menu.interactive_diff_picker",
+            "coding_agent.command_line.diff_menu.interactive_diff_picker",
             return_value=None,
         ):
             result = handle_diff_command("/diff")
@@ -507,7 +507,7 @@ class TestDiffCommand:
     def test_diff_command_picker_error(self):
         """Test diff command handles picker errors gracefully."""
         with patch(
-            "coco_codes.command_line.diff_menu.interactive_diff_picker",
+            "coding_agent.command_line.diff_menu.interactive_diff_picker",
             side_effect=Exception("Picker failed"),
         ):
             # The actual implementation lets the exception propagate
@@ -519,14 +519,14 @@ class TestDiffCommand:
         mock_result = {"add_color": "#00ff00", "del_color": "#ff0000"}
 
         with patch(
-            "coco_codes.command_line.diff_menu.interactive_diff_picker",
+            "coding_agent.command_line.diff_menu.interactive_diff_picker",
             return_value=mock_result,
         ):
             with patch(
-                "coco_codes.config.set_diff_addition_color",
+                "coding_agent.config.set_diff_addition_color",
                 side_effect=Exception("Set failed"),
             ):
-                with patch("coco_codes.messaging.emit_error") as mock_error:
+                with patch("coding_agent.messaging.emit_error") as mock_error:
                     result = handle_diff_command("/diff")
                     assert result is True
 
@@ -556,7 +556,7 @@ class TestShowColorOptions:
 
     def test_show_addition_color_options(self):
         """Test showing color options for additions."""
-        with patch("coco_codes.messaging.emit_info") as mock_emit:
+        with patch("coding_agent.messaging.emit_info") as mock_emit:
             _show_color_options("additions")
 
             # Should emit multiple messages
@@ -572,7 +572,7 @@ class TestShowColorOptions:
 
     def test_show_deletion_color_options(self):
         """Test showing color options for deletions."""
-        with patch("coco_codes.messaging.emit_info") as mock_emit:
+        with patch("coding_agent.messaging.emit_info") as mock_emit:
             _show_color_options("deletions")
 
             # Should emit multiple messages
@@ -595,7 +595,7 @@ class TestGetAgentByName:
         mock_agents = {"Test_Agent": "Description"}
 
         with patch(
-            "coco_codes.agents.agent_manager.get_agent_descriptions",
+            "coding_agent.agents.agent_manager.get_agent_descriptions",
             return_value=mock_agents,
         ):
             # Exact match should work

@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from coco_codes.agents.json_agent import JSONAgent
+from coding_agent.agents.json_agent import JSONAgent
 
 
 # ---------- helpers ----------------------------------------------------------

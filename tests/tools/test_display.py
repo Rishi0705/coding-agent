@@ -1,4 +1,4 @@
-"""Comprehensive tests for coco_codes/tools/display.py.
+"""Comprehensive tests for coding_agent/tools/display.py.
 
 Tests all functions and code paths with edge cases and error handling.
 """
@@ -13,12 +13,12 @@ from rich.console import Console
 class TestDisplayNonStreamedResult:
     """Test suite for display_non_streamed_result function."""
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_basic_display_with_provided_console(
         self,
         mock_get_banner_color,
@@ -29,7 +29,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test display_non_streamed_result with a provided console."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "blue"
@@ -79,13 +79,13 @@ class TestDisplayNonStreamedResult:
             features=RenderFeatures(clipboard=False),
         )
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
-    @patch("coco_codes.tools.display.Console")
+    @patch("coding_agent.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.Console")
     def test_creates_console_when_none_provided(
         self,
         mock_console_class,
@@ -97,7 +97,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that display_non_streamed_result creates a Console when none is provided."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_console = Mock(spec=Console)
@@ -120,12 +120,12 @@ class TestDisplayNonStreamedResult:
         # Verify Console was created
         mock_console_class.assert_called_once()
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_multiline_content_parsing(
         self,
         mock_get_banner_color,
@@ -136,7 +136,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that multiline content is parsed correctly."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "red"
@@ -164,12 +164,12 @@ class TestDisplayNonStreamedResult:
         # Verify finalize was called
         mock_parser.finalize.assert_called_once()
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_empty_content(
         self,
         mock_get_banner_color,
@@ -180,7 +180,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test handling of empty content."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "yellow"
@@ -204,12 +204,12 @@ class TestDisplayNonStreamedResult:
         # Verify finalize was called
         mock_parser.finalize.assert_called_once()
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_content_with_markdown_syntax(
         self,
         mock_get_banner_color,
@@ -220,7 +220,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test handling of content with markdown syntax."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "magenta"
@@ -242,12 +242,12 @@ class TestDisplayNonStreamedResult:
         # Verify the content was split and parsed
         assert mock_parser.parse_line.call_count == 5  # 5 lines when split by \n
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_default_banner_text_and_name(
         self,
         mock_get_banner_color,
@@ -258,7 +258,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that default banner text and name are used when not provided."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "cyan"
@@ -279,12 +279,12 @@ class TestDisplayNonStreamedResult:
         # Verify get_banner_color was called with default name
         mock_get_banner_color.assert_called_once_with("agent_response")
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_renderer_render_all_called(
         self,
         mock_get_banner_color,
@@ -295,7 +295,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that renderer.render_all is called for parsed events."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "white"
@@ -323,12 +323,12 @@ class TestDisplayNonStreamedResult:
         mock_renderer.render_all.assert_any_call([mock_event_2])
         mock_renderer.render_all.assert_any_call([mock_event_3])
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_console_print_called_for_banner(
         self,
         mock_get_banner_color,
@@ -339,7 +339,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that console.print is called to render the banner."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "blue"
@@ -363,12 +363,12 @@ class TestDisplayNonStreamedResult:
         # First call clears the line, second is newline, third is the banner
         assert mock_console.print.call_count >= 3
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_special_characters_in_content(
         self,
         mock_get_banner_color,
@@ -379,7 +379,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test handling of special characters in content."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "green"
@@ -401,12 +401,12 @@ class TestDisplayNonStreamedResult:
         # Verify parse_line was called with the special characters
         mock_parser.parse_line.assert_called_once_with(content)
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_long_content_multiple_lines(
         self,
         mock_get_banner_color,
@@ -417,7 +417,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test handling of long content with many lines."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "red"
@@ -441,12 +441,12 @@ class TestDisplayNonStreamedResult:
         # Verify parse_line was called for each line
         assert mock_parser.parse_line.call_count == 100
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_unicode_content(
         self,
         mock_get_banner_color,
@@ -457,7 +457,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test handling of unicode characters in content."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "yellow"
@@ -479,12 +479,12 @@ class TestDisplayNonStreamedResult:
         # Verify parse_line was called with unicode content
         mock_parser.parse_line.assert_called_once_with(content)
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_console_file_attribute_used(
         self,
         mock_get_banner_color,
@@ -495,7 +495,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that console.file attribute is passed to renderer."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "blue"
@@ -524,12 +524,12 @@ class TestDisplayNonStreamedResult:
             features=RenderFeatures(clipboard=False),
         )
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_custom_banner_text_displayed(
         self,
         mock_get_banner_color,
@@ -540,7 +540,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that custom banner text is used in the display."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "magenta"
@@ -565,12 +565,12 @@ class TestDisplayNonStreamedResult:
         # We can't easily check the Text content due to markup, but we verify print was called
         assert mock_console.print.called
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_parse_line_events_rendered(
         self,
         mock_get_banner_color,
@@ -581,7 +581,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that events from parse_line are rendered."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "cyan"
@@ -605,12 +605,12 @@ class TestDisplayNonStreamedResult:
         # Verify renderer.render_all was called with the events
         mock_renderer.render_all.assert_any_call(events)
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_finalize_events_rendered(
         self,
         mock_get_banner_color,
@@ -621,7 +621,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that events from finalize are rendered."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "green"
@@ -645,12 +645,12 @@ class TestDisplayNonStreamedResult:
         # Verify renderer.render_all was called with the finalize events
         mock_renderer.render_all.assert_any_call(finalize_events)
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_banner_color_applied_correctly(
         self,
         mock_get_banner_color,
@@ -661,7 +661,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that the correct banner color is used."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         expected_color = "purple"
@@ -688,12 +688,12 @@ class TestDisplayNonStreamedResult:
         # Verify get_banner_color was called with the right key
         mock_get_banner_color.assert_called_once_with("custom_color")
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_console_width_passed_to_renderer(
         self,
         mock_get_banner_color,
@@ -704,7 +704,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that console width is passed to the renderer."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks
         mock_get_banner_color.return_value = "blue"
@@ -730,12 +730,12 @@ class TestDisplayNonStreamedResult:
             call_kwargs = mock_renderer_class.call_args[1]
             assert call_kwargs["width"] == test_width
 
-    @patch("coco_codes.messaging.spinner.pause_all_spinners")
-    @patch("coco_codes.messaging.spinner.resume_all_spinners")
+    @patch("coding_agent.messaging.spinner.pause_all_spinners")
+    @patch("coding_agent.messaging.spinner.resume_all_spinners")
     @patch("time.sleep")
     @patch("termflow.Renderer")
     @patch("termflow.Parser")
-    @patch("coco_codes.tools.display.get_banner_color")
+    @patch("coding_agent.tools.display.get_banner_color")
     def test_spinners_resumed_even_on_exception(
         self,
         mock_get_banner_color,
@@ -746,7 +746,7 @@ class TestDisplayNonStreamedResult:
         mock_pause,
     ):
         """Test that spinners are resumed even if an exception occurs."""
-        from coco_codes.tools.display import display_non_streamed_result
+        from coding_agent.tools.display import display_non_streamed_result
 
         # Setup mocks with exception
         mock_get_banner_color.return_value = "red"

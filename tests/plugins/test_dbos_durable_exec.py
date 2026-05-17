@@ -15,17 +15,17 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from coco_codes.callbacks import (
+from coding_agent.callbacks import (
     clear_callbacks,
     count_callbacks,
     get_callbacks,
 )
-from coco_codes.plugins.dbos_durable_exec import cancel as cancel_mod
-from coco_codes.plugins.dbos_durable_exec import commands as commands_mod
-from coco_codes.plugins.dbos_durable_exec import config as config_mod
-from coco_codes.plugins.dbos_durable_exec import runtime as runtime_mod
-from coco_codes.plugins.dbos_durable_exec import workflow_ids as workflow_ids_mod
-from coco_codes.plugins.dbos_durable_exec import wrapper as wrapper_mod
+from coding_agent.plugins.dbos_durable_exec import cancel as cancel_mod
+from coding_agent.plugins.dbos_durable_exec import commands as commands_mod
+from coding_agent.plugins.dbos_durable_exec import config as config_mod
+from coding_agent.plugins.dbos_durable_exec import runtime as runtime_mod
+from coding_agent.plugins.dbos_durable_exec import workflow_ids as workflow_ids_mod
+from coding_agent.plugins.dbos_durable_exec import wrapper as wrapper_mod
 
 # ─────────────────────── config.is_enabled ────────────────────────────
 
@@ -83,7 +83,7 @@ def _install_fake_pydantic_dbos(monkeypatch):
     proceeds (it now bails out when DBOS hasn't been launched, to avoid
     handing back broken DBOSAgents in test environments).
     """
-    from coco_codes.plugins.dbos_durable_exec import lifecycle as lifecycle_mod
+    from coding_agent.plugins.dbos_durable_exec import lifecycle as lifecycle_mod
 
     monkeypatch.setattr(lifecycle_mod, "_LAUNCHED", True)
     captured = {}
@@ -114,7 +114,7 @@ class TestWrapWithDbosAgent:
         that were unusable (no DBOS instance running). Test verifies that
         path now passes through unmodified.
         """
-        from coco_codes.plugins.dbos_durable_exec import lifecycle as lifecycle_mod
+        from coding_agent.plugins.dbos_durable_exec import lifecycle as lifecycle_mod
 
         monkeypatch.setattr(lifecycle_mod, "_LAUNCHED", False)
         # Even with the pydantic_ai dbos submodule available, we must NOT wrap.
@@ -130,7 +130,7 @@ class TestWrapWithDbosAgent:
 
     def test_returns_none_when_import_fails(self, monkeypatch):
         # Force import to fail by setting the submodule to None.
-        from coco_codes.plugins.dbos_durable_exec import lifecycle as lifecycle_mod
+        from coding_agent.plugins.dbos_durable_exec import lifecycle as lifecycle_mod
 
         monkeypatch.setattr(lifecycle_mod, "_LAUNCHED", True)
         monkeypatch.setitem(sys.modules, "pydantic_ai.durable_exec.dbos", None)
@@ -213,7 +213,7 @@ class _FakeSetWorkflowID:
 @contextmanager
 def _install_fake_dbos(monkeypatch):
     """Stub the dbos module + force is_launched()=True for the runtime tests."""
-    from coco_codes.plugins.dbos_durable_exec import lifecycle as lifecycle_mod
+    from coding_agent.plugins.dbos_durable_exec import lifecycle as lifecycle_mod
 
     _FakeSetWorkflowID.calls = []
     fake_mod = types.ModuleType("dbos")
@@ -394,13 +394,13 @@ def clean_callbacks():
     for p, funcs in saved.items():
         clear_callbacks(p)
         for f in funcs:
-            from coco_codes.callbacks import register_callback as _reg
+            from coding_agent.callbacks import register_callback as _reg
 
             _reg(p, f)
 
 
 def _reload_register_callbacks():
-    mod_name = "coco_codes.plugins.dbos_durable_exec.register_callbacks"
+    mod_name = "coding_agent.plugins.dbos_durable_exec.register_callbacks"
     if mod_name in sys.modules:
         return importlib.reload(sys.modules[mod_name])
     return importlib.import_module(mod_name)

@@ -19,8 +19,8 @@ from rich.markdown import Markdown
 from rich.table import Table
 from rich.text import Text
 
-from coco_codes.messaging.message_queue import MessageQueue, MessageType, UIMessage
-from coco_codes.messaging.renderers import (
+from coding_agent.messaging.message_queue import MessageQueue, MessageType, UIMessage
+from coding_agent.messaging.renderers import (
     InteractiveRenderer,
     MessageRenderer,
     SynchronousInteractiveRenderer,
@@ -111,7 +111,7 @@ class TestInteractiveRendererMessageTypes:
 
         # Mock Markdown to raise an exception
         with patch(
-            "coco_codes.messaging.renderers.Markdown",
+            "coding_agent.messaging.renderers.Markdown",
             side_effect=Exception("Markdown error"),
         ):
             await renderer.render_message(msg)
@@ -484,7 +484,7 @@ class TestSynchronousInteractiveRendererMessageTypes:
         msg = UIMessage(type=MessageType.AGENT_RESPONSE, content="Plain fallback")
 
         with patch(
-            "coco_codes.messaging.renderers.Markdown",
+            "coding_agent.messaging.renderers.Markdown",
             side_effect=Exception("Parse error"),
         ):
             renderer._render_message(msg)
@@ -635,7 +635,7 @@ class TestSynchronousInteractiveRendererHumanInput:
         # Mock input() to return a value and patch provide_prompt_response at the import location
         with patch("builtins.input", return_value="Claude"):
             with patch(
-                "coco_codes.messaging.message_queue.provide_prompt_response"
+                "coding_agent.messaging.message_queue.provide_prompt_response"
             ) as mock_provide:
                 renderer._render_message(msg)
 
@@ -658,7 +658,7 @@ class TestSynchronousInteractiveRendererHumanInput:
 
         # Mock input to return immediately and mock the response function
         with patch("builtins.input", return_value="user input"):
-            with patch("coco_codes.messaging.message_queue.provide_prompt_response"):
+            with patch("coding_agent.messaging.message_queue.provide_prompt_response"):
                 renderer._render_message(msg)
 
         # Prompt should have been displayed
@@ -771,7 +771,7 @@ class TestSynchronousInteractiveRendererHumanInputFlush:
         output.flush = mock_flush
 
         with patch("builtins.input", return_value="x"):
-            with patch("coco_codes.messaging.message_queue.provide_prompt_response"):
+            with patch("coding_agent.messaging.message_queue.provide_prompt_response"):
                 renderer._render_message(msg)
 
         # Should have flushed at least once

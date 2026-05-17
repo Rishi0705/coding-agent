@@ -54,43 +54,43 @@ def _apply_patches(stack, patches_dict):
 def _base_main_patches():
     """Return a dict of common patches needed for main()."""
     return {
-        "coco_codes.cli_runner.find_available_port": MagicMock(return_value=8090),
-        "coco_codes.cli_runner.ensure_config_exists": MagicMock(),
-        "coco_codes.cli_runner.validate_cancel_agent_key": MagicMock(),
-        "coco_codes.cli_runner.initialize_command_history_file": MagicMock(),
-        "coco_codes.cli_runner.default_version_mismatch_behavior": MagicMock(),
-        "coco_codes.cli_runner.print_truecolor_warning": MagicMock(),
-        "coco_codes.cli_runner.reset_unix_terminal": MagicMock(),
-        "coco_codes.cli_runner.reset_windows_terminal_ansi": MagicMock(),
-        "coco_codes.cli_runner.reset_windows_terminal_full": MagicMock(),
-        "coco_codes.cli_runner.callbacks": MagicMock(
+        "coding_agent.cli_runner.find_available_port": MagicMock(return_value=8090),
+        "coding_agent.cli_runner.ensure_config_exists": MagicMock(),
+        "coding_agent.cli_runner.validate_cancel_agent_key": MagicMock(),
+        "coding_agent.cli_runner.initialize_command_history_file": MagicMock(),
+        "coding_agent.cli_runner.default_version_mismatch_behavior": MagicMock(),
+        "coding_agent.cli_runner.print_truecolor_warning": MagicMock(),
+        "coding_agent.cli_runner.reset_unix_terminal": MagicMock(),
+        "coding_agent.cli_runner.reset_windows_terminal_ansi": MagicMock(),
+        "coding_agent.cli_runner.reset_windows_terminal_full": MagicMock(),
+        "coding_agent.cli_runner.callbacks": MagicMock(
             on_startup=AsyncMock(),
             on_shutdown=AsyncMock(),
             on_version_check=AsyncMock(),
             get_callbacks=MagicMock(return_value=[]),
         ),
-        "coco_codes.cli_runner.plugins": MagicMock(),
-        "coco_codes.config.load_api_keys_to_environment": MagicMock(),
+        "coding_agent.cli_runner.plugins": MagicMock(),
+        "coding_agent.config.load_api_keys_to_environment": MagicMock(),
     }
 
 
 def _interactive_patches():
     return {
-        "coco_codes.cli_runner.print_truecolor_warning": MagicMock(),
-        "coco_codes.cli_runner.get_cancel_agent_display_name": MagicMock(
+        "coding_agent.cli_runner.print_truecolor_warning": MagicMock(),
+        "coding_agent.cli_runner.get_cancel_agent_display_name": MagicMock(
             return_value="Ctrl+C"
         ),
-        "coco_codes.cli_runner.reset_windows_terminal_ansi": MagicMock(),
-        "coco_codes.cli_runner.reset_windows_terminal_full": MagicMock(),
-        "coco_codes.cli_runner.save_command_to_history": MagicMock(),
-        "coco_codes.cli_runner.finalize_autosave_session": MagicMock(
+        "coding_agent.cli_runner.reset_windows_terminal_ansi": MagicMock(),
+        "coding_agent.cli_runner.reset_windows_terminal_full": MagicMock(),
+        "coding_agent.cli_runner.save_command_to_history": MagicMock(),
+        "coding_agent.cli_runner.finalize_autosave_session": MagicMock(
             return_value="session-1"
         ),
-        "coco_codes.cli_runner.COMMAND_HISTORY_FILE": "/tmp/test_history",
-        "coco_codes.command_line.onboarding_wizard.should_show_onboarding": MagicMock(
+        "coding_agent.cli_runner.COMMAND_HISTORY_FILE": "/tmp/test_history",
+        "coding_agent.command_line.onboarding_wizard.should_show_onboarding": MagicMock(
             return_value=False
         ),
-        "coco_codes.config.auto_save_session_if_enabled": MagicMock(),
+        "coding_agent.config.auto_save_session_if_enabled": MagicMock(),
     }
 
 
@@ -111,7 +111,7 @@ async def _run_interactive(
         _apply_patches(stack, patches_dict)
         stack.enter_context(
             patch(
-                "coco_codes.command_line.prompt_toolkit_completion.get_input_with_combined_completion",
+                "coding_agent.command_line.prompt_toolkit_completion.get_input_with_combined_completion",
                 side_effect=input_fn
                 if callable(input_fn) and not isinstance(input_fn, AsyncMock)
                 else input_fn,
@@ -119,20 +119,20 @@ async def _run_interactive(
         )
         stack.enter_context(
             patch(
-                "coco_codes.command_line.prompt_toolkit_completion.get_prompt_with_active_model",
+                "coding_agent.command_line.prompt_toolkit_completion.get_prompt_with_active_model",
                 return_value="> ",
             )
         )
         stack.enter_context(
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             )
         )
         if extra_patches:
             _apply_patches(stack, extra_patches)
 
-        from coco_codes.cli_runner import interactive_mode
+        from coding_agent.cli_runner import interactive_mode
 
         await interactive_mode(renderer, initial_command=initial_command)
 
@@ -154,26 +154,26 @@ class TestMain:
             stack.enter_context(patch("sys.argv", argv))
             stack.enter_context(
                 patch(
-                    "coco_codes.messaging.SynchronousInteractiveRenderer",
+                    "coding_agent.messaging.SynchronousInteractiveRenderer",
                     return_value=_mock_renderer(),
                 )
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.messaging.RichConsoleRenderer",
+                    "coding_agent.messaging.RichConsoleRenderer",
                     return_value=_mock_renderer(),
                 )
             )
             stack.enter_context(
-                patch("coco_codes.messaging.get_global_queue", return_value=MagicMock())
+                patch("coding_agent.messaging.get_global_queue", return_value=MagicMock())
             )
             stack.enter_context(
-                patch("coco_codes.messaging.get_message_bus", return_value=MagicMock())
+                patch("coding_agent.messaging.get_message_bus", return_value=MagicMock())
             )
             _apply_patches(stack, patches)
             if extra_patches:
                 _apply_patches(stack, extra_patches)
-            from coco_codes.cli_runner import main
+            from coding_agent.cli_runner import main
 
             await main()
 
@@ -181,8 +181,8 @@ class TestMain:
     async def test_prompt_mode(self):
         mock_exec = AsyncMock()
         await self._run_main(
-            ["coco-codes", "-p", "hello world"],
-            extra_patches={"coco_codes.cli_runner.execute_single_prompt": mock_exec},
+            ["coding-agent", "-p", "hello world"],
+            extra_patches={"coding_agent.cli_runner.execute_single_prompt": mock_exec},
         )
         mock_exec.assert_called_once()
 
@@ -190,9 +190,9 @@ class TestMain:
     async def test_interactive_mode_default(self):
         mock_inter = AsyncMock()
         await self._run_main(
-            ["coco-codes"],
+            ["coding-agent"],
             extra_patches={
-                "coco_codes.cli_runner.interactive_mode": mock_inter,
+                "coding_agent.cli_runner.interactive_mode": mock_inter,
                 "pyfiglet.figlet_format": MagicMock(return_value="LOGO\n\n"),
             },
         )
@@ -202,9 +202,9 @@ class TestMain:
     async def test_with_command_args(self):
         mock_inter = AsyncMock()
         await self._run_main(
-            ["coco-codes", "do", "something"],
+            ["coding-agent", "do", "something"],
             extra_patches={
-                "coco_codes.cli_runner.interactive_mode": mock_inter,
+                "coding_agent.cli_runner.interactive_mode": mock_inter,
                 "pyfiglet.figlet_format": MagicMock(return_value="LOGO\n\n"),
             },
         )
@@ -213,9 +213,9 @@ class TestMain:
     @pytest.mark.anyio
     async def test_no_available_port(self):
         await self._run_main(
-            ["coco-codes", "-p", "test"],
+            ["coding-agent", "-p", "test"],
             base_overrides={
-                "coco_codes.cli_runner.find_available_port": MagicMock(
+                "coding_agent.cli_runner.find_available_port": MagicMock(
                     return_value=None
                 ),
             },
@@ -223,13 +223,13 @@ class TestMain:
 
     @pytest.mark.anyio
     async def test_keymap_error(self):
-        from coco_codes.keymap import KeymapError
+        from coding_agent.keymap import KeymapError
 
         with pytest.raises(SystemExit):
             await self._run_main(
-                ["coco-codes", "-p", "test"],
+                ["coding-agent", "-p", "test"],
                 base_overrides={
-                    "coco_codes.cli_runner.validate_cancel_agent_key": MagicMock(
+                    "coding_agent.cli_runner.validate_cancel_agent_key": MagicMock(
                         side_effect=KeymapError("bad key")
                     ),
                 },
@@ -239,11 +239,11 @@ class TestMain:
     async def test_model_valid(self):
         mock_set = MagicMock()
         await self._run_main(
-            ["coco-codes", "-m", "gpt-5", "-p", "hi"],
+            ["coding-agent", "-m", "gpt-5", "-p", "hi"],
             extra_patches={
-                "coco_codes.cli_runner.execute_single_prompt": AsyncMock(),
-                "coco_codes.config.set_model_name": mock_set,
-                "coco_codes.config._validate_model_exists": MagicMock(
+                "coding_agent.cli_runner.execute_single_prompt": AsyncMock(),
+                "coding_agent.config.set_model_name": mock_set,
+                "coding_agent.config._validate_model_exists": MagicMock(
                     return_value=True
                 ),
             },
@@ -256,13 +256,13 @@ class TestMain:
         mock_mf.load_config.return_value = {"gpt-5": {}}
         with pytest.raises(SystemExit):
             await self._run_main(
-                ["coco-codes", "-m", "bad-model", "-p", "hi"],
+                ["coding-agent", "-m", "bad-model", "-p", "hi"],
                 extra_patches={
-                    "coco_codes.config.set_model_name": MagicMock(),
-                    "coco_codes.config._validate_model_exists": MagicMock(
+                    "coding_agent.config.set_model_name": MagicMock(),
+                    "coding_agent.config._validate_model_exists": MagicMock(
                         return_value=False
                     ),
-                    "coco_codes.model_factory.ModelFactory": mock_mf,
+                    "coding_agent.model_factory.ModelFactory": mock_mf,
                 },
             )
 
@@ -270,10 +270,10 @@ class TestMain:
     async def test_model_validation_exception(self):
         with pytest.raises(SystemExit):
             await self._run_main(
-                ["coco-codes", "-m", "bad", "-p", "hi"],
+                ["coding-agent", "-m", "bad", "-p", "hi"],
                 extra_patches={
-                    "coco_codes.config.set_model_name": MagicMock(),
-                    "coco_codes.config._validate_model_exists": MagicMock(
+                    "coding_agent.config.set_model_name": MagicMock(),
+                    "coding_agent.config._validate_model_exists": MagicMock(
                         side_effect=RuntimeError("boom")
                     ),
                 },
@@ -283,25 +283,25 @@ class TestMain:
     async def test_agent_valid(self):
         mock_set = MagicMock()
         await self._run_main(
-            ["coco-codes", "-a", "coco-codes", "-p", "hi"],
+            ["coding-agent", "-a", "coding-agent", "-p", "hi"],
             extra_patches={
-                "coco_codes.cli_runner.execute_single_prompt": AsyncMock(),
-                "coco_codes.agents.agent_manager.get_available_agents": MagicMock(
-                    return_value={"coco-codes": {}}
+                "coding_agent.cli_runner.execute_single_prompt": AsyncMock(),
+                "coding_agent.agents.agent_manager.get_available_agents": MagicMock(
+                    return_value={"coding-agent": {}}
                 ),
-                "coco_codes.agents.agent_manager.set_current_agent": mock_set,
+                "coding_agent.agents.agent_manager.set_current_agent": mock_set,
             },
         )
-        mock_set.assert_called_with("coco-codes")
+        mock_set.assert_called_with("coding-agent")
 
     @pytest.mark.anyio
     async def test_agent_invalid(self):
         with pytest.raises(SystemExit):
             await self._run_main(
-                ["coco-codes", "-a", "bad-agent", "-p", "hi"],
+                ["coding-agent", "-a", "bad-agent", "-p", "hi"],
                 extra_patches={
-                    "coco_codes.agents.agent_manager.get_available_agents": MagicMock(
-                        return_value={"coco-codes": {}}
+                    "coding_agent.agents.agent_manager.get_available_agents": MagicMock(
+                        return_value={"coding-agent": {}}
                     ),
                 },
             )
@@ -310,9 +310,9 @@ class TestMain:
     async def test_agent_exception(self):
         with pytest.raises(SystemExit):
             await self._run_main(
-                ["coco-codes", "-a", "bad", "-p", "hi"],
+                ["coding-agent", "-a", "bad", "-p", "hi"],
                 extra_patches={
-                    "coco_codes.agents.agent_manager.get_available_agents": MagicMock(
+                    "coding_agent.agents.agent_manager.get_available_agents": MagicMock(
                         side_effect=RuntimeError("boom")
                     ),
                 },
@@ -327,38 +327,38 @@ class TestMain:
             get_callbacks=MagicMock(return_value=[lambda: None]),
         )
         patches = _base_main_patches()
-        patches["coco_codes.cli_runner.callbacks"] = cb_mock
+        patches["coding_agent.cli_runner.callbacks"] = cb_mock
         with ExitStack() as stack:
             stack.enter_context(
                 patch.dict(os.environ, {"NO_VERSION_UPDATE": ""}, clear=False)
             )
-            stack.enter_context(patch("sys.argv", ["coco-codes", "-p", "hi"]))
+            stack.enter_context(patch("sys.argv", ["coding-agent", "-p", "hi"]))
             stack.enter_context(
                 patch(
-                    "coco_codes.messaging.SynchronousInteractiveRenderer",
+                    "coding_agent.messaging.SynchronousInteractiveRenderer",
                     return_value=_mock_renderer(),
                 )
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.messaging.RichConsoleRenderer",
+                    "coding_agent.messaging.RichConsoleRenderer",
                     return_value=_mock_renderer(),
                 )
             )
             stack.enter_context(
-                patch("coco_codes.messaging.get_global_queue", return_value=MagicMock())
+                patch("coding_agent.messaging.get_global_queue", return_value=MagicMock())
             )
             stack.enter_context(
-                patch("coco_codes.messaging.get_message_bus", return_value=MagicMock())
+                patch("coding_agent.messaging.get_message_bus", return_value=MagicMock())
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.cli_runner.execute_single_prompt",
+                    "coding_agent.cli_runner.execute_single_prompt",
                     new_callable=AsyncMock,
                 )
             )
             _apply_patches(stack, patches)
-            from coco_codes.cli_runner import main
+            from coding_agent.cli_runner import main
 
             await main()
             cb_mock.on_version_check.assert_called_once()
@@ -367,7 +367,7 @@ class TestMain:
     async def test_version_check_no_callbacks(self):
         """Version check falls back to default_version_mismatch_behavior."""
         patches = _base_main_patches()
-        patches["coco_codes.cli_runner.callbacks"] = MagicMock(
+        patches["coding_agent.cli_runner.callbacks"] = MagicMock(
             on_startup=AsyncMock(),
             on_shutdown=AsyncMock(),
             on_version_check=AsyncMock(),
@@ -377,33 +377,33 @@ class TestMain:
             stack.enter_context(
                 patch.dict(os.environ, {"NO_VERSION_UPDATE": ""}, clear=False)
             )
-            stack.enter_context(patch("sys.argv", ["coco-codes", "-p", "hi"]))
+            stack.enter_context(patch("sys.argv", ["coding-agent", "-p", "hi"]))
             stack.enter_context(
                 patch(
-                    "coco_codes.messaging.SynchronousInteractiveRenderer",
+                    "coding_agent.messaging.SynchronousInteractiveRenderer",
                     return_value=_mock_renderer(),
                 )
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.messaging.RichConsoleRenderer",
+                    "coding_agent.messaging.RichConsoleRenderer",
                     return_value=_mock_renderer(),
                 )
             )
             stack.enter_context(
-                patch("coco_codes.messaging.get_global_queue", return_value=MagicMock())
+                patch("coding_agent.messaging.get_global_queue", return_value=MagicMock())
             )
             stack.enter_context(
-                patch("coco_codes.messaging.get_message_bus", return_value=MagicMock())
+                patch("coding_agent.messaging.get_message_bus", return_value=MagicMock())
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.cli_runner.execute_single_prompt",
+                    "coding_agent.cli_runner.execute_single_prompt",
                     new_callable=AsyncMock,
                 )
             )
             _apply_patches(stack, patches)
-            from coco_codes.cli_runner import main
+            from coding_agent.cli_runner import main
 
             await main()
 
@@ -419,9 +419,9 @@ class TestMain:
             return real_import(name, *args, **kwargs)
 
         await self._run_main(
-            ["coco-codes"],
+            ["coding-agent"],
             extra_patches={
-                "coco_codes.cli_runner.interactive_mode": AsyncMock(),
+                "coding_agent.cli_runner.interactive_mode": AsyncMock(),
                 "builtins.__import__": fake_import,
             },
         )
@@ -478,7 +478,7 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": MagicMock(
                     return_value=False
                 ),
             },
@@ -501,7 +501,7 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.callbacks.on_interactive_turn_cancel": mock_cancel,
+                "coding_agent.callbacks.on_interactive_turn_cancel": mock_cancel,
             },
         )
         mock_cancel.assert_awaited()
@@ -524,10 +524,10 @@ class TestInteractiveMode:
             fake_input,
             agent=agent,
             extra_patches={
-                "coco_codes.cli_runner.get_current_agent": MagicMock(
+                "coding_agent.cli_runner.get_current_agent": MagicMock(
                     return_value=agent
                 ),
-                "coco_codes.cli_runner.get_clipboard_manager": MagicMock(
+                "coding_agent.cli_runner.get_clipboard_manager": MagicMock(
                     return_value=_mock_clipboard([b"img"])
                 ),
             },
@@ -548,10 +548,10 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                "coding_agent.command_line.command_handler.handle_command": MagicMock(
                     return_value=True
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("/help")
                 ),
             },
@@ -574,16 +574,16 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                "coding_agent.command_line.command_handler.handle_command": MagicMock(
                     return_value="run this"
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("/custom")
                 ),
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(mock_result, MagicMock())
                 ),
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": MagicMock(
                     return_value=False
                 ),
             },
@@ -603,10 +603,10 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                "coding_agent.command_line.command_handler.handle_command": MagicMock(
                     side_effect=RuntimeError("cmd error")
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("/bad")
                 ),
             },
@@ -629,13 +629,13 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(mock_result, MagicMock())
                 ),
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": MagicMock(
                     return_value=False
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
             },
@@ -655,13 +655,13 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(None, MagicMock())
                 ),
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": MagicMock(
                     return_value=False
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
             },
@@ -682,11 +682,11 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(None, MagicMock())
                 ),
-                "coco_codes.callbacks.on_interactive_turn_cancel": mock_cancel,
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.callbacks.on_interactive_turn_cancel": mock_cancel,
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
             },
@@ -707,16 +707,16 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     side_effect=RuntimeError("agent error")
                 ),
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": MagicMock(
                     return_value=False
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
-                "coco_codes.messaging.queue_console.get_queue_console": MagicMock(
+                "coding_agent.messaging.queue_console.get_queue_console": MagicMock(
                     return_value=MagicMock()
                 ),
             },
@@ -736,7 +736,7 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("   ")
                 ),
             },
@@ -756,10 +756,10 @@ class TestInteractiveMode:
             agent=agent,
             initial_command="do stuff",
             extra_patches={
-                "coco_codes.cli_runner.get_current_agent": MagicMock(
+                "coding_agent.cli_runner.get_current_agent": MagicMock(
                     return_value=agent
                 ),
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(mock_result, MagicMock())
                 ),
             },
@@ -777,10 +777,10 @@ class TestInteractiveMode:
             agent=agent,
             initial_command="do stuff",
             extra_patches={
-                "coco_codes.cli_runner.get_current_agent": MagicMock(
+                "coding_agent.cli_runner.get_current_agent": MagicMock(
                     return_value=agent
                 ),
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     side_effect=RuntimeError("fail")
                 ),
             },
@@ -798,10 +798,10 @@ class TestInteractiveMode:
             agent=agent,
             initial_command="do stuff",
             extra_patches={
-                "coco_codes.cli_runner.get_current_agent": MagicMock(
+                "coding_agent.cli_runner.get_current_agent": MagicMock(
                     return_value=agent
                 ),
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(None, MagicMock())
                 ),
             },
@@ -826,15 +826,15 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                "coding_agent.command_line.command_handler.handle_command": MagicMock(
                     return_value="__AUTOSAVE_LOAD__"
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("/autosave_load")
                 ),
                 "sys.stdin": mock_stdin,
                 "sys.stdout": mock_stdout,
-                "coco_codes.session_storage.restore_autosave_interactively": AsyncMock(),
+                "coding_agent.session_storage.restore_autosave_interactively": AsyncMock(),
             },
         )
 
@@ -858,15 +858,15 @@ class TestInteractiveMode:
                 _interactive_patches(),
                 fake_input,
                 extra_patches={
-                    "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                    "coding_agent.command_line.command_handler.handle_command": MagicMock(
                         return_value="__AUTOSAVE_LOAD__"
                     ),
-                    "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                    "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                         return_value=_mock_parse_result("/autosave_load")
                     ),
                     "sys.stdin": mock_stdin,
                     "sys.stdout": mock_stdout,
-                    "coco_codes.command_line.autosave_menu.interactive_autosave_picker": AsyncMock(
+                    "coding_agent.command_line.autosave_menu.interactive_autosave_picker": AsyncMock(
                         return_value=None
                     ),
                 },
@@ -897,23 +897,23 @@ class TestInteractiveMode:
                 fake_input,
                 agent=agent,
                 extra_patches={
-                    "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                    "coding_agent.command_line.command_handler.handle_command": MagicMock(
                         return_value="__AUTOSAVE_LOAD__"
                     ),
-                    "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                    "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                         return_value=_mock_parse_result("/autosave_load")
                     ),
                     "sys.stdin": mock_stdin,
                     "sys.stdout": mock_stdout,
-                    "coco_codes.command_line.autosave_menu.interactive_autosave_picker": AsyncMock(
+                    "coding_agent.command_line.autosave_menu.interactive_autosave_picker": AsyncMock(
                         return_value="my-session"
                     ),
-                    "coco_codes.session_storage.load_session": MagicMock(
+                    "coding_agent.session_storage.load_session": MagicMock(
                         return_value=[MagicMock()]
                     ),
-                    "coco_codes.config.set_current_autosave_from_session_name": MagicMock(),
-                    "coco_codes.command_line.autosave_menu.display_resumed_history": MagicMock(),
-                    "coco_codes.cli_runner.get_current_agent": MagicMock(
+                    "coding_agent.config.set_current_autosave_from_session_name": MagicMock(),
+                    "coding_agent.command_line.autosave_menu.display_resumed_history": MagicMock(),
+                    "coding_agent.cli_runner.get_current_agent": MagicMock(
                         return_value=agent
                     ),
                 },
@@ -938,15 +938,15 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                "coding_agent.command_line.command_handler.handle_command": MagicMock(
                     return_value="__AUTOSAVE_LOAD__"
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("/autosave_load")
                 ),
                 "sys.stdin": mock_stdin,
                 "sys.stdout": mock_stdout,
-                "coco_codes.session_storage.restore_autosave_interactively": AsyncMock(
+                "coding_agent.session_storage.restore_autosave_interactively": AsyncMock(
                     side_effect=RuntimeError("fail")
                 ),
             },
@@ -970,16 +970,16 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                "coding_agent.command_line.command_handler.handle_command": MagicMock(
                     return_value=False
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("/unknown")
                 ),
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(mock_result, MagicMock())
                 ),
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": MagicMock(
                     return_value=False
                 ),
             },
@@ -1007,11 +1007,11 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": mock_run,
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": mock_run,
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
-                "coco_codes.callbacks.on_interactive_turn_end": mock_turn_end,
+                "coding_agent.callbacks.on_interactive_turn_end": mock_turn_end,
             },
         )
         assert mock_run.await_count == 2
@@ -1046,12 +1046,12 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": fake_run,
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": fake_run,
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
-                "coco_codes.callbacks.on_interactive_turn_end": mock_turn_end,
-                "coco_codes.callbacks.on_interactive_turn_cancel": mock_cancel,
+                "coding_agent.callbacks.on_interactive_turn_end": mock_turn_end,
+                "coding_agent.callbacks.on_interactive_turn_cancel": mock_cancel,
             },
         )
         mock_cancel.assert_awaited()
@@ -1075,11 +1075,11 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": mock_run,
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": mock_run,
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
-                "coco_codes.callbacks.on_interactive_turn_end": mock_turn_end,
+                "coding_agent.callbacks.on_interactive_turn_end": mock_turn_end,
             },
         )
         mock_turn_end.assert_called()
@@ -1114,11 +1114,11 @@ class TestInteractiveMode:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": fake_run,
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": fake_run,
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
-                "coco_codes.callbacks.on_interactive_turn_end": mock_turn_end,
+                "coding_agent.callbacks.on_interactive_turn_end": mock_turn_end,
             },
         )
         assert mock_turn_end.call_count >= 2
@@ -1126,7 +1126,7 @@ class TestInteractiveMode:
     @pytest.mark.anyio
     async def test_onboarding_chatgpt(self):
         patches = _interactive_patches()
-        patches["coco_codes.command_line.onboarding_wizard.should_show_onboarding"] = (
+        patches["coding_agent.command_line.onboarding_wizard.should_show_onboarding"] = (
             MagicMock(return_value=True)
         )
 
@@ -1146,18 +1146,18 @@ class TestInteractiveMode:
                 "concurrent.futures.ThreadPoolExecutor": MagicMock(
                     return_value=mock_executor
                 ),
-                "coco_codes.command_line.onboarding_wizard.run_onboarding_wizard": AsyncMock(
+                "coding_agent.command_line.onboarding_wizard.run_onboarding_wizard": AsyncMock(
                     return_value="chatgpt"
                 ),
-                "coco_codes.plugins.chatgpt_oauth.oauth_flow.run_oauth_flow": MagicMock(),
-                "coco_codes.config.set_model_name": MagicMock(),
+                "coding_agent.plugins.chatgpt_oauth.oauth_flow.run_oauth_flow": MagicMock(),
+                "coding_agent.config.set_model_name": MagicMock(),
             },
         )
 
     @pytest.mark.anyio
     async def test_onboarding_claude(self):
         patches = _interactive_patches()
-        patches["coco_codes.command_line.onboarding_wizard.should_show_onboarding"] = (
+        patches["coding_agent.command_line.onboarding_wizard.should_show_onboarding"] = (
             MagicMock(return_value=True)
         )
 
@@ -1177,15 +1177,15 @@ class TestInteractiveMode:
                 "concurrent.futures.ThreadPoolExecutor": MagicMock(
                     return_value=mock_executor
                 ),
-                "coco_codes.plugins.claude_code_oauth.register_callbacks._perform_authentication": MagicMock(),
-                "coco_codes.config.set_model_name": MagicMock(),
+                "coding_agent.plugins.claude_code_oauth.register_callbacks._perform_authentication": MagicMock(),
+                "coding_agent.config.set_model_name": MagicMock(),
             },
         )
 
     @pytest.mark.anyio
     async def test_onboarding_completed(self):
         patches = _interactive_patches()
-        patches["coco_codes.command_line.onboarding_wizard.should_show_onboarding"] = (
+        patches["coding_agent.command_line.onboarding_wizard.should_show_onboarding"] = (
             MagicMock(return_value=True)
         )
 
@@ -1211,7 +1211,7 @@ class TestInteractiveMode:
     @pytest.mark.anyio
     async def test_onboarding_skipped(self):
         patches = _interactive_patches()
-        patches["coco_codes.command_line.onboarding_wizard.should_show_onboarding"] = (
+        patches["coding_agent.command_line.onboarding_wizard.should_show_onboarding"] = (
             MagicMock(return_value=True)
         )
 
@@ -1237,7 +1237,7 @@ class TestInteractiveMode:
     @pytest.mark.anyio
     async def test_onboarding_exception(self):
         patches = _interactive_patches()
-        patches["coco_codes.command_line.onboarding_wizard.should_show_onboarding"] = (
+        patches["coding_agent.command_line.onboarding_wizard.should_show_onboarding"] = (
             MagicMock(side_effect=RuntimeError("fail"))
         )
 
@@ -1266,10 +1266,10 @@ class TestInteractiveMode:
             fake_input,
             agent=agent,
             extra_patches={
-                "coco_codes.cli_runner.get_current_agent": MagicMock(
+                "coding_agent.cli_runner.get_current_agent": MagicMock(
                     return_value=agent
                 ),
-                "coco_codes.cli_runner.get_clipboard_manager": MagicMock(
+                "coding_agent.cli_runner.get_clipboard_manager": MagicMock(
                     return_value=_mock_clipboard()
                 ),
             },
@@ -1320,11 +1320,11 @@ class TestInteractiveModeEdgeCases:
             fake_input,
             agent=agent,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": fake_run,
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": fake_run,
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("do work")
                 ),
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": MagicMock(
                     return_value=False
                 ),
             },
@@ -1359,11 +1359,11 @@ class TestInteractiveModeEdgeCases:
             fake_input,
             agent=agent,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": fake_run,
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": fake_run,
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("do work")
                 ),
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": MagicMock(
                     return_value=False
                 ),
             },
@@ -1389,10 +1389,10 @@ class TestInteractiveModeEdgeCases:
             fake_input,
             agent=agent,
             extra_patches={
-                "coco_codes.cli_runner.get_current_agent": MagicMock(
+                "coding_agent.cli_runner.get_current_agent": MagicMock(
                     return_value=agent
                 ),
-                "coco_codes.command_line.clipboard.get_clipboard_manager": MagicMock(
+                "coding_agent.command_line.clipboard.get_clipboard_manager": MagicMock(
                     return_value=clip
                 ),
             },
@@ -1419,15 +1419,15 @@ class TestInteractiveModeEdgeCases:
                 _interactive_patches(),
                 fake_input,
                 extra_patches={
-                    "coco_codes.command_line.command_handler.handle_command": MagicMock(
+                    "coding_agent.command_line.command_handler.handle_command": MagicMock(
                         return_value="__AUTOSAVE_LOAD__"
                     ),
-                    "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                    "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                         return_value=_mock_parse_result("/autosave_load")
                     ),
                     "sys.stdin": mock_stdin,
                     "sys.stdout": mock_stdout,
-                    "coco_codes.session_storage.restore_autosave_interactively": AsyncMock(),
+                    "coding_agent.session_storage.restore_autosave_interactively": AsyncMock(),
                 },
             )
 
@@ -1464,18 +1464,18 @@ class TestInteractiveModeEdgeCases:
             _interactive_patches(),
             fake_input,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": fake_run,
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": fake_run,
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
-                "coco_codes.command_line.wiggum_state.is_wiggum_active": fake_wiggum,
-                "coco_codes.command_line.wiggum_state.get_wiggum_prompt": MagicMock(
+                "coding_agent.command_line.wiggum_state.is_wiggum_active": fake_wiggum,
+                "coding_agent.command_line.wiggum_state.get_wiggum_prompt": MagicMock(
                     return_value="repeat"
                 ),
-                "coco_codes.command_line.wiggum_state.increment_wiggum_count": MagicMock(
+                "coding_agent.command_line.wiggum_state.increment_wiggum_count": MagicMock(
                     return_value=1
                 ),
-                "coco_codes.command_line.wiggum_state.stop_wiggum": MagicMock(),
+                "coding_agent.command_line.wiggum_state.stop_wiggum": MagicMock(),
             },
         )
 
@@ -1492,28 +1492,28 @@ class TestMainUvxAndEdgeCases:
         patches = _base_main_patches()
         with ExitStack() as stack:
             stack.enter_context(patch.dict(os.environ, {"NO_VERSION_UPDATE": "1"}))
-            stack.enter_context(patch("sys.argv", ["coco-codes", "-p", "hi"]))
+            stack.enter_context(patch("sys.argv", ["coding-agent", "-p", "hi"]))
             stack.enter_context(
                 patch(
-                    "coco_codes.messaging.SynchronousInteractiveRenderer",
+                    "coding_agent.messaging.SynchronousInteractiveRenderer",
                     return_value=_mock_renderer(),
                 )
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.messaging.RichConsoleRenderer",
+                    "coding_agent.messaging.RichConsoleRenderer",
                     return_value=_mock_renderer(),
                 )
             )
             stack.enter_context(
-                patch("coco_codes.messaging.get_global_queue", return_value=MagicMock())
+                patch("coding_agent.messaging.get_global_queue", return_value=MagicMock())
             )
             stack.enter_context(
-                patch("coco_codes.messaging.get_message_bus", return_value=MagicMock())
+                patch("coding_agent.messaging.get_message_bus", return_value=MagicMock())
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.cli_runner.execute_single_prompt",
+                    "coding_agent.cli_runner.execute_single_prompt",
                     new_callable=AsyncMock,
                 )
             )
@@ -1521,18 +1521,18 @@ class TestMainUvxAndEdgeCases:
             # Patch the uvx detection to return True
             stack.enter_context(
                 patch(
-                    "coco_codes.uvx_detection.should_use_alternate_cancel_key",
+                    "coding_agent.uvx_detection.should_use_alternate_cancel_key",
                     return_value=True,
                 )
             )
             stack.enter_context(
-                patch("coco_codes.terminal_utils.disable_windows_ctrl_c")
+                patch("coding_agent.terminal_utils.disable_windows_ctrl_c")
             )
             stack.enter_context(
-                patch("coco_codes.terminal_utils.set_keep_ctrl_c_disabled")
+                patch("coding_agent.terminal_utils.set_keep_ctrl_c_disabled")
             )
             stack.enter_context(patch("signal.signal"))
-            from coco_codes.cli_runner import main
+            from coding_agent.cli_runner import main
 
             await main()
 
@@ -1552,13 +1552,13 @@ class TestMainUvxAndEdgeCases:
             agent=agent,
             initial_command="do stuff",
             extra_patches={
-                "coco_codes.cli_runner.get_current_agent": MagicMock(
+                "coding_agent.cli_runner.get_current_agent": MagicMock(
                     return_value=agent
                 ),
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(mock_result, MagicMock())
                 ),
-                "coco_codes.tools.command_runner.is_awaiting_user_input": MagicMock(
+                "coding_agent.tools.command_runner.is_awaiting_user_input": MagicMock(
                     return_value=True
                 ),
             },
@@ -1590,10 +1590,10 @@ class TestMainUvxAndEdgeCases:
             agent=agent,
             initial_command="do stuff",
             extra_patches={
-                "coco_codes.cli_runner.get_current_agent": MagicMock(
+                "coding_agent.cli_runner.get_current_agent": MagicMock(
                     return_value=agent
                 ),
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(mock_result, MagicMock())
                 ),
             },
@@ -1623,13 +1623,13 @@ class TestRemainingEdgeCases:
             fake_input,
             agent=agent,
             extra_patches={
-                "coco_codes.cli_runner.run_prompt_with_attachments": AsyncMock(
+                "coding_agent.cli_runner.run_prompt_with_attachments": AsyncMock(
                     return_value=(None, MagicMock())
                 ),
-                "coco_codes.cli_runner.parse_prompt_attachments": MagicMock(
+                "coding_agent.cli_runner.parse_prompt_attachments": MagicMock(
                     return_value=_mock_parse_result("write hello")
                 ),
-                "coco_codes.callbacks.on_interactive_turn_cancel": mock_cancel,
+                "coding_agent.callbacks.on_interactive_turn_cancel": mock_cancel,
             },
         )
         mock_cancel.assert_awaited()
@@ -1637,7 +1637,7 @@ class TestRemainingEdgeCases:
     @pytest.mark.anyio
     async def test_execute_single_prompt_success_path(self):
         """Lines 1005-1015: execute_single_prompt success with .output access."""
-        from coco_codes.cli_runner import execute_single_prompt
+        from coding_agent.cli_runner import execute_single_prompt
 
         mock_renderer = _mock_renderer()
         # response needs .output attribute (not a tuple)
@@ -1645,15 +1645,15 @@ class TestRemainingEdgeCases:
         mock_response.output = "the response"
 
         with ExitStack() as stack:
-            stack.enter_context(patch("coco_codes.cli_runner.get_current_agent"))
+            stack.enter_context(patch("coding_agent.cli_runner.get_current_agent"))
             stack.enter_context(
                 patch(
-                    "coco_codes.cli_runner.run_prompt_with_attachments",
+                    "coding_agent.cli_runner.run_prompt_with_attachments",
                     new_callable=AsyncMock,
                     return_value=mock_response,
                 )
             )
-            stack.enter_context(patch("coco_codes.cli_runner.emit_info"))
+            stack.enter_context(patch("coding_agent.cli_runner.emit_info"))
             await execute_single_prompt("test", mock_renderer)
 
 
@@ -1682,7 +1682,7 @@ class TestImportErrorFallbacks:
         real_import = builtins.__import__
 
         def fake_import(name, *args, **kwargs):
-            if name == "coco_codes.tools.command_runner":
+            if name == "coding_agent.tools.command_runner":
                 raise ImportError("no command_runner")
             return real_import(name, *args, **kwargs)
 
@@ -1697,35 +1697,35 @@ class TestImportErrorFallbacks:
             _apply_patches(stack, patches)
             stack.enter_context(
                 patch(
-                    "coco_codes.command_line.prompt_toolkit_completion.get_input_with_combined_completion",
+                    "coding_agent.command_line.prompt_toolkit_completion.get_input_with_combined_completion",
                     new_callable=AsyncMock,
                     return_value="/exit",
                 )
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.command_line.prompt_toolkit_completion.get_prompt_with_active_model",
+                    "coding_agent.command_line.prompt_toolkit_completion.get_prompt_with_active_model",
                     return_value="> ",
                 )
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.agents.agent_manager.get_current_agent",
+                    "coding_agent.agents.agent_manager.get_current_agent",
                     return_value=agent,
                 )
             )
             stack.enter_context(
-                patch("coco_codes.cli_runner.get_current_agent", return_value=agent)
+                patch("coding_agent.cli_runner.get_current_agent", return_value=agent)
             )
             stack.enter_context(
                 patch(
-                    "coco_codes.cli_runner.run_prompt_with_attachments",
+                    "coding_agent.cli_runner.run_prompt_with_attachments",
                     new_callable=AsyncMock,
                     return_value=(mock_result, MagicMock()),
                 )
             )
             stack.enter_context(patch("builtins.__import__", side_effect=fake_import))
-            from coco_codes.cli_runner import interactive_mode
+            from coding_agent.cli_runner import interactive_mode
 
             await interactive_mode(renderer, initial_command="test")
 
@@ -1733,9 +1733,9 @@ class TestImportErrorFallbacks:
 class TestMainEntryAdditional:
     @patch("asyncio.run", side_effect=KeyboardInterrupt)
     def test_keyboard_interrupt_stderr_output(self, mock_run):
-        from coco_codes.cli_runner import main_entry
+        from coding_agent.cli_runner import main_entry
 
         with ExitStack() as stack:
-            stack.enter_context(patch("coco_codes.cli_runner.reset_unix_terminal"))
+            stack.enter_context(patch("coding_agent.cli_runner.reset_unix_terminal"))
             result = main_entry()
             assert result == 0

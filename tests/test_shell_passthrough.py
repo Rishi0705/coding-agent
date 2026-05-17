@@ -1,13 +1,13 @@
 """Tests for shell pass-through feature.
 
 The `!` prefix allows users to run shell commands directly from the
-Coco Codes prompt without any agent processing.
+Coding Agent prompt without any agent processing.
 """
 
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from coco_codes.command_line.shell_passthrough import (
+from coding_agent.command_line.shell_passthrough import (
     _BANNER_NAME,
     SHELL_PASSTHROUGH_PREFIX,
     _format_banner,
@@ -105,7 +105,7 @@ class TestFormatBanner:
     def test_banner_uses_config_color(self):
         """Banner should use the color from get_banner_color."""
         with patch(
-            "coco_codes.command_line.shell_passthrough.get_banner_color",
+            "coding_agent.command_line.shell_passthrough.get_banner_color",
             return_value="medium_sea_green",
         ):
             banner = _format_banner()
@@ -119,7 +119,7 @@ class TestFormatBanner:
     def test_banner_matches_rich_renderer_pattern(self):
         """Banner format should match [bold white on {color}] pattern."""
         with patch(
-            "coco_codes.command_line.shell_passthrough.get_banner_color",
+            "coding_agent.command_line.shell_passthrough.get_banner_color",
             return_value="red",
         ):
             banner = _format_banner()
@@ -134,8 +134,8 @@ class TestExecuteShellPassthrough:
         """Create a mock Rich Console for capturing print calls."""
         return MagicMock()
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_successful_command(self, mock_get_console, mock_run):
         """Successful commands show a success message."""
         console = self._mock_console()
@@ -154,8 +154,8 @@ class TestExecuteShellPassthrough:
         last_call = str(console.print.call_args_list[-1])
         assert "Done" in last_call
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_failed_command_shows_exit_code(self, mock_get_console, mock_run):
         """Non-zero exit codes show the exit code."""
         console = self._mock_console()
@@ -167,8 +167,8 @@ class TestExecuteShellPassthrough:
         last_call = str(console.print.call_args_list[-1])
         assert "Exit code 1" in last_call
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_exit_code_127(self, mock_get_console, mock_run):
         """Exit code 127 (command not found) is reported properly."""
         console = self._mock_console()
@@ -180,8 +180,8 @@ class TestExecuteShellPassthrough:
         last_call = str(console.print.call_args_list[-1])
         assert "127" in last_call
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_keyboard_interrupt(self, mock_get_console, mock_run):
         """Ctrl+C during execution shows interrupted message."""
         console = self._mock_console()
@@ -193,8 +193,8 @@ class TestExecuteShellPassthrough:
         last_call = str(console.print.call_args_list[-1])
         assert "Interrupted" in last_call
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_generic_exception(self, mock_get_console, mock_run):
         """Generic exceptions are caught and reported."""
         console = self._mock_console()
@@ -206,7 +206,7 @@ class TestExecuteShellPassthrough:
         last_call = str(console.print.call_args_list[-1])
         assert "permission denied" in last_call
 
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_empty_command_after_bang(self, mock_get_console):
         """An empty command (just spaces after !) shows usage hint."""
         console = self._mock_console()
@@ -218,8 +218,8 @@ class TestExecuteShellPassthrough:
         call_arg = str(console.print.call_args)
         assert "Usage" in call_arg or "Empty" in call_arg
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_inherits_stdio(self, mock_get_console, mock_run):
         """Command should inherit stdin/stdout/stderr from parent."""
         import sys
@@ -235,9 +235,9 @@ class TestExecuteShellPassthrough:
         assert call_kwargs["stdout"] is sys.stdout
         assert call_kwargs["stderr"] is sys.stderr
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
-    @patch("coco_codes.command_line.shell_passthrough.os.getcwd", return_value="/tmp")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.os.getcwd", return_value="/tmp")
     def test_uses_current_working_directory(self, mock_cwd, mock_get_console, mock_run):
         """Command should run in the current working directory."""
         console = self._mock_console()
@@ -249,8 +249,8 @@ class TestExecuteShellPassthrough:
         call_kwargs = mock_run.call_args[1]
         assert call_kwargs["cwd"] == "/tmp"
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_banner_shown_before_command(self, mock_get_console, mock_run):
         """The banner should display with SHELL PASSTHROUGH label."""
         console = self._mock_console()
@@ -263,8 +263,8 @@ class TestExecuteShellPassthrough:
         assert "SHELL PASSTHROUGH" in first_call
         assert "git status" in first_call
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_context_hint_shown(self, mock_get_console, mock_run):
         """A context line should clarify this bypasses the AI."""
         console = self._mock_console()
@@ -276,8 +276,8 @@ class TestExecuteShellPassthrough:
         second_call = str(console.print.call_args_list[1])
         assert "Bypassing AI" in second_call
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_rich_markup_escaped_in_command(self, mock_get_console, mock_run):
         """Commands with Rich markup chars should be escaped to prevent injection."""
         console = self._mock_console()
@@ -288,8 +288,8 @@ class TestExecuteShellPassthrough:
 
         assert mock_run.call_args[0][0] == "echo [bold red]oops[/bold red]"
 
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
     def test_rich_markup_escaped_in_error(self, mock_get_console, mock_run):
         """Error messages with Rich markup chars should be escaped."""
         console = self._mock_console()
@@ -305,16 +305,16 @@ class TestExecuteShellPassthrough:
 class TestInitialCommandPassthrough:
     """Test that shell passthrough works for initial_command and -p paths.
 
-    Regression tests for the bug where `coco-codes "!ls"` or
-    `coco-codes -p "!ls"` would send the command to the AI agent
+    Regression tests for the bug where `coding-agent "!ls"` or
+    `coding-agent -p "!ls"` would send the command to the AI agent
     instead of executing it directly in the shell.
 
     Also covers interactive_mode(initial_command=...) as a separate
     entry point that must honour the same passthrough guarantee.
     """
 
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
     def test_interactive_mode_initial_command_calls_passthrough(
         self, mock_run, mock_get_console
     ):
@@ -323,7 +323,7 @@ class TestInitialCommandPassthrough:
         The passthrough check fires before any agent code is reached, so
         run_prompt_with_attachments must never be invoked.
         """
-        from coco_codes.cli_runner import interactive_mode
+        from coding_agent.cli_runner import interactive_mode
 
         mock_get_console.return_value = MagicMock()
         mock_run.return_value = MagicMock(returncode=0)
@@ -334,26 +334,26 @@ class TestInitialCommandPassthrough:
         mock_agent.get_user_prompt.return_value = "Enter task:"
 
         with (
-            patch("coco_codes.cli_runner.print_truecolor_warning"),
+            patch("coding_agent.cli_runner.print_truecolor_warning"),
             patch(
-                "coco_codes.cli_runner.get_cancel_agent_display_name",
+                "coding_agent.cli_runner.get_cancel_agent_display_name",
                 return_value="Ctrl+C",
             ),
-            patch("coco_codes.messaging.emit_system_message"),
-            patch("coco_codes.messaging.emit_info"),
-            patch("coco_codes.messaging.emit_success"),
-            patch("coco_codes.messaging.emit_warning"),
-            patch("coco_codes.cli_runner.get_current_agent", return_value=mock_agent),
+            patch("coding_agent.messaging.emit_system_message"),
+            patch("coding_agent.messaging.emit_info"),
+            patch("coding_agent.messaging.emit_success"),
+            patch("coding_agent.messaging.emit_warning"),
+            patch("coding_agent.cli_runner.get_current_agent", return_value=mock_agent),
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=mock_agent,
             ),
             patch(
-                "coco_codes.cli_runner.run_prompt_with_attachments",
+                "coding_agent.cli_runner.run_prompt_with_attachments",
                 new_callable=AsyncMock,
             ) as mock_run_prompt,
             patch(
-                "coco_codes.command_line.prompt_toolkit_completion.get_input_with_combined_completion",
+                "coding_agent.command_line.prompt_toolkit_completion.get_input_with_combined_completion",
                 side_effect=EOFError,
             ),
         ):
@@ -365,11 +365,11 @@ class TestInitialCommandPassthrough:
             # Agent processing must NOT have been triggered
             mock_run_prompt.assert_not_called()
 
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
     def test_execute_single_prompt_calls_passthrough(self, mock_run, mock_console):
         """execute_single_prompt with '!ls' should run shell, not the agent."""
-        from coco_codes.cli_runner import execute_single_prompt
+        from coding_agent.cli_runner import execute_single_prompt
 
         mock_console.return_value = MagicMock()
         mock_run.return_value = MagicMock(returncode=0)
@@ -377,9 +377,9 @@ class TestInitialCommandPassthrough:
         mock_renderer.console = MagicMock()
 
         with (
-            patch("coco_codes.cli_runner.get_current_agent") as mock_agent,
+            patch("coding_agent.cli_runner.get_current_agent") as mock_agent,
             patch(
-                "coco_codes.cli_runner.run_prompt_with_attachments"
+                "coding_agent.cli_runner.run_prompt_with_attachments"
             ) as mock_run_prompt,
         ):
             asyncio.run(execute_single_prompt("!ls -la", mock_renderer))
@@ -391,13 +391,13 @@ class TestInitialCommandPassthrough:
             mock_agent.assert_not_called()
             mock_run_prompt.assert_not_called()
 
-    @patch("coco_codes.command_line.shell_passthrough._get_console")
-    @patch("coco_codes.command_line.shell_passthrough.subprocess.run")
+    @patch("coding_agent.command_line.shell_passthrough._get_console")
+    @patch("coding_agent.command_line.shell_passthrough.subprocess.run")
     def test_execute_single_prompt_normal_prompt_skips_passthrough(
         self, mock_run, mock_console
     ):
         """execute_single_prompt with normal text should NOT call passthrough."""
-        from coco_codes.cli_runner import execute_single_prompt
+        from coding_agent.cli_runner import execute_single_prompt
 
         mock_renderer = MagicMock()
         mock_renderer.console = MagicMock()
@@ -407,14 +407,14 @@ class TestInitialCommandPassthrough:
         mock_response.all_messages.return_value = []
 
         with (
-            patch("coco_codes.cli_runner.get_current_agent"),
+            patch("coding_agent.cli_runner.get_current_agent"),
             patch(
-                "coco_codes.cli_runner.run_prompt_with_attachments",
+                "coding_agent.cli_runner.run_prompt_with_attachments",
                 new_callable=AsyncMock,
                 return_value=(mock_response, None),
             ),
-            patch("coco_codes.messaging.get_message_bus"),
-            patch("coco_codes.messaging.message_queue.emit_info"),
+            patch("coding_agent.messaging.get_message_bus"),
+            patch("coding_agent.messaging.message_queue.emit_info"),
         ):
             asyncio.run(execute_single_prompt("write me a script", mock_renderer))
 

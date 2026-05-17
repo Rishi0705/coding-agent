@@ -15,8 +15,8 @@ from unittest.mock import patch
 
 import pytest
 
-from coco_codes import session_storage
-from coco_codes.session_storage import _LEGACY_SIGNATURE_SIZE, _LEGACY_SIGNED_HEADER
+from coding_agent import session_storage
+from coding_agent.session_storage import _LEGACY_SIGNATURE_SIZE, _LEGACY_SIGNED_HEADER
 
 
 class TestSessionPathEdgeCases:

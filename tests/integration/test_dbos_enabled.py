@@ -8,9 +8,9 @@ def test_dbos_initializes_and_creates_db(spawned_cli):
     log = spawned_cli.read_log()
     assert "Initializing DBOS with database at:" in log or "DBOS is disabled" not in log
 
-    # Database path should be under temp HOME/.coco_codes by default
+    # Database path should be under temp HOME/.coding_agent by default
     home = Path(spawned_cli.temp_home)
-    db_path = home / ".coco_codes" / "dbos_store.sqlite"
+    db_path = home / ".coding_agent" / "dbos_store.sqlite"
 
     # DBOS init runs via the dbos_durable_exec plugin's startup callback. On
     # slower CI runners, sqlite migrations can lag behind the interactive prompt

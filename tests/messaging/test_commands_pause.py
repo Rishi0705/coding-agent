@@ -3,13 +3,13 @@ through MessageBus.provide_response() into the global PauseController."""
 
 import pytest
 
-from coco_codes.messaging.bus import get_message_bus, reset_message_bus
-from coco_codes.messaging.commands import (
+from coding_agent.messaging.bus import get_message_bus, reset_message_bus
+from coding_agent.messaging.commands import (
     PauseAgentCommand,
     ResumeAgentCommand,
     SteerAgentCommand,
 )
-from coco_codes.messaging.pause_controller import (
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )

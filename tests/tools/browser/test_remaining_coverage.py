@@ -7,14 +7,14 @@ import pytest
 
 # ===== browser_manager.py =====
 
-MOD_MGR = "coco_codes.tools.browser.browser_manager"
+MOD_MGR = "coding_agent.tools.browser.browser_manager"
 
 
 class TestBrowserManagerRemainingLines:
     @pytest.mark.asyncio
     async def test_initialize_success_sets_initialized(self):
         """Cover line 154: _initialized set to True after successful _initialize_browser."""
-        from coco_codes.tools.browser.browser_manager import BrowserManager
+        from coding_agent.tools.browser.browser_manager import BrowserManager
 
         mgr = BrowserManager.__new__(BrowserManager)
         mgr.session_id = "test-success"
@@ -30,7 +30,7 @@ class TestBrowserManagerRemainingLines:
     @pytest.mark.asyncio
     async def test_initialize_cleanup_on_exception(self):
         """Cover exception branch in async_initialize."""
-        from coco_codes.tools.browser.browser_manager import BrowserManager
+        from coding_agent.tools.browser.browser_manager import BrowserManager
 
         mgr = BrowserManager.__new__(BrowserManager)
         mgr.session_id = "test"
@@ -46,8 +46,8 @@ class TestBrowserManagerRemainingLines:
     @pytest.mark.asyncio
     async def test_cleanup_exception_branch(self):
         """Cover lines 267-269: outer exception during cleanup with silent=False."""
-        from coco_codes.tools.browser.browser_manager import BrowserManager
-        import coco_codes.tools.browser.browser_manager as bm_mod
+        from coding_agent.tools.browser.browser_manager import BrowserManager
+        import coding_agent.tools.browser.browser_manager as bm_mod
 
         mgr = BrowserManager.__new__(BrowserManager)
         mgr.session_id = "test-exc-outer"
@@ -71,11 +71,11 @@ class TestBrowserManagerRemainingLines:
     @pytest.mark.asyncio
     async def test_atexit_cleanup_with_running_loop(self):
         """Cover lines 353-354: atexit handler when event loop is running."""
-        from coco_codes.tools.browser.browser_manager import (
+        from coding_agent.tools.browser.browser_manager import (
             _sync_cleanup_browsers,
             _active_managers,
         )
-        import coco_codes.tools.browser.browser_manager as bm_mod
+        import coding_agent.tools.browser.browser_manager as bm_mod
 
         # Ensure early-exit guards don't trigger
         old_cleanup_done = bm_mod._cleanup_done
@@ -92,8 +92,8 @@ class TestBrowserManagerRemainingLines:
 
     def test_atexit_cleanup_no_running_loop(self):
         """Cover the no-running-loop path."""
-        from coco_codes.tools.browser.browser_manager import _sync_cleanup_browsers
-        import coco_codes.tools.browser.browser_manager as bm_mod
+        from coding_agent.tools.browser.browser_manager import _sync_cleanup_browsers
+        import coding_agent.tools.browser.browser_manager as bm_mod
 
         old_cleanup_done = bm_mod._cleanup_done
         bm_mod._cleanup_done = False
@@ -115,14 +115,14 @@ class TestBrowserManagerRemainingLines:
 
 # ===== browser_scripts.py line 155 =====
 
-MOD_SCRIPTS = "coco_codes.tools.browser.browser_scripts"
+MOD_SCRIPTS = "coding_agent.tools.browser.browser_scripts"
 
 
 class TestBrowserScriptsRemainingLines:
     @pytest.mark.asyncio
     async def test_scroll_to_element_no_page(self):
         """Cover line 155: scroll_to_element returns error when no active page."""
-        from coco_codes.tools.browser.browser_scripts import scroll_to_element
+        from coding_agent.tools.browser.browser_scripts import scroll_to_element
 
         mgr = AsyncMock()
         mgr.get_current_page.return_value = None
@@ -137,14 +137,14 @@ class TestBrowserScriptsRemainingLines:
 
 # ===== browser_workflows.py =====
 
-MOD_WF = "coco_codes.tools.browser.browser_workflows"
+MOD_WF = "coding_agent.tools.browser.browser_workflows"
 
 
 class TestBrowserWorkflowsRemainingLines:
     @pytest.mark.asyncio
     async def test_list_workflows_file_error(self, tmp_path):
         """Cover exception reading a workflow file."""
-        from coco_codes.tools.browser.browser_workflows import list_workflows
+        from coding_agent.tools.browser.browser_workflows import list_workflows
 
         wf_dir = tmp_path / "workflows"
         wf_dir.mkdir()

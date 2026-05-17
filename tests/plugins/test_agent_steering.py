@@ -6,17 +6,17 @@ from typing import List
 
 import pytest
 
-from coco_codes.agents import _key_listeners
-from coco_codes.callbacks import _callbacks
-from coco_codes.messaging import (
+from coding_agent.agents import _key_listeners
+from coding_agent.callbacks import _callbacks
+from coding_agent.messaging import (
     SteerAgentCommand,
     reset_message_bus,
 )
-from coco_codes.messaging.pause_controller import (
+from coding_agent.messaging.pause_controller import (
     get_pause_controller,
     reset_pause_controller,
 )
-from coco_codes.plugins.agent_steering import register_callbacks as plugin
+from coding_agent.plugins.agent_steering import register_callbacks as plugin
 
 
 @pytest.fixture(autouse=True)
@@ -47,7 +47,7 @@ class _BusSpy:
     """Wraps the global bus to record every command sent via provide_response."""
 
     def __init__(self) -> None:
-        from coco_codes.messaging import get_message_bus
+        from coding_agent.messaging import get_message_bus
 
         self.bus = get_message_bus()
         self.commands: List[object] = []

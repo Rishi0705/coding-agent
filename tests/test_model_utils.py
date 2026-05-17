@@ -9,15 +9,15 @@ is registered for tests that exercise the dispatcher.
 import pytest
 
 # Importing register_callbacks triggers plugin registration at module scope.
-import coco_codes.plugins.claude_code_oauth.register_callbacks  # noqa: F401
-from coco_codes.callbacks import get_callbacks, register_callback
-from coco_codes.model_utils import (
+import coding_agent.plugins.claude_code_oauth.register_callbacks  # noqa: F401
+from coding_agent.callbacks import get_callbacks, register_callback
+from coding_agent.model_utils import (
     PreparedPrompt,
     get_default_extended_thinking,
     prepare_prompt_for_model,
     should_use_anthropic_thinking_summary,
 )
-from coco_codes.plugins.claude_code_oauth.prompt_handler import (
+from coding_agent.plugins.claude_code_oauth.prompt_handler import (
     CLAUDE_CODE_INSTRUCTIONS,
     get_claude_code_instructions,
     is_claude_code_model,

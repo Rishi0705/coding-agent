@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "coco-codes"
+name = "coding-agent"
 version = "0.1.0"
 description = "AI-powered code generation agent for professional software engineering"
 readme = "README.md"
@@ -48,41 +48,41 @@ bedrock = ["boto3>=1.35.0"]
 durable = ["dbos>=2.11.0"]
 
 [project.urls]
-repository = "https://github.com/rishi0705/coco-codes"
-HomePage = "https://github.com/rishi0705/coco-codes"
+repository = "https://github.com/rishi0705/coding-agent"
+HomePage = "https://github.com/rishi0705/coding-agent"
 
 [project.scripts]
-coco-codes = "coco_codes.main:main_entry"
-coco = "coco_codes.main:main_entry"
+coding-agent = "coding_agent.main:main_entry"
+coder = "coding_agent.main:main_entry"
 
 [tool.logfire]
 ignore_no_config = true
 
 [tool.hatch.build]
-packages = ["coco_codes"]
+packages = ["coding_agent"]
 
 [tool.hatch.build.targets.wheel.shared-data]
-"coco_codes/models.json" = "coco_codes/models.json"
-"coco_codes/models_dev_api.json" = "coco_codes/models_dev_api.json"
+"coding_agent/models.json" = "coding_agent/models.json"
+"coding_agent/models_dev_api.json" = "coding_agent/models_dev_api.json"
 
 [[tool.hatch.build.targets.sdist.include]]
-path = "coco_codes/models.json"
+path = "coding_agent/models.json"
 
 [[tool.hatch.build.targets.sdist.include]]
-path = "coco_codes/models_dev_api.json"
+path = "coding_agent/models_dev_api.json"
 
 [tool.ruff.lint.per-file-ignores]
-"coco_codes/main.py" = ["E402"]
-"coco_codes/cli_runner.py" = ["E402"]
-"coco_codes/messaging/__init__.py" = ["E402"]
+"coding_agent/main.py" = ["E402"]
+"coding_agent/cli_runner.py" = ["E402"]
+"coding_agent/messaging/__init__.py" = ["E402"]
 
 [tool.pytest.ini_options]
-addopts = "--cov=coco_codes --cov-report=term-missing"
+addopts = "--cov=coding_agent --cov-report=term-missing"
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
 [tool.coverage.run]
-omit = ["coco_codes/main.py"]
+omit = ["coding_agent/main.py"]
 
 [tool.uv]
 python-preference = "only-managed"

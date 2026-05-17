@@ -7,7 +7,7 @@ This module focuses on testing uncovered code paths including:
 - register_invoke_agent tool execution with various code paths
 
 DBOS workflow-id tests were removed when DBOS moved to a plugin; see
-``coco_codes/plugins/dbos_durable_exec/`` for plugin-level tests (Phase 4).
+``coding_agent/plugins/dbos_durable_exec/`` for plugin-level tests (Phase 4).
 """
 
 import tempfile
@@ -16,7 +16,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.tools.agent_tools import (
+from coding_agent.tools.agent_tools import (
     AgentInfo,
     AgentInvokeOutput,
     ListAgentsOutput,
@@ -31,20 +31,20 @@ class TestGetSubagentSessionsDir:
 
     def test_returns_path_object(self):
         """Test that function returns a Path object."""
-        with patch("coco_codes.tools.agent_tools.DATA_DIR", tempfile.gettempdir()):
+        with patch("coding_agent.tools.agent_tools.DATA_DIR", tempfile.gettempdir()):
             result = _get_subagent_sessions_dir()
             assert isinstance(result, Path)
 
     def test_path_ends_with_subagent_sessions(self):
         """Test that path ends with 'subagent_sessions'."""
-        with patch("coco_codes.tools.agent_tools.DATA_DIR", tempfile.gettempdir()):
+        with patch("coding_agent.tools.agent_tools.DATA_DIR", tempfile.gettempdir()):
             result = _get_subagent_sessions_dir()
             assert result.name == "subagent_sessions"
 
     def test_creates_directory_if_not_exists(self):
         """Test that directory is created if it doesn't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            with patch("coco_codes.tools.agent_tools.DATA_DIR", tmpdir):
+            with patch("coding_agent.tools.agent_tools.DATA_DIR", tmpdir):
                 result = _get_subagent_sessions_dir()
                 assert result.exists()
                 assert result.is_dir()
@@ -52,7 +52,7 @@ class TestGetSubagentSessionsDir:
     def test_directory_has_correct_permissions(self):
         """Test that created directory has mode 0o700."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            with patch("coco_codes.tools.agent_tools.DATA_DIR", tmpdir):
+            with patch("coding_agent.tools.agent_tools.DATA_DIR", tmpdir):
                 result = _get_subagent_sessions_dir()
                 # Check mode (on Unix-like systems)
                 mode = result.stat().st_mode & 0o777
@@ -60,7 +60,7 @@ class TestGetSubagentSessionsDir:
 
     def test_returns_same_path_on_multiple_calls(self):
         """Test that function returns consistent path."""
-        with patch("coco_codes.tools.agent_tools.DATA_DIR", tempfile.gettempdir()):
+        with patch("coding_agent.tools.agent_tools.DATA_DIR", tempfile.gettempdir()):
             path1 = _get_subagent_sessions_dir()
             path2 = _get_subagent_sessions_dir()
             assert path1 == path2
@@ -214,19 +214,19 @@ class TestRegisterListAgentsExecution:
         assert registered_func is not None
 
         # Mock the agent manager functions and config
-        # Note: get_banner_color is imported from coco_codes.config inside the function
+        # Note: get_banner_color is imported from coding_agent.config inside the function
         with (
             patch(
-                "coco_codes.config.get_banner_color",
+                "coding_agent.config.get_banner_color",
                 return_value="blue",
             ),
-            patch("coco_codes.tools.agent_tools.emit_info"),
+            patch("coding_agent.tools.agent_tools.emit_info"),
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
-            patch("coco_codes.agents.get_available_agents") as mock_available,
-            patch("coco_codes.agents.get_agent_descriptions") as mock_descriptions,
+            patch("coding_agent.agents.get_available_agents") as mock_available,
+            patch("coding_agent.agents.get_agent_descriptions") as mock_descriptions,
         ):
             mock_available.return_value = {
                 "code-reviewer": "Code Reviewer",
@@ -268,17 +268,17 @@ class TestRegisterListAgentsExecution:
         # Mock to raise an exception
         with (
             patch(
-                "coco_codes.config.get_banner_color",
+                "coding_agent.config.get_banner_color",
                 return_value="blue",
             ),
-            patch("coco_codes.tools.agent_tools.emit_info"),
-            patch("coco_codes.tools.agent_tools.emit_error") as mock_emit_error,
+            patch("coding_agent.tools.agent_tools.emit_info"),
+            patch("coding_agent.tools.agent_tools.emit_error") as mock_emit_error,
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
             patch(
-                "coco_codes.agents.get_available_agents",
+                "coding_agent.agents.get_available_agents",
                 side_effect=RuntimeError("Database connection failed"),
             ),
         ):
@@ -307,16 +307,16 @@ class TestRegisterListAgentsExecution:
 
         with (
             patch(
-                "coco_codes.config.get_banner_color",
+                "coding_agent.config.get_banner_color",
                 return_value="blue",
             ),
-            patch("coco_codes.tools.agent_tools.emit_info"),
+            patch("coding_agent.tools.agent_tools.emit_info"),
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
-            patch("coco_codes.agents.get_available_agents") as mock_available,
-            patch("coco_codes.agents.get_agent_descriptions") as mock_descriptions,
+            patch("coding_agent.agents.get_available_agents") as mock_available,
+            patch("coding_agent.agents.get_agent_descriptions") as mock_descriptions,
         ):
             mock_available.return_value = {
                 "new-agent": "New Agent",
@@ -361,9 +361,9 @@ class TestRegisterInvokeAgentExecution:
         mock_context = MagicMock()
 
         with (
-            patch("coco_codes.tools.agent_tools.emit_error") as mock_emit_error,
+            patch("coding_agent.tools.agent_tools.emit_error") as mock_emit_error,
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
         ):
@@ -393,30 +393,30 @@ class TestRegisterInvokeAgentExecution:
 
         with (
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
-            patch("coco_codes.tools.agent_tools.get_message_bus") as mock_bus,
+            patch("coding_agent.tools.agent_tools.get_message_bus") as mock_bus,
             patch(
-                "coco_codes.tools.agent_tools.get_session_context",
+                "coding_agent.tools.agent_tools.get_session_context",
                 return_value="parent",
             ),
-            patch("coco_codes.tools.agent_tools.set_session_context"),
-            patch("coco_codes.tools.agent_tools.emit_error") as mock_emit_error,
+            patch("coding_agent.tools.agent_tools.set_session_context"),
+            patch("coding_agent.tools.agent_tools.emit_error") as mock_emit_error,
             patch(
-                "coco_codes.agents.agent_manager.load_agent",
+                "coding_agent.agents.agent_manager.load_agent",
                 return_value=mock_agent_config,
             ),
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 return_value={},  # No models configured
             ),
             patch(
-                "coco_codes.tools.agent_tools._load_session_history",
+                "coding_agent.tools.agent_tools._load_session_history",
                 return_value=[],
             ),
             patch(
-                "coco_codes.tools.agent_tools._generate_session_hash_suffix",
+                "coding_agent.tools.agent_tools._generate_session_hash_suffix",
                 return_value="abc123",
             ),
         ):
@@ -448,33 +448,33 @@ class TestRegisterInvokeAgentExecution:
 
         with (
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
-            patch("coco_codes.tools.agent_tools.get_message_bus") as mock_bus,
+            patch("coding_agent.tools.agent_tools.get_message_bus") as mock_bus,
             patch(
-                "coco_codes.tools.agent_tools.get_session_context",
+                "coding_agent.tools.agent_tools.get_session_context",
                 return_value="original-parent",
             ),
             patch(
-                "coco_codes.tools.agent_tools.set_session_context",
+                "coding_agent.tools.agent_tools.set_session_context",
                 side_effect=lambda x: set_context_calls.append(x),
             ),
-            patch("coco_codes.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
             patch(
-                "coco_codes.agents.agent_manager.load_agent",
+                "coding_agent.agents.agent_manager.load_agent",
                 return_value=mock_agent_config,
             ),
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 side_effect=RuntimeError("Config load failed"),
             ),
             patch(
-                "coco_codes.tools.agent_tools._load_session_history",
+                "coding_agent.tools.agent_tools._load_session_history",
                 return_value=[],
             ),
             patch(
-                "coco_codes.tools.agent_tools._generate_session_hash_suffix",
+                "coding_agent.tools.agent_tools._generate_session_hash_suffix",
                 return_value="abc123",
             ),
         ):
@@ -532,35 +532,35 @@ class TestInvokeAgentPartialSessionSaveOnCrash:
 
         with (
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
-            patch("coco_codes.tools.agent_tools.get_message_bus") as mock_bus,
+            patch("coding_agent.tools.agent_tools.get_message_bus") as mock_bus,
             patch(
-                "coco_codes.tools.agent_tools.get_session_context",
+                "coding_agent.tools.agent_tools.get_session_context",
                 return_value="parent",
             ),
-            patch("coco_codes.tools.agent_tools.set_session_context"),
-            patch("coco_codes.tools.agent_tools.emit_error"),
-            patch("coco_codes.tools.agent_tools.emit_info"),
+            patch("coding_agent.tools.agent_tools.set_session_context"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.emit_info"),
             patch(
-                "coco_codes.agents.agent_manager.load_agent",
+                "coding_agent.agents.agent_manager.load_agent",
                 return_value=mock_agent_config,
             ),
             # Force a crash *after* load_agent has run so agent_config is bound.
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 side_effect=RuntimeError("boom"),
             ),
             patch(
-                "coco_codes.tools.agent_tools._load_session_history",
+                "coding_agent.tools.agent_tools._load_session_history",
                 return_value=["msg_from_loaded_session"],
             ),
             patch(
-                "coco_codes.tools.agent_tools._generate_session_hash_suffix",
+                "coding_agent.tools.agent_tools._generate_session_hash_suffix",
                 return_value="abc123",
             ),
-            patch("coco_codes.tools.agent_tools._save_session_history") as mock_save,
+            patch("coding_agent.tools.agent_tools._save_session_history") as mock_save,
         ):
             mock_bus.return_value.emit = MagicMock()
 
@@ -590,34 +590,34 @@ class TestInvokeAgentPartialSessionSaveOnCrash:
 
         with (
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
-            patch("coco_codes.tools.agent_tools.get_message_bus") as mock_bus,
+            patch("coding_agent.tools.agent_tools.get_message_bus") as mock_bus,
             patch(
-                "coco_codes.tools.agent_tools.get_session_context",
+                "coding_agent.tools.agent_tools.get_session_context",
                 return_value="parent",
             ),
-            patch("coco_codes.tools.agent_tools.set_session_context"),
-            patch("coco_codes.tools.agent_tools.emit_error"),
-            patch("coco_codes.tools.agent_tools.emit_info"),
+            patch("coding_agent.tools.agent_tools.set_session_context"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.emit_info"),
             patch(
-                "coco_codes.agents.agent_manager.load_agent",
+                "coding_agent.agents.agent_manager.load_agent",
                 return_value=mock_agent_config,
             ),
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 side_effect=RuntimeError("boom"),
             ),
             patch(
-                "coco_codes.tools.agent_tools._load_session_history",
+                "coding_agent.tools.agent_tools._load_session_history",
                 return_value=loaded,
             ),
             patch(
-                "coco_codes.tools.agent_tools._generate_session_hash_suffix",
+                "coding_agent.tools.agent_tools._generate_session_hash_suffix",
                 return_value="abc123",
             ),
-            patch("coco_codes.tools.agent_tools._save_session_history") as mock_save,
+            patch("coding_agent.tools.agent_tools._save_session_history") as mock_save,
         ):
             mock_bus.return_value.emit = MagicMock()
 
@@ -639,35 +639,35 @@ class TestInvokeAgentPartialSessionSaveOnCrash:
 
         with (
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
-            patch("coco_codes.tools.agent_tools.get_message_bus") as mock_bus,
+            patch("coding_agent.tools.agent_tools.get_message_bus") as mock_bus,
             patch(
-                "coco_codes.tools.agent_tools.get_session_context",
+                "coding_agent.tools.agent_tools.get_session_context",
                 return_value="parent",
             ),
-            patch("coco_codes.tools.agent_tools.set_session_context"),
-            patch("coco_codes.tools.agent_tools.emit_error"),
-            patch("coco_codes.tools.agent_tools.emit_info"),
+            patch("coding_agent.tools.agent_tools.set_session_context"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.emit_info"),
             patch(
-                "coco_codes.agents.agent_manager.load_agent",
+                "coding_agent.agents.agent_manager.load_agent",
                 return_value=mock_agent_config,
             ),
             patch(
-                "coco_codes.model_factory.ModelFactory.load_config",
+                "coding_agent.model_factory.ModelFactory.load_config",
                 side_effect=RuntimeError("original boom"),
             ),
             patch(
-                "coco_codes.tools.agent_tools._load_session_history",
+                "coding_agent.tools.agent_tools._load_session_history",
                 return_value=["a"],
             ),
             patch(
-                "coco_codes.tools.agent_tools._generate_session_hash_suffix",
+                "coding_agent.tools.agent_tools._generate_session_hash_suffix",
                 return_value="abc123",
             ),
             patch(
-                "coco_codes.tools.agent_tools._save_session_history",
+                "coding_agent.tools.agent_tools._save_session_history",
                 side_effect=OSError("disk full"),
             ),
         ):
@@ -691,29 +691,29 @@ class TestInvokeAgentPartialSessionSaveOnCrash:
 
         with (
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
-            patch("coco_codes.tools.agent_tools.get_message_bus") as mock_bus,
+            patch("coding_agent.tools.agent_tools.get_message_bus") as mock_bus,
             patch(
-                "coco_codes.tools.agent_tools.get_session_context",
+                "coding_agent.tools.agent_tools.get_session_context",
                 return_value="parent",
             ),
-            patch("coco_codes.tools.agent_tools.set_session_context"),
-            patch("coco_codes.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.set_session_context"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
             patch(
-                "coco_codes.agents.agent_manager.load_agent",
+                "coding_agent.agents.agent_manager.load_agent",
                 side_effect=RuntimeError("agent gone"),
             ),
             patch(
-                "coco_codes.tools.agent_tools._load_session_history",
+                "coding_agent.tools.agent_tools._load_session_history",
                 return_value=[],
             ),
             patch(
-                "coco_codes.tools.agent_tools._generate_session_hash_suffix",
+                "coding_agent.tools.agent_tools._generate_session_hash_suffix",
                 return_value="abc123",
             ),
-            patch("coco_codes.tools.agent_tools._save_session_history") as mock_save,
+            patch("coding_agent.tools.agent_tools._save_session_history") as mock_save,
         ):
             mock_bus.return_value.emit = MagicMock()
 
@@ -733,13 +733,13 @@ class TestActiveSubagentTasks:
 
     def test_active_tasks_set_exists(self):
         """Test that the active tasks set is accessible."""
-        from coco_codes.tools.agent_tools import _active_subagent_tasks
+        from coding_agent.tools.agent_tools import _active_subagent_tasks
 
         assert isinstance(_active_subagent_tasks, set)
 
     def test_active_tasks_initially_empty(self):
         """Test that active tasks set starts empty (or becomes empty)."""
-        from coco_codes.tools.agent_tools import _active_subagent_tasks
+        from coding_agent.tools.agent_tools import _active_subagent_tasks
 
         # After all tasks complete, should be empty
         # (This is testing the cleanup behavior)
@@ -771,9 +771,9 @@ class TestSessionIdValidationInInvokeAgent:
         mock_context = MagicMock()
 
         with (
-            patch("coco_codes.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
         ):
@@ -794,9 +794,9 @@ class TestSessionIdValidationInInvokeAgent:
         mock_context = MagicMock()
 
         with (
-            patch("coco_codes.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
         ):
@@ -817,9 +817,9 @@ class TestSessionIdValidationInInvokeAgent:
         mock_context = MagicMock()
 
         with (
-            patch("coco_codes.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
         ):
@@ -840,9 +840,9 @@ class TestSessionIdValidationInInvokeAgent:
         mock_context = MagicMock()
 
         with (
-            patch("coco_codes.tools.agent_tools.emit_error"),
+            patch("coding_agent.tools.agent_tools.emit_error"),
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="test-group",
             ),
         ):
@@ -878,20 +878,20 @@ class TestListAgentsEmitsBannerAndInfo:
 
         with (
             patch(
-                "coco_codes.config.get_banner_color",
+                "coding_agent.config.get_banner_color",
                 return_value="green",
             ) as mock_banner_color,
-            patch("coco_codes.tools.agent_tools.emit_info") as mock_emit_info,
+            patch("coding_agent.tools.agent_tools.emit_info") as mock_emit_info,
             patch(
-                "coco_codes.tools.agent_tools.generate_group_id",
+                "coding_agent.tools.agent_tools.generate_group_id",
                 return_value="banner-group",
             ),
             patch(
-                "coco_codes.agents.get_available_agents",
+                "coding_agent.agents.get_available_agents",
                 return_value={},
             ),
             patch(
-                "coco_codes.agents.get_agent_descriptions",
+                "coding_agent.agents.get_agent_descriptions",
                 return_value={},
             ),
         ):

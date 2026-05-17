@@ -7,7 +7,7 @@ early compaction triggered by estimation mismatch.
 
 import math
 
-from coco_codes.agents.subagent_stream_handler import (
+from coding_agent.agents.subagent_stream_handler import (
     _estimate_tokens as streaming_estimate,
 )
 

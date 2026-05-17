@@ -18,7 +18,7 @@ from pydantic_ai.messages import (
     UserPromptPart,
 )
 
-from coco_codes.agents._non_streaming_render import (
+from coding_agent.agents._non_streaming_render import (
     StreamingTextDetector,
     _collect_final_text_from_messages,
     _collect_thinking_from_messages,
@@ -172,7 +172,7 @@ def test_collectors_tolerate_broken_all_messages():
 def test_render_renders_final_text_only_when_no_thinking():
     result = _mk_result(ModelResponse(parts=[TextPart(content="the answer")]))
     with patch(
-        "coco_codes.agents._non_streaming_render.display_non_streamed_result"
+        "coding_agent.agents._non_streaming_render.display_non_streamed_result"
     ) as disp:
         render_result_without_streaming(result)
 
@@ -186,7 +186,7 @@ def test_render_renders_thinking_and_final_text():
         ModelResponse(parts=[TextPart(content="answer")]),
     )
     with patch(
-        "coco_codes.agents._non_streaming_render.display_non_streamed_result"
+        "coding_agent.agents._non_streaming_render.display_non_streamed_result"
     ) as disp:
         render_result_without_streaming(result)
 
@@ -200,7 +200,7 @@ def test_render_renders_thinking_and_final_text():
 def test_render_swallows_display_errors():
     result = _mk_result(ModelResponse(parts=[TextPart(content="boom")]))
     with patch(
-        "coco_codes.agents._non_streaming_render.display_non_streamed_result",
+        "coding_agent.agents._non_streaming_render.display_non_streamed_result",
         side_effect=RuntimeError("console dead"),
     ):
         # Must not raise.
@@ -210,7 +210,7 @@ def test_render_swallows_display_errors():
 def test_render_skips_empty_final_text():
     result = _mk_result(ModelResponse(parts=[TextPart(content="   ")]))
     with patch(
-        "coco_codes.agents._non_streaming_render.display_non_streamed_result"
+        "coding_agent.agents._non_streaming_render.display_non_streamed_result"
     ) as disp:
         render_result_without_streaming(result)
     disp.assert_not_called()

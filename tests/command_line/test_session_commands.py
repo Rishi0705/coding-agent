@@ -5,10 +5,10 @@ from unittest.mock import MagicMock, patch
 
 class TestGetCommandsHelp:
     def test_lazy_import(self):
-        from coco_codes.command_line.session_commands import get_commands_help
+        from coding_agent.command_line.session_commands import get_commands_help
 
         with patch(
-            "coco_codes.command_line.command_handler.get_commands_help",
+            "coding_agent.command_line.command_handler.get_commands_help",
             return_value="help text",
         ):
             result = get_commands_help()
@@ -17,18 +17,18 @@ class TestGetCommandsHelp:
 
 class TestHandleSessionCommand:
     def _run(self, command):
-        from coco_codes.command_line.session_commands import handle_session_command
+        from coding_agent.command_line.session_commands import handle_session_command
 
         return handle_session_command(command)
 
     def test_session_show_id(self):
         with (
-            patch("coco_codes.config.get_current_autosave_id", return_value="abc123"),
+            patch("coding_agent.config.get_current_autosave_id", return_value="abc123"),
             patch(
-                "coco_codes.config.get_current_autosave_session_name",
+                "coding_agent.config.get_current_autosave_session_name",
                 return_value="session_abc123",
             ),
-            patch("coco_codes.messaging.emit_info") as mock_info,
+            patch("coding_agent.messaging.emit_info") as mock_info,
         ):
             result = self._run("/session")
             assert result is True
@@ -36,32 +36,32 @@ class TestHandleSessionCommand:
 
     def test_session_id_subcommand(self):
         with (
-            patch("coco_codes.config.get_current_autosave_id", return_value="xyz"),
+            patch("coding_agent.config.get_current_autosave_id", return_value="xyz"),
             patch(
-                "coco_codes.config.get_current_autosave_session_name",
+                "coding_agent.config.get_current_autosave_session_name",
                 return_value="s",
             ),
-            patch("coco_codes.messaging.emit_info"),
+            patch("coding_agent.messaging.emit_info"),
         ):
             assert self._run("/session id") is True
 
     def test_session_new(self):
         with (
-            patch("coco_codes.config.rotate_autosave_id", return_value="new123"),
-            patch("coco_codes.messaging.emit_success") as mock_s,
+            patch("coding_agent.config.rotate_autosave_id", return_value="new123"),
+            patch("coding_agent.messaging.emit_success") as mock_s,
         ):
             assert self._run("/session new") is True
             assert "new123" in mock_s.call_args[0][0]
 
     def test_session_invalid(self):
-        with patch("coco_codes.messaging.emit_warning") as mock_w:
+        with patch("coding_agent.messaging.emit_warning") as mock_w:
             assert self._run("/session bad") is True
             mock_w.assert_called_once()
 
 
 class TestHandleCompactCommand:
     def _run(self, cmd="/compact"):
-        from coco_codes.command_line.session_commands import handle_compact_command
+        from coding_agent.command_line.session_commands import handle_compact_command
 
         return handle_compact_command(cmd)
 
@@ -70,10 +70,10 @@ class TestHandleCompactCommand:
         agent.get_message_history.return_value = []
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
-            patch("coco_codes.messaging.emit_warning") as mw,
+            patch("coding_agent.messaging.emit_warning") as mw,
         ):
             assert self._run() is True
             mw.assert_called_once()
@@ -84,17 +84,17 @@ class TestHandleCompactCommand:
         agent.estimate_tokens_for_message.return_value = 100
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
             patch(
-                "coco_codes.config.get_compaction_strategy",
+                "coding_agent.config.get_compaction_strategy",
                 return_value="truncation",
             ),
-            patch("coco_codes.config.get_protected_token_count", return_value=50),
-            patch("coco_codes.agents._compaction.truncate", return_value=["m3"]),
-            patch("coco_codes.messaging.emit_info"),
-            patch("coco_codes.messaging.emit_success") as ms,
+            patch("coding_agent.config.get_protected_token_count", return_value=50),
+            patch("coding_agent.agents._compaction.truncate", return_value=["m3"]),
+            patch("coding_agent.messaging.emit_info"),
+            patch("coding_agent.messaging.emit_success") as ms,
         ):
             assert self._run() is True
             ms.assert_called_once()
@@ -107,16 +107,16 @@ class TestHandleCompactCommand:
         agent.summarize_messages.return_value = (["summary"], ["m1"])
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
             patch(
-                "coco_codes.config.get_compaction_strategy",
+                "coding_agent.config.get_compaction_strategy",
                 return_value="summarization",
             ),
-            patch("coco_codes.config.get_protected_token_count", return_value=50),
-            patch("coco_codes.messaging.emit_info"),
-            patch("coco_codes.messaging.emit_success") as ms,
+            patch("coding_agent.config.get_protected_token_count", return_value=50),
+            patch("coding_agent.messaging.emit_info"),
+            patch("coding_agent.messaging.emit_success") as ms,
         ):
             assert self._run() is True
             ms.assert_called_once()
@@ -128,16 +128,16 @@ class TestHandleCompactCommand:
         agent.summarize_messages.return_value = ([], [])
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
             patch(
-                "coco_codes.config.get_compaction_strategy",
+                "coding_agent.config.get_compaction_strategy",
                 return_value="summarization",
             ),
-            patch("coco_codes.config.get_protected_token_count", return_value=50),
-            patch("coco_codes.messaging.emit_info"),
-            patch("coco_codes.messaging.emit_error") as me,
+            patch("coding_agent.config.get_protected_token_count", return_value=50),
+            patch("coding_agent.messaging.emit_info"),
+            patch("coding_agent.messaging.emit_error") as me,
         ):
             assert self._run() is True
             me.assert_called_once()
@@ -145,10 +145,10 @@ class TestHandleCompactCommand:
     def test_exception(self):
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 side_effect=Exception("boom"),
             ),
-            patch("coco_codes.messaging.emit_error") as me,
+            patch("coding_agent.messaging.emit_error") as me,
         ):
             assert self._run() is True
             assert "boom" in me.call_args[0][0]
@@ -161,36 +161,36 @@ class TestHandleCompactCommand:
         agent.summarize_messages.return_value = (["s"], [])
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
             patch(
-                "coco_codes.config.get_compaction_strategy",
+                "coding_agent.config.get_compaction_strategy",
                 return_value="summarization",
             ),
-            patch("coco_codes.config.get_protected_token_count", return_value=0),
-            patch("coco_codes.messaging.emit_info"),
-            patch("coco_codes.messaging.emit_success"),
+            patch("coding_agent.config.get_protected_token_count", return_value=0),
+            patch("coding_agent.messaging.emit_info"),
+            patch("coding_agent.messaging.emit_success"),
         ):
             assert self._run() is True
 
 
 class TestHandleTruncateCommand:
     def _run(self, cmd):
-        from coco_codes.command_line.session_commands import handle_truncate_command
+        from coding_agent.command_line.session_commands import handle_truncate_command
 
         return handle_truncate_command(cmd)
 
     def test_missing_arg(self):
-        with patch("coco_codes.messaging.emit_error"):
+        with patch("coding_agent.messaging.emit_error"):
             assert self._run("/truncate") is True
 
     def test_invalid_n(self):
-        with patch("coco_codes.messaging.emit_error"):
+        with patch("coding_agent.messaging.emit_error"):
             assert self._run("/truncate abc") is True
 
     def test_negative_n(self):
-        with patch("coco_codes.messaging.emit_error"):
+        with patch("coding_agent.messaging.emit_error"):
             assert self._run("/truncate -1") is True
 
     def test_no_history(self):
@@ -198,10 +198,10 @@ class TestHandleTruncateCommand:
         agent.get_message_history.return_value = []
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
-            patch("coco_codes.messaging.emit_warning"),
+            patch("coding_agent.messaging.emit_warning"),
         ):
             assert self._run("/truncate 5") is True
 
@@ -210,10 +210,10 @@ class TestHandleTruncateCommand:
         agent.get_message_history.return_value = ["a", "b"]
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
-            patch("coco_codes.messaging.emit_info"),
+            patch("coding_agent.messaging.emit_info"),
         ):
             assert self._run("/truncate 5") is True
 
@@ -222,10 +222,10 @@ class TestHandleTruncateCommand:
         agent.get_message_history.return_value = ["sys", "a", "b", "c", "d"]
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
-            patch("coco_codes.messaging.emit_success"),
+            patch("coding_agent.messaging.emit_success"),
         ):
             assert self._run("/truncate 3") is True
             hist = agent.set_message_history.call_args[0][0]
@@ -237,22 +237,22 @@ class TestHandleTruncateCommand:
         agent.get_message_history.return_value = ["sys", "a", "b"]
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
-            patch("coco_codes.messaging.emit_success"),
+            patch("coding_agent.messaging.emit_success"),
         ):
             assert self._run("/truncate 1") is True
             assert agent.set_message_history.call_args[0][0] == ["sys"]
 
     def test_too_many_args(self):
-        with patch("coco_codes.messaging.emit_error"):
+        with patch("coding_agent.messaging.emit_error"):
             assert self._run("/truncate 1 2") is True
 
 
 class TestHandleAutosaveLoadCommand:
     def test_returns_marker(self):
-        from coco_codes.command_line.session_commands import (
+        from coding_agent.command_line.session_commands import (
             handle_autosave_load_command,
         )
 
@@ -261,14 +261,14 @@ class TestHandleAutosaveLoadCommand:
 
 class TestHandleDumpContextCommand:
     def _run(self, cmd):
-        from coco_codes.command_line.session_commands import (
+        from coding_agent.command_line.session_commands import (
             handle_dump_context_command,
         )
 
         return handle_dump_context_command(cmd)
 
     def test_missing_name(self):
-        with patch("coco_codes.messaging.emit_warning"):
+        with patch("coding_agent.messaging.emit_warning"):
             assert self._run("/dump_context") is True
 
     def test_no_history(self):
@@ -276,10 +276,10 @@ class TestHandleDumpContextCommand:
         agent.get_message_history.return_value = []
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
-            patch("coco_codes.messaging.emit_warning"),
+            patch("coding_agent.messaging.emit_warning"),
         ):
             assert self._run("/dump_context mysession") is True
 
@@ -294,14 +294,14 @@ class TestHandleDumpContextCommand:
         )
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
             patch(
-                "coco_codes.command_line.session_commands.save_session",
+                "coding_agent.command_line.session_commands.save_session",
                 return_value=meta,
             ),
-            patch("coco_codes.messaging.emit_success"),
+            patch("coding_agent.messaging.emit_success"),
         ):
             assert self._run("/dump_context mysession") is True
 
@@ -310,14 +310,14 @@ class TestHandleDumpContextCommand:
         agent.get_message_history.return_value = ["m1"]
         with (
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
             patch(
-                "coco_codes.command_line.session_commands.save_session",
+                "coding_agent.command_line.session_commands.save_session",
                 side_effect=Exception("disk full"),
             ),
-            patch("coco_codes.messaging.emit_error") as me,
+            patch("coding_agent.messaging.emit_error") as me,
         ):
             assert self._run("/dump_context mysession") is True
             assert "disk full" in me.call_args[0][0]
@@ -325,28 +325,28 @@ class TestHandleDumpContextCommand:
 
 class TestHandleLoadContextCommand:
     def _run(self, cmd):
-        from coco_codes.command_line.session_commands import (
+        from coding_agent.command_line.session_commands import (
             handle_load_context_command,
         )
 
         return handle_load_context_command(cmd)
 
     def test_missing_name(self):
-        with patch("coco_codes.messaging.emit_warning"):
+        with patch("coding_agent.messaging.emit_warning"):
             assert self._run("/load_context") is True
 
     def test_file_not_found_with_available(self):
         with (
             patch(
-                "coco_codes.command_line.session_commands.load_session",
+                "coding_agent.command_line.session_commands.load_session",
                 side_effect=FileNotFoundError(),
             ),
             patch(
-                "coco_codes.command_line.session_commands.list_sessions",
+                "coding_agent.command_line.session_commands.list_sessions",
                 return_value=["s1"],
             ),
-            patch("coco_codes.messaging.emit_error"),
-            patch("coco_codes.messaging.emit_info") as mi,
+            patch("coding_agent.messaging.emit_error"),
+            patch("coding_agent.messaging.emit_info") as mi,
         ):
             assert self._run("/load_context missing") is True
             mi.assert_called_once()
@@ -354,15 +354,15 @@ class TestHandleLoadContextCommand:
     def test_file_not_found_no_available(self):
         with (
             patch(
-                "coco_codes.command_line.session_commands.load_session",
+                "coding_agent.command_line.session_commands.load_session",
                 side_effect=FileNotFoundError(),
             ),
             patch(
-                "coco_codes.command_line.session_commands.list_sessions",
+                "coding_agent.command_line.session_commands.list_sessions",
                 return_value=[],
             ),
-            patch("coco_codes.messaging.emit_error"),
-            patch("coco_codes.messaging.emit_info") as mi,
+            patch("coding_agent.messaging.emit_error"),
+            patch("coding_agent.messaging.emit_info") as mi,
         ):
             assert self._run("/load_context missing") is True
             mi.assert_not_called()
@@ -370,10 +370,10 @@ class TestHandleLoadContextCommand:
     def test_generic_exception(self):
         with (
             patch(
-                "coco_codes.command_line.session_commands.load_session",
+                "coding_agent.command_line.session_commands.load_session",
                 side_effect=Exception("corrupt"),
             ),
-            patch("coco_codes.messaging.emit_error") as me,
+            patch("coding_agent.messaging.emit_error") as me,
         ):
             assert self._run("/load_context bad") is True
             assert "corrupt" in me.call_args[0][0]
@@ -383,16 +383,16 @@ class TestHandleLoadContextCommand:
         agent.estimate_tokens_for_message.return_value = 50
         with (
             patch(
-                "coco_codes.command_line.session_commands.load_session",
+                "coding_agent.command_line.session_commands.load_session",
                 return_value=["m1", "m2"],
             ),
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
-            patch("coco_codes.config.rotate_autosave_id", return_value="new_id"),
-            patch("coco_codes.messaging.emit_success"),
-            patch("coco_codes.command_line.autosave_menu.display_resumed_history"),
+            patch("coding_agent.config.rotate_autosave_id", return_value="new_id"),
+            patch("coding_agent.messaging.emit_success"),
+            patch("coding_agent.command_line.autosave_menu.display_resumed_history"),
         ):
             assert self._run("/load_context mysession") is True
 
@@ -401,18 +401,18 @@ class TestHandleLoadContextCommand:
         agent.estimate_tokens_for_message.return_value = 50
         with (
             patch(
-                "coco_codes.command_line.session_commands.load_session",
+                "coding_agent.command_line.session_commands.load_session",
                 return_value=["m1"],
             ),
             patch(
-                "coco_codes.agents.agent_manager.get_current_agent",
+                "coding_agent.agents.agent_manager.get_current_agent",
                 return_value=agent,
             ),
             patch(
-                "coco_codes.config.rotate_autosave_id",
+                "coding_agent.config.rotate_autosave_id",
                 side_effect=Exception("fail"),
             ),
-            patch("coco_codes.messaging.emit_success"),
-            patch("coco_codes.command_line.autosave_menu.display_resumed_history"),
+            patch("coding_agent.messaging.emit_success"),
+            patch("coding_agent.command_line.autosave_menu.display_resumed_history"),
         ):
             assert self._run("/load_context mysession") is True

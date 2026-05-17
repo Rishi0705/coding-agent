@@ -18,8 +18,8 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 
-from coco_codes.mcp_.blocking_startup import BlockingMCPServerStdio
-from coco_codes.mcp_.captured_stdio_server import (
+from coding_agent.mcp_.blocking_startup import BlockingMCPServerStdio
+from coding_agent.mcp_.captured_stdio_server import (
     CapturedMCPServerStdio,
     StderrCapture,
     StderrCollector,
@@ -51,7 +51,7 @@ class TestStderrCapture:
 
     def test_default_handler_logging(self):
         """Test default handler logs properly."""
-        with patch("coco_codes.mcp_.captured_stdio_server.logger") as mock_logger:
+        with patch("coding_agent.mcp_.captured_stdio_server.logger") as mock_logger:
             capture = StderrCapture("test-server")
             capture._default_handler("Test line")
 
@@ -59,7 +59,7 @@ class TestStderrCapture:
 
     def test_default_handler_empty_line(self):
         """Test default handler ignores empty lines."""
-        with patch("coco_codes.mcp_.captured_stdio_server.logger") as mock_logger:
+        with patch("coding_agent.mcp_.captured_stdio_server.logger") as mock_logger:
             capture = StderrCapture("test-server")
             capture._default_handler("   ")  # Whitespace only
 
@@ -381,10 +381,10 @@ class TestCapturedMCPServerStdio:
         with (
             patch("builtins.open", return_value=mock_devnull),
             patch(
-                "coco_codes.mcp_.captured_stdio_server.stdio_client"
+                "coding_agent.mcp_.captured_stdio_server.stdio_client"
             ) as mock_stdio_client,
             patch(
-                "coco_codes.mcp_.captured_stdio_server.StderrCapture"
+                "coding_agent.mcp_.captured_stdio_server.StderrCapture"
             ) as mock_stderr_capture,
         ):
             mock_stdio_client.return_value.__aenter__ = AsyncMock(
@@ -407,7 +407,7 @@ class TestCapturedMCPServerStdio:
 
     async def test_stderr_line_handler(self):
         """Test stderr line handler functionality."""
-        from coco_codes.mcp_.captured_stdio_server import logger
+        from coding_agent.mcp_.captured_stdio_server import logger
 
         captured_lines = []
 
@@ -439,7 +439,7 @@ class TestCapturedMCPServerStdio:
 
         # Reset and test with default handler
         server.stderr_handler = None
-        with patch("coco_codes.mcp_.captured_stdio_server.logger") as mock_logger:
+        with patch("coding_agent.mcp_.captured_stdio_server.logger") as mock_logger:
             # Need to patch the imported logger in the test function scope
             def stderr_line_handler_with_mock(line: str):
                 """Handle captured stderr lines with mocked logger."""
@@ -464,7 +464,7 @@ class TestCapturedMCPServerStdio:
         with (
             patch("builtins.open", side_effect=IOError("File error")),
             patch(
-                "coco_codes.mcp_.captured_stdio_server.StderrCapture"
+                "coding_agent.mcp_.captured_stdio_server.StderrCapture"
             ) as mock_stderr_capture,
         ):
             mock_capture_instance = AsyncMock()
@@ -536,7 +536,7 @@ class TestStderrCollector:
         """Test creating handler with user emission enabled."""
         collector = StderrCollector()
 
-        with patch("coco_codes.messaging.emit_info") as mock_emit:
+        with patch("coding_agent.messaging.emit_info") as mock_emit:
             handler = collector.create_handler("user-server", emit_to_user=True)
 
             handler("user output line")
@@ -853,10 +853,10 @@ class TestBlockingStartup:
         # Mock the super().__aenter__ to raise this group
         with (
             patch(
-                "coco_codes.mcp_.blocking_startup.SimpleCapturedMCPServerStdio.__aenter__",
+                "coding_agent.mcp_.blocking_startup.SimpleCapturedMCPServerStdio.__aenter__",
                 side_effect=exc_group,
             ),
-            patch("coco_codes.mcp_.blocking_startup.emit_info") as mock_emit,
+            patch("coding_agent.mcp_.blocking_startup.emit_info") as mock_emit,
         ):
             server = BlockingMCPServerStdio(command="echo", args=["hello"])
 

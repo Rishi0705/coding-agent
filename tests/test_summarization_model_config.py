@@ -11,8 +11,8 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
-from coco_codes import config as cp_config
-from coco_codes.config import (
+from coding_agent import config as cp_config
+from coding_agent.config import (
     get_config_keys,
     get_summarization_model_name,
     set_summarization_model_name,
@@ -100,7 +100,7 @@ class TestSummarizationAgentUsesNewGetter:
 
     def test_reload_summarization_agent_reads_new_key(self, monkeypatch):
         """reload_summarization_agent() should resolve the model via the new getter."""
-        from coco_codes import summarization_agent
+        from coding_agent import summarization_agent
 
         # Intercept the get_summarization_model_name call
         monkeypatch.setattr(

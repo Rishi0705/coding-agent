@@ -1,10 +1,10 @@
-"""Tests for coco_codes/plugins/agent_skills/skills_menu.py"""
+"""Tests for coding_agent/plugins/agent_skills/skills_menu.py"""
 
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from coco_codes.plugins.agent_skills.discovery import SkillInfo
-from coco_codes.plugins.agent_skills.metadata import SkillMetadata
+from coding_agent.plugins.agent_skills.discovery import SkillInfo
+from coding_agent.plugins.agent_skills.metadata import SkillMetadata
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -27,7 +27,7 @@ def _make_metadata(
 
 
 # Patch targets (module under test)
-_MOD = "coco_codes.plugins.agent_skills.skills_menu"
+_MOD = "coding_agent.plugins.agent_skills.skills_menu"
 _SAFE_INPUT = f"{_MOD}.safe_input"
 
 
@@ -44,7 +44,7 @@ class TestSkillsMenuInit:
     @patch(f"{_MOD}.get_disabled_skills", return_value=["disabled-one"])
     @patch(f"{_MOD}.discover_skills", return_value=[])
     def test_init_empty(self, mock_disc, mock_dis, mock_dirs, mock_en):
-        from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+        from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
         menu = SkillsMenu()
         assert menu.skills == []
@@ -56,7 +56,7 @@ class TestSkillsMenuInit:
     @patch(f"{_MOD}.get_disabled_skills", return_value=[])
     @patch(f"{_MOD}.discover_skills", side_effect=RuntimeError("boom"))
     def test_init_refresh_error(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+        from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
         SkillsMenu()  # should not raise
 
@@ -65,7 +65,7 @@ class TestSkillsMenuInit:
     @patch(f"{_MOD}.get_disabled_skills", return_value=[])
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill()])
     def test_get_current_skill(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+        from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
         menu = SkillsMenu()
         assert menu._get_current_skill() is not None
@@ -83,7 +83,7 @@ class TestSkillsMenuRendering:
             patch(f"{_MOD}.get_disabled_skills", return_value=disabled or []),
             patch(f"{_MOD}.discover_skills", return_value=skills or []),
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+            from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
             return SkillsMenu()
 
@@ -208,7 +208,7 @@ class TestSkillsMenuGetMetadata:
             patch(f"{_MOD}.get_disabled_skills", return_value=[]),
             patch(f"{_MOD}.discover_skills", return_value=[_make_skill()]),
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+            from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
             return SkillsMenu()
 
@@ -234,7 +234,7 @@ class TestSkillsMenuWrapText:
             patch(f"{_MOD}.get_disabled_skills", return_value=[]),
             patch(f"{_MOD}.discover_skills", return_value=[]),
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+            from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
             return SkillsMenu()
 
@@ -265,7 +265,7 @@ class TestSkillsMenuToggle:
     def test_toggle_enables(
         self, mock_meta, mock_disc, mock_dis, mock_dirs, mock_en, mock_set, mock_refresh
     ):
-        from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+        from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
         menu = SkillsMenu()
         menu._toggle_current_skill()
@@ -281,7 +281,7 @@ class TestSkillsMenuToggle:
     def test_toggle_disables(
         self, mock_meta, mock_disc, mock_dis, mock_dirs, mock_en, mock_set, mock_refresh
     ):
-        from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+        from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
         menu = SkillsMenu()
         menu._toggle_current_skill()
@@ -292,7 +292,7 @@ class TestSkillsMenuToggle:
     @patch(f"{_MOD}.get_disabled_skills", return_value=[])
     @patch(f"{_MOD}.discover_skills", return_value=[])
     def test_toggle_no_skill(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+        from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
         menu = SkillsMenu()
         menu._toggle_current_skill()  # should not raise
@@ -307,7 +307,7 @@ class TestSkillsMenuToggle:
     def test_toggle_no_metadata(
         self, mock_meta, mock_disc, mock_dis, mock_dirs, mock_en, mock_set, mock_refresh
     ):
-        from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+        from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
         menu = SkillsMenu()
         menu._toggle_current_skill()
@@ -322,7 +322,7 @@ class TestSkillsMenuUpdateDisplay:
             patch(f"{_MOD}.get_disabled_skills", return_value=[]),
             patch(f"{_MOD}.discover_skills", return_value=[]),
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+            from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
             menu = SkillsMenu()
             menu.menu_control = MagicMock()
@@ -338,7 +338,7 @@ class TestSkillsMenuUpdateDisplay:
             patch(f"{_MOD}.get_disabled_skills", return_value=[]),
             patch(f"{_MOD}.discover_skills", return_value=[]),
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+            from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
             menu = SkillsMenu()
             menu.update_display()  # no crash with None controls
@@ -394,7 +394,7 @@ class TestSkillsMenuKeyBindings:
             patch(f"{_MOD}.time"),
             patch("sys.stdout"),
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+            from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
             menu = SkillsMenu()
             mock_app = MagicMock()
@@ -515,7 +515,7 @@ class TestSkillsMenuRun:
             patch(f"{_MOD}.get_disabled_skills", return_value=[]),
             patch(f"{_MOD}.discover_skills", return_value=[]),
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+            from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
             menu = SkillsMenu()
             mock_app = MagicMock()
@@ -541,7 +541,7 @@ class TestPromptForDirectory:
             create=True,
             return_value="~/my-skills",
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _prompt_for_directory,
             )
 
@@ -551,7 +551,7 @@ class TestPromptForDirectory:
 
     def test_prompt_empty_returns_none(self):
         with patch(_SAFE_INPUT, create=True, return_value="  "):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _prompt_for_directory,
             )
 
@@ -564,7 +564,7 @@ class TestPromptForDirectory:
             create=True,
             side_effect=KeyboardInterrupt,
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _prompt_for_directory,
             )
 
@@ -573,7 +573,7 @@ class TestPromptForDirectory:
 
     def test_prompt_eof_error(self):
         with patch(_SAFE_INPUT, create=True, side_effect=EOFError):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _prompt_for_directory,
             )
 
@@ -585,7 +585,7 @@ class TestShowDirectoriesMenu:
     @patch(f"{_MOD}.get_skill_directories", return_value=[])
     def test_no_dirs(self, mock_dirs):
         with patch(_SAFE_INPUT, create=True, return_value=""):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _show_directories_menu,
             )
 
@@ -596,7 +596,7 @@ class TestShowDirectoriesMenu:
     @patch(f"{_MOD}.get_skill_directories", return_value=["/tmp/skills"])
     def test_remove_dir(self, mock_dirs, mock_remove):
         with patch(_SAFE_INPUT, create=True, side_effect=["1", "y"]):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _show_directories_menu,
             )
 
@@ -607,7 +607,7 @@ class TestShowDirectoriesMenu:
     @patch(f"{_MOD}.get_skill_directories", return_value=["/tmp/skills"])
     def test_remove_dir_cancel(self, mock_dirs):
         with patch(_SAFE_INPUT, create=True, side_effect=["1", "n"]):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _show_directories_menu,
             )
 
@@ -617,7 +617,7 @@ class TestShowDirectoriesMenu:
     @patch(f"{_MOD}.get_skill_directories", return_value=["/tmp/skills"])
     def test_invalid_choice(self, mock_dirs):
         with patch(_SAFE_INPUT, create=True, return_value="abc"):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _show_directories_menu,
             )
 
@@ -627,7 +627,7 @@ class TestShowDirectoriesMenu:
     @patch(f"{_MOD}.get_skill_directories", return_value=["/tmp/skills"])
     def test_out_of_range(self, mock_dirs):
         with patch(_SAFE_INPUT, create=True, return_value="99"):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _show_directories_menu,
             )
 
@@ -641,7 +641,7 @@ class TestShowDirectoriesMenu:
             create=True,
             side_effect=KeyboardInterrupt,
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import (
+            from coding_agent.plugins.agent_skills.skills_menu import (
                 _show_directories_menu,
             )
 
@@ -657,7 +657,7 @@ class TestShowSkillsMenu:
         mock_menu = MagicMock()
         mock_menu.run.return_value = "quit"
         mock_cls.return_value = mock_menu
-        from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+        from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
         result = show_skills_menu()
         assert result is False
@@ -667,7 +667,7 @@ class TestShowSkillsMenu:
         mock_menu = MagicMock()
         mock_menu.run.return_value = "changed"
         mock_cls.return_value = mock_menu
-        from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+        from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
         result = show_skills_menu()
         assert result is True
@@ -677,7 +677,7 @@ class TestShowSkillsMenu:
         mock_menu = MagicMock()
         mock_menu.run.return_value = None
         mock_cls.return_value = mock_menu
-        from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+        from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
         result = show_skills_menu()
         assert result is False
@@ -689,7 +689,7 @@ class TestShowSkillsMenu:
         mock_menu = MagicMock()
         mock_menu.run.side_effect = ["add_directory", "quit"]
         mock_cls.return_value = mock_menu
-        from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+        from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
         show_skills_menu()
         mock_add.assert_called_once_with("/tmp/new-dir")
@@ -701,7 +701,7 @@ class TestShowSkillsMenu:
         mock_menu = MagicMock()
         mock_menu.run.side_effect = ["add_directory", "quit"]
         mock_cls.return_value = mock_menu
-        from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+        from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
         show_skills_menu()
 
@@ -711,7 +711,7 @@ class TestShowSkillsMenu:
         mock_menu = MagicMock()
         mock_menu.run.side_effect = ["add_directory", "quit"]
         mock_cls.return_value = mock_menu
-        from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+        from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
         show_skills_menu()
 
@@ -721,7 +721,7 @@ class TestShowSkillsMenu:
         mock_menu = MagicMock()
         mock_menu.run.side_effect = ["show_directories", "quit"]
         mock_cls.return_value = mock_menu
-        from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+        from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
         result = show_skills_menu()
         assert result is True
@@ -732,7 +732,7 @@ class TestShowSkillsMenu:
         mock_menu = MagicMock()
         mock_menu.run.side_effect = ["show_directories", "quit"]
         mock_cls.return_value = mock_menu
-        from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+        from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
         result = show_skills_menu()
         assert result is False
@@ -743,10 +743,10 @@ class TestShowSkillsMenu:
         mock_menu.run.side_effect = ["install", "quit"]
         mock_cls.return_value = mock_menu
         with patch(
-            "coco_codes.plugins.agent_skills.skills_install_menu.run_skills_install_menu",
+            "coding_agent.plugins.agent_skills.skills_install_menu.run_skills_install_menu",
             return_value=True,
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+            from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
             result = show_skills_menu()
             assert result is True
@@ -757,10 +757,10 @@ class TestShowSkillsMenu:
         mock_menu.run.side_effect = ["install", "quit"]
         mock_cls.return_value = mock_menu
         with patch(
-            "coco_codes.plugins.agent_skills.skills_install_menu.run_skills_install_menu",
+            "coding_agent.plugins.agent_skills.skills_install_menu.run_skills_install_menu",
             return_value=False,
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import show_skills_menu
+            from coding_agent.plugins.agent_skills.skills_menu import show_skills_menu
 
             result = show_skills_menu()
             assert result is False
@@ -774,7 +774,7 @@ class TestShowSkillsMenu:
 class TestListSkills:
     @patch(f"{_MOD}.discover_skills", return_value=[])
     def test_no_skills(self, mock_disc):
-        from coco_codes.plugins.agent_skills.skills_menu import list_skills
+        from coding_agent.plugins.agent_skills.skills_menu import list_skills
 
         assert list_skills() is True
 
@@ -783,7 +783,7 @@ class TestListSkills:
     @patch(f"{_MOD}.get_disabled_skills", return_value=[])
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill()])
     def test_with_skills(self, mock_disc, mock_dis, mock_meta, mock_res):
-        from coco_codes.plugins.agent_skills.skills_menu import list_skills
+        from coding_agent.plugins.agent_skills.skills_menu import list_skills
 
         assert list_skills() is True
 
@@ -792,7 +792,7 @@ class TestListSkills:
     @patch(f"{_MOD}.get_disabled_skills", return_value=["skill-a"])
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill()])
     def test_disabled_no_desc(self, mock_disc, mock_dis, mock_meta, mock_res):
-        from coco_codes.plugins.agent_skills.skills_menu import list_skills
+        from coding_agent.plugins.agent_skills.skills_menu import list_skills
 
         assert list_skills() is True
 
@@ -800,13 +800,13 @@ class TestListSkills:
     @patch(f"{_MOD}.get_disabled_skills", return_value=["skill-a"])
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill()])
     def test_no_metadata(self, mock_disc, mock_dis, mock_meta):
-        from coco_codes.plugins.agent_skills.skills_menu import list_skills
+        from coding_agent.plugins.agent_skills.skills_menu import list_skills
 
         assert list_skills() is True
 
     @patch(f"{_MOD}.discover_skills", side_effect=RuntimeError("boom"))
     def test_error(self, mock_disc):
-        from coco_codes.plugins.agent_skills.skills_menu import list_skills
+        from coding_agent.plugins.agent_skills.skills_menu import list_skills
 
         assert list_skills() is False
 
@@ -819,57 +819,57 @@ class TestListSkills:
 class TestHandleSkillsCommand:
     @patch(f"{_MOD}.show_skills_menu", return_value=True)
     def test_no_args(self, mock_show):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command([]) is True
 
     @patch(f"{_MOD}.list_skills", return_value=True)
     def test_list(self, mock_list):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["list"]) is True
 
     def test_enable_no_name(self):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["enable"]) is False
 
     def test_disable_no_name(self):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["disable"]) is False
 
     @patch(f"{_MOD}._enable_skill", return_value=True)
     def test_enable(self, mock_en):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["enable", "my-skill"]) is True
 
     @patch(f"{_MOD}._disable_skill", return_value=True)
     def test_disable(self, mock_dis):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["disable", "my-skill"]) is True
 
     @patch(f"{_MOD}._toggle_skills_integration", return_value=True)
     def test_toggle(self, mock_toggle):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["toggle"]) is True
 
     @patch(f"{_MOD}._refresh_skills", return_value=True)
     def test_refresh(self, mock_ref):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["refresh"]) is True
 
     def test_help(self):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["help"]) is True
 
     def test_unknown(self):
-        from coco_codes.plugins.agent_skills.skills_menu import handle_skills_command
+        from coding_agent.plugins.agent_skills.skills_menu import handle_skills_command
 
         assert handle_skills_command(["foobar"]) is False
 
@@ -886,7 +886,7 @@ class TestEnableDisableSkill:
     @patch(f"{_MOD}.parse_skill_metadata", return_value=None)
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill("my-skill")])
     def test_enable_success(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _enable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _enable_skill
 
         assert _enable_skill("my-skill") is True
 
@@ -894,20 +894,20 @@ class TestEnableDisableSkill:
     @patch(f"{_MOD}.parse_skill_metadata", return_value=None)
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill("my-skill")])
     def test_enable_already_enabled(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _enable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _enable_skill
 
         assert _enable_skill("my-skill") is True
 
     @patch(f"{_MOD}.parse_skill_metadata", return_value=None)
     @patch(f"{_MOD}.discover_skills", return_value=[])
     def test_enable_not_found(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _enable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _enable_skill
 
         assert _enable_skill("nonexistent") is False
 
     @patch(f"{_MOD}.discover_skills", side_effect=RuntimeError("boom"))
     def test_enable_error(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _enable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _enable_skill
 
         assert _enable_skill("x") is False
 
@@ -917,7 +917,7 @@ class TestEnableDisableSkill:
     @patch(f"{_MOD}.parse_skill_metadata", return_value=None)
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill("my-skill")])
     def test_disable_success(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _disable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _disable_skill
 
         assert _disable_skill("my-skill") is True
 
@@ -925,20 +925,20 @@ class TestEnableDisableSkill:
     @patch(f"{_MOD}.parse_skill_metadata", return_value=None)
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill("my-skill")])
     def test_disable_already_disabled(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _disable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _disable_skill
 
         assert _disable_skill("my-skill") is True
 
     @patch(f"{_MOD}.parse_skill_metadata", return_value=None)
     @patch(f"{_MOD}.discover_skills", return_value=[])
     def test_disable_not_found(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _disable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _disable_skill
 
         assert _disable_skill("nonexistent") is False
 
     @patch(f"{_MOD}.discover_skills", side_effect=RuntimeError("boom"))
     def test_disable_error(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _disable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _disable_skill
 
         assert _disable_skill("x") is False
 
@@ -951,7 +951,7 @@ class TestEnableDisableSkill:
     )
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill("skill-a")])
     def test_enable_by_metadata_name(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _enable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _enable_skill
 
         assert _enable_skill("meta-name") is True
 
@@ -963,7 +963,7 @@ class TestEnableDisableSkill:
     )
     @patch(f"{_MOD}.discover_skills", return_value=[_make_skill("skill-a")])
     def test_disable_by_metadata_name(self, *mocks):
-        from coco_codes.plugins.agent_skills.skills_menu import _disable_skill
+        from coding_agent.plugins.agent_skills.skills_menu import _disable_skill
 
         assert _disable_skill("meta-name") is True
 
@@ -977,7 +977,7 @@ class TestToggleAndRefresh:
     @patch(f"{_MOD}.set_skills_enabled")
     @patch(f"{_MOD}.get_skills_enabled", return_value=False)
     def test_toggle_on(self, mock_get, mock_set):
-        from coco_codes.plugins.agent_skills.skills_menu import (
+        from coding_agent.plugins.agent_skills.skills_menu import (
             _toggle_skills_integration,
         )
 
@@ -987,7 +987,7 @@ class TestToggleAndRefresh:
     @patch(f"{_MOD}.set_skills_enabled")
     @patch(f"{_MOD}.get_skills_enabled", return_value=True)
     def test_toggle_off(self, mock_get, mock_set):
-        from coco_codes.plugins.agent_skills.skills_menu import (
+        from coding_agent.plugins.agent_skills.skills_menu import (
             _toggle_skills_integration,
         )
 
@@ -996,7 +996,7 @@ class TestToggleAndRefresh:
 
     @patch(f"{_MOD}.get_skills_enabled", side_effect=RuntimeError("boom"))
     def test_toggle_error(self, mock_get):
-        from coco_codes.plugins.agent_skills.skills_menu import (
+        from coding_agent.plugins.agent_skills.skills_menu import (
             _toggle_skills_integration,
         )
 
@@ -1004,20 +1004,20 @@ class TestToggleAndRefresh:
 
     @patch(f"{_MOD}.refresh_skill_cache")
     def test_refresh(self, mock_ref):
-        from coco_codes.plugins.agent_skills.skills_menu import _refresh_skills
+        from coding_agent.plugins.agent_skills.skills_menu import _refresh_skills
 
         assert _refresh_skills() is True
 
     @patch(f"{_MOD}.refresh_skill_cache", side_effect=RuntimeError("boom"))
     def test_refresh_error(self, mock_ref):
-        from coco_codes.plugins.agent_skills.skills_menu import _refresh_skills
+        from coding_agent.plugins.agent_skills.skills_menu import _refresh_skills
 
         assert _refresh_skills() is False
 
 
 class TestShowHelp:
     def test_show_help(self):
-        from coco_codes.plugins.agent_skills.skills_menu import _show_help
+        from coding_agent.plugins.agent_skills.skills_menu import _show_help
 
         _show_help()  # just ensure no crash
 
@@ -1037,7 +1037,7 @@ class TestPagination:
             patch(f"{_MOD}.get_disabled_skills", return_value=[]),
             patch(f"{_MOD}.discover_skills", return_value=skills),
         ):
-            from coco_codes.plugins.agent_skills.skills_menu import SkillsMenu
+            from coding_agent.plugins.agent_skills.skills_menu import SkillsMenu
 
             menu = SkillsMenu()
             # Page 1

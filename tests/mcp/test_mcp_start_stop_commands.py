@@ -7,10 +7,10 @@ agent reloading, and edge cases.
 
 from unittest.mock import Mock, patch
 
-from coco_codes.command_line.mcp.restart_command import RestartCommand
-from coco_codes.command_line.mcp.start_command import StartCommand
-from coco_codes.command_line.mcp.stop_command import StopCommand
-from coco_codes.mcp_.managed_server import ServerState
+from coding_agent.command_line.mcp.restart_command import RestartCommand
+from coding_agent.command_line.mcp.start_command import StartCommand
+from coding_agent.command_line.mcp.stop_command import StopCommand
+from coding_agent.mcp_.managed_server import ServerState
 
 
 def get_messages_from_mock_emit(mock_emit_info):
@@ -50,15 +50,15 @@ class TestStartCommand:
             error_messages.append(str(message))
 
         with patch(
-            "coco_codes.command_line.mcp.start_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.start_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = None
 
             with patch(
-                "coco_codes.command_line.mcp.start_command.suggest_similar_servers"
+                "coding_agent.command_line.mcp.start_command.suggest_similar_servers"
             ) as mock_suggest:
                 with patch(
-                    "coco_codes.command_line.mcp.start_command.emit_error",
+                    "coding_agent.command_line.mcp.start_command.emit_error",
                     side_effect=capture_error,
                 ):
                     self.command.execute(["nonexistent"])
@@ -71,7 +71,7 @@ class TestStartCommand:
     ):
         """Test successful server start."""
         with patch(
-            "coco_codes.command_line.mcp.start_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.start_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = "test-server-1"
 
@@ -103,7 +103,7 @@ class TestStartCommand:
         mock_mcp_manager.servers = {}
 
         with patch(
-            "coco_codes.command_line.mcp.start_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.start_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = "nonexistent-server"
 
@@ -123,9 +123,9 @@ class TestStartCommand:
         mock_agent = Mock()
         mock_agent.reload_code_generation_agent.side_effect = Exception("Reload failed")
 
-        with patch("coco_codes.agents.get_current_agent", return_value=mock_agent):
+        with patch("coding_agent.agents.get_current_agent", return_value=mock_agent):
             with patch(
-                "coco_codes.command_line.mcp.start_command.find_server_id_by_name"
+                "coding_agent.command_line.mcp.start_command.find_server_id_by_name"
             ) as mock_find:
                 mock_find.return_value = "test-server-1"
 
@@ -138,7 +138,7 @@ class TestStartCommand:
     def test_execute_general_exception(self, mock_emit_info):
         """Test handling of general exceptions."""
         with patch(
-            "coco_codes.command_line.mcp.start_command.find_server_id_by_name",
+            "coding_agent.command_line.mcp.start_command.find_server_id_by_name",
             side_effect=Exception("Random error"),
         ):
             self.command.execute(["test-server"])
@@ -173,12 +173,12 @@ class TestStopCommand:
     def test_execute_server_not_found(self, mock_emit_info):
         """Test executing with non-existent server."""
         with patch(
-            "coco_codes.command_line.mcp.stop_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.stop_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = None
 
             with patch(
-                "coco_codes.command_line.mcp.stop_command.suggest_similar_servers"
+                "coding_agent.command_line.mcp.stop_command.suggest_similar_servers"
             ) as mock_suggest:
                 self.command.execute(["nonexistent"])
 
@@ -191,7 +191,7 @@ class TestStopCommand:
     ):
         """Test successful server stop."""
         with patch(
-            "coco_codes.command_line.mcp.stop_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.stop_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = "test-server-1"
 
@@ -210,7 +210,7 @@ class TestStopCommand:
     def test_execute_stop_failure(self, mock_emit_info, mock_get_current_agent):
         """Test failed server stop."""
         with patch(
-            "coco_codes.command_line.mcp.stop_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.stop_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = "nonexistent-server"
 
@@ -230,9 +230,9 @@ class TestStopCommand:
         mock_agent = Mock()
         mock_agent.reload_code_generation_agent.side_effect = Exception("Reload failed")
 
-        with patch("coco_codes.agents.get_current_agent", return_value=mock_agent):
+        with patch("coding_agent.agents.get_current_agent", return_value=mock_agent):
             with patch(
-                "coco_codes.command_line.mcp.stop_command.find_server_id_by_name"
+                "coding_agent.command_line.mcp.stop_command.find_server_id_by_name"
             ) as mock_find:
                 mock_find.return_value = "test-server-1"
 
@@ -245,7 +245,7 @@ class TestStopCommand:
     def test_execute_general_exception(self, mock_emit_info):
         """Test handling of general exceptions."""
         with patch(
-            "coco_codes.command_line.mcp.stop_command.find_server_id_by_name",
+            "coding_agent.command_line.mcp.stop_command.find_server_id_by_name",
             side_effect=Exception("Random error"),
         ):
             self.command.execute(["test-server"])
@@ -275,12 +275,12 @@ class TestRestartCommand:
     def test_execute_server_not_found(self, mock_emit_info):
         """Test executing with non-existent server."""
         with patch(
-            "coco_codes.command_line.mcp.restart_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.restart_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = None
 
             with patch(
-                "coco_codes.command_line.mcp.restart_command.suggest_similar_servers"
+                "coding_agent.command_line.mcp.restart_command.suggest_similar_servers"
             ) as mock_suggest:
                 self.command.execute(["nonexistent"])
 
@@ -291,7 +291,7 @@ class TestRestartCommand:
     def test_execute_restart_full_success(self, mock_emit_info, mock_mcp_manager):
         """Test successful restart (stop, reload, start)."""
         with patch(
-            "coco_codes.command_line.mcp.restart_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.restart_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = "test-server-1"
 
@@ -318,7 +318,7 @@ class TestRestartCommand:
 
         try:
             with patch(
-                "coco_codes.command_line.mcp.restart_command.find_server_id_by_name"
+                "coding_agent.command_line.mcp.restart_command.find_server_id_by_name"
             ) as mock_find:
                 mock_find.return_value = "test-server-1"
 
@@ -348,7 +348,7 @@ class TestRestartCommand:
         mock_mcp_manager.start_server_sync = start_that_fails
 
         with patch(
-            "coco_codes.command_line.mcp.restart_command.find_server_id_by_name"
+            "coding_agent.command_line.mcp.restart_command.find_server_id_by_name"
         ) as mock_find:
             mock_find.return_value = "test-server-1"
 
@@ -364,9 +364,9 @@ class TestRestartCommand:
         mock_agent = Mock()
         mock_agent.reload_code_generation_agent.side_effect = Exception("Reload failed")
 
-        with patch("coco_codes.agents.get_current_agent", return_value=mock_agent):
+        with patch("coding_agent.agents.get_current_agent", return_value=mock_agent):
             with patch(
-                "coco_codes.command_line.mcp.restart_command.find_server_id_by_name"
+                "coding_agent.command_line.mcp.restart_command.find_server_id_by_name"
             ) as mock_find:
                 mock_find.return_value = "test-server-1"
 
@@ -379,7 +379,7 @@ class TestRestartCommand:
     def test_execute_general_exception(self, mock_emit_info):
         """Test handling of general exceptions."""
         with patch(
-            "coco_codes.command_line.mcp.restart_command.find_server_id_by_name",
+            "coding_agent.command_line.mcp.restart_command.find_server_id_by_name",
             side_effect=Exception("Random error"),
         ):
             self.command.execute(["test-server"])
@@ -405,11 +405,11 @@ class TestCommandIntegration:
 
         # Start server
         with patch(
-            "coco_codes.command_line.mcp.stop_command.find_server_id_by_name",
+            "coding_agent.command_line.mcp.stop_command.find_server_id_by_name",
             return_value="test-server-1",
         ):
             with patch(
-                "coco_codes.command_line.mcp.start_command.find_server_id_by_name",
+                "coding_agent.command_line.mcp.start_command.find_server_id_by_name",
                 return_value="test-server-1",
             ):
                 start_cmd.execute(["test-server"])
@@ -441,7 +441,7 @@ class TestCommandIntegration:
         original_server.state = ServerState.RUNNING
 
         with patch(
-            "coco_codes.command_line.mcp.restart_command.find_server_id_by_name",
+            "coding_agent.command_line.mcp.restart_command.find_server_id_by_name",
             return_value="test-server-1",
         ):
             restart_cmd.execute(["test-server"])

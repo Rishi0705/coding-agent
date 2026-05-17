@@ -10,7 +10,7 @@ class TestToolExpansion:
 
     def test_tool_expansions_dict_exists(self):
         """TOOL_EXPANSIONS maps edit_file to three tools."""
-        from coco_codes.tools import TOOL_EXPANSIONS
+        from coding_agent.tools import TOOL_EXPANSIONS
 
         assert "edit_file" in TOOL_EXPANSIONS
         assert set(TOOL_EXPANSIONS["edit_file"]) == {
@@ -21,7 +21,7 @@ class TestToolExpansion:
 
     def test_new_tools_in_registry(self):
         """All three new tools are in TOOL_REGISTRY."""
-        from coco_codes.tools import TOOL_REGISTRY
+        from coding_agent.tools import TOOL_REGISTRY
 
         assert "create_file" in TOOL_REGISTRY
         assert "replace_in_file" in TOOL_REGISTRY
@@ -29,13 +29,13 @@ class TestToolExpansion:
 
     def test_edit_file_still_in_registry(self):
         """edit_file remains in registry for direct use."""
-        from coco_codes.tools import TOOL_REGISTRY
+        from coding_agent.tools import TOOL_REGISTRY
 
         assert "edit_file" in TOOL_REGISTRY
 
     def test_expansion_deduplication(self):
         """If agent lists both edit_file and create_file, no double registration."""
-        from coco_codes.tools import TOOL_EXPANSIONS
+        from coding_agent.tools import TOOL_EXPANSIONS
 
         tool_names = ["edit_file", "create_file", "read_file"]
 
@@ -61,7 +61,7 @@ class TestToolExpansion:
 
     def test_expansion_preserves_order(self):
         """Expansion inserts new tools at the position of the original."""
-        from coco_codes.tools import TOOL_EXPANSIONS
+        from coding_agent.tools import TOOL_EXPANSIONS
 
         tool_names = ["list_files", "edit_file", "delete_file"]
 
@@ -87,7 +87,7 @@ class TestToolExpansion:
 
     def test_non_expanded_tools_pass_through(self):
         """Tools not in TOOL_EXPANSIONS are unaffected."""
-        from coco_codes.tools import TOOL_EXPANSIONS
+        from coding_agent.tools import TOOL_EXPANSIONS
 
         tool_names = ["list_files", "grep", "agent_run_shell_command"]
 
@@ -111,7 +111,7 @@ class TestToolExpansion:
 
         Expansion happens in register_tools_for_agent, not in get_available_tools.
         """
-        from coco_codes.agents.json_agent import JSONAgent
+        from coding_agent.agents.json_agent import JSONAgent
 
         config = {
             "name": "test-agent",
@@ -138,24 +138,24 @@ class TestNewToolRegistration:
     """Test that each new tool registration function exists and is callable."""
 
     def test_register_create_file_exists(self):
-        from coco_codes.tools.file_modifications import register_create_file
+        from coding_agent.tools.file_modifications import register_create_file
 
         assert callable(register_create_file)
 
     def test_register_replace_in_file_exists(self):
-        from coco_codes.tools.file_modifications import register_replace_in_file
+        from coding_agent.tools.file_modifications import register_replace_in_file
 
         assert callable(register_replace_in_file)
 
     def test_register_delete_snippet_exists(self):
-        from coco_codes.tools.file_modifications import register_delete_snippet
+        from coding_agent.tools.file_modifications import register_delete_snippet
 
         assert callable(register_delete_snippet)
 
     def test_registry_functions_match_imports(self):
         """TOOL_REGISTRY entries point to the correct functions."""
-        from coco_codes.tools import TOOL_REGISTRY
-        from coco_codes.tools.file_modifications import (
+        from coding_agent.tools import TOOL_REGISTRY
+        from coding_agent.tools.file_modifications import (
             register_create_file,
             register_delete_snippet,
             register_replace_in_file,

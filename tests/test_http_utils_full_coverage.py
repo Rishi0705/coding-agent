@@ -12,10 +12,10 @@ class TestResolveProxyConfig:
     def test_no_proxy_no_retry_disable(self):
         with (
             patch.dict(os.environ, {}, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import _resolve_proxy_config
+            from coding_agent.http_utils import _resolve_proxy_config
 
             config = _resolve_proxy_config()
             assert config.trust_env is False
@@ -26,10 +26,10 @@ class TestResolveProxyConfig:
         env = {"HTTPS_PROXY": "http://proxy:8080"}
         with (
             patch.dict(os.environ, env, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import _resolve_proxy_config
+            from coding_agent.http_utils import _resolve_proxy_config
 
             config = _resolve_proxy_config()
             assert config.trust_env is True
@@ -39,10 +39,10 @@ class TestResolveProxyConfig:
         env = {"HTTP_PROXY": "http://proxy:3128"}
         with (
             patch.dict(os.environ, env, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import _resolve_proxy_config
+            from coding_agent.http_utils import _resolve_proxy_config
 
             config = _resolve_proxy_config()
             assert config.proxy_url == "http://proxy:3128"
@@ -51,10 +51,10 @@ class TestResolveProxyConfig:
         env = {"https_proxy": "http://lower:8080"}
         with (
             patch.dict(os.environ, env, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import _resolve_proxy_config
+            from coding_agent.http_utils import _resolve_proxy_config
 
             config = _resolve_proxy_config()
             assert config.proxy_url == "http://lower:8080"
@@ -63,10 +63,10 @@ class TestResolveProxyConfig:
         env = {"CODE_PUPPY_DISABLE_RETRY_TRANSPORT": "true"}
         with (
             patch.dict(os.environ, env, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import _resolve_proxy_config
+            from coding_agent.http_utils import _resolve_proxy_config
 
             config = _resolve_proxy_config()
             assert config.disable_retry is True
@@ -76,9 +76,9 @@ class TestResolveProxyConfig:
     def test_explicit_verify_passed(self):
         with (
             patch.dict(os.environ, {}, clear=True),
-            patch("coco_codes.http_utils.get_http2", return_value=True),
+            patch("coding_agent.http_utils.get_http2", return_value=True),
         ):
-            from coco_codes.http_utils import _resolve_proxy_config
+            from coding_agent.http_utils import _resolve_proxy_config
 
             config = _resolve_proxy_config(verify="/path/to/cert")
             assert config.verify == "/path/to/cert"
@@ -88,7 +88,7 @@ class TestResolveProxyConfig:
 class TestRetryingAsyncClient:
     @pytest.mark.anyio
     async def test_successful_request(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient()
         mock_response = MagicMock(spec=httpx.Response)
@@ -105,7 +105,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_retry_on_429(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=1)
 
@@ -131,7 +131,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_retry_with_retry_after_header(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=1)
 
@@ -157,7 +157,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_retry_with_http_date_retry_after(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=1)
 
@@ -183,7 +183,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_retry_with_invalid_retry_after(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=1)
 
@@ -209,7 +209,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_cerebras_ignores_retry_headers(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=1, model_name="cerebras-fast")
         assert client._ignore_retry_headers is True
@@ -239,7 +239,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_exhausted_retries_returns_last_response(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=1)
 
@@ -259,7 +259,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_connection_error_retries(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=1)
 
@@ -280,7 +280,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_connection_error_exhausted(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=0)
 
@@ -298,7 +298,7 @@ class TestRetryingAsyncClient:
 
     @pytest.mark.anyio
     async def test_non_retryable_exception_raises(self):
-        from coco_codes.http_utils import RetryingAsyncClient
+        from coding_agent.http_utils import RetryingAsyncClient
 
         client = RetryingAsyncClient(max_retries=3)
 
@@ -315,7 +315,7 @@ class TestRetryingAsyncClient:
 class TestGetCertBundlePath:
     def test_returns_none_when_no_env(self):
         with patch.dict(os.environ, {}, clear=True):
-            from coco_codes.http_utils import get_cert_bundle_path
+            from coding_agent.http_utils import get_cert_bundle_path
 
             assert get_cert_bundle_path() is None
 
@@ -323,13 +323,13 @@ class TestGetCertBundlePath:
         cert_file = tmp_path / "cert.pem"
         cert_file.write_text("cert")
         with patch.dict(os.environ, {"SSL_CERT_FILE": str(cert_file)}):
-            from coco_codes.http_utils import get_cert_bundle_path
+            from coding_agent.http_utils import get_cert_bundle_path
 
             assert get_cert_bundle_path() == str(cert_file)
 
     def test_returns_none_when_env_path_missing(self):
         with patch.dict(os.environ, {"SSL_CERT_FILE": "/nonexistent/cert.pem"}):
-            from coco_codes.http_utils import get_cert_bundle_path
+            from coding_agent.http_utils import get_cert_bundle_path
 
             assert get_cert_bundle_path() is None
 
@@ -337,10 +337,10 @@ class TestGetCertBundlePath:
 class TestCreateClient:
     def test_create_client_default(self):
         with (
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import create_client
+            from coding_agent.http_utils import create_client
 
             client = create_client()
             assert isinstance(client, httpx.Client)
@@ -348,10 +348,10 @@ class TestCreateClient:
 
     def test_create_client_with_headers(self):
         with (
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import create_client
+            from coding_agent.http_utils import create_client
 
             client = create_client(headers={"X-Custom": "val"})
             assert isinstance(client, httpx.Client)
@@ -362,10 +362,10 @@ class TestCreateAsyncClient:
     def test_creates_retrying_by_default(self):
         with (
             patch.dict(os.environ, {}, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import RetryingAsyncClient, create_async_client
+            from coding_agent.http_utils import RetryingAsyncClient, create_async_client
 
             client = create_async_client()
             assert isinstance(client, RetryingAsyncClient)
@@ -374,10 +374,10 @@ class TestCreateAsyncClient:
         env = {"CODE_PUPPY_DISABLE_RETRY_TRANSPORT": "1"}
         with (
             patch.dict(os.environ, env, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
         ):
-            from coco_codes.http_utils import RetryingAsyncClient, create_async_client
+            from coding_agent.http_utils import RetryingAsyncClient, create_async_client
 
             client = create_async_client()
             assert not isinstance(client, RetryingAsyncClient)
@@ -385,21 +385,21 @@ class TestCreateAsyncClient:
 
 class TestCreateRequestsSession:
     def test_create_session_default(self):
-        with patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None):
-            from coco_codes.http_utils import create_requests_session
+        with patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None):
+            from coding_agent.http_utils import create_requests_session
 
             session = create_requests_session()
             assert session.verify is None
 
     def test_create_session_with_headers(self):
-        with patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None):
-            from coco_codes.http_utils import create_requests_session
+        with patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None):
+            from coding_agent.http_utils import create_requests_session
 
             session = create_requests_session(headers={"X-Key": "val"})
             assert session.headers.get("X-Key") == "val"
 
     def test_create_session_with_verify(self):
-        from coco_codes.http_utils import create_requests_session
+        from coding_agent.http_utils import create_requests_session
 
         session = create_requests_session(verify="/path/to/cert")
         assert session.verify == "/path/to/cert"
@@ -407,13 +407,13 @@ class TestCreateRequestsSession:
 
 class TestAuthHeaders:
     def test_create_auth_headers(self):
-        from coco_codes.http_utils import create_auth_headers
+        from coding_agent.http_utils import create_auth_headers
 
         headers = create_auth_headers("my-key")
         assert headers == {"Authorization": "Bearer my-key"}
 
     def test_create_auth_headers_custom_name(self):
-        from coco_codes.http_utils import create_auth_headers
+        from coding_agent.http_utils import create_auth_headers
 
         headers = create_auth_headers("key", "X-Api-Key")
         assert headers == {"X-Api-Key": "Bearer key"}
@@ -422,13 +422,13 @@ class TestAuthHeaders:
 class TestResolveEnvVarInHeader:
     def test_resolves_env_vars(self):
         with patch.dict(os.environ, {"MY_KEY": "secret"}):
-            from coco_codes.http_utils import resolve_env_var_in_header
+            from coding_agent.http_utils import resolve_env_var_in_header
 
             result = resolve_env_var_in_header({"Authorization": "Bearer $MY_KEY"})
             assert result["Authorization"] == "Bearer secret"
 
     def test_passthrough_non_string(self):
-        from coco_codes.http_utils import resolve_env_var_in_header
+        from coding_agent.http_utils import resolve_env_var_in_header
 
         result = resolve_env_var_in_header({"key": 123})
         assert result["key"] == 123
@@ -438,12 +438,12 @@ class TestCreateReopenableAsyncClient:
     def test_with_reopenable_available(self):
         with (
             patch.dict(os.environ, {}, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
-            patch("coco_codes.http_utils.ReopenableAsyncClient") as mock_reopen,
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.ReopenableAsyncClient") as mock_reopen,
         ):
             mock_reopen.return_value = MagicMock()
-            from coco_codes.http_utils import create_reopenable_async_client
+            from coding_agent.http_utils import create_reopenable_async_client
 
             create_reopenable_async_client()
             mock_reopen.assert_called_once()
@@ -451,11 +451,11 @@ class TestCreateReopenableAsyncClient:
     def test_with_reopenable_none_falls_back(self):
         with (
             patch.dict(os.environ, {}, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
-            patch("coco_codes.http_utils.ReopenableAsyncClient", None),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.ReopenableAsyncClient", None),
         ):
-            from coco_codes.http_utils import (
+            from coding_agent.http_utils import (
                 RetryingAsyncClient,
                 create_reopenable_async_client,
             )
@@ -467,11 +467,11 @@ class TestCreateReopenableAsyncClient:
         env = {"CODE_PUPPY_DISABLE_RETRY_TRANSPORT": "1"}
         with (
             patch.dict(os.environ, env, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
-            patch("coco_codes.http_utils.ReopenableAsyncClient", None),
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.ReopenableAsyncClient", None),
         ):
-            from coco_codes.http_utils import (
+            from coding_agent.http_utils import (
                 RetryingAsyncClient,
                 create_reopenable_async_client,
             )
@@ -484,12 +484,12 @@ class TestCreateReopenableAsyncClient:
         env = {"CODE_PUPPY_DISABLE_RETRY_TRANSPORT": "1"}
         with (
             patch.dict(os.environ, env, clear=True),
-            patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None),
-            patch("coco_codes.http_utils.get_http2", return_value=False),
-            patch("coco_codes.http_utils.ReopenableAsyncClient") as mock_reopen,
+            patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None),
+            patch("coding_agent.http_utils.get_http2", return_value=False),
+            patch("coding_agent.http_utils.ReopenableAsyncClient") as mock_reopen,
         ):
             mock_reopen.return_value = MagicMock()
-            from coco_codes.http_utils import create_reopenable_async_client
+            from coding_agent.http_utils import create_reopenable_async_client
 
             create_reopenable_async_client()
             # Should not pass retry_status_codes/model_name
@@ -499,8 +499,8 @@ class TestCreateReopenableAsyncClient:
 
 class TestIsCertBundleAvailable:
     def test_returns_false_no_cert(self):
-        with patch("coco_codes.http_utils.get_cert_bundle_path", return_value=None):
-            from coco_codes.http_utils import is_cert_bundle_available
+        with patch("coding_agent.http_utils.get_cert_bundle_path", return_value=None):
+            from coding_agent.http_utils import is_cert_bundle_available
 
             assert is_cert_bundle_available() is False
 
@@ -508,31 +508,31 @@ class TestIsCertBundleAvailable:
         cert = tmp_path / "cert.pem"
         cert.write_text("cert")
         with patch(
-            "coco_codes.http_utils.get_cert_bundle_path", return_value=str(cert)
+            "coding_agent.http_utils.get_cert_bundle_path", return_value=str(cert)
         ):
-            from coco_codes.http_utils import is_cert_bundle_available
+            from coding_agent.http_utils import is_cert_bundle_available
 
             assert is_cert_bundle_available() is True
 
     def test_returns_false_with_directory(self, tmp_path):
         with patch(
-            "coco_codes.http_utils.get_cert_bundle_path", return_value=str(tmp_path)
+            "coding_agent.http_utils.get_cert_bundle_path", return_value=str(tmp_path)
         ):
-            from coco_codes.http_utils import is_cert_bundle_available
+            from coding_agent.http_utils import is_cert_bundle_available
 
             assert is_cert_bundle_available() is False
 
 
 class TestFindAvailablePort:
     def test_finds_port(self):
-        from coco_codes.http_utils import find_available_port
+        from coding_agent.http_utils import find_available_port
 
         port = find_available_port(start_port=49000, end_port=49010)
         assert port is not None
         assert 49000 <= port <= 49010
 
     def test_returns_none_when_all_busy(self):
-        from coco_codes.http_utils import find_available_port
+        from coding_agent.http_utils import find_available_port
 
         # Use a very narrow range and bind to all ports
         socks = []

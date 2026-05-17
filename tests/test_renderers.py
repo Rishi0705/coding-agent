@@ -12,8 +12,8 @@ import pytest
 from rich.console import Console
 from rich.text import Text
 
-from coco_codes.messaging.message_queue import MessageQueue, MessageType, UIMessage
-from coco_codes.messaging.renderers import InteractiveRenderer, MessageRenderer
+from coding_agent.messaging.message_queue import MessageQueue, MessageType, UIMessage
+from coding_agent.messaging.renderers import InteractiveRenderer, MessageRenderer
 
 
 class TestMessageRenderer:

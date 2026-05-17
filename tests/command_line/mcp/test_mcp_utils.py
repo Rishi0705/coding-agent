@@ -8,13 +8,13 @@ from unittest.mock import MagicMock, patch
 
 from rich.text import Text
 
-from coco_codes.command_line.mcp.utils import (
+from coding_agent.command_line.mcp.utils import (
     find_server_id_by_name,
     format_state_indicator,
     format_uptime,
     suggest_similar_servers,
 )
-from coco_codes.mcp_.managed_server import ServerState
+from coding_agent.mcp_.managed_server import ServerState
 
 # =============================================================================
 # Tests for format_state_indicator
@@ -225,7 +225,7 @@ class TestSuggestSimilarServers:
         mock_manager = MagicMock()
         mock_manager.list_servers.return_value = []
 
-        with patch("coco_codes.messaging.emit_info") as mock_emit:
+        with patch("coding_agent.messaging.emit_info") as mock_emit:
             suggest_similar_servers(mock_manager, "AnyServer")
 
             mock_emit.assert_called_once()
@@ -243,7 +243,7 @@ class TestSuggestSimilarServers:
         mock_manager = MagicMock()
         mock_manager.list_servers.return_value = [server1, server2]
 
-        with patch("coco_codes.messaging.emit_info") as mock_emit:
+        with patch("coding_agent.messaging.emit_info") as mock_emit:
             suggest_similar_servers(mock_manager, "api")
 
             mock_emit.assert_called_once()
@@ -263,7 +263,7 @@ class TestSuggestSimilarServers:
         mock_manager = MagicMock()
         mock_manager.list_servers.return_value = [server1, server2]
 
-        with patch("coco_codes.messaging.emit_info") as mock_emit:
+        with patch("coding_agent.messaging.emit_info") as mock_emit:
             suggest_similar_servers(mock_manager, "gamma")
 
             mock_emit.assert_called_once()
@@ -280,7 +280,7 @@ class TestSuggestSimilarServers:
         mock_manager = MagicMock()
         mock_manager.list_servers.return_value = [server]
 
-        with patch("coco_codes.messaging.emit_info") as mock_emit:
+        with patch("coding_agent.messaging.emit_info") as mock_emit:
             suggest_similar_servers(mock_manager, "api")
 
             mock_emit.assert_called_once()
@@ -293,7 +293,7 @@ class TestSuggestSimilarServers:
         mock_manager = MagicMock()
         mock_manager.list_servers.return_value = []
 
-        with patch("coco_codes.messaging.emit_info") as mock_emit:
+        with patch("coding_agent.messaging.emit_info") as mock_emit:
             suggest_similar_servers(mock_manager, "test", group_id="group-123")
 
             mock_emit.assert_called_once()

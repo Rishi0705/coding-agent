@@ -2,13 +2,13 @@
 
 import pytest
 
-from coco_codes.hook_engine.executor import (
+from coding_agent.hook_engine.executor import (
     _substitute_variables,
     execute_hook,
     execute_hooks_sequential,
     get_blocking_result,
 )
-from coco_codes.hook_engine.models import EventData, ExecutionResult, HookConfig
+from coding_agent.hook_engine.models import EventData, ExecutionResult, HookConfig
 
 
 @pytest.mark.asyncio

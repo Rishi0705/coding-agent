@@ -2,7 +2,7 @@ import threading
 import time
 from datetime import datetime, timezone
 
-from coco_codes.messaging.message_queue import (
+from coding_agent.messaging.message_queue import (
     MessageQueue,
     MessageType,
     UIMessage,

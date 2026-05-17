@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from coco_codes.command_line.diff_menu import (
+from coding_agent.command_line.diff_menu import (
     ADDITION_COLORS,
     DELETION_COLORS,
     SUPPORTED_LANGUAGES,
@@ -26,7 +26,7 @@ class TestLanguageSamples:
 
     def test_all_supported_languages_have_samples(self):
         """Test that every supported language has a corresponding sample."""
-        from coco_codes.command_line.diff_menu import LANGUAGE_SAMPLES
+        from coding_agent.command_line.diff_menu import LANGUAGE_SAMPLES
 
         for lang in SUPPORTED_LANGUAGES:
             assert lang in LANGUAGE_SAMPLES
@@ -40,7 +40,7 @@ class TestLanguageSamples:
 
     def test_diff_samples_are_well_formatted(self):
         """Test that diff samples follow proper diff format."""
-        from coco_codes.command_line.diff_menu import LANGUAGE_SAMPLES
+        from coding_agent.command_line.diff_menu import LANGUAGE_SAMPLES
 
         for lang, (filename, diff) in LANGUAGE_SAMPLES.items():
             # Check diff format
@@ -73,8 +73,8 @@ class TestLanguageSamples:
 class TestDiffConfiguration:
     """Test the DiffConfiguration class."""
 
-    @patch("coco_codes.config.get_diff_addition_color")
-    @patch("coco_codes.config.get_diff_deletion_color")
+    @patch("coding_agent.config.get_diff_addition_color")
+    @patch("coding_agent.config.get_diff_deletion_color")
     def test_initializes_from_config(self, mock_del_color, mock_add_color):
         """Test that configuration initializes from current settings."""
         mock_add_color.return_value = "#00ff00"
@@ -230,11 +230,11 @@ class TestColorDictionaries:
 class TestPreviewTextGeneration:
     """Test the _get_preview_text_for_prompt_toolkit function."""
 
-    @patch("coco_codes.tools.common.format_diff_with_colors")
-    @patch("coco_codes.config.set_diff_addition_color")
-    @patch("coco_codes.config.set_diff_deletion_color")
-    @patch("coco_codes.config.get_diff_addition_color")
-    @patch("coco_codes.config.get_diff_deletion_color")
+    @patch("coding_agent.tools.common.format_diff_with_colors")
+    @patch("coding_agent.config.set_diff_addition_color")
+    @patch("coding_agent.config.set_diff_deletion_color")
+    @patch("coding_agent.config.get_diff_addition_color")
+    @patch("coding_agent.config.get_diff_deletion_color")
     def test_preview_generation_with_mocked_config(
         self, mock_get_del, mock_get_add, mock_set_del, mock_set_add, mock_format
     ):
@@ -277,11 +277,11 @@ class TestPreviewTextGeneration:
         # Should return ANSI object
         assert hasattr(result, "__class__")
 
-    @patch("coco_codes.tools.common.format_diff_with_colors")
-    @patch("coco_codes.config.set_diff_addition_color")
-    @patch("coco_codes.config.set_diff_deletion_color")
-    @patch("coco_codes.config.get_diff_addition_color")
-    @patch("coco_codes.config.get_diff_deletion_color")
+    @patch("coding_agent.tools.common.format_diff_with_colors")
+    @patch("coding_agent.config.set_diff_addition_color")
+    @patch("coding_agent.config.set_diff_deletion_color")
+    @patch("coding_agent.config.get_diff_addition_color")
+    @patch("coding_agent.config.get_diff_deletion_color")
     def test_preview_contains_headers(
         self, mock_get_del, mock_get_add, mock_set_del, mock_set_add, mock_format
     ):
@@ -303,13 +303,13 @@ class TestPreviewTextGeneration:
         assert mock_format.called
 
     @patch(
-        "coco_codes.tools.common.format_diff_with_colors",
+        "coding_agent.tools.common.format_diff_with_colors",
         side_effect=Exception("Format failed"),
     )
-    @patch("coco_codes.config.set_diff_addition_color")
-    @patch("coco_codes.config.set_diff_deletion_color")
-    @patch("coco_codes.config.get_diff_addition_color")
-    @patch("coco_codes.config.get_diff_deletion_color")
+    @patch("coding_agent.config.set_diff_addition_color")
+    @patch("coding_agent.config.set_diff_deletion_color")
+    @patch("coding_agent.config.get_diff_addition_color")
+    @patch("coding_agent.config.get_diff_deletion_color")
     def test_preview_handles_formatting_errors(
         self, mock_get_del, mock_get_add, mock_set_del, mock_set_add, mock_format
     ):
@@ -344,7 +344,7 @@ class TestSplitPanelSelector:
 
         config = DiffConfiguration()
 
-        with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+        with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
             mock_instance = MagicMock()
             mock_instance.run_async = AsyncMock()
             mock_app.return_value = mock_instance
@@ -381,7 +381,7 @@ class TestSplitPanelSelector:
 
             return ANSI("Preview")
 
-        with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+        with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
             mock_instance = MagicMock()
             mock_instance.run_async = AsyncMock(side_effect=KeyboardInterrupt())
             mock_app.return_value = mock_instance
@@ -402,7 +402,7 @@ class TestSplitPanelSelector:
 
         # We can't easily test the inner function, but we can test the logic
         # by examining the mock behavior
-        with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+        with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
             mock_instance = MagicMock()
             mock_instance.run_async = AsyncMock()
             mock_app.return_value = mock_instance
@@ -420,7 +420,7 @@ class TestSplitPanelSelector:
                 return mock_instance
 
             with patch(
-                "coco_codes.command_line.diff_menu.Application", side_effect=capture_app
+                "coding_agent.command_line.diff_menu.Application", side_effect=capture_app
             ):
                 # Will raise KeyboardInterrupt when result[0] is None (user cancel)
                 with pytest.raises(KeyboardInterrupt):
@@ -456,7 +456,7 @@ class TestSplitPanelSelector:
             raise Exception("Preview failed")
 
         # The function should handle errors gracefully when calling get_preview()
-        with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+        with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
             # Mock the Application instance and run_async to simulate user selecting something
             mock_instance = MagicMock()
             mock_instance.run_async = AsyncMock()
@@ -483,7 +483,7 @@ class TestColorMenuHandler:
     """Test the _handle_color_menu function."""
 
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.diff_menu._split_panel_selector")
+    @patch("coding_agent.command_line.diff_menu._split_panel_selector")
     async def test_additions_color_menu(self, mock_selector):
         """Test additions color menu handling."""
         mock_selector.return_value = "dark green"
@@ -507,7 +507,7 @@ class TestColorMenuHandler:
         assert any("← current" in choice for choice in choices)
 
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.diff_menu._split_panel_selector")
+    @patch("coding_agent.command_line.diff_menu._split_panel_selector")
     async def test_deletions_color_menu(self, mock_selector):
         """Test deletions color menu handling."""
         mock_selector.return_value = "dark red"
@@ -523,7 +523,7 @@ class TestColorMenuHandler:
         assert "deletion" in call_args[0][0].lower()  # Title should mention deletion
 
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.diff_menu._split_panel_selector")
+    @patch("coding_agent.command_line.diff_menu._split_panel_selector")
     async def test_color_updates_on_selection(self, mock_selector):
         """Test that colors are updated when user makes selections."""
         # Test additions
@@ -544,7 +544,7 @@ class TestColorMenuHandler:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.command_line.diff_menu._split_panel_selector",
+        "coding_agent.command_line.diff_menu._split_panel_selector",
         side_effect=KeyboardInterrupt(),
     )
     async def test_keyboard_interrupt_restores_original(self, mock_selector):
@@ -566,7 +566,7 @@ class TestColorMenuHandler:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.command_line.diff_menu._split_panel_selector",
+        "coding_agent.command_line.diff_menu._split_panel_selector",
         side_effect=Exception("General error"),
     )
     async def test_general_error_handling(self, mock_selector):
@@ -584,8 +584,8 @@ class TestInteractiveDiffPicker:
     """Test the main interactive_diff_picker function."""
 
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.diff_menu._split_panel_selector")
-    @patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+    @patch("coding_agent.command_line.diff_menu._split_panel_selector")
+    @patch("coding_agent.tools.command_runner.set_awaiting_user_input")
     @patch("sys.stdout.write")
     @patch("time.sleep")
     async def test_complete_flow_with_changes(
@@ -609,7 +609,7 @@ class TestInteractiveDiffPicker:
             return None
 
         with patch(
-            "coco_codes.command_line.diff_menu._handle_color_menu",
+            "coding_agent.command_line.diff_menu._handle_color_menu",
             side_effect=mock_handle_color_menu,
         ):
             result = await interactive_diff_picker()
@@ -624,8 +624,8 @@ class TestInteractiveDiffPicker:
             assert result["del_color"] == "#ff0000"
 
     @pytest.mark.asyncio
-    @patch("coco_codes.command_line.diff_menu._split_panel_selector")
-    @patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+    @patch("coding_agent.command_line.diff_menu._split_panel_selector")
+    @patch("coding_agent.tools.command_runner.set_awaiting_user_input")
     @patch("sys.stdout.write")
     @patch("time.sleep")
     async def test_flow_without_changes(
@@ -645,10 +645,10 @@ class TestInteractiveDiffPicker:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.command_line.diff_menu._split_panel_selector",
+        "coding_agent.command_line.diff_menu._split_panel_selector",
         side_effect=KeyboardInterrupt(),
     )
-    @patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+    @patch("coding_agent.tools.command_runner.set_awaiting_user_input")
     @patch("sys.stdout.write")
     @patch("time.sleep")
     async def test_keyboard_interrupt_handling(
@@ -665,10 +665,10 @@ class TestInteractiveDiffPicker:
 
     @pytest.mark.asyncio
     @patch(
-        "coco_codes.command_line.diff_menu._split_panel_selector",
+        "coding_agent.command_line.diff_menu._split_panel_selector",
         side_effect=Exception("Unexpected error"),
     )
-    @patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+    @patch("coding_agent.tools.command_runner.set_awaiting_user_input")
     @patch("sys.stdout.write")
     @patch("time.sleep")
     async def test_unexpected_error_handling(
@@ -684,7 +684,7 @@ class TestInteractiveDiffPicker:
         mock_awaiting.assert_any_call(False)
 
     @pytest.mark.asyncio
-    @patch("coco_codes.tools.command_runner.set_awaiting_user_input")
+    @patch("coding_agent.tools.command_runner.set_awaiting_user_input")
     @patch("sys.stdout.write")
     @patch("time.sleep")
     async def test_console_buffer_management(
@@ -692,7 +692,7 @@ class TestInteractiveDiffPicker:
     ):
         """Test proper console buffer management throughout interaction."""
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             return_value="Exit",
         ):
             await interactive_diff_picker()
@@ -735,7 +735,7 @@ class TestEdgeCasesAndErrorHandling:
     @pytest.mark.asyncio
     async def test_empty_choices_list(self):
         """Test behavior with empty choices list."""
-        with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+        with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
             mock_instance = MagicMock()
             mock_instance.run_async = AsyncMock()
             mock_app.return_value = mock_instance
@@ -752,7 +752,7 @@ class TestEdgeCasesAndErrorHandling:
         choices = ["Option 世界", "Choice émojis 🎨", "Sélection"]
         title = "标题 Title 🐕"
 
-        with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+        with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
             mock_instance = MagicMock()
             mock_instance.run_async = AsyncMock()
             mock_app.return_value = mock_instance
@@ -769,7 +769,7 @@ class TestEdgeCasesAndErrorHandling:
         long_title = "A" * 200  # 200 character title
         long_choices = ["Choice " + "B" * 100, "Option " + "C" * 150]
 
-        with patch("coco_codes.command_line.diff_menu.Application") as mock_app:
+        with patch("coding_agent.command_line.diff_menu.Application") as mock_app:
             mock_instance = MagicMock()
             mock_instance.run_async = AsyncMock()
             mock_app.return_value = mock_instance
@@ -785,7 +785,7 @@ class TestEdgeCasesAndErrorHandling:
     async def test_stdout_write_errors(self, mock_stdout):
         """Test handling of stdout write errors."""
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             return_value="Exit",
         ):
             # Should handle stdout errors gracefully
@@ -836,11 +836,11 @@ class TestEdgeCasesAndErrorHandling:
 class TestIntegrationScenarios:
     """Integration-style tests covering realistic usage patterns."""
 
-    @patch("coco_codes.tools.common.format_diff_with_colors")
-    @patch("coco_codes.config.set_diff_addition_color")
-    @patch("coco_codes.config.set_diff_deletion_color")
-    @patch("coco_codes.config.get_diff_addition_color")
-    @patch("coco_codes.config.get_diff_deletion_color")
+    @patch("coding_agent.tools.common.format_diff_with_colors")
+    @patch("coding_agent.config.set_diff_addition_color")
+    @patch("coding_agent.config.set_diff_deletion_color")
+    @patch("coding_agent.config.get_diff_addition_color")
+    @patch("coding_agent.config.get_diff_deletion_color")
     def test_full_preview_pipeline(
         self, mock_get_del, mock_get_add, mock_set_del, mock_set_add, mock_format
     ):
@@ -877,7 +877,7 @@ class TestIntegrationScenarios:
     async def test_complete_interactive_workflow(self):
         """Test a complete interactive workflow scenario."""
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector"
+            "coding_agent.command_line.diff_menu._split_panel_selector"
         ) as mock_selector:
             # Simulate user workflow: browse languages, change colors, save
             mock_selector.side_effect = [
@@ -896,10 +896,10 @@ class TestIntegrationScenarios:
                 return None
 
             with patch(
-                "coco_codes.command_line.diff_menu._handle_color_menu",
+                "coding_agent.command_line.diff_menu._handle_color_menu",
                 side_effect=mock_handle_color_menu,
             ):
-                with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+                with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                     with patch("sys.stdout.write"):
                         with patch("time.sleep"):
                             result = await interactive_diff_picker()
@@ -926,17 +926,17 @@ class TestIntegrationScenarios:
             try:
                 # Mock the underlying formatting to test just the language/sample logic
                 with patch(
-                    "coco_codes.tools.common.format_diff_with_colors",
+                    "coding_agent.tools.common.format_diff_with_colors",
                     return_value=f"Diff for {lang}",
                 ):
-                    with patch("coco_codes.config.set_diff_addition_color"):
-                        with patch("coco_codes.config.set_diff_deletion_color"):
+                    with patch("coding_agent.config.set_diff_addition_color"):
+                        with patch("coding_agent.config.set_diff_deletion_color"):
                             with patch(
-                                "coco_codes.config.get_diff_addition_color",
+                                "coding_agent.config.get_diff_addition_color",
                                 return_value="#00ff00",
                             ):
                                 with patch(
-                                    "coco_codes.config.get_diff_deletion_color",
+                                    "coding_agent.config.get_diff_deletion_color",
                                     return_value="#ff0000",
                                 ):
                                     result = _get_preview_text_for_prompt_toolkit(
@@ -974,11 +974,11 @@ class TestIntegrationScenarios:
                 return "Exit"
 
         with patch(
-            "coco_codes.command_line.diff_menu._split_panel_selector",
+            "coding_agent.command_line.diff_menu._split_panel_selector",
             side_effect=mock_selector,
         ):
-            with patch("coco_codes.command_line.diff_menu._handle_color_menu"):
-                with patch("coco_codes.tools.command_runner.set_awaiting_user_input"):
+            with patch("coding_agent.command_line.diff_menu._handle_color_menu"):
+                with patch("coding_agent.tools.command_runner.set_awaiting_user_input"):
                     with patch("sys.stdout.write"):
                         with patch("time.sleep"):
                             await interactive_diff_picker()

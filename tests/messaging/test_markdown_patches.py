@@ -1,11 +1,11 @@
-"""Tests for coco_codes.messaging.markdown_patches."""
+"""Tests for coding_agent.messaging.markdown_patches."""
 
 from io import StringIO
 
 from rich.console import Console
 from rich.markdown import Markdown
 
-from coco_codes.messaging.markdown_patches import (
+from coding_agent.messaging.markdown_patches import (
     LeftJustifiedHeading,
     patch_markdown_headings,
 )

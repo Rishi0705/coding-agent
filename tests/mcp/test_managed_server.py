@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.mcp_.managed_server import (
+from coding_agent.mcp_.managed_server import (
     ManagedMCPServer,
     ServerConfig,
     _expand_env_vars,
@@ -39,7 +39,7 @@ async def test_managed_server_header_env_expansion_mocked():
     with (
         patch.dict(os.environ, {"TEST_API_KEY": "secret-123"}),
         patch(
-            "coco_codes.mcp_.managed_server.MCPServerStreamableHTTP",
+            "coding_agent.mcp_.managed_server.MCPServerStreamableHTTP",
             return_value=mock_http_server,
         ) as mock_constructor,
     ):
@@ -66,7 +66,7 @@ def test_stdio_tool_prefix_includes_server_name_and_configured_prefix():
         id="test-id", name="filesystem", type="stdio", config=config_dict
     )
 
-    with patch("coco_codes.mcp_.managed_server.BlockingMCPServerStdio") as mock_stdio:
+    with patch("coding_agent.mcp_.managed_server.BlockingMCPServerStdio") as mock_stdio:
         mock_stdio.return_value = MagicMock()
         ManagedMCPServer(server_config)
 
@@ -83,7 +83,7 @@ def test_sse_tool_prefix_uses_server_name():
         config={"url": "http://localhost:8080/sse"},
     )
 
-    with patch("coco_codes.mcp_.managed_server.MCPServerSSE") as mock_sse:
+    with patch("coding_agent.mcp_.managed_server.MCPServerSSE") as mock_sse:
         mock_sse.return_value = MagicMock()
         ManagedMCPServer(server_config)
 
@@ -102,7 +102,7 @@ def test_http_tool_prefix_expands_and_nests_configured_prefix():
 
     with (
         patch.dict(os.environ, {"MCP_SCOPE": "issues"}),
-        patch("coco_codes.mcp_.managed_server.MCPServerStreamableHTTP") as mock_http,
+        patch("coding_agent.mcp_.managed_server.MCPServerStreamableHTTP") as mock_http,
     ):
         mock_http.return_value = MagicMock()
         ManagedMCPServer(server_config)

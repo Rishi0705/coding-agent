@@ -123,10 +123,10 @@ class TestModelValidation:
         assert trimmed == "gpt-5"
         assert len(trimmed.split()) == 1
 
-    @patch("coco_codes.config.set_model_name")
+    @patch("coding_agent.config.set_model_name")
     def test_set_model_name_called(self, mock_set_model):
         """Test that set_model_name is called with model."""
-        from coco_codes.config import set_model_name
+        from coding_agent.config import set_model_name
 
         set_model_name("gpt-5")
         mock_set_model.assert_called_once_with("gpt-5")
@@ -135,10 +135,10 @@ class TestModelValidation:
 class TestAgentValidation:
     """Test agent validation from command line."""
 
-    @patch("coco_codes.agents.agent_manager.set_current_agent")
+    @patch("coding_agent.agents.agent_manager.set_current_agent")
     def test_set_agent_called(self, mock_set_agent):
         """Test that set_current_agent is called with agent name."""
-        from coco_codes.agents.agent_manager import set_current_agent
+        from coding_agent.agents.agent_manager import set_current_agent
 
         set_current_agent("code-reviewer")
         mock_set_agent.assert_called_once_with("code-reviewer")
@@ -162,10 +162,10 @@ class TestErrorHandling:
         with pytest.raises(EOFError):
             raise EOFError()
 
-    @patch("coco_codes.messaging.emit_error")
+    @patch("coding_agent.messaging.emit_error")
     def test_emit_error_called(self, mock_emit_error):
         """Test that emit_error can be called for errors."""
-        from coco_codes.messaging import emit_error
+        from coding_agent.messaging import emit_error
 
         emit_error("Test error")
         mock_emit_error.assert_called_once()
@@ -176,7 +176,7 @@ class TestVersionHandling:
 
     def test_version_string_exists(self):
         """Test that version string can be accessed."""
-        from coco_codes import __version__
+        from coding_agent import __version__
 
         assert isinstance(__version__, str)
         assert len(__version__) > 0
@@ -214,12 +214,12 @@ class TestLogoDisplay:
 
 
 class TestAPIKeyLoading:
-    """Test API key loading from coco.cfg."""
+    """Test API key loading from coding_agent.cfg."""
 
-    @patch("coco_codes.config.load_api_keys_to_environment")
+    @patch("coding_agent.config.load_api_keys_to_environment")
     def test_api_keys_load_function_called(self, mock_load_keys):
         """Test that API keys are loaded from config."""
-        from coco_codes.config import load_api_keys_to_environment
+        from coding_agent.config import load_api_keys_to_environment
 
         load_api_keys_to_environment()
         mock_load_keys.assert_called_once()
@@ -241,11 +241,11 @@ class TestMessageRendering:
         display_console = Console()
         assert display_console is not None
 
-    @patch("coco_codes.messaging.get_global_queue")
-    @patch("coco_codes.messaging.get_message_bus")
+    @patch("coding_agent.messaging.get_global_queue")
+    @patch("coding_agent.messaging.get_message_bus")
     def test_queue_and_bus_initialized(self, mock_bus, mock_queue):
         """Test that both message bus and queue are initialized."""
-        from coco_codes.messaging import get_global_queue, get_message_bus
+        from coding_agent.messaging import get_global_queue, get_message_bus
 
         get_global_queue()
         get_message_bus()
@@ -256,18 +256,18 @@ class TestMessageRendering:
 class TestTerminalReset:
     """Test terminal state reset functionality."""
 
-    @patch("coco_codes.terminal_utils.reset_windows_terminal_ansi")
+    @patch("coding_agent.terminal_utils.reset_windows_terminal_ansi")
     def test_windows_ansi_reset_function_exists(self, mock_reset_ansi):
         """Test that Windows ANSI reset function can be called."""
-        from coco_codes.terminal_utils import reset_windows_terminal_ansi
+        from coding_agent.terminal_utils import reset_windows_terminal_ansi
 
         reset_windows_terminal_ansi()
         mock_reset_ansi.assert_called_once()
 
-    @patch("coco_codes.terminal_utils.reset_unix_terminal")
+    @patch("coding_agent.terminal_utils.reset_unix_terminal")
     def test_unix_terminal_reset_function_exists(self, mock_reset_unix):
         """Test that Unix terminal reset function can be called."""
-        from coco_codes.terminal_utils import reset_unix_terminal
+        from coding_agent.terminal_utils import reset_unix_terminal
 
         reset_unix_terminal()
         mock_reset_unix.assert_called_once()
@@ -276,10 +276,10 @@ class TestTerminalReset:
 class TestCancelAgentKeyValidation:
     """Test cancel agent key validation."""
 
-    @patch("coco_codes.keymap.validate_cancel_agent_key")
+    @patch("coding_agent.keymap.validate_cancel_agent_key")
     def test_cancel_key_validation_called(self, mock_validate):
         """Test that cancel key validation can be called."""
-        from coco_codes.keymap import validate_cancel_agent_key
+        from coding_agent.keymap import validate_cancel_agent_key
 
         validate_cancel_agent_key()
         mock_validate.assert_called_once()
@@ -291,7 +291,7 @@ class TestUVXDetection:
     def test_uvx_detection_can_be_imported(self):
         """Test uvx detection module can be imported."""
         try:
-            from coco_codes import uvx_detection
+            from coding_agent import uvx_detection
 
             assert uvx_detection is not None
         except ImportError:
@@ -302,18 +302,18 @@ class TestUVXDetection:
 class TestConfigInitialization:
     """Test configuration initialization."""
 
-    @patch("coco_codes.config.ensure_config_exists")
+    @patch("coding_agent.config.ensure_config_exists")
     def test_ensure_config_exists_called(self, mock_ensure):
         """Test that ensure_config_exists is called."""
-        from coco_codes.config import ensure_config_exists
+        from coding_agent.config import ensure_config_exists
 
         ensure_config_exists()
         mock_ensure.assert_called_once()
 
-    @patch("coco_codes.config.initialize_command_history_file")
+    @patch("coding_agent.config.initialize_command_history_file")
     def test_command_history_initialized(self, mock_init):
         """Test that command history file is initialized."""
-        from coco_codes.config import initialize_command_history_file
+        from coding_agent.config import initialize_command_history_file
 
         initialize_command_history_file()
         mock_init.assert_called_once()
@@ -322,18 +322,18 @@ class TestConfigInitialization:
 class TestCallbackSystem:
     """Test callback system integration."""
 
-    @patch("coco_codes.callbacks.on_startup", new_callable=AsyncMock)
+    @patch("coding_agent.callbacks.on_startup", new_callable=AsyncMock)
     async def test_on_startup_callback(self, mock_startup):
         """Test that on_startup callback exists and can be called."""
-        from coco_codes.callbacks import on_startup
+        from coding_agent.callbacks import on_startup
 
         await on_startup()
         mock_startup.assert_called_once()
 
-    @patch("coco_codes.callbacks.on_shutdown", new_callable=AsyncMock)
+    @patch("coding_agent.callbacks.on_shutdown", new_callable=AsyncMock)
     async def test_on_shutdown_callback(self, mock_shutdown):
         """Test that on_shutdown callback exists and can be called."""
-        from coco_codes.callbacks import on_shutdown
+        from coding_agent.callbacks import on_shutdown
 
         await on_shutdown()
         mock_shutdown.assert_called_once()
@@ -342,10 +342,10 @@ class TestCallbackSystem:
 class TestPortAvailability:
     """Test port availability checking."""
 
-    @patch("coco_codes.http_utils.find_available_port")
+    @patch("coding_agent.http_utils.find_available_port")
     def test_find_available_port_called(self, mock_find_port):
         """Test that find_available_port can be called."""
-        from coco_codes.http_utils import find_available_port
+        from coding_agent.http_utils import find_available_port
 
         mock_find_port.return_value = 8090
         result = find_available_port()
@@ -355,14 +355,14 @@ class TestPortAvailability:
 class TestAgentRunning:
     """Test agent execution."""
 
-    @patch("coco_codes.agents.agent_manager.get_current_agent")
+    @patch("coding_agent.agents.agent_manager.get_current_agent")
     def test_get_current_agent_returns_agent(self, mock_get_agent):
         """Test that get_current_agent returns an agent."""
         mock_agent = MagicMock()
         mock_agent.name = "test-agent"
         mock_get_agent.return_value = mock_agent
 
-        from coco_codes.agents.agent_manager import get_current_agent
+        from coding_agent.agents.agent_manager import get_current_agent
 
         agent = get_current_agent()
         assert agent is not None

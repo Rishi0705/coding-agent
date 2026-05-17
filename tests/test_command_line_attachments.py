@@ -8,8 +8,8 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from pydantic_ai import BinaryContent
 
-from coco_codes.cli_runner import run_prompt_with_attachments
-from coco_codes.command_line.attachments import (
+from coding_agent.cli_runner import run_prompt_with_attachments
+from coding_agent.command_line.attachments import (
     DEFAULT_ACCEPTED_IMAGE_EXTENSIONS,
     parse_prompt_attachments,
 )
@@ -105,8 +105,8 @@ async def test_run_prompt_with_attachments_passes_binary(tmp_path: Path) -> None
     fake_agent.run_with_mcp.return_value = fake_result
 
     with (
-        patch("coco_codes.messaging.emit_warning") as mock_warn,
-        patch("coco_codes.messaging.emit_system_message") as mock_system,
+        patch("coding_agent.messaging.emit_warning") as mock_warn,
+        patch("coding_agent.messaging.emit_system_message") as mock_system,
     ):
         result, _ = await run_prompt_with_attachments(
             fake_agent,
@@ -135,9 +135,9 @@ async def test_run_prompt_with_attachments_uses_spinner(tmp_path: Path) -> None:
     dummy_console = object()
 
     with (
-        patch("coco_codes.messaging.spinner.ConsoleSpinner") as mock_spinner,
-        patch("coco_codes.messaging.emit_system_message"),
-        patch("coco_codes.messaging.emit_warning"),
+        patch("coding_agent.messaging.spinner.ConsoleSpinner") as mock_spinner,
+        patch("coding_agent.messaging.emit_system_message"),
+        patch("coding_agent.messaging.emit_warning"),
     ):
         await run_prompt_with_attachments(
             fake_agent,
@@ -156,8 +156,8 @@ async def test_run_prompt_with_attachments_warns_on_blank_prompt() -> None:
     fake_agent = AsyncMock()
 
     with (
-        patch("coco_codes.messaging.emit_warning") as mock_warn,
-        patch("coco_codes.messaging.emit_system_message"),
+        patch("coding_agent.messaging.emit_warning") as mock_warn,
+        patch("coding_agent.messaging.emit_system_message"),
     ):
         result, _ = await run_prompt_with_attachments(
             fake_agent,
@@ -204,7 +204,7 @@ def test_parse_prompt_handles_long_paragraph_paste() -> None:
     """Test that pasting long error messages doesn't cause slowdown."""
     # Simulate pasting a long error message with fake paths
     long_text = (
-        "File /Users/testuser/.coco-codes-venv/lib/python3.13/site-packages/prompt_toolkit/layout/processors.py, "
+        "File /Users/testuser/.coding-agent-venv/lib/python3.13/site-packages/prompt_toolkit/layout/processors.py, "
         "line 948, in apply_transformation return processor.apply_transformation(ti) "
         * 20
     )

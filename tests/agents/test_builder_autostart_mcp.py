@@ -12,8 +12,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from coco_codes.agents import _builder
-from coco_codes.mcp_.managed_server import ServerState
+from coding_agent.agents import _builder
+from coding_agent.mcp_.managed_server import ServerState
 
 
 def _fake_config(server_id="srv-1"):
@@ -44,10 +44,10 @@ class TestAutostartBoundServers:
             "state": ServerState.STOPPED.value
         }
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": True}},
         ):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
 
         mock_manager.start_server_sync.assert_called_once_with("srv-1")
 
@@ -56,10 +56,10 @@ class TestAutostartBoundServers:
             "state": ServerState.RUNNING.value
         }
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": True}},
         ):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
         mock_manager.start_server_sync.assert_not_called()
 
     def test_skips_when_already_starting(self, mock_manager):
@@ -67,32 +67,32 @@ class TestAutostartBoundServers:
             "state": ServerState.STARTING.value
         }
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": True}},
         ):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
         mock_manager.start_server_sync.assert_not_called()
 
     def test_skips_when_auto_start_false(self, mock_manager):
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": False}},
         ):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
         mock_manager.start_server_sync.assert_not_called()
 
     def test_no_bindings_is_noop(self, mock_manager):
-        with patch("coco_codes.mcp_.agent_bindings.get_bound_servers", return_value={}):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+        with patch("coding_agent.mcp_.agent_bindings.get_bound_servers", return_value={}):
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
         mock_manager.start_server_sync.assert_not_called()
 
     def test_unknown_server_is_skipped(self, mock_manager):
         mock_manager.get_server_by_name.return_value = None
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"phantom": {"auto_start": True}},
         ):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
         mock_manager.start_server_sync.assert_not_called()
 
     def test_start_failure_is_swallowed(self, mock_manager):
@@ -101,11 +101,11 @@ class TestAutostartBoundServers:
         }
         mock_manager.start_server_sync.side_effect = RuntimeError("boom")
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": True}},
         ):
             # Should NOT raise — defensive logging only.
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
 
 
 class TestMissingServerWarning:
@@ -115,10 +115,10 @@ class TestMissingServerWarning:
         mock_manager.get_server_by_name.return_value = None  # not installed
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"missing-srv": {"auto_start": True}},
             ),
-            patch("coco_codes.agents._builder.emit_warning") as mock_warn,
+            patch("coding_agent.agents._builder.emit_warning") as mock_warn,
         ):
             _builder._autostart_bound_servers(mock_manager, "code-detective")
         assert mock_warn.call_count == 1
@@ -133,10 +133,10 @@ class TestMissingServerWarning:
         mock_manager.get_server_by_name.return_value = None
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"missing-srv": {"auto_start": True}},
             ),
-            patch("coco_codes.agents._builder.emit_warning") as mock_warn,
+            patch("coding_agent.agents._builder.emit_warning") as mock_warn,
         ):
             _builder._autostart_bound_servers(mock_manager, "code-detective")
             _builder._autostart_bound_servers(mock_manager, "code-detective")
@@ -148,10 +148,10 @@ class TestMissingServerWarning:
         mock_manager.get_server_by_name.return_value = None
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"missing-srv": {"auto_start": True}},
             ),
-            patch("coco_codes.agents._builder.emit_warning") as mock_warn,
+            patch("coding_agent.agents._builder.emit_warning") as mock_warn,
         ):
             _builder._autostart_bound_servers(mock_manager, "agent-a")
             _builder._autostart_bound_servers(mock_manager, "agent-b")
@@ -163,10 +163,10 @@ class TestMissingServerWarning:
         mock_manager.get_server_by_name.return_value = None
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"missing-srv": {"auto_start": False}},
             ),
-            patch("coco_codes.agents._builder.emit_warning") as mock_warn,
+            patch("coding_agent.agents._builder.emit_warning") as mock_warn,
         ):
             _builder._autostart_bound_servers(mock_manager, "code-detective")
         mock_warn.assert_not_called()
@@ -178,10 +178,10 @@ class TestMissingServerWarning:
         mock_manager.get_server_by_name.return_value = None
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"missing-srv": {"auto_start": True}},
             ),
-            patch("coco_codes.agents._builder.emit_warning") as mock_warn,
+            patch("coding_agent.agents._builder.emit_warning") as mock_warn,
         ):
             await _builder.autostart_bound_servers_async(mock_manager, "code-detective")
         assert mock_warn.call_count == 1
@@ -199,10 +199,10 @@ class TestAutostartBoundServersAsync:
             "state": ServerState.STOPPED.value
         }
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": True}},
         ):
-            await _builder.autostart_bound_servers_async(mock_manager, "coco-codes")
+            await _builder.autostart_bound_servers_async(mock_manager, "coding-agent")
         mock_manager.start_server.assert_awaited_once_with("srv-1")
 
     async def test_skips_already_running(self, mock_manager):
@@ -213,10 +213,10 @@ class TestAutostartBoundServersAsync:
             "state": ServerState.RUNNING.value
         }
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": True}},
         ):
-            await _builder.autostart_bound_servers_async(mock_manager, "coco-codes")
+            await _builder.autostart_bound_servers_async(mock_manager, "coding-agent")
         mock_manager.start_server.assert_not_awaited()
 
     async def test_skips_when_auto_start_false(self, mock_manager):
@@ -224,10 +224,10 @@ class TestAutostartBoundServersAsync:
 
         mock_manager.start_server = AsyncMock(return_value=True)
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": False}},
         ):
-            await _builder.autostart_bound_servers_async(mock_manager, "coco-codes")
+            await _builder.autostart_bound_servers_async(mock_manager, "coding-agent")
         mock_manager.start_server.assert_not_awaited()
 
     async def test_start_failure_is_swallowed(self, mock_manager):
@@ -238,18 +238,18 @@ class TestAutostartBoundServersAsync:
             "state": ServerState.STOPPED.value
         }
         with patch(
-            "coco_codes.mcp_.agent_bindings.get_bound_servers",
+            "coding_agent.mcp_.agent_bindings.get_bound_servers",
             return_value={"srv-1": {"auto_start": True}},
         ):
             # Should NOT raise.
-            await _builder.autostart_bound_servers_async(mock_manager, "coco-codes")
+            await _builder.autostart_bound_servers_async(mock_manager, "coding-agent")
 
     async def test_no_bindings_is_noop(self, mock_manager):
         from unittest.mock import AsyncMock
 
         mock_manager.start_server = AsyncMock(return_value=True)
-        with patch("coco_codes.mcp_.agent_bindings.get_bound_servers", return_value={}):
-            await _builder.autostart_bound_servers_async(mock_manager, "coco-codes")
+        with patch("coding_agent.mcp_.agent_bindings.get_bound_servers", return_value={}):
+            await _builder.autostart_bound_servers_async(mock_manager, "coding-agent")
         mock_manager.start_server.assert_not_awaited()
 
 
@@ -259,25 +259,25 @@ class TestLoadMcpServersWiring:
     def test_autostart_called_when_agent_name_given(self, mock_manager):
         with (
             patch(
-                "coco_codes.agents._builder.get_mcp_manager", return_value=mock_manager
+                "coding_agent.agents._builder.get_mcp_manager", return_value=mock_manager
             ),
             patch(
-                "coco_codes.agents._builder._autostart_bound_servers"
+                "coding_agent.agents._builder._autostart_bound_servers"
             ) as mock_autostart,
-            patch("coco_codes.agents._builder.get_value", return_value=None),
+            patch("coding_agent.agents._builder.get_value", return_value=None),
         ):
-            _builder.load_mcp_servers(agent_name="coco-codes")
-        mock_autostart.assert_called_once_with(mock_manager, "coco-codes")
+            _builder.load_mcp_servers(agent_name="coding-agent")
+        mock_autostart.assert_called_once_with(mock_manager, "coding-agent")
 
     def test_autostart_skipped_when_agent_name_none(self, mock_manager):
         with (
             patch(
-                "coco_codes.agents._builder.get_mcp_manager", return_value=mock_manager
+                "coding_agent.agents._builder.get_mcp_manager", return_value=mock_manager
             ),
             patch(
-                "coco_codes.agents._builder._autostart_bound_servers"
+                "coding_agent.agents._builder._autostart_bound_servers"
             ) as mock_autostart,
-            patch("coco_codes.agents._builder.get_value", return_value=None),
+            patch("coding_agent.agents._builder.get_value", return_value=None),
         ):
             _builder.load_mcp_servers(agent_name=None)
         mock_autostart.assert_not_called()
@@ -285,14 +285,14 @@ class TestLoadMcpServersWiring:
     def test_returns_empty_when_disabled(self, mock_manager):
         with (
             patch(
-                "coco_codes.agents._builder.get_mcp_manager", return_value=mock_manager
+                "coding_agent.agents._builder.get_mcp_manager", return_value=mock_manager
             ),
             patch(
-                "coco_codes.agents._builder._autostart_bound_servers"
+                "coding_agent.agents._builder._autostart_bound_servers"
             ) as mock_autostart,
-            patch("coco_codes.agents._builder.get_value", return_value="true"),
+            patch("coding_agent.agents._builder.get_value", return_value="true"),
         ):
-            result = _builder.load_mcp_servers(agent_name="coco-codes")
+            result = _builder.load_mcp_servers(agent_name="coding-agent")
         assert result == []
         mock_autostart.assert_not_called()
 
@@ -316,7 +316,7 @@ class TestSubagentInvocationUsesAsyncAutostart:
         import re
         from pathlib import Path
 
-        source = Path("coco_codes/tools/agent_tools.py").read_text(encoding="utf-8")
+        source = Path("coding_agent/tools/agent_tools.py").read_text(encoding="utf-8")
         return "\n".join(re.sub(r"#.*$", "", line) for line in source.splitlines())
 
     def test_agent_tools_calls_async_autostart(self):
@@ -365,13 +365,13 @@ class TestPreMcpAutostartHook:
         }
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"srv-1": {"auto_start": True}},
             ),
-            patch("coco_codes.agents._builder.on_pre_mcp_autostart_sync") as mock_hook,
+            patch("coding_agent.agents._builder.on_pre_mcp_autostart_sync") as mock_hook,
         ):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
-        mock_hook.assert_called_once_with("coco-codes", ["srv-1"])
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
+        mock_hook.assert_called_once_with("coding-agent", ["srv-1"])
 
     @pytest.mark.asyncio
     async def test_async_fires_hook_with_agent_and_server_names(self, mock_manager):
@@ -386,11 +386,11 @@ class TestPreMcpAutostartHook:
 
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"srv-1": {"auto_start": True}},
             ),
             patch(
-                "coco_codes.agents._builder.on_pre_mcp_autostart",
+                "coding_agent.agents._builder.on_pre_mcp_autostart",
             ) as mock_hook,
         ):
 
@@ -398,8 +398,8 @@ class TestPreMcpAutostartHook:
                 return []
 
             mock_hook.side_effect = _async_ok
-            await _builder.autostart_bound_servers_async(mock_manager, "coco-codes")
-        mock_hook.assert_called_once_with("coco-codes", ["srv-1"])
+            await _builder.autostart_bound_servers_async(mock_manager, "coding-agent")
+        mock_hook.assert_called_once_with("coding-agent", ["srv-1"])
 
     def test_hook_fires_before_start_server(self, mock_manager):
         """Order matters: hook must fire BEFORE any start_server call so
@@ -414,7 +414,7 @@ class TestPreMcpAutostartHook:
 
         mock_manager.start_server_sync.side_effect = lambda _id: order.append("start")
 
-        from coco_codes.callbacks import (
+        from coding_agent.callbacks import (
             register_callback,
             unregister_callback,
         )
@@ -422,10 +422,10 @@ class TestPreMcpAutostartHook:
         register_callback("pre_mcp_autostart", _hook)
         try:
             with patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"srv-1": {"auto_start": True}},
             ):
-                _builder._autostart_bound_servers(mock_manager, "coco-codes")
+                _builder._autostart_bound_servers(mock_manager, "coding-agent")
         finally:
             unregister_callback("pre_mcp_autostart", _hook)
 
@@ -435,12 +435,12 @@ class TestPreMcpAutostartHook:
         """If nothing's going to autostart, don't bother plugins."""
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"srv-1": {"auto_start": False}},
             ),
-            patch("coco_codes.agents._builder.on_pre_mcp_autostart_sync") as mock_hook,
+            patch("coding_agent.agents._builder.on_pre_mcp_autostart_sync") as mock_hook,
         ):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
         mock_hook.assert_not_called()
 
     def test_hook_exception_does_not_abort_autostart(self, mock_manager):
@@ -452,7 +452,7 @@ class TestPreMcpAutostartHook:
         def _bad_hook(_agent, _names):
             raise RuntimeError("plugin broke")
 
-        from coco_codes.callbacks import (
+        from coding_agent.callbacks import (
             register_callback,
             unregister_callback,
         )
@@ -460,10 +460,10 @@ class TestPreMcpAutostartHook:
         register_callback("pre_mcp_autostart", _bad_hook)
         try:
             with patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={"srv-1": {"auto_start": True}},
             ):
-                _builder._autostart_bound_servers(mock_manager, "coco-codes")
+                _builder._autostart_bound_servers(mock_manager, "coding-agent")
         finally:
             unregister_callback("pre_mcp_autostart", _bad_hook)
 
@@ -478,18 +478,18 @@ class TestPreMcpAutostartHook:
         }
         with (
             patch(
-                "coco_codes.mcp_.agent_bindings.get_bound_servers",
+                "coding_agent.mcp_.agent_bindings.get_bound_servers",
                 return_value={
                     "srv-yes": {"auto_start": True},
                     "srv-no": {"auto_start": False},
                 },
             ),
-            patch("coco_codes.agents._builder.on_pre_mcp_autostart_sync") as mock_hook,
+            patch("coding_agent.agents._builder.on_pre_mcp_autostart_sync") as mock_hook,
         ):
-            _builder._autostart_bound_servers(mock_manager, "coco-codes")
+            _builder._autostart_bound_servers(mock_manager, "coding-agent")
         mock_hook.assert_called_once()
         agent_arg, names_arg = mock_hook.call_args.args
-        assert agent_arg == "coco-codes"
+        assert agent_arg == "coding-agent"
         assert names_arg == ["srv-yes"]
 
 

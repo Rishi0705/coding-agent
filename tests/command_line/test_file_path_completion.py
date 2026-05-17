@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 
 from prompt_toolkit.document import Document
 
-from coco_codes.command_line.file_path_completion import FilePathCompleter
+from coding_agent.command_line.file_path_completion import FilePathCompleter
 
 
 class TestFilePathCompleter:

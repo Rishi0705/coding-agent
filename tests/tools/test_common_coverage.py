@@ -1,4 +1,4 @@
-"""Additional coverage tests for coco_codes.tools.common.
+"""Additional coverage tests for coding_agent.tools.common.
 
 This module focuses on testing the UNCOVERED lines in common.py to boost coverage.
 Target functions:
@@ -17,7 +17,7 @@ import pytest
 # Import directly from the module file to avoid heavy dependencies
 spec = importlib.util.spec_from_file_location(
     "common_module",
-    Path(__file__).parent.parent.parent / "coco_codes" / "tools" / "common.py",
+    Path(__file__).parent.parent.parent / "coding_agent" / "tools" / "common.py",
 )
 common_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(common_module)

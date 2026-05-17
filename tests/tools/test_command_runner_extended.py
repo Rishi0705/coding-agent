@@ -1,4 +1,4 @@
-"""Extended tests for coco_codes.tools.command_runner - filling coverage gaps.
+"""Extended tests for coding_agent.tools.command_runner - filling coverage gaps.
 
 This module tests previously uncovered code paths including:
 - Windows-specific pipe checking and keyboard handling
@@ -27,7 +27,7 @@ import pytest
 # Import directly from the module file
 spec = importlib.util.spec_from_file_location(
     "command_runner_module",
-    Path(__file__).parent.parent.parent / "coco_codes" / "tools" / "command_runner.py",
+    Path(__file__).parent.parent.parent / "coding_agent" / "tools" / "command_runner.py",
 )
 command_runner_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(command_runner_module)
@@ -550,7 +550,7 @@ class TestRunShellCommandAsync:
 
         # Mock callback to block command
         with patch(
-            "coco_codes.callbacks.on_run_shell_command", new_callable=AsyncMock
+            "coding_agent.callbacks.on_run_shell_command", new_callable=AsyncMock
         ) as mock_callback:
             mock_callback.return_value = [
                 {
@@ -631,13 +631,13 @@ class TestReasoningOutput:
 
     def test_share_your_reasoning_basic(self, monkeypatch):
         """Test sharing reasoning with basic content."""
-        from coco_codes.tools.command_runner import share_your_reasoning
+        from coding_agent.tools.command_runner import share_your_reasoning
 
         mock_context = MagicMock()
         mock_bus = MagicMock()
 
         with patch(
-            "coco_codes.tools.command_runner.get_message_bus", return_value=mock_bus
+            "coding_agent.tools.command_runner.get_message_bus", return_value=mock_bus
         ):
             result = share_your_reasoning(
                 mock_context,
@@ -649,13 +649,13 @@ class TestReasoningOutput:
 
     def test_share_your_reasoning_with_single_step(self, monkeypatch):
         """Test sharing reasoning with single next step."""
-        from coco_codes.tools.command_runner import share_your_reasoning
+        from coding_agent.tools.command_runner import share_your_reasoning
 
         mock_context = MagicMock()
         mock_bus = MagicMock()
 
         with patch(
-            "coco_codes.tools.command_runner.get_message_bus", return_value=mock_bus
+            "coding_agent.tools.command_runner.get_message_bus", return_value=mock_bus
         ):
             result = share_your_reasoning(
                 mock_context,
@@ -668,13 +668,13 @@ class TestReasoningOutput:
 
     def test_share_your_reasoning_with_list_steps(self, monkeypatch):
         """Test sharing reasoning with list of next steps."""
-        from coco_codes.tools.command_runner import share_your_reasoning
+        from coding_agent.tools.command_runner import share_your_reasoning
 
         mock_context = MagicMock()
         mock_bus = MagicMock()
 
         with patch(
-            "coco_codes.tools.command_runner.get_message_bus", return_value=mock_bus
+            "coding_agent.tools.command_runner.get_message_bus", return_value=mock_bus
         ):
             result = share_your_reasoning(
                 mock_context,
@@ -695,7 +695,7 @@ class TestRegisterAgentRunShellCommand:
 
     def test_register_agent_run_shell_command(self, monkeypatch):
         """Test that agent tool is properly registered."""
-        from coco_codes.tools.command_runner import register_agent_run_shell_command
+        from coding_agent.tools.command_runner import register_agent_run_shell_command
 
         # Create a mock agent
         mock_agent = MagicMock()
