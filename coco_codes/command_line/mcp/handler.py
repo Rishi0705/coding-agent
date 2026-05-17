@@ -101,7 +101,7 @@ class MCPCommandHandler(MCPCommandBase):
                 args = shlex.split(args_str)
             except ValueError as e:
                 emit_info(
-                    Text.from_markup(f"[red]Invalid command syntax: {e}[/red]"),
+                    Text.from_markup(f"[bright_green]Invalid command syntax: {e}[/bright_green]"),
                     message_group=group_id,
                 )
                 return True
@@ -121,7 +121,7 @@ class MCPCommandHandler(MCPCommandBase):
             else:
                 emit_info(
                     Text.from_markup(
-                        f"[yellow]Unknown MCP subcommand: {subcommand}[/yellow]"
+                        f"[bright_green]Unknown MCP subcommand: {subcommand}[/bright_green]"
                     ),
                     message_group=group_id,
                 )

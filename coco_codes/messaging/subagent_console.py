@@ -29,12 +29,12 @@ from coco_codes.messaging.messages import SubAgentStatusMessage
 # =============================================================================
 
 STATUS_STYLES = {
-    "starting": {"color": "cyan", "spinner": "dots", "emoji": "🚀"},
+    "starting": {"color": "green", "spinner": "dots", "emoji": "🚀"},
     "running": {"color": "green", "spinner": "dots", "emoji": "⚙️"},
-    "thinking": {"color": "magenta", "spinner": "dots", "emoji": "🤔"},
-    "tool_calling": {"color": "yellow", "spinner": "dots12", "emoji": "🔧"},
+    "thinking": {"color": "green", "spinner": "dots", "emoji": "🤔"},
+    "tool_calling": {"color": "green", "spinner": "dots12", "emoji": "🔧"},
     "completed": {"color": "green", "spinner": None, "emoji": "✅"},
-    "error": {"color": "red", "spinner": None, "emoji": "❌"},
+    "error": {"color": "bright_green", "spinner": None, "emoji": "❌"},
 }
 
 DEFAULT_STYLE = {"color": "white", "spinner": "dots", "emoji": "⏳"}
@@ -371,7 +371,7 @@ class SubAgentConsoleManager:
         table.add_row("Status:", status_text)
 
         # Model
-        table.add_row("Model:", Text(agent.model_name, style="cyan"))
+        table.add_row("Model:", Text(agent.model_name, style="green"))
 
         # Session ID (truncated for display)
         session_display = agent.session_id
@@ -381,19 +381,19 @@ class SubAgentConsoleManager:
 
         # Tool calls
         tool_text = Text()
-        tool_text.append(str(agent.tool_call_count), style="bold yellow")
+        tool_text.append(str(agent.tool_call_count), style="bold bright_green")
         if agent.current_tool:
             tool_text.append(" (calling: ", style="dim")
-            tool_text.append(agent.current_tool, style="yellow")
+            tool_text.append(agent.current_tool, style="green")
             tool_text.append(")", style="dim")
         table.add_row("Tools:", tool_text)
 
         # Token count
         token_display = f"{agent.token_count:,}" if agent.token_count else "0"
-        table.add_row("Tokens:", Text(token_display, style="blue"))
+        table.add_row("Tokens:", Text(token_display, style="green"))
 
         # Elapsed time
-        table.add_row("Elapsed:", Text(agent.elapsed_formatted(), style="magenta"))
+        table.add_row("Elapsed:", Text(agent.elapsed_formatted(), style="green"))
 
         # Error message (if any)
         if agent.error_message:

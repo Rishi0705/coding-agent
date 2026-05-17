@@ -131,8 +131,8 @@ class ConsoleSpinner(SpinnerBase):
         text = Text()
 
         # Show thinking message during normal processing
-        text.append(SpinnerBase.THINKING_MESSAGE, style="bold cyan")
-        text.append(self.current_frame, style="bold cyan")
+        text.append(SpinnerBase.THINKING_MESSAGE, style="bold bright_green")
+        text.append(self.current_frame, style="bold bright_green")
 
         context_info = SpinnerBase.get_context_info()
         if context_info:

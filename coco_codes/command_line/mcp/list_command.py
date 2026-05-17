@@ -45,7 +45,7 @@ class ListCommand(MCPCommandBase):
 
             # Create table for server list
             table = Table(title="🔌 MCP Server Status Dashboard")
-            table.add_column("Name", style="cyan", no_wrap=True)
+            table.add_column("Name", style="green", no_wrap=True)
             table.add_column("Type", style="dim", no_wrap=True)
             table.add_column("State", justify="center")
             table.add_column("Enabled", justify="center")

@@ -83,10 +83,10 @@ def get_commands_help():
         return desc[: max_width - 3] + "..."
 
     # Display Built-in Commands section (starts immediately, no blank line)
-    lines.append(Text("Built-in Commands", style="bold magenta"))
+    lines.append(Text("Built-in Commands", style="bold bright_green"))
     for cmd, desc in sorted(builtin_cmds, key=lambda x: x[0]):
         truncated_desc = truncate_desc(desc, max_desc_width)
-        left = Text(cmd.ljust(column_width), style="cyan")
+        left = Text(cmd.ljust(column_width), style="green")
         right = Text(truncated_desc)
         line = Text()
         line.append_text(left)
@@ -96,10 +96,10 @@ def get_commands_help():
     # Display Custom Commands section (if any)
     if custom_entries:
         lines.append(Text(""))
-        lines.append(Text("Custom Commands", style="bold magenta"))
+        lines.append(Text("Custom Commands", style="bold bright_green"))
         for cmd, desc in sorted(custom_entries, key=lambda x: x[0]):
             truncated_desc = truncate_desc(desc, max_desc_width)
-            left = Text(cmd.ljust(column_width), style="cyan")
+            left = Text(cmd.ljust(column_width), style="green")
             right = Text(truncated_desc)
             line = Text()
             line.append_text(left)
@@ -108,8 +108,8 @@ def get_commands_help():
 
     # Display Shell Pass-through section
     lines.append(Text(""))
-    lines.append(Text("Shell Pass-through", style="bold magenta"))
-    shell_left = Text("!<command>".ljust(column_width), style="cyan")
+    lines.append(Text("Shell Pass-through", style="bold bright_green"))
+    shell_left = Text("!<command>".ljust(column_width), style="green")
     shell_right = Text("Run a shell command directly (e.g., !git status)")
     shell_line = Text()
     shell_line.append_text(shell_left)
@@ -285,7 +285,7 @@ def handle_command(command: str):
             current_model = get_active_model()
             emit_info(
                 Text.from_markup(
-                    f"[bold green]Current Model:[/bold green] [cyan]{current_model}[/cyan]"
+                    f"[bold green]Current Model:[/bold green] [bright_green]{current_model}[/bright_green]"
                 )
             )
         return True

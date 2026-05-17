@@ -266,9 +266,9 @@ class BlockingMCPServerStdio(SimpleCapturedMCPServerStdio):
             server_name = getattr(self, "tool_prefix", self.command)
             emit_info(
                 f"⚠  MCP server '{server_name}' didn't start. "
-                f"Run [cyan]/mcp logs {server_name}[/cyan] to investigate, "
-                f"or unbind it via [cyan]/agents → B[/cyan].",
-                style="yellow",
+                f"Run [bright_green]/mcp logs {server_name}[/bright_green] to investigate, "
+                f"or unbind it via [bright_green]/agents → B[/bright_green].",
+                style="green",
                 message_group=self.message_group,
             )
             import logging as _logging
@@ -388,7 +388,7 @@ class StartupMonitor:
         # Wait for all servers in parallel
         emit_info(
             f"⏳ Waiting for {len(self.servers)} MCP servers to initialize...",
-            style="cyan",
+            style="green",
             message_group=self.message_group,
         )
 
@@ -412,7 +412,7 @@ class StartupMonitor:
         else:
             emit_info(
                 f"⚠️  {ready_count}/{total_count} servers ready",
-                style="yellow",
+                style="green",
                 message_group=self.message_group,
             )
 

@@ -144,19 +144,19 @@ class StatusDisplay:
 
         # Create a highly visible status message
         status_text = Text.assemble(
-            Text(f"⏳ {rate_text} ", style="bold cyan"),
+            Text(f"⏳ {rate_text} ", style="bold bright_green"),
             str(self.spinner),
             Text(
                 f" {self.loading_messages[self.current_message_index]} ⏳",
-                style="bold yellow",
+                style="bold bright_green",
             ),
         )
 
         # Use expanded panel with more visible formatting
         return Panel(
             status_text,
-            title="[bold blue]Coco Codes Status[/bold blue]",
-            border_style="bright_blue",
+            title="[bold bright_green]Coco Codes Status[/bold bright_green]",
+            border_style="bright_green",
             expand=False,
             padding=(1, 2),
         )
@@ -178,8 +178,8 @@ class StatusDisplay:
 
         # Create a highly visible status text
         return Text.assemble(
-            Text(f"⏳ {rate_text} ⚡", style="bold cyan"),
-            Text(f" {message}", style="yellow"),
+            Text(f"⏳ {rate_text} ⚡", style="bold bright_green"),
+            Text(f" {message}", style="green"),
         )
 
     async def _update_display(self) -> None:

@@ -56,13 +56,13 @@ class TUIColors(NamedTuple):
     """Color scheme for the ask_user_question TUI."""
 
     # Header and title colors
-    header_bold: str = "bold cyan"
-    header_dim: str = "fg:ansicyan dim"
+    header_bold: str = "bold bright_green"
+    header_dim: str = "fg:ansigreen dim"
 
     # Cursor and selection colors
     cursor_active: str = "fg:ansigreen bold"
     cursor_inactive: str = "fg:ansiwhite"
-    selected: str = "fg:ansicyan"
+    selected: str = "fg:ansigreen"
     selected_check: str = "fg:ansigreen"
 
     # Text colors
@@ -106,7 +106,7 @@ class RichColors(NamedTuple):
     """Rich markup colors for the question panel."""
 
     # Header colors (Rich markup format)
-    header: str = "bold cyan"
+    header: str = "bold bright_green"
     progress: str = "dim"
 
     # Question text
@@ -115,24 +115,24 @@ class RichColors(NamedTuple):
 
     # Option colors
     cursor: str = "green bold"
-    selected: str = "cyan"
+    selected: str = "green"
     normal: str = ""
     description: str = "dim"
 
     # Input field
-    input_label: str = "bold yellow"
+    input_label: str = "bold bright_green"
     input_text: str = "green"
     input_hint: str = "dim"
 
     # Help overlay
-    help_border: str = "bold cyan"
-    help_title: str = "bold cyan"
+    help_border: str = "bold bright_green"
+    help_title: str = "bold bright_green"
     help_section: str = "bold"
     help_key: str = "green"
     help_close: str = "dim"
 
     # Timeout warning
-    timeout_warning: str = "bold yellow"
+    timeout_warning: str = "bold bright_green"
 
 
 _DEFAULT_RICH = RichColors()

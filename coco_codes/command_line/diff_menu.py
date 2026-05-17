@@ -489,7 +489,7 @@ async def _split_panel_selector(
         """Generate the selector menu text."""
         try:
             lines = []
-            lines.append(("bold cyan", title))
+            lines.append(("bold bright_green", title))
             lines.append(("", "\n\n"))
 
             if not choices:
@@ -515,7 +515,7 @@ async def _split_panel_selector(
                 lines.append(("", "\n"))
 
             lines.append(
-                ("fg:ansicyan", "↑↓ Navigate  │  Enter Confirm  │  Ctrl-C Cancel")
+                ("fg:ansigreen", "↑↓ Navigate  │  Enter Confirm  │  Ctrl-C Cancel")
             )
             return FormattedText(lines)
         except Exception as e:
@@ -711,10 +711,10 @@ def _convert_rich_color_to_prompt_toolkit(color: str) -> str:
         "black",
         "red",
         "green",
-        "yellow",
-        "blue",
-        "magenta",
-        "cyan",
+        "green",
+        "green",
+        "green",
+        "green",
         "white",
         "gray",
         "grey",
@@ -742,7 +742,7 @@ def _get_preview_text_for_prompt_toolkit(config: DiffConfiguration) -> ANSI:
     header_parts = []
     header_parts.append("[bold]═" * 50 + "[/bold]")
     header_parts.append(
-        "[bold cyan] LIVE PREVIEW - Syntax Highlighted Diff[/bold cyan]"
+        "[bold bright_green] LIVE PREVIEW - Syntax Highlighted Diff[/bold bright_green]"
     )
     header_parts.append("[bold]═" * 50 + "[/bold]")
     header_parts.append("")
@@ -750,7 +750,7 @@ def _get_preview_text_for_prompt_toolkit(config: DiffConfiguration) -> ANSI:
     header_parts.append(f" Deletion Color: [bold]{config.current_del_color}[/bold]")
     header_parts.append("")
     header_parts.append(
-        f" [bold yellow]Language: {current_lang.upper()}[/bold yellow]  "
+        f" [bold bright_green]Language: {current_lang.upper()}[/bold bright_green]  "
         f"[dim](← → to cycle)[/dim]"
     )
     header_parts.append("")

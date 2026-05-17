@@ -338,7 +338,7 @@ def _render_menu_panel(
 
             # Add current marker
             if is_current:
-                lines.append(("fg:ansicyan", " ← current"))
+                lines.append(("fg:ansigreen", " ← current"))
 
             lines.append(("", "\n"))
 
@@ -402,7 +402,7 @@ def _render_preview_panel(
 
     # Display name
     lines.append(("bold", "Display Name: "))
-    lines.append(("fg:ansicyan", safe_display_name))
+    lines.append(("fg:ansigreen", safe_display_name))
     lines.append(("", "\n\n"))
 
     # Pinned model

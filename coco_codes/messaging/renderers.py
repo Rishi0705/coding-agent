@@ -111,13 +111,13 @@ def _classify_style(message: UIMessage) -> Optional[str]:
     """
     style: Optional[str]
     if message.type == MessageType.ERROR:
-        style = "bold red"
+        style = "bold bright_green"
     elif message.type == MessageType.WARNING:
-        style = "yellow"
+        style = "green"
     elif message.type == MessageType.SUCCESS:
         style = "green"
     elif message.type == MessageType.TOOL_OUTPUT:
-        style = "blue"
+        style = "green"
     elif message.type == MessageType.SYSTEM:
         style = "dim"
     else:
@@ -199,7 +199,7 @@ class InteractiveRenderer(MessageRenderer):
     async def _handle_human_input_request(self, message: UIMessage):
         """Handle a human input request in async mode."""
         safe_content = escape_rich_markup(str(message.content))
-        self.console.print(f"[bold cyan]INPUT REQUESTED:[/bold cyan] {safe_content}")
+        self.console.print(f"[bold bright_green]INPUT REQUESTED:[/bold bright_green] {safe_content}")
         if hasattr(self.console.file, "flush"):
             self.console.file.flush()
 
@@ -337,12 +337,12 @@ class SynchronousInteractiveRenderer:
         prompt_id = message.metadata.get("prompt_id") if message.metadata else None
         if not prompt_id:
             self.console.print(
-                "[bold red]Error: Invalid human input request[/bold red]"
+                "[bold bright_green]Error: Invalid human input request[/bold bright_green]"
             )
             return
 
         safe_content = escape_rich_markup(str(message.content))
-        self.console.print(f"[bold cyan]{safe_content}[/bold cyan]")
+        self.console.print(f"[bold bright_green]{safe_content}[/bold bright_green]")
         if hasattr(self.console.file, "flush"):
             self.console.file.flush()
 
@@ -358,5 +358,5 @@ class SynchronousInteractiveRenderer:
         except Exception as e:
             from .message_queue import provide_prompt_response
 
-            self.console.print(f"[bold red]Error getting input: {e}[/bold red]")
+            self.console.print(f"[bold bright_green]Error getting input: {e}[/bold bright_green]")
             provide_prompt_response(prompt_id, "")

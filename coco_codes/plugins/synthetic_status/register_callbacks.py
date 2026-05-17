@@ -56,7 +56,7 @@ def _render_synthetic_status_panel(
             f"Renews at     : {renews_at_utc}",
         ]
     )
-    return Panel(body, border_style="cyan")
+    return Panel(body, border_style="green")
 
 
 def _handle_synthetic_status() -> None:

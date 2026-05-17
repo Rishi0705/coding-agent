@@ -153,7 +153,7 @@ class InstallCommand(MCPCommandBase):
             if required_env_vars:
                 emit_info(
                     Text.from_markup(
-                        "\n[yellow]Required Environment Variables:[/yellow]"
+                        "\n[bright_green]Required Environment Variables:[/bright_green]"
                     ),
                     message_group=group_id,
                 )
@@ -164,7 +164,7 @@ class InstallCommand(MCPCommandBase):
                     current_value = os.environ.get(var, "")
                     if current_value:
                         emit_info(
-                            Text.from_markup(f"  {var}: [green]Already set[/green]"),
+                            Text.from_markup(f"  {var}: [bright_green]Already set[/bright_green]"),
                             message_group=group_id,
                         )
                         env_vars[var] = current_value
@@ -177,7 +177,7 @@ class InstallCommand(MCPCommandBase):
             required_cmd_args = selected_server.get_command_line_args()
             if required_cmd_args:
                 emit_info(
-                    Text.from_markup("\n[yellow]Command Line Arguments:[/yellow]"),
+                    Text.from_markup("\n[bright_green]Command Line Arguments:[/bright_green]"),
                     message_group=group_id,
                 )
                 for arg_config in required_cmd_args:

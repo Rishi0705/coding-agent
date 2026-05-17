@@ -64,7 +64,7 @@ BANNER_SAMPLE_CONTENT = {
 # Available background colors grouped by theme
 BANNER_COLORS = {
     # Cool colors
-    "blue": "blue",
+    "green": "green",
     "dark blue": "dark_blue",
     "navy blue": "navy_blue",
     "deep sky blue": "deep_sky_blue4",
@@ -72,7 +72,7 @@ BANNER_COLORS = {
     "dodger blue": "dodger_blue3",
     # Cyans & Teals
     "dark cyan": "dark_cyan",
-    "cyan": "cyan4",
+    "green": "cyan4",
     "teal": "dark_turquoise",
     "aquamarine": "aquamarine1",
     # Greens
@@ -269,7 +269,7 @@ async def _split_panel_selector(
         """Generate the selector menu text."""
         try:
             lines = []
-            lines.append(("bold cyan", title))
+            lines.append(("bold bright_green", title))
             lines.append(("", "\n\n"))
 
             if not choices:
@@ -292,7 +292,7 @@ async def _split_panel_selector(
 
             lines.append(("", "\n"))
             lines.append(
-                ("fg:ansicyan", "↑↓ Navigate  │  Enter Select  │  Ctrl-C Cancel")
+                ("fg:ansigreen", "↑↓ Navigate  │  Enter Select  │  Ctrl-C Cancel")
             )
             return FormattedText(lines)
         except Exception as e:
@@ -410,7 +410,7 @@ def _get_preview_text_for_prompt_toolkit(config: ColorConfiguration) -> ANSI:
 
     # Header
     console.print("[bold]═" * 60 + "[/bold]")
-    console.print("[bold cyan] LIVE PREVIEW - Banner Colors[/bold cyan]")
+    console.print("[bold bright_green] LIVE PREVIEW - Banner Colors[/bold bright_green]")
     console.print("[bold]═" * 60 + "[/bold]")
     console.print()
 
@@ -423,7 +423,7 @@ def _get_preview_text_for_prompt_toolkit(config: ColorConfiguration) -> ANSI:
         # Highlight the currently selected banner
         is_selected = key == config.get_current_banner_key()
         if is_selected:
-            console.print("[bold yellow]▶[/bold yellow] ", end="")
+            console.print("[bold bright_green]▶[/bold bright_green] ", end="")
         else:
             console.print("  ", end="")
 
@@ -468,7 +468,7 @@ async def _handle_color_menu(config: ColorConfiguration) -> None:
     # Callback for live preview updates
     def update_preview(selected_choice: str):
         color_name = selected_choice.replace(" ← current", "").strip()
-        selected_color = BANNER_COLORS.get(color_name, "blue")
+        selected_color = BANNER_COLORS.get(color_name, "green")
         config.set_current_banner_color(selected_color)
 
     def get_preview_header():
@@ -509,7 +509,7 @@ def _get_single_banner_preview(config: ColorConfiguration) -> ANSI:
 
     # Header
     console.print("[bold]═" * 60 + "[/bold]")
-    console.print(f"[bold cyan] Editing: {display_name}[/bold cyan]")
+    console.print(f"[bold bright_green] Editing: {display_name}[/bold bright_green]")
     console.print(f" Current Color: [bold]{color}[/bold]")
     console.print("[bold]═" * 60 + "[/bold]")
     console.print()

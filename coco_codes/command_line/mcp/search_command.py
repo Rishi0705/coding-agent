@@ -64,10 +64,10 @@ class SearchCommand(MCPCommandBase):
                 return
 
             # Create results table
-            table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("ID", style="cyan", width=20)
+            table = Table(show_header=True, header_style="bold bright_green")
+            table.add_column("ID", style="green", width=20)
             table.add_column("Name", style="green")
-            table.add_column("Category", style="yellow")
+            table.add_column("Category", style="green")
             table.add_column("Description", style="white")
             table.add_column("Tags", style="dim")
 
@@ -100,24 +100,24 @@ class SearchCommand(MCPCommandBase):
             emit_system_message(table, message_group=group_id)
             emit_info("\n✓ = Verified  ⭐ = Popular", message_group=group_id)
             emit_info(
-                Text.from_markup("[yellow]To install:[/yellow] /mcp install <id>"),
+                Text.from_markup("[bright_green]To install:[/bright_green] /mcp install <id>"),
                 message_group=group_id,
             )
             emit_info(
                 Text.from_markup(
-                    "[yellow]For details:[/yellow] /mcp search <specific-term>"
+                    "[bright_green]For details:[/bright_green] /mcp search <specific-term>"
                 ),
                 message_group=group_id,
             )
 
         except ImportError:
             emit_info(
-                Text.from_markup("[red]Server registry not available[/red]"),
+                Text.from_markup("[bright_green]Server registry not available[/bright_green]"),
                 message_group=group_id,
             )
         except Exception as e:
             logger.error(f"Error searching server registry: {e}")
             emit_info(
-                Text.from_markup(f"[red]Error searching servers: {e}[/red]"),
+                Text.from_markup(f"[bright_green]Error searching servers: {e}[/bright_green]"),
                 message_group=group_id,
             )

@@ -53,7 +53,7 @@ def handle_session_command(command: str) -> bool:
     if len(tokens) == 1 or tokens[1] == "id":
         sid = get_current_autosave_id()
         emit_info(
-            f"[bold magenta]Autosave Session[/bold magenta]: {sid}\n"
+            f"[bold bright_green]Autosave Session[/bold bright_green]: {sid}\n"
             f"Files prefix: {Path(AUTOSAVE_DIR) / get_current_autosave_session_name()}"
         )
         return True

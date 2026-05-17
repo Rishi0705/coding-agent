@@ -53,7 +53,7 @@ def run_interactive_install_wizard(manager, group_id: str) -> bool:
         required_env_vars = selected_server.get_environment_vars()
         if required_env_vars:
             emit_info(
-                Text.from_markup("\n[yellow]Required Environment Variables:[/yellow]"),
+                Text.from_markup("\n[bright_green]Required Environment Variables:[/bright_green]"),
                 message_group=group_id,
             )
             for var in required_env_vars:
@@ -63,7 +63,7 @@ def run_interactive_install_wizard(manager, group_id: str) -> bool:
                 current_value = os.environ.get(var, "")
                 if current_value:
                     emit_info(
-                        Text.from_markup(f"  {var}: [green]Already set[/green]"),
+                        Text.from_markup(f"  {var}: [bright_green]Already set[/bright_green]"),
                         message_group=group_id,
                     )
                     env_vars[var] = current_value
@@ -76,7 +76,7 @@ def run_interactive_install_wizard(manager, group_id: str) -> bool:
         required_cmd_args = selected_server.get_command_line_args()
         if required_cmd_args:
             emit_info(
-                Text.from_markup("\n[yellow]Command Line Arguments:[/yellow]"),
+                Text.from_markup("\n[bright_green]Command Line Arguments:[/bright_green]"),
                 message_group=group_id,
             )
             for arg_config in required_cmd_args:
@@ -317,7 +317,7 @@ def install_server_from_catalog(
 
         emit_info(
             Text.from_markup(
-                f"[green]✓ Successfully installed server: {server_name}[/green]"
+                f"[bright_green]✓ Successfully installed server: {server_name}[/bright_green]"
             ),
             message_group=group_id,
         )

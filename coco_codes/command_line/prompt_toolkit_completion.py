@@ -846,13 +846,13 @@ async def get_input_with_combined_completion(
         {
             # Keys must AVOID the 'class:' prefix – that prefix is used only when
             # tagging tokens in `FormattedText`. See prompt_toolkit docs.
-            "assistant": "bold ansibrightcyan",
-            "owner": "bold ansibrightblue",
-            "agent": "bold ansibrightblue",
-            "model": "bold ansibrightcyan",
+            "assistant": "bold ansibrightgreen",
+            "owner": "bold ansibrightgreen",
+            "agent": "bold ansibrightgreen",
+            "model": "bold ansibrightgreen",
             "cwd": "bold ansibrightgreen",
-            "arrow": "bold ansibrightblue",
-            "attachment-placeholder": "italic ansicyan",
+            "arrow": "bold ansibrightgreen",
+            "attachment-placeholder": "italic ansigreen",
         }
     )
     text = await session.prompt_async(prompt_str, style=style)

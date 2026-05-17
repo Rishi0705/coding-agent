@@ -129,7 +129,7 @@ class MCPInstallMenu:
         """Render the category list panel."""
         lines = []
 
-        lines.append(("bold cyan", " 📂 CATEGORIES"))
+        lines.append(("bold bright_green", " 📂 CATEGORIES"))
         lines.append(("", "\n\n"))
 
         if not self.categories:
@@ -164,7 +164,7 @@ class MCPInstallMenu:
                 )
                 label = f"{prefix}{icon} {category} ({server_count})"
                 if is_selected:
-                    lines.append(("fg:ansibrightcyan bold", label))
+                    lines.append(("fg:ansibrightgreen bold", label))
                 else:
                     lines.append(("fg:ansibrightblack", label))
 
@@ -191,7 +191,7 @@ class MCPInstallMenu:
             return lines
 
         icon = self._get_category_icon(self.current_category)
-        lines.append(("bold cyan", f" {icon} {self.current_category.upper()}"))
+        lines.append(("bold bright_green", f" {icon} {self.current_category.upper()}"))
         lines.append(("", "\n\n"))
 
         if not self.current_servers:
@@ -222,7 +222,7 @@ class MCPInstallMenu:
             label = f"{prefix}{icon_str}{server.display_name}"
 
             if is_selected:
-                lines.append(("fg:ansibrightcyan bold", label))
+                lines.append(("fg:ansibrightgreen bold", label))
             else:
                 lines.append(("fg:ansibrightblack", label))
 
@@ -260,7 +260,7 @@ class MCPInstallMenu:
         """Render the details panel."""
         lines = []
 
-        lines.append(("bold cyan", " 📋 DETAILS"))
+        lines.append(("bold bright_green", " 📋 DETAILS"))
         lines.append(("", "\n\n"))
 
         if self.view_mode == "categories":
@@ -347,7 +347,7 @@ class MCPInstallMenu:
                 lines.append(("bold", "  Tags:"))
                 lines.append(("", "\n"))
                 tag_line = "    " + ", ".join(server.tags[:6])
-                lines.append(("fg:ansicyan", tag_line))
+                lines.append(("fg:ansigreen", tag_line))
                 lines.append(("", "\n\n"))
 
             # Requirements
@@ -406,7 +406,7 @@ class MCPInstallMenu:
         """Render details for the custom server option."""
         lines = []
 
-        lines.append(("bold cyan", " 📋 DETAILS"))
+        lines.append(("bold bright_green", " 📋 DETAILS"))
         lines.append(("", "\n\n"))
 
         lines.append(("bold green", "  ➕ Add Custom MCP Server"))
@@ -420,7 +420,7 @@ class MCPInstallMenu:
         lines.append(("bold", "  📟 Supported Types:"))
         lines.append(("", "\n\n"))
 
-        lines.append(("fg:ansicyan bold", "  1. stdio"))
+        lines.append(("fg:ansigreen bold", "  1. stdio"))
         lines.append(("", "\n"))
         lines.append(("fg:ansibrightblack", "     Runs a local command (npx, python,"))
         lines.append(("", "\n"))
@@ -429,14 +429,14 @@ class MCPInstallMenu:
         lines.append(("fg:ansibrightblack", "     stdin/stdout."))
         lines.append(("", "\n\n"))
 
-        lines.append(("fg:ansicyan bold", "  2. http"))
+        lines.append(("fg:ansigreen bold", "  2. http"))
         lines.append(("", "\n"))
         lines.append(("fg:ansibrightblack", "     Connects to an HTTP endpoint that"))
         lines.append(("", "\n"))
         lines.append(("fg:ansibrightblack", "     implements the MCP protocol."))
         lines.append(("", "\n\n"))
 
-        lines.append(("fg:ansicyan bold", "  3. sse"))
+        lines.append(("fg:ansigreen bold", "  3. sse"))
         lines.append(("", "\n"))
         lines.append(("fg:ansibrightblack", "     Connects via Server-Sent Events"))
         lines.append(("", "\n"))

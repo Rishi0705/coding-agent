@@ -71,8 +71,8 @@ async def _prompt_user_approval(command: str, match: Any) -> Optional[Dict[str, 
     from coco_codes.tools.common import get_user_approval_async
 
     panel_content = Text()
-    panel_content.append("⚠️  Force push detected: ", style="bold yellow")
-    panel_content.append(match.pattern_name, style="bold red")
+    panel_content.append("⚠️  Force push detected: ", style="bold bright_green")
+    panel_content.append(match.pattern_name, style="bold bright_green")
     panel_content.append("\n", style="")
     panel_content.append(f"  {match.description}", style="dim")
     panel_content.append("\n\n", style="")
@@ -80,7 +80,7 @@ async def _prompt_user_approval(command: str, match: Any) -> Optional[Dict[str, 
     panel_content.append(command, style="bold white")
     panel_content.append(
         "\n\nForce pushing rewrites remote history and can destroy others' work.",
-        style="yellow",
+        style="green",
     )
 
     confirmed, user_feedback = await get_user_approval_async(

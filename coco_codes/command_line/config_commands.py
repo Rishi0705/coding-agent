@@ -66,23 +66,23 @@ def handle_show_command(command: str) -> bool:
     current_agent = get_current_agent()
     default_agent = get_default_agent()
 
-    status_msg = f"""[bold magenta]🤖 Coco Codes Status[/bold magenta]
+    status_msg = f"""[bold bright_green]🤖 Coco Codes Status[/bold bright_green]
 
-[bold]assistant_name:[/bold]            [cyan]{assistant_name}[/cyan]
-[bold]owner_name:[/bold]            [cyan]{owner_name}[/cyan]
-[bold]current_agent:[/bold]         [magenta]{current_agent.display_name}[/magenta]
-[bold]default_agent:[/bold]        [cyan]{default_agent}[/cyan]
-[bold]model:[/bold]                 [green]{model}[/green]
-[bold]YOLO_MODE:[/bold]             {"[red]ON[/red]" if yolo_mode else "[yellow]off[/yellow]"}
-[bold]auto_save_session:[/bold]     {"[green]enabled[/green]" if auto_save else "[yellow]disabled[/yellow]"}
-[bold]protected_tokens:[/bold]      [cyan]{protected_tokens:,}[/cyan] recent tokens preserved
-[bold]compaction_threshold:[/bold]     [cyan]{compaction_threshold:.1%}[/cyan] context usage triggers compaction
-[bold]compaction_strategy:[/bold]   [cyan]{compaction_strategy}[/cyan] (summarization or truncation)
-[bold]resume_message_count:[/bold] [cyan]{get_resume_message_count()}[/cyan] messages shown on /resume
-[bold]reasoning_effort:[/bold]      [cyan]{get_openai_reasoning_effort()}[/cyan]
-[bold]verbosity:[/bold]             [cyan]{get_openai_verbosity()}[/cyan]
-[bold]temperature:[/bold]           [cyan]{effective_temperature if effective_temperature is not None else "(model default)"}[/cyan]{" (per-model)" if effective_temperature != global_temperature and effective_temperature is not None else ""}
-[bold]cancel_agent_key:[/bold]      [cyan]{get_cancel_agent_display_name()}[/cyan] (options: ctrl+c, ctrl+k, ctrl+q)
+[bold]assistant_name:[/bold]            [bright_green]{assistant_name}[/bright_green]
+[bold]owner_name:[/bold]            [bright_green]{owner_name}[/bright_green]
+[bold]current_agent:[/bold]         [bright_green]{current_agent.display_name}[/bright_green]
+[bold]default_agent:[/bold]        [bright_green]{default_agent}[/bright_green]
+[bold]model:[/bold]                 [bright_green]{model}[/bright_green]
+[bold]YOLO_MODE:[/bold]             {"[bright_green]ON[/bright_green]" if yolo_mode else "[bright_green]off[/bright_green]"}
+[bold]auto_save_session:[/bold]     {"[bright_green]enabled[/bright_green]" if auto_save else "[bright_green]disabled[/bright_green]"}
+[bold]protected_tokens:[/bold]      [bright_green]{protected_tokens:,}[/bright_green] recent tokens preserved
+[bold]compaction_threshold:[/bold]     [bright_green]{compaction_threshold:.1%}[/bright_green] context usage triggers compaction
+[bold]compaction_strategy:[/bold]   [bright_green]{compaction_strategy}[/bright_green] (summarization or truncation)
+[bold]resume_message_count:[/bold] [bright_green]{get_resume_message_count()}[/bright_green] messages shown on /resume
+[bold]reasoning_effort:[/bold]      [bright_green]{get_openai_reasoning_effort()}[/bright_green]
+[bold]verbosity:[/bold]             [bright_green]{get_openai_verbosity()}[/bright_green]
+[bold]temperature:[/bold]           [bright_green]{effective_temperature if effective_temperature is not None else "(model default)"}[/bright_green]{" (per-model)" if effective_temperature != global_temperature and effective_temperature is not None else ""}
+[bold]cancel_agent_key:[/bold]      [bright_green]{get_cancel_agent_display_name()}[/bright_green] (options: ctrl+c, ctrl+k, ctrl+q)
 
 """
     emit_info(Text.from_markup(status_msg))
@@ -201,12 +201,12 @@ def handle_set_command(command: str) -> bool:
         if "compaction_strategy" not in config_keys:
             config_keys.append("compaction_strategy")
         session_help = (
-            "\n[yellow]Session Management[/yellow]"
-            "\n  [cyan]auto_save_session[/cyan]    Auto-save chat after every response (true/false)"
+            "\n[bright_green]Session Management[/bright_green]"
+            "\n  [bright_green]auto_save_session[/bright_green]    Auto-save chat after every response (true/false)"
         )
         keymap_help = (
-            "\n[yellow]Keyboard Shortcuts[/yellow]"
-            "\n  [cyan]cancel_agent_key[/cyan]     Key to cancel agent tasks (ctrl+c, ctrl+k, or ctrl+q)"
+            "\n[bright_green]Keyboard Shortcuts[/bright_green]"
+            "\n  [bright_green]cancel_agent_key[/bright_green]     Key to cancel agent tasks (ctrl+c, ctrl+k, or ctrl+q)"
         )
         emit_warning(
             Text.from_markup(
@@ -219,7 +219,7 @@ def handle_set_command(command: str) -> bool:
         if key == "enable_dbos":
             emit_info(
                 Text.from_markup(
-                    "[yellow]⚠️ DBOS configuration changed. Please restart Coco Codes for this change to take effect.[/yellow]"
+                    "[bright_green]⚠️ DBOS configuration changed. Please restart Coco Codes for this change to take effect.[/bright_green]"
                 )
             )
 
@@ -236,7 +236,7 @@ def handle_set_command(command: str) -> bool:
             value = normalized_value  # Use normalized value
             emit_info(
                 Text.from_markup(
-                    "[yellow]⚠️ cancel_agent_key changed. Please restart Coco Codes for this change to take effect.[/yellow]"
+                    "[bright_green]⚠️ cancel_agent_key changed. Please restart Coco Codes for this change to take effect.[/bright_green]"
                 )
             )
 
@@ -624,10 +624,10 @@ def _show_color_options(color_type: str):
             ("black", "⚫"),
             ("red", "🔴"),
             ("green", "🟢"),
-            ("yellow", "🟡"),
-            ("blue", "🔵"),
-            ("magenta", "🟣"),
-            ("cyan", "🔷"),
+            ("green", "🟡"),
+            ("green", "🔵"),
+            ("green", "🟣"),
+            ("green", "🔷"),
             ("white", "⚪"),
         ],
         "Bright Colors": [
@@ -635,9 +635,9 @@ def _show_color_options(color_type: str):
             ("bright_red", "🔴"),
             ("bright_green", "🟢"),
             ("bright_yellow", "🟡"),
-            ("bright_blue", "🔵"),
-            ("bright_magenta", "🟣"),
-            ("bright_cyan", "🔷"),
+            ("bright_green", "🔵"),
+            ("bright_green", "🟣"),
+            ("bright_green", "🔷"),
             ("bright_white", "⚪"),
         ],
         "Special Colors": [
@@ -680,7 +680,7 @@ def _show_color_options(color_type: str):
         for color, emoji in suggestions:
             emit_info(
                 Text.from_markup(
-                    f"  [cyan]{color:<16}[/cyan] [white on {color}]■■■■■■■■■■[/white on {color}] {emoji}"
+                    f"  [bright_green]{color:<16}[/bright_green] [white on {color}]■■■■■■■■■■[/white on {color}] {emoji}"
                 )
             )
     elif color_type == "deletions":
@@ -699,7 +699,7 @@ def _show_color_options(color_type: str):
         for color, emoji in suggestions:
             emit_info(
                 Text.from_markup(
-                    f"  [cyan]{color:<16}[/cyan] [white on {color}]■■■■■■■■■■[/white on {color}] {emoji}"
+                    f"  [bright_green]{color:<16}[/bright_green] [white on {color}]■■■■■■■■■■[/white on {color}] {emoji}"
                 )
             )
 

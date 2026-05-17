@@ -343,7 +343,7 @@ class ModelSettingsMenu:
 
         if self.view_mode == "models":
             # Header with page indicator
-            lines.append(("bold cyan", " ⚙️ Select a Model to Configure"))
+            lines.append(("bold bright_green", " ⚙️ Select a Model to Configure"))
             if self.total_pages > 1:
                 lines.append(
                     (
@@ -378,7 +378,7 @@ class ModelSettingsMenu:
                 if is_current:
                     lines.append(("fg:ansigreen", " (active)"))
                 if has_settings:
-                    lines.append(("fg:ansicyan", " ⚙"))
+                    lines.append(("fg:ansigreen", " ⚙"))
 
                 lines.append(("", "\n"))
 
@@ -386,7 +386,7 @@ class ModelSettingsMenu:
             self._add_model_nav_hints(lines)
         else:
             # Settings view
-            lines.append(("bold cyan", f" ⚙ Settings for {self.selected_model}"))
+            lines.append(("bold bright_green", f" ⚙ Settings for {self.selected_model}"))
             lines.append(("", "\n\n"))
 
             if not self.supported_settings:
@@ -415,7 +415,7 @@ class ModelSettingsMenu:
                 # Setting name and value
                 lines.append((style, f"{prefix}{setting_def['name']}: "))
                 if current_value is not None or (is_selected and self.editing_mode):
-                    lines.append(("fg:ansicyan", display_value))
+                    lines.append(("fg:ansigreen", display_value))
                 else:
                     lines.append(("fg:ansibrightblack dim", display_value))
                 lines.append(("", "\n"))
@@ -466,7 +466,7 @@ class ModelSettingsMenu:
         lines = []
 
         if self.view_mode == "models":
-            lines.append(("bold cyan", " Model Info"))
+            lines.append(("bold bright_green", " Model Info"))
             lines.append(("", "\n\n"))
 
             if not self.all_models:
@@ -492,7 +492,7 @@ class ModelSettingsMenu:
                     setting_def = SETTING_DEFINITIONS.get(setting_key, {})
                     name = setting_def.get("name", setting_key)
                     display = self._format_value(setting_key, value)
-                    lines.append(("fg:ansicyan", f"    {name}: {display}"))
+                    lines.append(("fg:ansigreen", f"    {name}: {display}"))
                     lines.append(("", "\n"))
             else:
                 lines.append(("fg:ansibrightblack", "  Using all default settings"))
@@ -526,7 +526,7 @@ class ModelSettingsMenu:
 
         else:
             # Settings detail view
-            lines.append(("bold cyan", " Setting Details"))
+            lines.append(("bold bright_green", " Setting Details"))
             lines.append(("", "\n\n"))
 
             if not self.supported_settings:
@@ -595,7 +595,7 @@ class ModelSettingsMenu:
             if current_value is not None:
                 lines.append(
                     (
-                        "fg:ansicyan",
+                        "fg:ansigreen",
                         f"    {self._format_value(setting_key, current_value)}",
                     )
                 )
@@ -610,7 +610,7 @@ class ModelSettingsMenu:
                 if self.edit_value is not None:
                     lines.append(
                         (
-                            "fg:ansicyan",
+                            "fg:ansigreen",
                             f"    New value: {self._format_value(setting_key, self.edit_value)}",
                         )
                     )

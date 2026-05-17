@@ -123,7 +123,7 @@ class StatusCommand(MCPCommandBase):
                 lifecycle_mgr = get_lifecycle_manager()
                 if lifecycle_mgr.is_running(server_id):
                     status_lines.append(
-                        "[bold]Process:[/bold] [green]✓ Active (subprocess/connection running)[/green]"
+                        "[bold]Process:[/bold] [bright_green]✓ Active (subprocess/connection running)[/bright_green]"
                     )
                 else:
                     status_lines.append("[bold]Process:[/bold] [dim]Not active[/dim]")
@@ -132,7 +132,7 @@ class StatusCommand(MCPCommandBase):
 
             quarantined = status.get("quarantined", False)
             if quarantined:
-                status_lines.append("[bold]Quarantined:[/bold] [yellow]⚠ Yes[/yellow]")
+                status_lines.append("[bold]Quarantined:[/bold] [bright_green]⚠ Yes[/bright_green]")
 
             # Timing information
             uptime = status.get("tracker_uptime")
@@ -147,7 +147,7 @@ class StatusCommand(MCPCommandBase):
             # Error information
             error_msg = status.get("error_message")
             if error_msg:
-                status_lines.append(f"[bold]Error:[/bold] [red]{error_msg}[/red]")
+                status_lines.append(f"[bold]Error:[/bold] [bright_green]{error_msg}[/bright_green]")
 
             # Event information
             event_count = status.get("recent_events_count", 0)
@@ -161,7 +161,7 @@ class StatusCommand(MCPCommandBase):
             # Create and show the panel
             panel_content = Text.from_markup("\n".join(status_lines))
             panel = Panel(
-                panel_content, title=f"🔌 {server_name} Status", border_style="cyan"
+                panel_content, title=f"🔌 {server_name} Status", border_style="green"
             )
 
             emit_info(panel, message_group=group_id)

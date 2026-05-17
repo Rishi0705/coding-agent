@@ -98,7 +98,7 @@ def execute_shell_passthrough(task: str) -> None:
 
     if not command:
         console.print(
-            "[yellow]Empty command. Usage: !<command> (e.g., !ls -la)[/yellow]"
+            "[bright_green]Empty command. Usage: !<command> (e.g., !ls -la)[/bright_green]"
         )
         return
 
@@ -130,16 +130,16 @@ def execute_shell_passthrough(task: str) -> None:
             )
         else:
             console.print(
-                f"[bold red]❌ Exit code {result.returncode}[/bold red] "
+                f"[bold bright_green]❌ Exit code {result.returncode}[/bold bright_green] "
                 f"[dim]({elapsed:.1f}s)[/dim]"
             )
 
     except KeyboardInterrupt:
         elapsed = time.monotonic() - start_time
         console.print(
-            f"\n[bold yellow]⚡ Interrupted[/bold yellow] [dim]({elapsed:.1f}s)[/dim]"
+            f"\n[bold bright_green]⚡ Interrupted[/bold bright_green] [dim]({elapsed:.1f}s)[/dim]"
         )
 
     except Exception as e:
         safe_error = escape_rich_markup(str(e))
-        console.print(f"[bold red]Shell error:[/bold red] {safe_error}")
+        console.print(f"[bold bright_green]Shell error:[/bold bright_green] {safe_error}")

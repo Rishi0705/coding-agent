@@ -41,7 +41,7 @@ class StartAllCommand(MCPCommandBase):
 
             if not servers:
                 emit_info(
-                    "[yellow]No servers registered[/yellow]", message_group=group_id
+                    "[bright_green]No servers registered[/bright_green]", message_group=group_id
                 )
                 return
 
@@ -69,13 +69,13 @@ class StartAllCommand(MCPCommandBase):
                 if success:
                     started_count += 1
                     emit_info(
-                        Text.from_markup(f"  [green]✓ Started: {server_name}[/green]"),
+                        Text.from_markup(f"  [bright_green]✓ Started: {server_name}[/bright_green]"),
                         message_group=group_id,
                     )
                 else:
                     failed_count += 1
                     emit_info(
-                        Text.from_markup(f"  [red]✗ Failed: {server_name}[/red]"),
+                        Text.from_markup(f"  [bright_green]✗ Failed: {server_name}[/bright_green]"),
                         message_group=group_id,
                     )
 
@@ -84,7 +84,7 @@ class StartAllCommand(MCPCommandBase):
             if started_count > 0:
                 emit_info(
                     Text.from_markup(
-                        f"[green]Started {started_count} server(s)[/green]"
+                        f"[bright_green]Started {started_count} server(s)[/bright_green]"
                     ),
                     message_group=group_id,
                 )
@@ -96,7 +96,7 @@ class StartAllCommand(MCPCommandBase):
             if failed_count > 0:
                 emit_info(
                     Text.from_markup(
-                        f"[yellow]Failed to start {failed_count} server(s)[/yellow]"
+                        f"[bright_green]Failed to start {failed_count} server(s)[/bright_green]"
                     ),
                     message_group=group_id,
                 )
@@ -130,6 +130,6 @@ class StartAllCommand(MCPCommandBase):
         except Exception as e:
             logger.error(f"Error starting all servers: {e}")
             emit_info(
-                Text.from_markup(f"[red]Failed to start servers: {e}[/red]"),
+                Text.from_markup(f"[bright_green]Failed to start servers: {e}[/bright_green]"),
                 message_group=group_id,
             )

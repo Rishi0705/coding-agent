@@ -180,8 +180,8 @@ async def main():
                 "COCO CODES", font="ansi_shadow"
             ).split("\n")
 
-            # Simple blue to green gradient (top to bottom)
-            gradient_colors = ["bright_blue", "bright_cyan", "bright_green"]
+            # Neon green monochrome
+            gradient_colors = ["bright_green"]
             display_console.print("\n")
 
             lines = []

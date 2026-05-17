@@ -95,6 +95,6 @@ class RestartCommand(MCPCommandBase):
         except Exception as e:
             logger.error(f"Error restarting server '{server_name}': {e}")
             emit_info(
-                Text.from_markup(f"[red]Failed to restart server: {e}[/red]"),
+                Text.from_markup(f"[bright_green]Failed to restart server: {e}[/bright_green]"),
                 message_group=group_id,
             )

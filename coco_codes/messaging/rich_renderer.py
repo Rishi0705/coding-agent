@@ -85,8 +85,8 @@ class RendererProtocol(Protocol):
 # =============================================================================
 
 DEFAULT_STYLES: Dict[MessageLevel, str] = {
-    MessageLevel.ERROR: "bold red",
-    MessageLevel.WARNING: "yellow",
+    MessageLevel.ERROR: "bold bright_green",
+    MessageLevel.WARNING: "green",
     MessageLevel.SUCCESS: "green",
     MessageLevel.INFO: "white",
     MessageLevel.DEBUG: "dim",
@@ -436,7 +436,7 @@ class RichConsoleRenderer:
         banner = self._format_banner("directory_listing", "DIRECTORY LISTING")
         self._console.print(
             f"\n{banner} "
-            f"📂 [bold cyan]{msg.directory}[/bold cyan] [dim]{rec_flag}[/dim]\n"
+            f"📂 [bold bright_green]{msg.directory}[/bold bright_green] [dim]{rec_flag}[/dim]\n"
         )
 
         # Build a tree structure: {parent_path: {files: [], dirs: set(), size: int}}
@@ -499,7 +499,7 @@ class RichConsoleRenderer:
                         else ""
                     )
                     self._console.print(
-                        f"{indent}{icon} [green]{name}[/green]{size_str}"
+                        f"{indent}{icon} [bright_green]{name}[/bright_green]{size_str}"
                     )
 
                 # Show subdirs at root level
@@ -527,7 +527,7 @@ class RichConsoleRenderer:
 
                 summary = f" [dim]({', '.join(parts)})[/dim]" if parts else ""
                 self._console.print(
-                    f"{indent}📁 [bold blue]{dir_name}/[/bold blue]{summary}"
+                    f"{indent}📁 [bold bright_green]{dir_name}/[/bold bright_green]{summary}"
                 )
 
                 # Recursively show subdirectories
@@ -538,10 +538,10 @@ class RichConsoleRenderer:
         render_dir_tree(root_key, 0)
 
         # Summary
-        self._console.print("\n[bold cyan]Summary:[/bold cyan]")
+        self._console.print("\n[bold bright_green]Summary:[/bold bright_green]")
         self._console.print(
-            f"📁 [blue]{msg.dir_count} directories[/blue], "
-            f"📄 [green]{msg.file_count} files[/green] "
+            f"📁 [bright_green]{msg.dir_count} directories[/bright_green], "
+            f"📄 [bright_green]{msg.file_count} files[/bright_green] "
             f"[dim]({self._format_size(msg.total_size)} total)[/dim]"
         )
 
@@ -563,7 +563,7 @@ class RichConsoleRenderer:
         # Just print the header - content is for LLM only
         banner = self._format_banner("read_file", "READ FILE")
         self._console.print(
-            f"\n{banner} 📂 [bold cyan]{msg.path}[/bold cyan]{line_info}"
+            f"\n{banner} 📂 [bold bright_green]{msg.path}[/bold bright_green]{line_info}"
         )
 
     def _render_grep_result(self, msg: GrepResultMessage) -> None:
@@ -617,7 +617,7 @@ class RichConsoleRenderer:
                     if search_term and not search_term.startswith("-"):
                         highlighted_line = re.sub(
                             f"({re.escape(search_term)})",
-                            r"[bold yellow]\1[/bold yellow]",
+                            r"[bold bright_green]\1[/bold bright_green]",
                             line,
                             flags=re.IGNORECASE,
                         )
@@ -660,7 +660,7 @@ class RichConsoleRenderer:
 
         # Operation-specific styling
         op_icons = {"create": "✨", "modify": "✏️", "delete": "🗑️"}
-        op_colors = {"create": "green", "modify": "yellow", "delete": "red"}
+        op_colors = {"create": "green", "modify": "green", "delete": "red"}
         icon = op_icons.get(msg.operation, "📄")
         op_color = op_colors.get(msg.operation, "white")
 
@@ -674,7 +674,7 @@ class RichConsoleRenderer:
         self._console.print(
             f"\n{banner} "
             f"{icon} [{op_color}]{msg.operation.upper()}[/{op_color}] "
-            f"[bold cyan]{msg.path}[/bold cyan]"
+            f"[bold bright_green]{msg.path}[/bold bright_green]"
         )
 
         if not msg.diff_lines:
@@ -719,7 +719,7 @@ class RichConsoleRenderer:
         # Add background indicator if running in background mode
         if msg.background:
             self._console.print(
-                f"\n{banner} 🚀 [dim]$ {safe_command}[/dim]  [bold magenta][BACKGROUND 🌙][/bold magenta]"
+                f"\n{banner} 🚀 [dim]$ {safe_command}[/dim]  [bold bright_green][BACKGROUND 🌙][/bold bright_green]"
             )
         else:
             self._console.print(f"\n{banner} 🚀 [dim]$ {safe_command}[/dim]")
@@ -772,14 +772,14 @@ class RichConsoleRenderer:
         self._console.print(f"\n{banner}")
 
         # Current reasoning
-        self._console.print("[bold cyan]Current reasoning:[/bold cyan]")
+        self._console.print("[bold bright_green]Current reasoning:[/bold bright_green]")
         # Render reasoning as markdown
         md = Markdown(msg.reasoning)
         self._console.print(md)
 
         # Next steps (if any)
         if msg.next_steps and msg.next_steps.strip():
-            self._console.print("\n[bold cyan]Planned next steps:[/bold cyan]")
+            self._console.print("\n[bold bright_green]Planned next steps:[/bold bright_green]")
             md_steps = Markdown(msg.next_steps)
             self._console.print(md_steps)
 
@@ -814,7 +814,7 @@ class RichConsoleRenderer:
         banner = self._format_banner("invoke_agent", "🤖 INVOKE AGENT")
         self._console.print(
             f"\n{banner} "
-            f"[bold cyan]{msg.agent_name}[/bold cyan] "
+            f"[bold bright_green]{msg.agent_name}[/bold bright_green] "
             f"[dim]({session_type})[/dim]"
         )
 
@@ -833,7 +833,7 @@ class RichConsoleRenderer:
         """Render sub-agent response with markdown formatting."""
         # Response header
         banner = self._format_banner("subagent_response", "✓ AGENT RESPONSE")
-        self._console.print(f"\n{banner} [bold cyan]{msg.agent_name}[/bold cyan]")
+        self._console.print(f"\n{banner} [bold bright_green]{msg.agent_name}[/bold bright_green]")
 
         # Render response as markdown
         md = Markdown(msg.response)
@@ -856,7 +856,7 @@ class RichConsoleRenderer:
 
         # Build the header line with action and optional tool name
         # Escape user-controlled strings to prevent Rich markup injection
-        header_parts = [f"\n{banner} 🔧 [bold cyan]{msg.action.upper()}[/bold cyan]"]
+        header_parts = [f"\n{banner} 🔧 [bold bright_green]{msg.action.upper()}[/bold bright_green]"]
         if msg.tool_name:
             safe_tool_name = escape_rich_markup(msg.tool_name)
             header_parts.append(f" [dim]tool=[/dim][bold]{safe_tool_name}[/bold]")
@@ -865,9 +865,9 @@ class RichConsoleRenderer:
         # Status indicator
         safe_summary = escape_rich_markup(msg.summary) if msg.summary else ""
         if msg.success:
-            self._console.print(f"[green]✓[/green] {safe_summary}")
+            self._console.print(f"[bright_green]✓[/bright_green] {safe_summary}")
         else:
-            self._console.print(f"[red]✗[/red] {safe_summary}")
+            self._console.print(f"[bright_green]✗[/bright_green] {safe_summary}")
 
         # Show details if present
         if msg.details:
@@ -892,7 +892,7 @@ class RichConsoleRenderer:
         if msg.input_type == "password":
             value = self._console.input(prompt, password=True)
         else:
-            value = self._console.input(f"[cyan]{prompt}[/cyan]")
+            value = self._console.input(f"[bright_green]{prompt}[/bright_green]")
 
         # Use default if empty
         if not value and msg.default_value:
@@ -907,7 +907,7 @@ class RichConsoleRenderer:
         # Show title and description - escape to prevent markup injection
         safe_title = escape_rich_markup(msg.title)
         safe_description = escape_rich_markup(msg.description)
-        self._console.print(f"\n[bold yellow]{safe_title}[/bold yellow]")
+        self._console.print(f"\n[bold bright_green]{safe_title}[/bold bright_green]")
         self._console.print(safe_description)
 
         # Show options
@@ -915,7 +915,7 @@ class RichConsoleRenderer:
         prompt = f"[{options_str}]"
 
         while True:
-            choice = self._console.input(f"[cyan]{prompt}[/cyan] ").strip().lower()
+            choice = self._console.input(f"[bright_green]{prompt}[/bright_green] ").strip().lower()
 
             # Check for match
             for i, opt in enumerate(msg.options):
@@ -938,7 +938,7 @@ class RichConsoleRenderer:
                     self._bus.provide_response(response)
                     return
 
-            self._console.print(f"[red]Please enter one of: {options_str}[/red]")
+            self._console.print(f"[bright_green]Please enter one of: {options_str}[/bright_green]")
 
     async def _render_selection_request(self, msg: SelectionRequest) -> None:
         """Render selection menu and send response back."""
@@ -948,13 +948,13 @@ class RichConsoleRenderer:
         # Show numbered options - escape to prevent markup injection
         for i, opt in enumerate(msg.options):
             safe_opt = escape_rich_markup(opt)
-            self._console.print(f"  [cyan]{i + 1}[/cyan]. {safe_opt}")
+            self._console.print(f"  [bright_green]{i + 1}[/bright_green]. {safe_opt}")
 
         if msg.allow_cancel:
             self._console.print("  [dim]0. Cancel[/dim]")
 
         while True:
-            choice = self._console.input("[cyan]Enter number: [/cyan]").strip()
+            choice = self._console.input("[bright_green]Enter number: [/bright_green]").strip()
 
             try:
                 idx = int(choice)
@@ -978,7 +978,7 @@ class RichConsoleRenderer:
             except ValueError:
                 pass
 
-            self._console.print(f"[red]Please enter 1-{len(msg.options)}[/red]")
+            self._console.print(f"[bright_green]Please enter 1-{len(msg.options)}[/bright_green]")
 
     # =========================================================================
     # Control Messages
@@ -1010,13 +1010,13 @@ class RichConsoleRenderer:
     def _render_status_panel(self, msg: StatusPanelMessage) -> None:
         """Render a status panel with key-value fields."""
         table = Table(show_header=False, box=None, padding=(0, 1))
-        table.add_column("Key", style="bold cyan")
+        table.add_column("Key", style="bold bright_green")
         table.add_column("Value")
 
         for key, value in msg.fields.items():
             table.add_row(key, value)
 
-        panel = Panel(table, title=f"[bold]{msg.title}[/bold]", border_style="blue")
+        panel = Panel(table, title=f"[bold]{msg.title}[/bold]", border_style="bright_green")
         self._console.print(panel)
 
     def _render_version_check(self, msg: VersionCheckMessage) -> None:
@@ -1128,7 +1128,7 @@ class RichConsoleRenderer:
 
         # Banner
         banner = self._format_banner("agent_response", "LIST SKILLS")
-        query_info = f" matching [cyan]'{msg.query}'[/cyan]" if msg.query else ""
+        query_info = f" matching [bright_green]'{msg.query}'[/bright_green]" if msg.query else ""
         self._console.print(
             f"\n{banner} 🛠️ Found [bold]{msg.total_count}[/bold] skill(s){query_info}\n"
         )
@@ -1143,12 +1143,12 @@ class RichConsoleRenderer:
         # Create a table for skills
         table = Table(show_header=True, header_style="bold", box=None, padding=(0, 2))
         table.add_column("Status", style="dim", width=8)
-        table.add_column("Name", style="cyan")
+        table.add_column("Name", style="bright_green")
         table.add_column("Description", style="dim")
         table.add_column("Tags", style="yellow dim")
 
         for skill in msg.skills:
-            status = "[green]✓[/green]" if skill.enabled else "[red]✗[/red]"
+            status = "[bright_green]✓[/bright_green]" if skill.enabled else "[bright_green]✗[/bright_green]"
             tags = ", ".join(skill.tags[:3]) if skill.tags else "-"
             # Truncate description if too long
             desc = skill.description
@@ -1167,9 +1167,9 @@ class RichConsoleRenderer:
 
         # Banner
         banner = self._format_banner("agent_response", "ACTIVATE SKILL")
-        status = "[green]✓[/green]" if msg.success else "[red]✗[/red]"
+        status = "[bright_green]✓[/bright_green]" if msg.success else "[bright_green]✗[/bright_green]"
         self._console.print(
-            f"\n{banner} {status} [bold cyan]{msg.skill_name}[/bold cyan]\n"
+            f"\n{banner} {status} [bold bright_green]{msg.skill_name}[/bold bright_green]\n"
         )
 
         if msg.success:
@@ -1189,7 +1189,7 @@ class RichConsoleRenderer:
                     preview += "..."
                 self._console.print(f"  [dim]Preview:[/dim] {preview}")
         else:
-            self._console.print("  [red]Activation failed[/red]")
+            self._console.print("  [bright_green]Activation failed[/bright_green]")
 
         self._console.print()
 

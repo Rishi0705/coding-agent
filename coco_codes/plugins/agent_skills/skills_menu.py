@@ -189,7 +189,7 @@ class SkillsMenu:
         lines.append(("", "Page\n"))
         lines.append(("fg:ansigreen", "  Enter  "))
         lines.append(("", "Toggle  "))
-        lines.append(("fg:ansicyan", "  t  "))
+        lines.append(("fg:ansigreen", "  t  "))
         lines.append(("", "Toggle System\n"))
         lines.append(("fg:ansimagenta", "  Ctrl+A  "))
         lines.append(("", "Add Dir  "))
@@ -250,7 +250,7 @@ class SkillsMenu:
                 lines.append(("bold", "  Tags:"))
                 lines.append(("", "\n"))
                 tags_str = ", ".join(metadata.tags)
-                lines.append(("fg:ansicyan", f"    {tags_str}"))
+                lines.append(("fg:ansigreen", f"    {tags_str}"))
                 lines.append(("", "\n\n"))
 
             # Resources

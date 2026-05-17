@@ -41,7 +41,7 @@ class EditCommand(MCPCommandBase):
             # Need a server name
             if not args:
                 emit_info(
-                    Text.from_markup("[yellow]Usage: /mcp edit <server_name>[/yellow]"),
+                    Text.from_markup("[bright_green]Usage: /mcp edit <server_name>[/bright_green]"),
                     message_group=group_id,
                 )
                 emit_info(

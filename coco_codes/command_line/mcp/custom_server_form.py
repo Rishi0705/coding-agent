@@ -129,11 +129,11 @@ class CustomServerForm:
         lines = []
 
         title = " ✏️ EDIT MCP SERVER" if self.edit_mode else " ➕ ADD CUSTOM MCP SERVER"
-        lines.append(("bold cyan", title))
+        lines.append(("bold bright_green", title))
         lines.append(("", "\n\n"))
 
         # Server Name field - now in separate frame below
-        name_style = "fg:ansibrightcyan bold" if self.focused_field == 0 else "bold"
+        name_style = "fg:ansibrightgreen bold" if self.focused_field == 0 else "bold"
         lines.append((name_style, "  1. Server Name:"))
         lines.append(("", "\n"))
         if self.focused_field == 0:
@@ -150,7 +150,7 @@ class CustomServerForm:
         lines.append(("", "\n\n"))
 
         # Server Type field
-        type_style = "fg:ansibrightcyan bold" if self.focused_field == 1 else "bold"
+        type_style = "fg:ansibrightgreen bold" if self.focused_field == 1 else "bold"
         lines.append((type_style, "  2. Server Type:"))
         lines.append(("", "\n"))
 
@@ -172,7 +172,7 @@ class CustomServerForm:
                 lines.append(("", "    "))
 
             if is_selected:
-                lines.append(("fg:ansibrightcyan bold", f"{icon} {server_type}"))
+                lines.append(("fg:ansibrightgreen bold", f"{icon} {server_type}"))
             else:
                 lines.append(("fg:ansibrightblack", f"{icon} {server_type}"))
             lines.append(("", "\n"))
@@ -180,7 +180,7 @@ class CustomServerForm:
         lines.append(("", "\n"))
 
         # JSON Configuration field
-        json_style = "fg:ansibrightcyan bold" if self.focused_field == 2 else "bold"
+        json_style = "fg:ansibrightgreen bold" if self.focused_field == 2 else "bold"
         lines.append((json_style, "  3. JSON Configuration:"))
         lines.append(("", "\n"))
 
@@ -230,7 +230,7 @@ class CustomServerForm:
 
         current_type = self._get_current_type()
 
-        lines.append(("bold cyan", " 📝 HELP & PREVIEW"))
+        lines.append(("bold bright_green", " 📝 HELP & PREVIEW"))
         lines.append(("", "\n\n"))
 
         # Type description
@@ -245,7 +245,7 @@ class CustomServerForm:
         lines.append(("", "\n"))
 
         if current_type == "stdio":
-            lines.append(("fg:ansicyan", '    • "command"'))
+            lines.append(("fg:ansigreen", '    • "command"'))
             lines.append(("fg:ansibrightblack", " - executable to run"))
             lines.append(("", "\n"))
             lines.append(("fg:ansibrightblack", "  Optional:"))
@@ -257,7 +257,7 @@ class CustomServerForm:
             lines.append(("fg:ansibrightblack", '    • "timeout" - seconds'))
             lines.append(("", "\n"))
         else:  # http or sse
-            lines.append(("fg:ansicyan", '    • "url"'))
+            lines.append(("fg:ansigreen", '    • "url"'))
             lines.append(("fg:ansibrightblack", " - server endpoint"))
             lines.append(("", "\n"))
             lines.append(("fg:ansibrightblack", "  Optional:"))

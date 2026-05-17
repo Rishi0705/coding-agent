@@ -134,7 +134,7 @@ def emit_exception_diagnostics(exc: BaseException, group_id: str) -> None:
             return
 
         emit_info(
-            Text.from_markup("[yellow]Diagnostic detail:[/yellow]"),
+            Text.from_markup("[bright_green]Diagnostic detail:[/bright_green]"),
             group_id=group_id,
         )
         emit_info(
@@ -148,8 +148,8 @@ def emit_exception_diagnostics(exc: BaseException, group_id: str) -> None:
             for i, sub in enumerate(exc.exceptions[:_MAX_GROUP_LEAVES], start=1):
                 emit_info(
                     Text.from_markup(
-                        f"[yellow]  Sub-exception {i}: "
-                        f"{type(sub).__name__}: {sub}[/yellow]"
+                        f"[bright_green]  Sub-exception {i}: "
+                        f"{type(sub).__name__}: {sub}[/bright_green]"
                     ),
                     group_id=group_id,
                 )

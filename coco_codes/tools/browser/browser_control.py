@@ -42,7 +42,7 @@ async def initialize_browser(
             title = "Unknown"
 
         # emit_info(
-        #     "[green]Browser initialized successfully[/green]", message_group=group_id
+        #     "[bright_green]Browser initialized successfully[/bright_green]", message_group=group_id
         # )  # Removed to reduce console spam
 
         return {

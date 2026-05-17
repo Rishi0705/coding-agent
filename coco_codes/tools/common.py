@@ -51,7 +51,7 @@ except ImportError:
 
     # Provide fallback emit functions
     def emit_error(msg: str) -> None:
-        console.print(f"[bold red]{msg}[/bold red]")
+        console.print(f"[bold bright_green]{msg}[/bold bright_green]")
 
     def emit_info(msg: str) -> None:
         console.print(msg)
@@ -60,7 +60,7 @@ except ImportError:
         console.print(f"[bold green]{msg}[/bold green]")
 
     def emit_warning(msg: str) -> None:
-        console.print(f"[bold yellow]{msg}[/bold yellow]")
+        console.print(f"[bold bright_green]{msg}[/bold bright_green]")
 
 
 def should_suppress_browser() -> bool:
@@ -499,13 +499,13 @@ def should_ignore_dir_path(path: str) -> bool:
 # Monokai color scheme - because we have taste 🎨
 TOKEN_COLORS = (
     {
-        Token.Keyword: "#f92672" if PYGMENTS_AVAILABLE else "magenta",
-        Token.Name.Builtin: "#66d9ef" if PYGMENTS_AVAILABLE else "cyan",
+        Token.Keyword: "#f92672" if PYGMENTS_AVAILABLE else "green",
+        Token.Name.Builtin: "#66d9ef" if PYGMENTS_AVAILABLE else "green",
         Token.Name.Function: "#a6e22e" if PYGMENTS_AVAILABLE else "green",
-        Token.String: "#e6db74" if PYGMENTS_AVAILABLE else "yellow",
-        Token.Number: "#ae81ff" if PYGMENTS_AVAILABLE else "magenta",
+        Token.String: "#e6db74" if PYGMENTS_AVAILABLE else "green",
+        Token.Number: "#ae81ff" if PYGMENTS_AVAILABLE else "green",
         Token.Comment: "#75715e" if PYGMENTS_AVAILABLE else "bright_black",
-        Token.Operator: "#f92672" if PYGMENTS_AVAILABLE else "magenta",
+        Token.Operator: "#f92672" if PYGMENTS_AVAILABLE else "green",
     }
     if PYGMENTS_AVAILABLE
     else {}
@@ -879,7 +879,7 @@ async def arrow_select_async(
                 lines.append("")
 
         lines.append(
-            "<ansicyan>(Use ↑↓ or Ctrl+P/N to select, Enter to confirm)</ansicyan>"
+            "<ansigreen>(Use ↑↓ or Ctrl+P/N to select, Enter to confirm)</ansigreen>"
         )
         return HTML("\n".join(lines))
 
@@ -959,7 +959,7 @@ def arrow_select(message: str, choices: list[str]) -> str:
                 lines.append(f"  {choice}")
         lines.append("")
         lines.append(
-            "<ansicyan>(Use ↑↓ or Ctrl+P/N to select, Enter to confirm)</ansicyan>"
+            "<ansigreen>(Use ↑↓ or Ctrl+P/N to select, Enter to confirm)</ansigreen>"
         )
         return HTML("\n".join(lines))
 

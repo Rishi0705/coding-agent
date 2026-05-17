@@ -285,7 +285,7 @@ def _render_preview_panel(tool: Optional[UCToolInfo]) -> List:
 
     # Tool name
     lines.append(("bold", "Name: "))
-    lines.append(("fg:ansicyan", safe_name))
+    lines.append(("fg:ansigreen", safe_name))
     lines.append(("", "\n\n"))
 
     # Full name (with namespace)
@@ -376,7 +376,7 @@ def _render_source_panel(
     lines = []
 
     # Header
-    lines.append(("bold cyan", f" SOURCE: {tool.full_name}"))
+    lines.append(("bold bright_green", f" SOURCE: {tool.full_name}"))
     lines.append(("", "\n"))
     lines.append(("fg:ansibrightblack", f" {tool.source_path}"))
     lines.append(("", "\n"))
@@ -539,7 +539,7 @@ def _highlight_python_line(line: str) -> List[Tuple[str, str]]:
             result.append(("fg:ansimagenta bold", token))
         # Numbers
         elif token.isdigit():
-            result.append(("fg:ansicyan", token))
+            result.append(("fg:ansigreen", token))
         # Function/class names (after def/class)
         elif result and len(result) >= 1:
             prev_text = result[-1][1].strip() if result[-1][1] else ""
@@ -573,8 +573,8 @@ def _show_source_code(tool: UCToolInfo) -> None:
         )
         panel = Panel(
             syntax,
-            title=f"[bold cyan]{tool.full_name}[/bold cyan]",
-            border_style="cyan",
+            title=f"[bold bright_green]{tool.full_name}[/bold bright_green]",
+            border_style="green",
             padding=(0, 1),
         )
         emit_info(panel)

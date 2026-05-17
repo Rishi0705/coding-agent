@@ -187,7 +187,7 @@ class SkillsInstallMenu:
 
         lines = []
 
-        lines.append(("bold cyan", " 📂 CATEGORIES"))
+        lines.append(("bold bright_green", " 📂 CATEGORIES"))
         lines.append(("", "\n\n"))
 
         if not self.categories:
@@ -223,7 +223,7 @@ class SkillsInstallMenu:
             label = f"{prefix}{icon} {category} ({count})"
 
             if is_selected:
-                lines.append(("fg:ansibrightcyan bold", label))
+                lines.append(("fg:ansibrightgreen bold", label))
             else:
                 lines.append(("fg:ansibrightblack", label))
             lines.append(("", "\n"))
@@ -250,7 +250,7 @@ class SkillsInstallMenu:
             return lines
 
         icon = self._get_category_icon(self.current_category)
-        lines.append(("bold cyan", f" {icon} {self.current_category.upper()}"))
+        lines.append(("bold bright_green", f" {icon} {self.current_category.upper()}"))
         lines.append(("", "\n\n"))
 
         if not self.current_skills:
@@ -276,7 +276,7 @@ class SkillsInstallMenu:
             label = f"{prefix}{status_icon} {entry.display_name}"
 
             if is_selected:
-                lines.append(("fg:ansibrightcyan bold", label))
+                lines.append(("fg:ansibrightgreen bold", label))
             else:
                 lines.append((status_style, label))
 
@@ -297,7 +297,7 @@ class SkillsInstallMenu:
 
         lines = []
 
-        lines.append(("bold cyan", " 📋 DETAILS"))
+        lines.append(("bold bright_green", " 📋 DETAILS"))
         lines.append(("", "\n\n"))
 
         if self.view_mode == "categories":
@@ -364,7 +364,7 @@ class SkillsInstallMenu:
         lines.append(("bold", "  Tags:"))
         lines.append(("", "\n"))
         tags = entry.tags or []
-        lines.append(("fg:ansicyan", f"    {', '.join(tags) if tags else '(none)'}"))
+        lines.append(("fg:ansigreen", f"    {', '.join(tags) if tags else '(none)'}"))
         lines.append(("", "\n\n"))
 
         lines.append(("bold", "  Contents:"))

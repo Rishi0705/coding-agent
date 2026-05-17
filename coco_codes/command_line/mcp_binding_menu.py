@@ -60,7 +60,7 @@ def _render_menu(
     bindings = get_bound_servers(agent_name)
     lines: List = []
     lines.append(("bold", "MCP bindings for agent: "))
-    lines.append(("fg:ansicyan bold", agent_name))
+    lines.append(("fg:ansigreen bold", agent_name))
     lines.append(("", "\n\n"))
 
     if not servers:
@@ -89,7 +89,7 @@ def _render_menu(
     lines.append(("", "Toggle bind\n"))
     lines.append(("fg:ansiyellow", "  A "))
     lines.append(("", "Toggle auto-start\n"))
-    lines.append(("fg:ansicyan", "  Enter / Q "))
+    lines.append(("fg:ansigreen", "  Enter / Q "))
     lines.append(("", "Done\n"))
     lines.append(("fg:ansibrightred", "  Ctrl+C "))
     lines.append(("", "Cancel"))
@@ -115,7 +115,7 @@ def _render_preview(
     auto = bool(bindings.get(name, {}).get("auto_start"))
 
     lines.append(("bold", "Name: "))
-    lines.append(("fg:ansicyan", name))
+    lines.append(("fg:ansigreen", name))
     lines.append(("", "\n\n"))
     lines.append(("bold", "Type: "))
     lines.append(("", type_))
@@ -257,7 +257,7 @@ async def prompt_bind_after_install(server_name: str) -> None:
     def render() -> List:
         lines: List = []
         lines.append(("bold", "Bind '"))
-        lines.append(("fg:ansicyan bold", server_name))
+        lines.append(("fg:ansigreen bold", server_name))
         lines.append(("bold", "' to which agents?"))
         lines.append(("", "\n\n"))
         for i, agent in enumerate(agents):
@@ -278,7 +278,7 @@ async def prompt_bind_after_install(server_name: str) -> None:
         lines.append(("", "Toggle bind   "))
         lines.append(("fg:ansiyellow", "A "))
         lines.append(("", "Toggle auto-start\n"))
-        lines.append(("fg:ansicyan", "  Enter / Q "))
+        lines.append(("fg:ansigreen", "  Enter / Q "))
         lines.append(("", "Done   "))
         lines.append(("fg:ansibrightred", "Ctrl+C "))
         lines.append(("", "Skip"))

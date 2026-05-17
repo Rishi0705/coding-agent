@@ -38,7 +38,7 @@ class StartCommand(MCPCommandBase):
 
         if not args:
             emit_info(
-                Text.from_markup("[yellow]Usage: /mcp start <server_name>[/yellow]"),
+                Text.from_markup("[bright_green]Usage: /mcp start <server_name>[/bright_green]"),
                 message_group=group_id,
             )
             return

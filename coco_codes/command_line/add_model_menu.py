@@ -419,9 +419,9 @@ class AddModelMenu:
             if custom_visible and i == len(filtered_models):
                 is_selected = i == self.selected_model_idx
                 if is_selected:
-                    lines.append(("fg:ansicyan bold", " > ✨ Custom model..."))
+                    lines.append(("fg:ansigreen bold", " > ✨ Custom model..."))
                 else:
-                    lines.append(("fg:ansicyan", "   ✨ Custom model..."))
+                    lines.append(("fg:ansigreen", "   ✨ Custom model..."))
                 lines.append(("", "\n"))
                 continue
 
@@ -543,7 +543,7 @@ class AddModelMenu:
             if self._is_custom_model_selected():
                 lines.append(("bold", "  ✨ Custom Model"))
                 lines.append(("", "\n\n"))
-                lines.append(("fg:ansicyan", "  Add a model not listed in models.dev"))
+                lines.append(("fg:ansigreen", "  Add a model not listed in models.dev"))
                 lines.append(("", "\n\n"))
                 lines.append(("bold", "  How it works:"))
                 lines.append(("", "\n"))

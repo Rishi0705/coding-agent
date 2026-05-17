@@ -1156,7 +1156,7 @@ async def run_shell_command(
 
         # Build panel content
         panel_content = Text()
-        panel_content.append("⚡ Requesting permission to run:\n", style="bold yellow")
+        panel_content.append("⚡ Requesting permission to run:\n", style="bold bright_green")
         panel_content.append("$ ", style="bold green")
         panel_content.append(command, style="bold white")
 

@@ -337,24 +337,24 @@ def handle_agent_command(command: str) -> bool:
             )
 
             emit_info(
-                Text.from_markup("[bold magenta]Available Agents:[/bold magenta]"),
+                Text.from_markup("[bold bright_green]Available Agents:[/bold bright_green]"),
                 message_group=group_id,
             )
             for name, display_name in available_agents.items():
                 description = descriptions.get(name, "No description")
                 current_marker = (
-                    " [green]← current[/green]" if name == current_agent.name else ""
+                    " [bright_green]← current[/bright_green]" if name == current_agent.name else ""
                 )
                 emit_info(
                     Text.from_markup(
-                        f"  [cyan]{name:<12}[/cyan] {display_name}{current_marker}"
+                        f"  [bright_green]{name:<12}[/bright_green] {display_name}{current_marker}"
                     ),
                     message_group=group_id,
                 )
                 emit_info(f"    {description}", message_group=group_id)
 
             emit_info(
-                Text.from_markup("\n[yellow]Usage:[/yellow] /agent <agent-name>"),
+                Text.from_markup("\n[bright_green]Usage:[/bright_green] /agent <agent-name>"),
                 message_group=group_id,
             )
             return True

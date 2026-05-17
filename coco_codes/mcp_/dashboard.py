@@ -39,8 +39,8 @@ class MCPDashboard:
             title="MCP Server Status Dashboard",
             box=box.ROUNDED,
             show_header=True,
-            header_style="bold blue",
-            title_style="bold cyan",
+            header_style="bold bright_green",
+            title_style="bold bright_green",
         )
 
         # Define columns
@@ -70,12 +70,12 @@ class MCPDashboard:
         except Exception as e:
             # Error state
             table.add_row(
-                "[red]Error loading servers[/red]",
+                "[bright_green]Error loading servers[/bright_green]",
                 "-",
                 "-",
                 "-",
                 "-",
-                f"[red]{str(e)}[/red]",
+                f"[bright_green]{str(e)}[/bright_green]",
             )
 
         return table
@@ -138,11 +138,11 @@ class MCPDashboard:
         error = health.get("error")
 
         if is_healthy:
-            return "[green]✓[/green]"
+            return "[bright_green]✓[/bright_green]"
         elif error:
-            return "[red]✗[/red]"
+            return "[bright_green]✗[/bright_green]"
         else:
-            return "[yellow]?[/yellow]"
+            return "[bright_green]?[/bright_green]"
 
     def render_state_indicator(self, state: ServerState) -> str:
         """
@@ -155,12 +155,12 @@ class MCPDashboard:
             str: Formatted state indicator with color and symbol
         """
         indicators = {
-            ServerState.RUNNING: "[green]✓ Run[/green]",
-            ServerState.STOPPED: "[red]✗ Stop[/red]",
-            ServerState.ERROR: "[red]⚠ Err[/red]",
-            ServerState.STARTING: "[yellow]⏳ Start[/yellow]",
-            ServerState.STOPPING: "[yellow]⏳ Stop[/yellow]",
-            ServerState.QUARANTINED: "[yellow]⏸ Quar[/yellow]",
+            ServerState.RUNNING: "[bright_green]✓ Run[/bright_green]",
+            ServerState.STOPPED: "[bright_green]✗ Stop[/bright_green]",
+            ServerState.ERROR: "[bright_green]⚠ Err[/bright_green]",
+            ServerState.STARTING: "[bright_green]⏳ Start[/bright_green]",
+            ServerState.STOPPING: "[bright_green]⏳ Stop[/bright_green]",
+            ServerState.QUARANTINED: "[bright_green]⏸ Quar[/bright_green]",
         }
 
         return indicators.get(state, "[dim]? Unk[/dim]")
@@ -188,11 +188,11 @@ class MCPDashboard:
         if "error_rate" in metrics:
             error_rate = metrics["error_rate"]
             if error_rate > 0.1:  # 10%
-                parts.append(f"[red]Err: {error_rate:.1%}[/red]")
+                parts.append(f"[bright_green]Err: {error_rate:.1%}[/bright_green]")
             elif error_rate > 0.05:  # 5%
-                parts.append(f"[yellow]Err: {error_rate:.1%}[/yellow]")
+                parts.append(f"[bright_green]Err: {error_rate:.1%}[/bright_green]")
             else:
-                parts.append(f"[green]Err: {error_rate:.1%}[/green]")
+                parts.append(f"[bright_green]Err: {error_rate:.1%}[/bright_green]")
 
         # Response time
         if "avg_response_time" in metrics:
@@ -268,16 +268,16 @@ class MCPDashboard:
             if latency_ms < 0:
                 return "invalid"
             elif latency_ms < 50:  # Fast
-                return f"[green]{latency_ms:.0f}ms[/green]"
+                return f"[bright_green]{latency_ms:.0f}ms[/bright_green]"
             elif latency_ms < 200:  # Acceptable
-                return f"[yellow]{latency_ms:.0f}ms[/yellow]"
+                return f"[bright_green]{latency_ms:.0f}ms[/bright_green]"
             elif latency_ms < 1000:  # Slow
-                return f"[red]{latency_ms:.0f}ms[/red]"
+                return f"[bright_green]{latency_ms:.0f}ms[/bright_green]"
             elif latency_ms >= 30000:  # Timeout (30s+)
-                return "[red]timeout[/red]"
+                return "[bright_green]timeout[/bright_green]"
             else:  # Very slow
                 seconds = latency_ms / 1000
-                return f"[red]{seconds:.1f}s[/red]"
+                return f"[bright_green]{seconds:.1f}s[/bright_green]"
 
         except (ValueError, TypeError):
             return "error"

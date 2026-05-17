@@ -28,14 +28,14 @@ def make_directory_table(path: str = None) -> Table:
         path = os.getcwd()
     dirs, files = list_directory(path)
     table = Table(
-        title=f"\U0001f4c1 [bold blue]Current directory:[/bold blue] [cyan]{path}[/cyan]"
+        title=f"\U0001f4c1 [bold bright_green]Current directory:[/bold bright_green] [bright_green]{path}[/bright_green]"
     )
     table.add_column("Type", style="dim", width=8)
     table.add_column("Name", style="bold")
     for d in sorted(dirs):
-        table.add_row("[green]dir[/green]", f"[cyan]{d}[/cyan]")
+        table.add_row("[bright_green]dir[/bright_green]", f"[bright_green]{d}[/bright_green]")
     for f in sorted(files):
-        table.add_row("[yellow]file[/yellow]", f"{f}")
+        table.add_row("[bright_green]file[/bright_green]", f"{f}")
     return table
 
 

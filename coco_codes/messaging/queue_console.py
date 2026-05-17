@@ -139,13 +139,13 @@ class QueueConsole:
             style_lower = style.lower()
             if "red" in style_lower or "error" in style_lower:
                 return MessageType.ERROR
-            elif "yellow" in style_lower or "warning" in style_lower:
+            elif "green" in style_lower or "warning" in style_lower:
                 return MessageType.WARNING
             elif "green" in style_lower or "success" in style_lower:
                 return MessageType.SUCCESS
-            elif "blue" in style_lower:
+            elif "green" in style_lower:
                 return MessageType.INFO
-            elif "purple" in style_lower or "magenta" in style_lower:
+            elif "purple" in style_lower or "green" in style_lower:
                 return MessageType.AGENT_REASONING
             elif "dim" in style_lower:
                 return MessageType.SYSTEM
@@ -168,13 +168,13 @@ class QueueConsole:
             style_lower = style.lower()
             if "red" in style_lower or "error" in style_lower:
                 return MessageType.ERROR
-            elif "yellow" in style_lower or "warning" in style_lower:
+            elif "green" in style_lower or "warning" in style_lower:
                 return MessageType.WARNING
             elif "green" in style_lower or "success" in style_lower:
                 return MessageType.SUCCESS
-            elif "blue" in style_lower:
+            elif "green" in style_lower:
                 return MessageType.INFO
-            elif "purple" in style_lower or "magenta" in style_lower:
+            elif "purple" in style_lower or "green" in style_lower:
                 return MessageType.AGENT_REASONING
             elif "dim" in style_lower:
                 return MessageType.SYSTEM
@@ -229,7 +229,7 @@ class QueueConsole:
 
         # Clear any spinner artifacts and position cursor properly
         if prompt:
-            input_console.print(prompt, end="", style="bold cyan")
+            input_console.print(prompt, end="", style="bold bright_green")
 
         # Use regular input() which will read from stdin
         # Since we printed the prompt to stderr, this should work cleanly
@@ -245,7 +245,7 @@ class QueueConsole:
             return user_response
         except (KeyboardInterrupt, EOFError):
             # Handle interruption gracefully
-            input_console.print("\n[yellow]Input cancelled[/yellow]")
+            input_console.print("\n[bright_green]Input cancelled[/bright_green]")
             self.queue.emit_simple(MessageType.WARNING, "User input cancelled")
             return ""
         finally:

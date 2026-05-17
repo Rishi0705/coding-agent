@@ -39,70 +39,70 @@ class HelpCommand(MCPCommandBase):
 
             # Title
             help_lines.append(
-                Text("MCP Server Management Commands", style="bold magenta")
+                Text("MCP Server Management Commands", style="bold bright_green")
             )
             help_lines.append(Text(""))
 
             # Registry Commands
-            help_lines.append(Text("Registry Commands:", style="bold cyan"))
+            help_lines.append(Text("Registry Commands:", style="bold bright_green"))
             help_lines.append(
-                Text("/mcp search", style="cyan")
+                Text("/mcp search", style="green")
                 + Text(" [query]     Search 30+ pre-configured servers")
             )
             help_lines.append(
-                Text("/mcp install", style="cyan")
+                Text("/mcp install", style="green")
                 + Text(" <id>       Install server from registry")
             )
             help_lines.append(Text(""))
 
             # Core Commands
-            help_lines.append(Text("Core Commands:", style="bold cyan"))
+            help_lines.append(Text("Core Commands:", style="bold bright_green"))
             help_lines.append(
-                Text("/mcp", style="cyan")
+                Text("/mcp", style="green")
                 + Text("                    List all registered servers")
             )
             help_lines.append(
-                Text("/mcp start", style="cyan")
+                Text("/mcp start", style="green")
                 + Text(" <name>       Start a specific server")
             )
             help_lines.append(
-                Text("/mcp start-all", style="cyan")
+                Text("/mcp start-all", style="green")
                 + Text("          Start all servers")
             )
             help_lines.append(
-                Text("/mcp stop", style="cyan")
+                Text("/mcp stop", style="green")
                 + Text(" <name>        Stop a specific server")
             )
             help_lines.append(
-                Text("/mcp stop-all", style="cyan")
+                Text("/mcp stop-all", style="green")
                 + Text(" [group_id]  Stop all running servers")
             )
             help_lines.append(
-                Text("/mcp restart", style="cyan")
+                Text("/mcp restart", style="green")
                 + Text(" <name>     Restart a specific server")
             )
             help_lines.append(Text(""))
 
             # Management Commands
-            help_lines.append(Text("Management Commands:", style="bold cyan"))
+            help_lines.append(Text("Management Commands:", style="bold bright_green"))
             help_lines.append(
-                Text("/mcp status", style="cyan")
+                Text("/mcp status", style="green")
                 + Text(" [name]      Show detailed status (all servers or specific)")
             )
             help_lines.append(
-                Text("/mcp logs", style="cyan")
+                Text("/mcp logs", style="green")
                 + Text(" <name> [limit] Show recent events (default limit: 10)")
             )
             help_lines.append(
-                Text("/mcp edit", style="cyan")
+                Text("/mcp edit", style="green")
                 + Text(" <name>        Edit existing server config")
             )
             help_lines.append(
-                Text("/mcp remove", style="cyan")
+                Text("/mcp remove", style="green")
                 + Text(" <name>      Remove/disable a server")
             )
             help_lines.append(
-                Text("/mcp help", style="cyan")
+                Text("/mcp help", style="green")
                 + Text("               Show this help message")
             )
             help_lines.append(Text(""))

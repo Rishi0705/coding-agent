@@ -454,8 +454,8 @@ async def run_with_mcp(
             # a single short, actionable nudge.
             emit_info(
                 "An MCP server failed during this run. "
-                "Run [cyan]/mcp logs <name>[/cyan] for details, or unbind it "
-                "via [cyan]/agents → B[/cyan].",
+                "Run [bright_green]/mcp logs <name>[/bright_green] for details, or unbind it "
+                "via [bright_green]/agents → B[/bright_green].",
                 group_id=group_id,
             )
             import logging as _logging

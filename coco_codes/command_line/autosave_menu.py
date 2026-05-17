@@ -214,7 +214,7 @@ def _render_menu_panel(
     # Navigation hints - change based on browse mode
     lines.append(("", "\n"))
     if browse_mode:
-        lines.append(("fg:ansicyan", "  ↑/↓ "))
+        lines.append(("fg:ansigreen", "  ↑/↓ "))
         lines.append(("", "Browse msgs\n"))
         lines.append(("fg:ansiyellow", "  Esc "))
         lines.append(("", "Exit browser\n"))
@@ -223,7 +223,7 @@ def _render_menu_panel(
         lines.append(("", "Navigate\n"))
         lines.append(("fg:ansibrightblack", "  ←/→ "))
         lines.append(("", "Page\n"))
-        lines.append(("fg:ansicyan", "  e   "))
+        lines.append(("fg:ansigreen", "  e   "))
         lines.append(("", "Browse msgs\n"))
     lines.append(("fg:green", "  Enter  "))
     lines.append(("", "Load\n"))
@@ -247,7 +247,7 @@ def _render_message_browser_panel(
     """
     lines = []
 
-    lines.append(("fg:ansicyan bold", " MESSAGE BROWSER"))
+    lines.append(("fg:ansigreen bold", " MESSAGE BROWSER"))
     lines.append(("", "\n\n"))
 
     total_messages = len(history)
@@ -277,7 +277,7 @@ def _render_message_browser_panel(
 
     # Role indicator with icon and color
     if role == "user":
-        lines.append(("fg:ansicyan bold", "  🧑 USER"))
+        lines.append(("fg:ansigreen bold", "  🧑 USER"))
     elif role == "tool":
         lines.append(("fg:ansiyellow bold", "  🔧 TOOL"))
     else:
