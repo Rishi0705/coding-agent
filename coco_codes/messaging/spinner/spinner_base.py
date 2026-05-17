@@ -26,7 +26,7 @@ class SpinnerBase(ABC):
     assistant_name = get_assistant_name().title()
 
     # Default message when processing
-    THINKING_MESSAGE = f"{assistant_name} is analysing... "
+    THINKING_MESSAGE = f"{assistant_name} nibbling on tokens... "
 
     # Message when waiting for user input
     WAITING_MESSAGE = f"{assistant_name} is waiting... "
