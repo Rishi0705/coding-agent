@@ -269,7 +269,7 @@ async def _split_panel_selector(
         """Generate the selector menu text."""
         try:
             lines = []
-            lines.append(("bold bright_green", title))
+            lines.append(("fg:ansibrightgreen bold", title))
             lines.append(("", "\n\n"))
 
             if not choices:

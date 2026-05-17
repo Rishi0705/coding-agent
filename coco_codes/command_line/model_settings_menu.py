@@ -343,7 +343,7 @@ class ModelSettingsMenu:
 
         if self.view_mode == "models":
             # Header with page indicator
-            lines.append(("bold bright_green", " Select a Model to Configure"))
+            lines.append(("fg:ansibrightgreen bold", " Select a Model to Configure"))
             if self.total_pages > 1:
                 lines.append(
                     (
@@ -386,7 +386,7 @@ class ModelSettingsMenu:
             self._add_model_nav_hints(lines)
         else:
             # Settings view
-            lines.append(("bold bright_green", f" Settings for {self.selected_model}"))
+            lines.append(("fg:ansibrightgreen bold", f" Settings for {self.selected_model}"))
             lines.append(("", "\n\n"))
 
             if not self.supported_settings:
@@ -466,7 +466,7 @@ class ModelSettingsMenu:
         lines = []
 
         if self.view_mode == "models":
-            lines.append(("bold bright_green", " Model Info"))
+            lines.append(("fg:ansibrightgreen bold", " Model Info"))
             lines.append(("", "\n\n"))
 
             if not self.all_models:
@@ -526,7 +526,7 @@ class ModelSettingsMenu:
 
         else:
             # Settings detail view
-            lines.append(("bold bright_green", " Setting Details"))
+            lines.append(("fg:ansibrightgreen bold", " Setting Details"))
             lines.append(("", "\n\n"))
 
             if not self.supported_settings:

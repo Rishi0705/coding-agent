@@ -129,7 +129,7 @@ class MCPInstallMenu:
         """Render the category list panel."""
         lines = []
 
-        lines.append(("bold bright_green", " CATEGORIES"))
+        lines.append(("fg:ansibrightgreen bold", " CATEGORIES"))
         lines.append(("", "\n\n"))
 
         if not self.categories:
@@ -191,7 +191,7 @@ class MCPInstallMenu:
             return lines
 
         icon = self._get_category_icon(self.current_category)
-        lines.append(("bold bright_green", f" {icon} {self.current_category.upper()}"))
+        lines.append(("fg:ansibrightgreen bold", f" {icon} {self.current_category.upper()}"))
         lines.append(("", "\n\n"))
 
         if not self.current_servers:
@@ -260,7 +260,7 @@ class MCPInstallMenu:
         """Render the details panel."""
         lines = []
 
-        lines.append(("bold bright_green", " DETAILS"))
+        lines.append(("fg:ansibrightgreen bold", " DETAILS"))
         lines.append(("", "\n\n"))
 
         if self.view_mode == "categories":
@@ -406,7 +406,7 @@ class MCPInstallMenu:
         """Render details for the custom server option."""
         lines = []
 
-        lines.append(("bold bright_green", " DETAILS"))
+        lines.append(("fg:ansibrightgreen bold", " DETAILS"))
         lines.append(("", "\n\n"))
 
         lines.append(("bold green", "  Add Custom MCP Server"))

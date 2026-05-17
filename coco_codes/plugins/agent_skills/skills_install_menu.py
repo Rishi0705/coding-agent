@@ -187,7 +187,7 @@ class SkillsInstallMenu:
 
         lines = []
 
-        lines.append(("bold bright_green", " CATEGORIES"))
+        lines.append(("fg:ansibrightgreen bold", " CATEGORIES"))
         lines.append(("", "\n\n"))
 
         if not self.categories:
@@ -250,7 +250,7 @@ class SkillsInstallMenu:
             return lines
 
         icon = self._get_category_icon(self.current_category)
-        lines.append(("bold bright_green", f" {icon} {self.current_category.upper()}"))
+        lines.append(("fg:ansibrightgreen bold", f" {icon} {self.current_category.upper()}"))
         lines.append(("", "\n\n"))
 
         if not self.current_skills:
@@ -297,7 +297,7 @@ class SkillsInstallMenu:
 
         lines = []
 
-        lines.append(("bold bright_green", " DETAILS"))
+        lines.append(("fg:ansibrightgreen bold", " DETAILS"))
         lines.append(("", "\n\n"))
 
         if self.view_mode == "categories":

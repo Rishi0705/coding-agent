@@ -376,7 +376,7 @@ def _render_source_panel(
     lines = []
 
     # Header
-    lines.append(("bold bright_green", f" SOURCE: {tool.full_name}"))
+    lines.append(("fg:ansibrightgreen bold", f" SOURCE: {tool.full_name}"))
     lines.append(("", "\n"))
     lines.append(("fg:ansibrightblack", f" {tool.source_path}"))
     lines.append(("", "\n"))

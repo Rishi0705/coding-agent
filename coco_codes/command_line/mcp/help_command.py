@@ -39,12 +39,12 @@ class HelpCommand(MCPCommandBase):
 
             # Title
             help_lines.append(
-                Text("MCP Server Management Commands", style="bold bright_green")
+                Text("MCP Server Management Commands", style="fg:ansibrightgreen bold")
             )
             help_lines.append(Text(""))
 
             # Registry Commands
-            help_lines.append(Text("Registry Commands:", style="bold bright_green"))
+            help_lines.append(Text("Registry Commands:", style="fg:ansibrightgreen bold"))
             help_lines.append(
                 Text("/mcp search", style="green")
                 + Text(" [query]     Search 30+ pre-configured servers")
@@ -56,7 +56,7 @@ class HelpCommand(MCPCommandBase):
             help_lines.append(Text(""))
 
             # Core Commands
-            help_lines.append(Text("Core Commands:", style="bold bright_green"))
+            help_lines.append(Text("Core Commands:", style="fg:ansibrightgreen bold"))
             help_lines.append(
                 Text("/mcp", style="green")
                 + Text("                    List all registered servers")
@@ -84,7 +84,7 @@ class HelpCommand(MCPCommandBase):
             help_lines.append(Text(""))
 
             # Management Commands
-            help_lines.append(Text("Management Commands:", style="bold bright_green"))
+            help_lines.append(Text("Management Commands:", style="fg:ansibrightgreen bold"))
             help_lines.append(
                 Text("/mcp status", style="green")
                 + Text(" [name]      Show detailed status (all servers or specific)")

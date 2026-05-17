@@ -633,11 +633,11 @@ def _show_color_options(color_type: str):
         "Bright Colors": [
             ("bright_black", ""),
             ("bright_red", ""),
-            ("bright_green", ""),
+            ("fg:ansibrightgreen", ""),
             ("bright_yellow", ""),
-            ("bright_green", ""),
-            ("bright_green", "*"),
-            ("bright_green", ""),
+            ("fg:ansibrightgreen", ""),
+            ("fg:ansibrightgreen", "*"),
+            ("fg:ansibrightgreen", ""),
             ("bright_white", ""),
         ],
         "Special Colors": [
@@ -667,7 +667,7 @@ def _show_color_options(color_type: str):
     if color_type == "additions":
         suggestions = [
             ("green", ""),
-            ("bright_green", ""),
+            ("fg:ansibrightgreen", ""),
             ("chartreuse1", ""),
             ("green3", ""),
             ("sea_green1", ""),

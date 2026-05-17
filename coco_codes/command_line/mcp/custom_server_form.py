@@ -129,7 +129,7 @@ class CustomServerForm:
         lines = []
 
         title = " EDIT MCP SERVER" if self.edit_mode else " ADD CUSTOM MCP SERVER"
-        lines.append(("bold bright_green", title))
+        lines.append(("fg:ansibrightgreen bold", title))
         lines.append(("", "\n\n"))
 
         # Server Name field - now in separate frame below
@@ -230,7 +230,7 @@ class CustomServerForm:
 
         current_type = self._get_current_type()
 
-        lines.append(("bold bright_green", " HELP & PREVIEW"))
+        lines.append(("fg:ansibrightgreen bold", " HELP & PREVIEW"))
         lines.append(("", "\n\n"))
 
         # Type description

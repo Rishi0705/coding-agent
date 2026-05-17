@@ -313,7 +313,7 @@ class ModelSelectionMenu:
             self.selected_index = self.page_start
 
     def _render(self):
-        lines = [("bold bright_green", " Select Active Model")]
+        lines = [("fg:ansibrightgreen bold", " Select Active Model")]
         filter_label = self.filter_text or "type to filter"
         lines.append(("fg:ansibrightblack", f"\n  Filter: {filter_label}"))
         if self.total_pages > 1:
