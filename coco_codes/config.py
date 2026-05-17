@@ -400,11 +400,11 @@ def _default_model_from_models_json():
             first_key = next(iter(models_config))
             _default_model_cache = first_key
             return first_key
-        _default_model_cache = "gpt-5"
-        return "gpt-5"
+        _default_model_cache = "claude-sonnet-4"
+        return "claude-sonnet-4"
     except Exception:
-        _default_model_cache = "gpt-5"
-        return "gpt-5"
+        _default_model_cache = "claude-sonnet-4"
+        return "claude-sonnet-4"
 
 
 def _default_vision_model_from_models_json() -> str:
