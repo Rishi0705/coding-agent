@@ -325,8 +325,8 @@ async def restore_autosave_interactively(base_dir: Path) -> None:
 
     session_path = base_dir / f"{chosen_name}.pkl"
     emit_success(
-        f"✅ Autosave loaded: {len(history)} messages ({total_tokens} tokens)\n"
-        f"📁 From: {session_path}"
+        f"Autosave loaded: {len(history)} messages ({total_tokens} tokens)\n"
+        f"From: {session_path}"
     )
 
     # Display recent message history for context

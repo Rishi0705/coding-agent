@@ -76,7 +76,7 @@ class InstallCommand(MCPCommandBase):
                 results = catalog.search(server_name_or_id)
                 if not results:
                     emit_info(
-                        f"❌ No server found matching '{server_name_or_id}'",
+                        f"No server found matching '{server_name_or_id}'",
                         message_group=group_id,
                     )
                     emit_info(
@@ -89,15 +89,15 @@ class InstallCommand(MCPCommandBase):
                 else:
                     # Multiple matches, show them
                     emit_info(
-                        f"🔍 Multiple servers found matching '{server_name_or_id}':",
+                        f"Multiple servers found matching '{server_name_or_id}':",
                         message_group=group_id,
                     )
                     for i, server in enumerate(results[:5]):
                         indicators = []
                         if server.verified:
-                            indicators.append("✓")
+                            indicators.append("")
                         if server.popular:
-                            indicators.append("⭐")
+                            indicators.append("")
 
                         indicator_str = ""
                         if indicators:
@@ -117,7 +117,7 @@ class InstallCommand(MCPCommandBase):
 
             # Show what we're installing
             emit_info(
-                f"📦 Installing: {selected_server.display_name}", message_group=group_id
+                f"Installing: {selected_server.display_name}", message_group=group_id
             )
             description = (
                 selected_server.description

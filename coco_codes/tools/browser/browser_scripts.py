@@ -17,7 +17,7 @@ async def execute_javascript(
     """Execute JavaScript code in the browser context."""
     group_id = generate_group_id("browser_execute_js", script[:100])
     emit_info(
-        f"BROWSER EXECUTE JS 📜 script='{script[:100]}{'...' if len(script) > 100 else ''}'",
+        f"BROWSER EXECUTE JS script='{script[:100]}{'...' if len(script) > 100 else ''}'",
         message_group=group_id,
     )
     try:
@@ -50,7 +50,7 @@ async def scroll_page(
     target = element_selector or "page"
     group_id = generate_group_id("browser_scroll", f"{direction}_{amount}_{target}")
     emit_info(
-        f"BROWSER SCROLL 📋 direction={direction} amount={amount} target='{target}'",
+        f"BROWSER SCROLL direction={direction} amount={amount} target='{target}'",
         message_group=group_id,
     )
     try:
@@ -144,7 +144,7 @@ async def scroll_to_element(
     """Scroll to bring an element into view."""
     group_id = generate_group_id("browser_scroll_to_element", selector[:100])
     emit_info(
-        f"BROWSER SCROLL TO ELEMENT 🎯 selector='{selector}'",
+        f"BROWSER SCROLL TO ELEMENT selector='{selector}'",
         message_group=group_id,
     )
     try:
@@ -176,7 +176,7 @@ async def set_viewport_size(
     """Set the viewport size."""
     group_id = generate_group_id("browser_set_viewport", f"{width}x{height}")
     emit_info(
-        f"BROWSER SET VIEWPORT 🖥️ size={width}x{height}",
+        f"BROWSER SET VIEWPORT size={width}x{height}",
         message_group=group_id,
     )
     try:
@@ -207,7 +207,7 @@ async def wait_for_element(
     """Wait for an element to reach a specific state."""
     group_id = generate_group_id("browser_wait_for_element", f"{selector[:50]}_{state}")
     emit_info(
-        f"BROWSER WAIT FOR ELEMENT ⏱️ selector='{selector}' state={state} timeout={timeout}ms",
+        f"BROWSER WAIT FOR ELEMENT selector='{selector}' state={state} timeout={timeout}ms",
         message_group=group_id,
     )
     try:
@@ -238,7 +238,7 @@ async def highlight_element(
         "browser_highlight_element", f"{selector[:50]}_{color}"
     )
     emit_info(
-        f"BROWSER HIGHLIGHT ELEMENT 🔦 selector='{selector}' color={color}",
+        f"BROWSER HIGHLIGHT ELEMENT selector='{selector}' color={color}",
         message_group=group_id,
     )
     try:
@@ -275,7 +275,7 @@ async def clear_highlights() -> Dict[str, Any]:
     """Clear all element highlights."""
     group_id = generate_group_id("browser_clear_highlights")
     emit_info(
-        "BROWSER CLEAR HIGHLIGHTS 🧹",
+        "BROWSER CLEAR HIGHLIGHTS ",
         message_group=group_id,
     )
     try:

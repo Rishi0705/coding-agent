@@ -69,13 +69,13 @@ class StartAllCommand(MCPCommandBase):
                 if success:
                     started_count += 1
                     emit_info(
-                        Text.from_markup(f"  [bright_green]✓ Started: {server_name}[/bright_green]"),
+                        Text.from_markup(f"  [bright_green]Started: {server_name}[/bright_green]"),
                         message_group=group_id,
                     )
                 else:
                     failed_count += 1
                     emit_info(
-                        Text.from_markup(f"  [bright_green]✗ Failed: {server_name}[/bright_green]"),
+                        Text.from_markup(f"  [bright_green]Failed: {server_name}[/bright_green]"),
                         message_group=group_id,
                     )
 

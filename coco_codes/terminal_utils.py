@@ -362,7 +362,7 @@ def print_truecolor_warning(console: Optional["Console"] = None) -> None:
         except ImportError:
             # Rich not available, fall back to plain print
             print("\n" + "=" * 70)
-            print("⚠️  WARNING: TERMINAL DOES NOT SUPPORT TRUECOLOR (24-BIT COLOR)")
+            print(" WARNING: TERMINAL DOES NOT SUPPORT TRUECOLOR (24-BIT COLOR)")
             print("=" * 70)
             print("Coco Codes looks best with truecolor support.")
             print("Consider using a modern terminal like:")
@@ -383,15 +383,15 @@ def print_truecolor_warning(console: Optional["Console"] = None) -> None:
     # Build the warning box
     warning_lines = [
         "",
-        "[bold bright_red on red]" + "━" * 72 + "[/]",
-        "[bold bright_red on red]┃[/][bold bright_white on red]"
+        "[bold bright_red on red]" + "" * 72 + "[/]",
+        "[bold bright_red on red][/][bold bright_white on red]"
         + " " * 70
-        + "[/][bold bright_red on red]┃[/]",
-        "[bold bright_red on red]┃[/][bold bright_white on red]  ⚠️   WARNING: TERMINAL DOES NOT SUPPORT TRUECOLOR (24-BIT COLOR)  ⚠️   [/][bold bright_red on red]┃[/]",
-        "[bold bright_red on red]┃[/][bold bright_white on red]"
+        + "[/][bold bright_red on red][/]",
+        "[bold bright_red on red][/][bold bright_white on red]    WARNING: TERMINAL DOES NOT SUPPORT TRUECOLOR (24-BIT COLOR)    [/][bold bright_red on red][/]",
+        "[bold bright_red on red][/][bold bright_white on red]"
         + " " * 70
-        + "[/][bold bright_red on red]┃[/]",
-        "[bold bright_red on red]" + "━" * 72 + "[/]",
+        + "[/][bold bright_red on red][/]",
+        "[bold bright_red on red]" + "" * 72 + "[/]",
         "",
         f"[bright_green]Detected color system:[/] [bold]{color_system}[/]",
         "",
@@ -410,7 +410,7 @@ def print_truecolor_warning(console: Optional["Console"] = None) -> None:
         "[dim italic]Note: The built-in macOS Terminal.app does not support truecolor (Sequoia and earlier).[/]",
         "[dim italic]Setting COLORTERM=truecolor won't help - you'll need a different terminal app.[/]",
         "",
-        "[bold bright_red]" + "─" * 72 + "[/]",
+        "[bold bright_red]" + "" * 72 + "[/]",
         "",
     ]
 

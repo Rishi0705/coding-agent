@@ -343,7 +343,7 @@ class ModelSettingsMenu:
 
         if self.view_mode == "models":
             # Header with page indicator
-            lines.append(("bold bright_green", " ⚙️ Select a Model to Configure"))
+            lines.append(("bold bright_green", " Select a Model to Configure"))
             if self.total_pages > 1:
                 lines.append(
                     (
@@ -378,7 +378,7 @@ class ModelSettingsMenu:
                 if is_current:
                     lines.append(("fg:ansigreen", " (active)"))
                 if has_settings:
-                    lines.append(("fg:ansigreen", " ⚙"))
+                    lines.append(("fg:ansigreen", " "))
 
                 lines.append(("", "\n"))
 
@@ -386,7 +386,7 @@ class ModelSettingsMenu:
             self._add_model_nav_hints(lines)
         else:
             # Settings view
-            lines.append(("bold bright_green", f" ⚙ Settings for {self.selected_model}"))
+            lines.append(("bold bright_green", f" Settings for {self.selected_model}"))
             lines.append(("", "\n\n"))
 
             if not self.supported_settings:
@@ -405,7 +405,7 @@ class ModelSettingsMenu:
                 # Show editing state if in edit mode for this setting
                 if is_selected and self.editing_mode:
                     display_value = self._format_value(setting_key, self.edit_value)
-                    prefix = " ✏️ "
+                    prefix = " "
                     style = "fg:ansigreen bold"
                 else:
                     display_value = self._format_value(setting_key, current_value)
@@ -480,7 +480,7 @@ class ModelSettingsMenu:
             lines.append(("", "\n\n"))
 
             if is_current:
-                lines.append(("fg:ansigreen", "  ✓ Currently active model"))
+                lines.append(("fg:ansigreen", "  Currently active model"))
                 lines.append(("", "\n\n"))
 
             # Show current settings for this model
@@ -548,7 +548,7 @@ class ModelSettingsMenu:
                 lines.append(
                     (
                         "fg:ansiyellow",
-                        "  ⚠ Global setting (applies to all GPT-5 models)",
+                        "  Global setting (applies to all GPT-5 models)",
                     )
                 )
             lines.append(("", "\n\n"))
@@ -605,7 +605,7 @@ class ModelSettingsMenu:
 
             # Editing hint
             if self.editing_mode:
-                lines.append(("fg:ansigreen bold", "  ✏️  EDITING MODE"))
+                lines.append(("fg:ansigreen bold", "   EDITING MODE"))
                 lines.append(("", "\n"))
                 if self.edit_value is not None:
                     lines.append(
@@ -937,7 +937,7 @@ class ModelSettingsMenu:
         # Clear exit message
         from coco_codes.messaging import emit_info
 
-        emit_info("✓ Exited model settings")
+        emit_info("Exited model settings")
 
         return self.result_changed
 

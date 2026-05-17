@@ -71,7 +71,7 @@ async def _prompt_user_approval(command: str, match: Any) -> Optional[Dict[str, 
     from coco_codes.tools.common import get_user_approval_async
 
     panel_content = Text()
-    panel_content.append("⚠️  Force push detected: ", style="bold bright_green")
+    panel_content.append(" Force push detected: ", style="bold bright_green")
     panel_content.append(match.pattern_name, style="bold bright_green")
     panel_content.append("\n", style="")
     panel_content.append(f"  {match.description}", style="dim")
@@ -84,13 +84,13 @@ async def _prompt_user_approval(command: str, match: Any) -> Optional[Dict[str, 
     )
 
     confirmed, user_feedback = await get_user_approval_async(
-        title="Force Push Guard 🛡️",
+        title="Force Push Guard ",
         content=panel_content,
         border_style="red",
     )
 
     if confirmed:
-        emit_info("⚠️  Force push approved — proceeding with caution.")
+        emit_info(" Force push approved — proceeding with caution.")
         return None  # Allow the command through
 
     # Rejected
@@ -99,7 +99,7 @@ async def _prompt_user_approval(command: str, match: Any) -> Optional[Dict[str, 
         "blocked": True,
         "reasoning": f"Force push rejected: {match.pattern_name} — {reason}",
         "error_message": (
-            f"🛑 Force push rejected. Detected {match.pattern_name} "
+            f"Force push rejected. Detected {match.pattern_name} "
             f"in command:\n  {command}\n"
             f"  {match.description}\n"
             f"Feedback: {reason}"
@@ -118,7 +118,7 @@ def _block_command(command: str, match: Any) -> Dict[str, Any]:
         Dict with blocked=True and a descriptive error.
     """
     error_message = (
-        f"🛑 Force push blocked! Detected {match.pattern_name} "
+        f"Force push blocked! Detected {match.pattern_name} "
         f"in command:\n  {command}\n"
         f"  {match.description}\n\n"
         f"Force pushing rewrites remote history and can destroy others' work.\n"

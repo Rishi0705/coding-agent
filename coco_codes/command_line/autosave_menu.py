@@ -130,10 +130,10 @@ def _extract_message_content(msg) -> Tuple[str, str]:
                 if len(str(args)) > 100:
                     args_preview += "..."
                 content_parts.append(
-                    f"🔧 Tool Call: {tool_name}\n   Args: {args_preview}"
+                    f"Tool Call: {tool_name}\n   Args: {args_preview}"
                 )
             else:
-                content_parts.append(f"🔧 Tool Call: {tool_name}")
+                content_parts.append(f"Tool Call: {tool_name}")
 
         elif part_kind == "tool-return":
             # Tool result being returned - show tool name and truncated result
@@ -144,9 +144,9 @@ def _extract_message_content(msg) -> Tuple[str, str]:
                 preview = result[:200].replace("\n", " ")
                 if len(result) > 200:
                     preview += "..."
-                content_parts.append(f"📥 Tool Result: {tool_name}\n   {preview}")
+                content_parts.append(f"Tool Result: {tool_name}\n   {preview}")
             else:
-                content_parts.append(f"📥 Tool Result: {tool_name}")
+                content_parts.append(f"Tool Result: {tool_name}")
 
         elif hasattr(part, "content"):
             # Regular text content (user-prompt, text, thinking, etc.)
@@ -277,15 +277,15 @@ def _render_message_browser_panel(
 
     # Role indicator with icon and color
     if role == "user":
-        lines.append(("fg:ansigreen bold", "  🧑 USER"))
+        lines.append(("fg:ansigreen bold", "  USER"))
     elif role == "tool":
-        lines.append(("fg:ansiyellow bold", "  🔧 TOOL"))
+        lines.append(("fg:ansiyellow bold", "  TOOL"))
     else:
-        lines.append(("fg:ansigreen bold", "  🤖 ASSISTANT"))
+        lines.append(("fg:ansigreen bold", "  ASSISTANT"))
     lines.append(("", "\n"))
 
     # Separator line
-    lines.append(("fg:ansibrightblack", "  " + "─" * 40))
+    lines.append(("fg:ansibrightblack", "  " + "" * 40))
     lines.append(("", "\n"))
 
     # Render content - use markdown for user/assistant, plain text for tool
@@ -711,6 +711,6 @@ async def interactive_autosave_picker() -> Optional[str]:
     # Clear exit message
     from coco_codes.messaging import emit_info
 
-    emit_info("✓ Exited session browser")
+    emit_info("Exited session browser")
 
     return result[0]

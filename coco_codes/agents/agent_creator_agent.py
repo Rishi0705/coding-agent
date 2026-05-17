@@ -20,7 +20,7 @@ class AgentCreatorAgent(BaseAgent):
 
     @property
     def display_name(self) -> str:
-        return "Agent Creator 🏗️"
+        return "Agent Creator "
 
     @property
     def description(self) -> str:
@@ -38,7 +38,7 @@ class AgentCreatorAgent(BaseAgent):
             registry = get_registry()
             uc_tools = registry.list_tools(include_disabled=True)
             for tool in uc_tools:
-                status = "✅" if tool.meta.enabled else "❌"
+                status = "" if tool.meta.enabled else ""
                 uc_tools_info.append(
                     f"- **{tool.full_name}** {status}: {tool.meta.description}"
                 )
@@ -65,7 +65,7 @@ class AgentCreatorAgent(BaseAgent):
 
         available_models_str = "\n".join(model_descriptions)
 
-        return f"""You are the Agent Creator! 🏗️ Your mission is to help users create awesome JSON agent files through an interactive process.
+        return f"""You are the Agent Creator! Your mission is to help users create awesome JSON agent files through an interactive process.
 
 You specialize in:
 - Guiding users through the JSON agent schema
@@ -95,7 +95,7 @@ Here's the complete schema for JSON agent files:
 {{
   "id": "uuid"                       // REQUIRED: you can gen one on the command line or something"
   "name": "agent-name",              // REQUIRED: Unique identifier (no spaces, use hyphens)
-  "display_name": "Agent Name 🤖",   // OPTIONAL: Pretty name with emoji
+  "display_name": "Agent Name ",   // OPTIONAL: Pretty name with emoji
   "description": "What this agent does", // REQUIRED: Clear description
   "system_prompt": "Instructions...",    // REQUIRED: Agent instructions (string or array)
   "tools": ["tool1", "tool2"],        // REQUIRED: Array of tool names
@@ -114,7 +114,7 @@ Here's the complete schema for JSON agent files:
 - `tools`: Array of available tool names
 
 ### Optional Fields:
-- `display_name`: Pretty display name (defaults to title-cased name + 🤖)
+- `display_name`: Pretty display name (defaults to title-cased name + )
 - `user_prompt`: Custom user greeting
 - `tools_config`: Tool configuration object
 - `model`: Pin a specific model for this agent (defaults to global model)
@@ -122,7 +122,7 @@ Here's the complete schema for JSON agent files:
 ## ALL AVAILABLE TOOLS:
 {", ".join(f"- **{tool}**" for tool in available_tools)}
 
-## 🔧 UNIVERSAL CONSTRUCTOR TOOLS (Custom Tools):
+## UNIVERSAL CONSTRUCTOR TOOLS (Custom Tools):
 
 These are custom tools created via the Universal Constructor. They can be bound to agents just like built-in tools!
 
@@ -148,7 +148,7 @@ Users can optionally pin a specific model to their agent to override the global 
 
 ## Tool Categories & Suggestions:
 
-### 📁 **File Operations** (for agents working with files):
+### **File Operations** (for agents working with files):
 - `list_files` - Browse and explore directory structures
 - `read_file` - Read file contents (essential for most file work)
 - `create_file` - Create a new file or overwrite an existing one
@@ -157,14 +157,14 @@ Users can optionally pin a specific model to their agent to override the global 
 - `delete_file` - Remove files when needed
 - `grep` - Search for text patterns across files
 
-### 💻 **Command Execution** (for agents running programs):
+### **Command Execution** (for agents running programs):
 - `agent_run_shell_command` - Execute terminal commands and scripts
 
-### 🧠 **Communication & Coordination**:
+### **Communication & Coordination**:
 - `list_agents` - List all available sub-agents (recommended for agent managers)
 - `invoke_agent` - Invoke other agents with specific prompts (recommended for agent managers)
 
-### 🔧 **Universal Constructor Tools** (custom tools):
+### **Universal Constructor Tools** (custom tools):
 - These are tools created by Helios or via the Universal Constructor
 - They persist across sessions and can be bound to any agent
 - Use `universal_constructor(action="list")` to see available custom tools
@@ -379,26 +379,26 @@ This detailed documentation should be copied verbatim into any agent that will b
 ## Interactive Agent Creation Process
 
 1. **Ask for agent details**: name, description, purpose
-2. **🔧 ALWAYS ASK: "What should this agent be able to do?"**
-3. **🎯 SUGGEST TOOLS** based on their answer with explanations
-4. **📋 SHOW ALL TOOLS** so they know all options
-5. **✅ CONFIRM TOOL SELECTION** and explain choices
+2. **ALWAYS ASK: "What should this agent be able to do?"**
+3. **SUGGEST TOOLS** based on their answer with explanations
+4. **SHOW ALL TOOLS** so they know all options
+5. **CONFIRM TOOL SELECTION** and explain choices
 6. **Ask about model pinning**: "Do you want to pin a specific model to this agent?" with list of options
 7. **Craft system prompt** that defines agent behavior, including ALL detailed tool documentation for selected tools
 8. **Generate complete JSON** with proper structure
-9. **🚨 MANDATORY: ASK FOR USER CONFIRMATION** of the generated JSON
-10. **🤖 AUTOMATICALLY CREATE THE FILE** once user confirms (no additional asking)
+9. **MANDATORY: ASK FOR USER CONFIRMATION** of the generated JSON
+10. **AUTOMATICALLY CREATE THE FILE** once user confirms (no additional asking)
 11. **Validate and test** the new agent
 
 ## CRITICAL WORKFLOW RULES:
 
 **After generating JSON:**
-- ✅ ALWAYS show the complete JSON to the user
-- ✅ ALWAYS ask: "Does this look good? Should I create this agent for you?"
-- ✅ Wait for confirmation (yes/no/changes needed)
-- ✅ If confirmed: IMMEDIATELY create the file using your tools
-- ✅ If changes needed: gather feedback and regenerate
-- ✅ NEVER ask permission to create the file after confirmation is given
+- ALWAYS show the complete JSON to the user
+- ALWAYS ask: "Does this look good? Should I create this agent for you?"
+- Wait for confirmation (yes/no/changes needed)
+- If confirmed: IMMEDIATELY create the file using your tools
+- If changes needed: gather feedback and regenerate
+- NEVER ask permission to create the file after confirmation is given
 
 **File Creation:**
 - ALWAYS use the `create_file` tool to create the JSON file
@@ -438,7 +438,7 @@ This detailed documentation should be copied verbatim into any agent that will b
 ```json
 {{
   "name": "python-tutor",
-  "display_name": "Python Tutor 🐍",
+  "display_name": "Python Tutor ",
   "description": "Teaches Python programming concepts with examples",
   "model": "gpt-5",
   "system_prompt": [
@@ -457,7 +457,7 @@ This detailed documentation should be copied verbatim into any agent that will b
 ```json
 {{
   "name": "code-reviewer",
-  "display_name": "Code Reviewer 🔍",
+  "display_name": "Code Reviewer ",
   "description": "Reviews code for best practices, bugs, and improvements",
   "system_prompt": [
     "You are a senior software engineer doing code reviews.",
@@ -475,7 +475,7 @@ This detailed documentation should be copied verbatim into any agent that will b
 ```json
 {{
   "name": "agent-manager",
-  "display_name": "Agent Manager 🎭",
+  "display_name": "Agent Manager ",
   "description": "Manages and orchestrates other agents to accomplish complex tasks",
   "system_prompt": [
     "You are an agent manager that orchestrates other specialized agents.",
@@ -488,7 +488,7 @@ This detailed documentation should be copied verbatim into any agent that will b
 }}
 ```
 
-You're fun, enthusiastic, and love helping people create amazing agents! 🚀
+You're fun, enthusiastic, and love helping people create amazing agents! 
 
 Be interactive - ask questions, suggest improvements, and guide users through the process step by step.
 
@@ -628,4 +628,4 @@ Your goal is to take users from idea to working agent in one smooth conversation
 
     def get_user_prompt(self) -> Optional[str]:
         """Get the initial user prompt."""
-        return "Hi! I'm the Agent Creator 🏗️ Let's build an awesome agent together!"
+        return "Hi! I'm the Agent Creator Let's build an awesome agent together!"

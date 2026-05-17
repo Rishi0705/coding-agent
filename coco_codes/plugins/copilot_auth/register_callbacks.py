@@ -60,12 +60,12 @@ def _handle_copilot_status() -> None:
 
     if not tokens:
         emit_warning(
-            "🔓 GitHub Copilot: Not authenticated.\n"
+            "GitHub Copilot: Not authenticated.\n"
             "   Run /copilot-login to sign in via your browser."
         )
         return
 
-    emit_success("🔐 GitHub Copilot: Authenticated")
+    emit_success("GitHub Copilot: Authenticated")
     for t in tokens:
         host_label = t.host
         user_label = f" ({t.user})" if t.user else ""
@@ -75,10 +75,10 @@ def _handle_copilot_status() -> None:
     for t in tokens:
         session = get_valid_session_token(t.oauth_token, t.host)
         if session:
-            emit_info(f"   ✅ {t.host}: active session (auto-refreshes on expiry)")
+            emit_info(f"   {t.host}: active session (auto-refreshes on expiry)")
         else:
             emit_warning(
-                f"   ⚠️  {t.host}: could not obtain a session token — may be expired"
+                f"    {t.host}: could not obtain a session token — may be expired"
             )
             emit_info(f"      Run /copilot-login {t.host} to re-authenticate.")
 
@@ -90,10 +90,10 @@ def _handle_copilot_status() -> None:
         if cfg.get("oauth_source") == "copilot-auth-plugin"
     ]
     if copilot_models:
-        emit_info(f"🎯 Registered Copilot models: {', '.join(sorted(copilot_models))}")
+        emit_info(f"Registered Copilot models: {', '.join(sorted(copilot_models))}")
     else:
         emit_warning(
-            "⚠️  No Copilot models registered yet. Run /copilot-login to set up."
+            " No Copilot models registered yet. Run /copilot-login to set up."
         )
 
 
@@ -206,7 +206,7 @@ def _handle_copilot_login(command: str) -> None:
     # If no host was provided as an argument, prompt the user
     if not host:
         emit_info(
-            "🌐 Enter your GitHub hostname — just the domain, no https:// or path.\n"
+            "Enter your GitHub hostname — just the domain, no https:// or path.\n"
             "   Examples: github.com, ghe.mycompany.com\n"
             "   Press Enter to use github.com."
         )
@@ -233,7 +233,7 @@ def _handle_copilot_login(command: str) -> None:
     if host != "github.com":
         emit_info(f"Using GitHub Enterprise host: {host}")
 
-    emit_info(f"🔑 Starting GitHub Device Flow for {host}…")
+    emit_info(f"Starting GitHub Device Flow for {host}…")
 
     device_resp = start_device_flow(host)
     if not device_resp:
@@ -251,7 +251,7 @@ def _handle_copilot_login(command: str) -> None:
     interval = int(device_resp.get("interval", 5))
 
     # Show the code prominently
-    emit_success(f"🔗 Your one-time code:  {user_code}")
+    emit_success(f"Your one-time code:  {user_code}")
     emit_info(f"   Open {verification_uri} and enter the code above.")
 
     # Try to open the browser
@@ -268,7 +268,7 @@ def _handle_copilot_login(command: str) -> None:
         logger.debug("Could not open browser: %s", exc)
         emit_info(f"Please open this URL manually: {verification_uri}")
 
-    emit_info("⏳ Waiting for you to authorize in the browser…")
+    emit_info("Waiting for you to authorize in the browser…")
 
     oauth_token = poll_for_token(
         device_code=device_resp["device_code"],
@@ -284,7 +284,7 @@ def _handle_copilot_login(command: str) -> None:
         )
         return
 
-    emit_success("✅ GitHub authorization successful!")
+    emit_success("GitHub authorization successful!")
 
     # Persist the token
     if not save_device_token(host, oauth_token):
@@ -300,7 +300,7 @@ def _handle_copilot_login(command: str) -> None:
         )
         return
 
-    emit_success("✅ Copilot session token obtained")
+    emit_success("Copilot session token obtained")
 
     emit_info("Fetching available Copilot models…")
     model_list = fetch_copilot_models(session, host)

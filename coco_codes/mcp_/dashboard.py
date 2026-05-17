@@ -138,9 +138,9 @@ class MCPDashboard:
         error = health.get("error")
 
         if is_healthy:
-            return "[bright_green]✓[/bright_green]"
+            return "[bright_green][/bright_green]"
         elif error:
-            return "[bright_green]✗[/bright_green]"
+            return "[bright_green][/bright_green]"
         else:
             return "[bright_green]?[/bright_green]"
 
@@ -155,12 +155,12 @@ class MCPDashboard:
             str: Formatted state indicator with color and symbol
         """
         indicators = {
-            ServerState.RUNNING: "[bright_green]✓ Run[/bright_green]",
-            ServerState.STOPPED: "[bright_green]✗ Stop[/bright_green]",
-            ServerState.ERROR: "[bright_green]⚠ Err[/bright_green]",
-            ServerState.STARTING: "[bright_green]⏳ Start[/bright_green]",
-            ServerState.STOPPING: "[bright_green]⏳ Stop[/bright_green]",
-            ServerState.QUARANTINED: "[bright_green]⏸ Quar[/bright_green]",
+            ServerState.RUNNING: "[bright_green]Run[/bright_green]",
+            ServerState.STOPPED: "[bright_green]Stop[/bright_green]",
+            ServerState.ERROR: "[bright_green]Err[/bright_green]",
+            ServerState.STARTING: "[bright_green]Start[/bright_green]",
+            ServerState.STOPPING: "[bright_green]Stop[/bright_green]",
+            ServerState.QUARANTINED: "[bright_green]Quar[/bright_green]",
         }
 
         return indicators.get(state, "[dim]? Unk[/dim]")

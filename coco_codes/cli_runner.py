@@ -95,8 +95,8 @@ def _resume_session_from_path(raw_path: str) -> None:
 
     total_tokens = sum(agent.estimate_tokens_for_message(m) for m in history)
     emit_success(
-        f"✅ Resumed session: {len(history)} messages ({total_tokens} tokens)\n"
-        f"📁 From: {session_path}"
+        f"Resumed session: {len(history)} messages ({total_tokens} tokens)\n"
+        f"From: {session_path}"
     )
 
 
@@ -197,7 +197,7 @@ async def main():
             # Print directly to console to avoid the 'dim' style from emit_system_message
             display_console.print("\n".join(lines))
         except ImportError:
-            emit_system_message("🤖 Coco Codes is Loading...")
+            emit_system_message("Coco Codes is Loading...")
 
         # Truecolor warning moved to interactive_mode() so it prints LAST
         # after all the help stuff - max visibility for the ugly red box!
@@ -256,7 +256,7 @@ async def main():
 
             # Use print directly - emit_system_message can get cleared by ANSI codes
             print(
-                "🔧 Detected uvx launch on Windows - using Ctrl+K for cancellation "
+                "Detected uvx launch on Windows - using Ctrl+K for cancellation "
                 "(Ctrl+C is disabled to prevent terminal issues)"
             )
 
@@ -298,7 +298,7 @@ async def main():
                 sys.exit(1)
 
             # Model is valid, show confirmation (already set earlier)
-            emit_system_message(f"🎯 Using model: {model_name}")
+            emit_system_message(f"Using model: {model_name}")
         except Exception as e:
             emit_error(f"Error validating model: {str(e)}")
             sys.exit(1)
@@ -323,7 +323,7 @@ async def main():
 
             # Agent exists, set it
             set_current_agent(agent_name)
-            emit_system_message(f"🤖 Using agent: {agent_name}")
+            emit_system_message(f"Using agent: {agent_name}")
         except Exception as e:
             emit_error(f"Error setting agent: {str(e)}")
             sys.exit(1)
@@ -400,7 +400,7 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
 
     if platform.system() == "Darwin":
         emit_system_message(
-            "💡 macOS tip: Use Ctrl+V (not Cmd+V) to paste images in terminal."
+            "macOS tip: Use Ctrl+V (not Cmd+V) to paste images in terminal."
         )
     cancel_key = get_cancel_agent_display_name()
     emit_system_message(
@@ -421,7 +421,7 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
         "!<command> to run shell commands directly (e.g., !git status)",
     )
     # Print truecolor warning LAST so it's the most visible thing on startup
-    # Big ugly red box should be impossible to miss! 🔴
+    # Big ugly red box should be impossible to miss! 
     print_truecolor_warning(display_console)
 
     # Shell pass-through for initial_command: !<cmd> bypasses the agent
@@ -477,7 +477,7 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
                 )
                 get_message_bus().emit(response_msg)
 
-                emit_success("🤖 Continuing in Interactive Mode")
+                emit_success("Continuing in Interactive Mode")
                 emit_system_message(
                     "Your command and response are preserved in the conversation history."
                 )
@@ -534,13 +534,13 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
                 result = future.result(timeout=300)
 
             if result == "chatgpt":
-                emit_info("🔐 Starting ChatGPT OAuth flow...")
+                emit_info("Starting ChatGPT OAuth flow...")
                 from coco_codes.plugins.chatgpt_oauth.oauth_flow import run_oauth_flow
 
                 run_oauth_flow()
                 set_model_name("chatgpt-gpt-5.4")
             elif result == "claude":
-                emit_info("🔐 Starting Claude Code OAuth flow...")
+                emit_info("Starting Claude Code OAuth flow...")
                 from coco_codes.plugins.claude_code_oauth.register_callbacks import (
                     _perform_authentication,
                 )
@@ -548,9 +548,9 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
                 _perform_authentication()
                 set_model_name("claude-code-claude-opus-4-7")
             elif result == "completed":
-                emit_info("🎉 Tutorial complete! Happy coding!")
+                emit_info("Tutorial complete! Happy coding!")
             elif result == "skipped":
-                emit_info("⏭️ Tutorial skipped. Run /tutorial anytime!")
+                emit_info("⏭Tutorial skipped. Run /tutorial anytime!")
     except Exception as e:
         from coco_codes.messaging import emit_warning
 
@@ -749,8 +749,8 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
                             session_path = base_dir / f"{chosen_session}.pkl"
 
                             emit_success(
-                                f"✅ Autosave loaded: {len(history)} messages ({total_tokens} tokens)\n"
-                                f"📁 From: {session_path}"
+                                f"Autosave loaded: {len(history)} messages ({total_tokens} tokens)\n"
+                                f"From: {session_path}"
                             )
 
                             # Display recent message history for context
@@ -994,7 +994,7 @@ async def run_prompt_with_attachments(
     cleaned_prompt = processed_prompt.prompt
     if clipboard_images and cleaned_prompt:
         cleaned_prompt = re.sub(
-            r"\[📋 clipboard image \d+\]\s*", "", cleaned_prompt
+            r"\[clipboard image \d+\]\s*", "", cleaned_prompt
         ).strip()
 
     if not cleaned_prompt:

@@ -239,7 +239,7 @@ class BlockingMCPServerStdio(SimpleCapturedMCPServerStdio):
             # Success message removed to reduce console spam
             # server_name = getattr(self, "tool_prefix", self.command)
             # emit_info(
-            #     f"✅ MCP Server '{server_name}' initialized successfully",
+            #     f"MCP Server '{server_name}' initialized successfully",
             #     style="green",
             #     message_group=self.message_group,
             # )
@@ -265,7 +265,7 @@ class BlockingMCPServerStdio(SimpleCapturedMCPServerStdio):
             # spam the prompt with stack traces every time the agent runs.
             server_name = getattr(self, "tool_prefix", self.command)
             emit_info(
-                f"⚠  MCP server '{server_name}' didn't start. "
+                f" MCP server '{server_name}' didn't start. "
                 f"Run [bright_green]/mcp logs {server_name}[/bright_green] to investigate, "
                 f"or unbind it via [bright_green]/agents → B[/bright_green].",
                 style="green",
@@ -387,7 +387,7 @@ class StartupMonitor:
 
         # Wait for all servers in parallel
         emit_info(
-            f"⏳ Waiting for {len(self.servers)} MCP servers to initialize...",
+            f"Waiting for {len(self.servers)} MCP servers to initialize...",
             style="green",
             message_group=self.message_group,
         )
@@ -405,13 +405,13 @@ class StartupMonitor:
 
         if ready_count == total_count:
             emit_info(
-                f"✅ All {total_count} servers ready!",
+                f"All {total_count} servers ready!",
                 style="green bold",
                 message_group=self.message_group,
             )
         else:
             emit_info(
-                f"⚠️  {ready_count}/{total_count} servers ready",
+                f" {ready_count}/{total_count} servers ready",
                 style="green",
                 message_group=self.message_group,
             )
@@ -422,7 +422,7 @@ class StartupMonitor:
         """Get a report of startup times."""
         lines = ["Server Startup Times:"]
         for name, time_taken in self.startup_times.items():
-            status = "✅" if self.servers[name].is_ready() else "❌"
+            status = "" if self.servers[name].is_ready() else ""
             lines.append(f"  {status} {name}: {time_taken:.2f}s")
         return "\n".join(lines)
 

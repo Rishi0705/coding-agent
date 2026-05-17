@@ -20,7 +20,7 @@ async def click_element(
     """Click on an element."""
     group_id = generate_group_id("browser_click", selector[:100])
     emit_info(
-        f"BROWSER CLICK 🖱️ selector='{selector}' button={button}",
+        f"BROWSER CLICK selector='{selector}' button={button}",
         message_group=group_id,
     )
     try:
@@ -66,7 +66,7 @@ async def double_click_element(
     """Double-click on an element."""
     group_id = generate_group_id("browser_double_click", selector[:100])
     emit_info(
-        f"BROWSER DOUBLE CLICK 🖱️🖱️ selector='{selector}'",
+        f"BROWSER DOUBLE CLICK selector='{selector}'",
         message_group=group_id,
     )
     try:
@@ -96,7 +96,7 @@ async def hover_element(
     """Hover over an element."""
     group_id = generate_group_id("browser_hover", selector[:100])
     emit_info(
-        f"BROWSER HOVER 👆 selector='{selector}'",
+        f"BROWSER HOVER selector='{selector}'",
         message_group=group_id,
     )
     try:
@@ -127,7 +127,7 @@ async def set_element_text(
     """Set text in an input element."""
     group_id = generate_group_id("browser_set_text", f"{selector[:50]}_{text[:30]}")
     emit_info(
-        f"BROWSER SET TEXT ✏️ selector='{selector}' text='{text[:50]}{'...' if len(text) > 50 else ''}'",
+        f"BROWSER SET TEXT selector='{selector}' text='{text[:50]}{'...' if len(text) > 50 else ''}'",
         message_group=group_id,
     )
     try:
@@ -166,7 +166,7 @@ async def get_element_text(
     """Get text content from an element."""
     group_id = generate_group_id("browser_get_text", selector[:100])
     emit_info(
-        f"BROWSER GET TEXT 📝 selector='{selector}'",
+        f"BROWSER GET TEXT selector='{selector}'",
         message_group=group_id,
     )
     try:
@@ -194,7 +194,7 @@ async def get_element_value(
     """Get value from an input element."""
     group_id = generate_group_id("browser_get_value", selector[:100])
     emit_info(
-        f"BROWSER GET VALUE 📎 selector='{selector}'",
+        f"BROWSER GET VALUE selector='{selector}'",
         message_group=group_id,
     )
     try:
@@ -228,7 +228,7 @@ async def select_option(
         "browser_select_option", f"{selector[:50]}_{option_desc}"
     )
     emit_info(
-        f"BROWSER SELECT OPTION 📄 selector='{selector}' option='{option_desc}'",
+        f"BROWSER SELECT OPTION selector='{selector}' option='{option_desc}'",
         message_group=group_id,
     )
     try:
@@ -275,7 +275,7 @@ async def check_element(
     """Check a checkbox or radio button."""
     group_id = generate_group_id("browser_check", selector[:100])
     emit_info(
-        f"BROWSER CHECK ☑️ selector='{selector}'",
+        f"BROWSER CHECK selector='{selector}'",
         message_group=group_id,
     )
     try:
@@ -304,7 +304,7 @@ async def uncheck_element(
     """Uncheck a checkbox."""
     group_id = generate_group_id("browser_uncheck", selector[:100])
     emit_info(
-        f"BROWSER UNCHECK ☐️ selector='{selector}'",
+        f"BROWSER UNCHECK selector='{selector}'",
         message_group=group_id,
     )
     try:

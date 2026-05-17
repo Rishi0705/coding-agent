@@ -459,7 +459,7 @@ async def interactive_diff_picker() -> Optional[dict]:
     # Clear exit message
     from coco_codes.messaging import emit_info
 
-    emit_info("✓ Exited diff color configuration")
+    emit_info("Exited diff color configuration")
 
     # Return changes if any
     if config.has_changes():
@@ -498,7 +498,7 @@ async def _split_panel_selector(
             else:
                 for i, choice in enumerate(choices):
                     if i == selected_index[0]:
-                        lines.append(("fg:ansigreen", "▶ "))
+                        lines.append(("fg:ansigreen", ""))
                         lines.append(("fg:ansigreen bold", choice))
                     else:
                         lines.append(("", "  "))
@@ -515,7 +515,7 @@ async def _split_panel_selector(
                 lines.append(("", "\n"))
 
             lines.append(
-                ("fg:ansigreen", "↑↓ Navigate  │  Enter Confirm  │  Ctrl-C Cancel")
+                ("fg:ansigreen", "↑↓ Navigate   Enter Confirm   Ctrl-C Cancel")
             )
             return FormattedText(lines)
         except Exception as e:
@@ -740,11 +740,11 @@ def _get_preview_text_for_prompt_toolkit(config: DiffConfiguration) -> ANSI:
 
     # Build header with current settings info using Rich markup
     header_parts = []
-    header_parts.append("[bold]═" * 50 + "[/bold]")
+    header_parts.append("[bold]" * 50 + "[/bold]")
     header_parts.append(
         "[bold bright_green] LIVE PREVIEW - Syntax Highlighted Diff[/bold bright_green]"
     )
-    header_parts.append("[bold]═" * 50 + "[/bold]")
+    header_parts.append("[bold]" * 50 + "[/bold]")
     header_parts.append("")
     header_parts.append(f" Addition Color: [bold]{config.current_add_color}[/bold]")
     header_parts.append(f" Deletion Color: [bold]{config.current_del_color}[/bold]")
@@ -798,7 +798,7 @@ def _get_preview_text_for_prompt_toolkit(config: DiffConfiguration) -> ANSI:
         console.print(formatted_diff, end="\n\n")
 
         # Print footer
-        console.print("[bold]═" * 50 + "[/bold]", end="")
+        console.print("[bold]" * 50 + "[/bold]", end="")
 
         ansi_output = buffer.getvalue()
 

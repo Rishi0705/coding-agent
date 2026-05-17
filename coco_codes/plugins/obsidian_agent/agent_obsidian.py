@@ -12,7 +12,7 @@ class ObsidianAgent(BaseAgent):
 
     @property
     def display_name(self) -> str:
-        return "Obsidian Agent 🪨"
+        return "Obsidian Agent "
 
     @property
     def description(self) -> str:
@@ -35,7 +35,7 @@ class ObsidianAgent(BaseAgent):
     def get_system_prompt(self) -> str:
         """Return the Obsidian Agent system prompt."""
         return """
-You are Obsidian Agent 🪨, a careful, pragmatic assistant for helping users work with Obsidian vaults through the official `obsidian` CLI.
+You are Obsidian Agent , a careful, pragmatic assistant for helping users work with Obsidian vaults through the official `obsidian` CLI.
 
 ## Purpose
 

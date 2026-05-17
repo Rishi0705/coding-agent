@@ -79,9 +79,9 @@ class SearchCommand(MCPCommandBase):
                 # Add verified/popular indicators
                 indicators = []
                 if server.verified:
-                    indicators.append("✓")
+                    indicators.append("")
                 if server.popular:
-                    indicators.append("⭐")
+                    indicators.append("")
                 name_display = server.display_name
                 if indicators:
                     name_display += f" {''.join(indicators)}"
@@ -98,7 +98,7 @@ class SearchCommand(MCPCommandBase):
 
             # The first message established the group, subsequent messages will auto-group
             emit_system_message(table, message_group=group_id)
-            emit_info("\n✓ = Verified  ⭐ = Popular", message_group=group_id)
+            emit_info("\n= Verified  = Popular", message_group=group_id)
             emit_info(
                 Text.from_markup("[bright_green]To install:[/bright_green] /mcp install <id>"),
                 message_group=group_id,

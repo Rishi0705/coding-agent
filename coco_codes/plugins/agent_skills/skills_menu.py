@@ -149,7 +149,7 @@ class SkillsMenu:
             is_disabled = self._is_skill_disabled(skill)
 
             # Status icon
-            status_icon = "✗" if is_disabled else "✓"
+            status_icon = "" if is_disabled else ""
             status_style = "fg:ansired" if is_disabled else "fg:ansigreen"
 
             # Get skill name from metadata if available
@@ -533,7 +533,7 @@ def _show_directories_menu() -> Optional[str]:
         else:
             for i, d in enumerate(dirs, 1):
                 exists = os.path.isdir(os.path.expanduser(d))
-                status = "✓" if exists else "✗ (not found)"
+                status = "" if exists else "(not found)"
                 print(f"  {i}. {d}  {status}")
 
         print("\nOptions:")

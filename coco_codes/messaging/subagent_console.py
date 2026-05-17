@@ -29,15 +29,15 @@ from coco_codes.messaging.messages import SubAgentStatusMessage
 # =============================================================================
 
 STATUS_STYLES = {
-    "starting": {"color": "green", "spinner": "dots", "emoji": "🚀"},
-    "running": {"color": "green", "spinner": "dots", "emoji": "⚙️"},
-    "thinking": {"color": "green", "spinner": "dots", "emoji": "🤔"},
-    "tool_calling": {"color": "green", "spinner": "dots12", "emoji": "🔧"},
-    "completed": {"color": "green", "spinner": None, "emoji": "✅"},
-    "error": {"color": "bright_green", "spinner": None, "emoji": "❌"},
+    "starting": {"color": "green", "spinner": "dots", "emoji": ""},
+    "running": {"color": "green", "spinner": "dots", "emoji": ""},
+    "thinking": {"color": "green", "spinner": "dots", "emoji": ""},
+    "tool_calling": {"color": "green", "spinner": "dots12", "emoji": ""},
+    "completed": {"color": "green", "spinner": None, "emoji": ""},
+    "error": {"color": "bright_green", "spinner": None, "emoji": ""},
 }
 
-DEFAULT_STYLE = {"color": "white", "spinner": "dots", "emoji": "⏳"}
+DEFAULT_STYLE = {"color": "white", "spinner": "dots", "emoji": ""}
 
 
 # =============================================================================
@@ -402,7 +402,7 @@ class SubAgentConsoleManager:
 
         # Build panel title with spinner for active states
         title = Text()
-        title.append("⚙️ ", style="bold")
+        title.append("", style="bold")
         title.append(agent.agent_name, style=f"bold {color}")
 
         # Create panel

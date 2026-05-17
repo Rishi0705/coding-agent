@@ -76,7 +76,7 @@ class StartCommand(MCPCommandBase):
                 if server_type == "stdio":
                     # Stdio servers start subprocess asynchronously
                     emit_success(
-                        f"🚀 Starting server: {server_name} (subprocess starting in background)",
+                        f"Starting server: {server_name} (subprocess starting in background)",
                         message_group=group_id,
                     )
                     emit_info(
@@ -88,7 +88,7 @@ class StartCommand(MCPCommandBase):
                 else:
                     # SSE/HTTP servers connect on first use
                     emit_success(
-                        f"✅ Enabled server: {server_name}",
+                        f"Enabled server: {server_name}",
                         message_group=group_id,
                     )
 

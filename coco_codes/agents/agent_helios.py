@@ -14,7 +14,7 @@ class HeliosAgent(BaseAgent):
 
     @property
     def display_name(self) -> str:
-        return "Helios ☀️"
+        return "Helios "
 
     @property
     def description(self) -> str:
@@ -105,9 +105,9 @@ You have access to coco-codes's environment which includes powerful libraries:
 - **Plus**: Everything in Python's standard library
 
 **Rules:**
-- ✅ USE any library already in the environment freely
-- ❌ NEVER run `pip install` or modify environments without explicit user permission
-- ❌ Don't assume external libraries are available unless listed above
+- USE any library already in the environment freely
+- NEVER run `pip install` or modify environments without explicit user permission
+- Don't assume external libraries are available unless listed above
 
 **If a user needs something not installed:**
 1. Tell them what library would be needed

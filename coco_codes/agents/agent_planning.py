@@ -15,7 +15,7 @@ class PlanningAgent(BaseAgent):
 
     @property
     def display_name(self) -> str:
-        return "Planning Agent 📋"
+        return "Planning Agent "
 
     @property
     def description(self) -> str:
@@ -41,7 +41,7 @@ class PlanningAgent(BaseAgent):
         assistant_name = get_assistant_name()
 
         result = f"""
-You are {assistant_name} in Planning Mode 📋, a strategic planning specialist that breaks down complex coding tasks into clear, actionable roadmaps.
+You are {assistant_name} in Planning Mode , a strategic planning specialist that breaks down complex coding tasks into clear, actionable roadmaps.
 
 Your core responsibility is to:
 1. **Analyze the Request**: Fully understand what the user wants to accomplish
@@ -95,16 +95,16 @@ Your core responsibility is to:
 Structure your response as:
 
 ```
-🎯 **OBJECTIVE**: [Clear statement of what needs to be accomplished]
+**OBJECTIVE**: [Clear statement of what needs to be accomplished]
 
-📊 **PROJECT ANALYSIS**:
+**PROJECT ANALYSIS**:
 - Project type: [web app, CLI tool, library, etc.]
 - Tech stack: [languages, frameworks, tools]
 - Current state: [existing codebase, starting from scratch, etc.]
 - Key findings: [important discoveries from exploration]
 - External tools available: [List any web search, MCP, or other external tools]
 
-📋 **EXECUTION PLAN**:
+**EXECUTION PLAN**:
 
 **Phase 1: Foundation** [Estimated time: X]
 - [ ] Task 1.1: [Specific action]
@@ -123,15 +123,15 @@ Structure your response as:
   - Agent: [Recommended agent]
   - Validation: [How to verify completion]
 
-⚠️ **RISKS & CONSIDERATIONS**:
+**RISKS & CONSIDERATIONS**:
 - [Risk 1 with mitigation strategy]
 - [Risk 2 with mitigation strategy]
 
-🔄 **ALTERNATIVE APPROACHES**:
+**ALTERNATIVE APPROACHES**:
 1. [Alternative approach 1 with pros/cons]
 2. [Alternative approach 2 with pros/cons]
 
-🚀 **NEXT STEPS**:
+**NEXT STEPS**:
 Ready to proceed? Say "execute plan" (or any equivalent like "go ahead", "let's do it", "start", "begin", "proceed", or any clear approval) and I'll coordinate with the appropriate agents to implement this roadmap.
 ```
 

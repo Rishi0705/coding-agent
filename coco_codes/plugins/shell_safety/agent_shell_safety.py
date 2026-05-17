@@ -34,7 +34,7 @@ class ShellSafetyAgent(BaseAgent):
     @property
     def display_name(self) -> str:
         """User-facing display name."""
-        return "Shell Safety Checker 🛡️"
+        return "Shell Safety Checker "
 
     @property
     def description(self) -> str:

@@ -144,10 +144,10 @@ class StatusDisplay:
 
         # Create a highly visible status message
         status_text = Text.assemble(
-            Text(f"⏳ {rate_text} ", style="bold bright_green"),
+            Text(f"{rate_text} ", style="bold bright_green"),
             str(self.spinner),
             Text(
-                f" {self.loading_messages[self.current_message_index]} ⏳",
+                f" {self.loading_messages[self.current_message_index]} ",
                 style="bold bright_green",
             ),
         )
@@ -178,7 +178,7 @@ class StatusDisplay:
 
         # Create a highly visible status text
         return Text.assemble(
-            Text(f"⏳ {rate_text} ⚡", style="bold bright_green"),
+            Text(f"{rate_text} ", style="bold bright_green"),
             Text(f" {message}", style="green"),
         )
 

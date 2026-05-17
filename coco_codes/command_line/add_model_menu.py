@@ -362,7 +362,7 @@ class AddModelMenu:
 
             # Format: "> Provider Name (X models)" or "  Provider Name (X models)"
             prefix = " > " if is_selected else "   "
-            suffix = " ⚠️" if is_unsupported else ""
+            suffix = " " if is_unsupported else ""
             label = f"{prefix}{provider.name} ({provider.model_count} models){suffix}"
 
             # Use dimmed color for unsupported providers
@@ -419,9 +419,9 @@ class AddModelMenu:
             if custom_visible and i == len(filtered_models):
                 is_selected = i == self.selected_model_idx
                 if is_selected:
-                    lines.append(("fg:ansigreen bold", " > ✨ Custom model..."))
+                    lines.append(("fg:ansigreen bold", " > Custom model..."))
                 else:
-                    lines.append(("fg:ansigreen", "   ✨ Custom model..."))
+                    lines.append(("fg:ansigreen", "   Custom model..."))
                 lines.append(("", "\n"))
                 continue
 
@@ -431,11 +431,11 @@ class AddModelMenu:
             # Create capability icons
             icons = []
             if model.has_vision:
-                icons.append("👁")
+                icons.append("")
             if model.tool_call:
-                icons.append("🔧")
+                icons.append("")
             if model.reasoning:
-                icons.append("🧠")
+                icons.append("")
 
             icon_str = " ".join(icons) + " " if icons else ""
 
@@ -504,7 +504,7 @@ class AddModelMenu:
             # Show unsupported warning if applicable
             if provider.id in UNSUPPORTED_PROVIDERS:
                 lines.append(("", "\n"))
-                lines.append(("fg:ansired bold", "  ⚠️  UNSUPPORTED PROVIDER"))
+                lines.append(("fg:ansired bold", "   UNSUPPORTED PROVIDER"))
                 lines.append(("", "\n"))
                 lines.append(("fg:ansired", f"  {UNSUPPORTED_PROVIDERS[provider.id]}"))
                 lines.append(("", "\n"))
@@ -541,7 +541,7 @@ class AddModelMenu:
 
             # Handle custom model option
             if self._is_custom_model_selected():
-                lines.append(("bold", "  ✨ Custom Model"))
+                lines.append(("bold", "  Custom Model"))
                 lines.append(("", "\n\n"))
                 lines.append(("fg:ansigreen", "  Add a model not listed in models.dev"))
                 lines.append(("", "\n\n"))
@@ -582,7 +582,7 @@ class AddModelMenu:
 
             # BIG WARNING for models without tool calling
             if not model.tool_call:
-                lines.append(("fg:ansiyellow bold", "  ⚠️  NO TOOL CALLING SUPPORT"))
+                lines.append(("fg:ansiyellow bold", "   NO TOOL CALLING SUPPORT"))
                 lines.append(("", "\n"))
                 lines.append(
                     ("fg:ansiyellow", "  This model cannot use tools (file ops,")
@@ -610,9 +610,9 @@ class AddModelMenu:
 
             for cap_name, has_cap in capabilities:
                 if has_cap:
-                    lines.append(("fg:green", f"    ✓ {cap_name}"))
+                    lines.append(("fg:green", f"    {cap_name}"))
                 else:
-                    lines.append(("fg:ansibrightblack", f"    ✗ {cap_name}"))
+                    lines.append(("fg:ansibrightblack", f"    {cap_name}"))
                 lines.append(("", "\n"))
 
             # Pricing
@@ -966,11 +966,11 @@ class AddModelMenu:
 
         if not missing_vars:
             emit_info(
-                f"✅ All required credentials for {provider.name} are already set!"
+                f"All required credentials for {provider.name} are already set!"
             )
             return True
 
-        emit_info(f"\n🔑 {provider.name} requires the following credentials:\n")
+        emit_info(f"\n{provider.name} requires the following credentials:\n")
 
         for env_var in missing_vars:
             # Show helpful hints based on common env var patterns
@@ -992,7 +992,7 @@ class AddModelMenu:
                 set_config_value(env_var, value)
                 # Also set in current environment so it's immediately available
                 os.environ[env_var] = value
-                emit_info(f"✅ Saved {env_var} to config")
+                emit_info(f"Saved {env_var} to config")
 
             except (KeyboardInterrupt, EOFError):
                 emit_info("")  # Clean newline
@@ -1033,7 +1033,7 @@ class AddModelMenu:
         if not provider:
             return None
 
-        emit_info(f"\n✨ Adding custom model for {provider.name}\n")
+        emit_info(f"\nAdding custom model for {provider.name}\n")
         emit_info("  Enter the model ID exactly as the provider expects it.")
         emit_info(
             "  Examples: gpt-4-turbo-preview, claude-3-opus-20240229, gemini-1.5-pro-latest\n"
@@ -1086,23 +1086,23 @@ class AddModelMenu:
     def _get_env_var_hint(self, env_var: str) -> str:
         """Get a helpful hint for common environment variables."""
         hints = {
-            "OPENAI_API_KEY": "💡 Get your API key from https://platform.openai.com/api-keys",
-            "ANTHROPIC_API_KEY": "💡 Get your API key from https://console.anthropic.com/",
-            "GEMINI_API_KEY": "💡 Get your API key from https://aistudio.google.com/apikey",
-            "GOOGLE_API_KEY": "💡 Get your API key from https://aistudio.google.com/apikey",
-            "AZURE_API_KEY": "💡 Get your API key from Azure Portal > Your OpenAI Resource > Keys",
-            "AZURE_RESOURCE_NAME": "💡 Your Azure OpenAI resource name (not the full URL)",
-            "GROQ_API_KEY": "💡 Get your API key from https://console.groq.com/keys",
-            "MISTRAL_API_KEY": "💡 Get your API key from https://console.mistral.ai/",
-            "COHERE_API_KEY": "💡 Get your API key from https://dashboard.cohere.com/api-keys",
-            "DEEPSEEK_API_KEY": "💡 Get your API key from https://platform.deepseek.com/",
-            "TOGETHER_API_KEY": "💡 Get your API key from https://api.together.xyz/settings/api-keys",
-            "FIREWORKS_API_KEY": "💡 Get your API key from https://fireworks.ai/api-keys",
-            "OPENROUTER_API_KEY": "💡 Get your API key from https://openrouter.ai/keys",
-            "PERPLEXITY_API_KEY": "💡 Get your API key from https://www.perplexity.ai/settings/api",
-            "CEREBRAS_API_KEY": "💡 Get your API key from https://cloud.cerebras.ai/",
-            "HUGGINGFACE_API_KEY": "💡 Get your API key from https://huggingface.co/settings/tokens",
-            "XAI_API_KEY": "💡 Get your API key from https://console.x.ai/",
+            "OPENAI_API_KEY": "Get your API key from https://platform.openai.com/api-keys",
+            "ANTHROPIC_API_KEY": "Get your API key from https://console.anthropic.com/",
+            "GEMINI_API_KEY": "Get your API key from https://aistudio.google.com/apikey",
+            "GOOGLE_API_KEY": "Get your API key from https://aistudio.google.com/apikey",
+            "AZURE_API_KEY": "Get your API key from Azure Portal > Your OpenAI Resource > Keys",
+            "AZURE_RESOURCE_NAME": "Your Azure OpenAI resource name (not the full URL)",
+            "GROQ_API_KEY": "Get your API key from https://console.groq.com/keys",
+            "MISTRAL_API_KEY": "Get your API key from https://console.mistral.ai/",
+            "COHERE_API_KEY": "Get your API key from https://dashboard.cohere.com/api-keys",
+            "DEEPSEEK_API_KEY": "Get your API key from https://platform.deepseek.com/",
+            "TOGETHER_API_KEY": "Get your API key from https://api.together.xyz/settings/api-keys",
+            "FIREWORKS_API_KEY": "Get your API key from https://fireworks.ai/api-keys",
+            "OPENROUTER_API_KEY": "Get your API key from https://openrouter.ai/keys",
+            "PERPLEXITY_API_KEY": "Get your API key from https://www.perplexity.ai/settings/api",
+            "CEREBRAS_API_KEY": "Get your API key from https://cloud.cerebras.ai/",
+            "HUGGINGFACE_API_KEY": "Get your API key from https://huggingface.co/settings/tokens",
+            "XAI_API_KEY": "Get your API key from https://console.x.ai/",
         }
         return hints.get(env_var, "")
 
@@ -1251,7 +1251,7 @@ class AddModelMenu:
 
         # Clear exit message (unless we're about to prompt for more input)
         if self.result not in ("pending_credentials", "pending_custom_model"):
-            emit_info("✓ Exited model browser")
+            emit_info("Exited model browser")
 
         # Handle unsupported provider
         if self.result == "unsupported" and self.current_provider:
@@ -1294,7 +1294,7 @@ class AddModelMenu:
             # Warn about non-tool-calling models
             if not self.pending_model.tool_call:
                 emit_warning(
-                    f"⚠️  {self.pending_model.name} does NOT support tool calling!\n"
+                    f" {self.pending_model.name} does NOT support tool calling!\n"
                     f"   This model won't be able to edit files, run commands, or use any tools.\n"
                     f"   It will be very limited for coding tasks."
                 )

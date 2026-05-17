@@ -136,7 +136,7 @@ def _handle_custom_command(command: str, name: str) -> Optional[Any]:
         prompt = content
 
     # Emit info message and return the special marker
-    emit_info(f"📝 Executing markdown command: {name}")
+    emit_info(f"Executing markdown command: {name}")
     return MarkdownCommandResult(prompt)
 
 

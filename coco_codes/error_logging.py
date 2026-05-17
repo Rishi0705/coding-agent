@@ -2,7 +2,7 @@
 
 Logs unexpected errors to XDG_STATE_HOME/coco_codes/logs/ for debugging purposes.
 Per XDG spec, logs are "state data" (actions history), not configuration.
-Error logging module for Coco Codes. 🤖
+Error logging module for Coco Codes. 
 """
 
 import os

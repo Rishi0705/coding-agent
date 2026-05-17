@@ -143,11 +143,11 @@ def _build_model_picker_choices(
     model_names: List[str],
 ) -> List[str]:
     """Build model picker choices with pinned/unpin indicators."""
-    choices = ["✓ (unpin)" if not pinned_model else "  (unpin)"]
+    choices = ["(unpin)" if not pinned_model else "  (unpin)"]
 
     for model_name in model_names:
         if model_name == pinned_model:
-            choices.append(f"✓ {model_name} (pinned)")
+            choices.append(f"{model_name} (pinned)")
         else:
             choices.append(f"  {model_name}")
 
@@ -157,8 +157,8 @@ def _build_model_picker_choices(
 def _normalize_model_choice(choice: str) -> str:
     """Normalize a picker choice into a model name or '(unpin)' string."""
     cleaned = choice.strip()
-    if cleaned.startswith("✓"):
-        cleaned = cleaned.lstrip("✓").strip()
+    if cleaned.startswith(""):
+        cleaned = cleaned.lstrip("").strip()
     if cleaned.endswith(" (pinned)"):
         cleaned = cleaned[: -len(" (pinned)")].strip()
     return cleaned
@@ -326,7 +326,7 @@ def _render_menu_panel(
 
             # Build the line
             if is_selected:
-                lines.append(("fg:ansigreen", "▶ "))
+                lines.append(("fg:ansigreen", ""))
                 lines.append(("fg:ansigreen bold", safe_display_name))
             else:
                 lines.append(("", "  "))
@@ -459,7 +459,7 @@ def _render_preview_panel(
     # Current status
     lines.append(("bold", "  Status: "))
     if is_current:
-        lines.append(("fg:ansigreen bold", "✓ Currently Active"))
+        lines.append(("fg:ansigreen bold", "Currently Active"))
     else:
         lines.append(("fg:ansibrightblack", "Not active"))
     lines.append(("", "\n"))
@@ -702,6 +702,6 @@ async def interactive_agent_picker() -> Optional[str]:
         set_awaiting_user_input(False)
 
     # Clear exit message
-    emit_info("✓ Exited agent picker")
+    emit_info("Exited agent picker")
 
     return result[0]

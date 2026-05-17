@@ -130,10 +130,10 @@ def split_for_protected_summarization(
     messages_to_summarize = messages[1:protected_start_idx]
 
     emit_info(
-        f"🔒 Protecting {len(protected_messages)} recent messages "
+        f"Protecting {len(protected_messages)} recent messages "
         f"({running_tokens} tokens, limit: {protected_tokens})"
     )
-    emit_info(f"📝 Summarizing {len(messages_to_summarize)} older messages")
+    emit_info(f"Summarizing {len(messages_to_summarize)} older messages")
 
     return messages_to_summarize, protected_messages
 
@@ -232,7 +232,7 @@ def _log_summarization_failure(error: Exception, fallback_note: str = "") -> Non
     if isinstance(error, SummarizationError) and error.original_error:
         underlying = type(error.original_error).__name__
         suffix = f" {fallback_note}" if fallback_note else ""
-        emit_warning(f"💡 Underlying error was {underlying}.{suffix}")
+        emit_warning(f"Underlying error was {underlying}.{suffix}")
     elif fallback_note:
         emit_warning(fallback_note)
 
@@ -333,7 +333,7 @@ def compact(
     # would defer summarization forever, letting history grow unbounded.
     if strategy == "summarization" and has_pending_tool_calls(filtered):
         emit_warning(
-            "⚠️  Summarization deferred: pending tool call(s) detected "
+            " Summarization deferred: pending tool call(s) detected "
             "after pruning orphans. Will retry on next invocation.",
             message_group="token_context_status",
         )
@@ -354,7 +354,7 @@ def compact(
         # The user's strategy preference is preserved for the next cycle.
         if not summarized_messages:
             emit_warning(
-                "↪️  Summarization produced no compaction; "
+                "↪ Summarization produced no compaction; "
                 "falling back to truncation for this cycle.",
                 message_group="token_context_status",
             )

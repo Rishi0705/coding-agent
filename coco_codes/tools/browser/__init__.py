@@ -19,7 +19,7 @@ def format_terminal_banner(text: str) -> str:
     Returns Rich markup string that can be used with Text.from_markup().
 
     Args:
-        text: The banner text (e.g., "TERMINAL OPEN 🖥️ localhost:8765")
+        text: The banner text (e.g., "TERMINAL OPEN localhost:8765")
 
     Returns:
         Rich markup formatted string

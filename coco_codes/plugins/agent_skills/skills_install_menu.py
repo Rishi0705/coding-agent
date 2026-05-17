@@ -136,15 +136,15 @@ class SkillsInstallMenu:
         """Return an emoji icon for a skill category name."""
 
         icons = {
-            "data": "📊",
-            "finance": "💰",
-            "legal": "⚖️",
-            "office": "📄",
-            "productmanagement": "📦",
-            "sales": "💼",
-            "biology": "🧬",
+            "data": "",
+            "finance": "",
+            "legal": "",
+            "office": "",
+            "productmanagement": "",
+            "sales": "",
+            "biology": "",
         }
-        return icons.get(_category_key(category), "📁")
+        return icons.get(_category_key(category), "")
 
     def _get_current_category(self) -> Optional[str]:
         """Get the currently highlighted category name."""
@@ -187,7 +187,7 @@ class SkillsInstallMenu:
 
         lines = []
 
-        lines.append(("bold bright_green", " 📂 CATEGORIES"))
+        lines.append(("bold bright_green", " CATEGORIES"))
         lines.append(("", "\n\n"))
 
         if not self.categories:
@@ -269,7 +269,7 @@ class SkillsInstallMenu:
             is_selected = i == self.selected_skill_idx
 
             installed = is_skill_installed(entry.id)
-            status_icon = "✓" if installed else "○"
+            status_icon = "" if installed else ""
             status_style = "fg:ansigreen" if installed else "fg:ansibrightblack"
 
             prefix = " > " if is_selected else "   "
@@ -297,7 +297,7 @@ class SkillsInstallMenu:
 
         lines = []
 
-        lines.append(("bold bright_green", " 📋 DETAILS"))
+        lines.append(("bold bright_green", " DETAILS"))
         lines.append(("", "\n\n"))
 
         if self.view_mode == "categories":
@@ -624,7 +624,7 @@ class SkillsInstallMenu:
         if self.result == "pending_install" and self.pending_entry:
             return _prompt_and_install(self.pending_entry)
 
-        emit_info("✓ Exited skills install browser")
+        emit_info("Exited skills install browser")
         return False
 
 

@@ -198,7 +198,7 @@ def ensure_config_exists():
         # Note: Using sys.stdout here for initial setup before messaging system is available
         import sys
 
-        sys.stdout.write("🚀 Let's set up Coco Codes.\n")
+        sys.stdout.write("Let's set up Coco Codes.\n")
         sys.stdout.flush()
         for key in missing:
             if key == "assistant_name":
@@ -1667,7 +1667,7 @@ def auto_save_session_if_enabled() -> bool:
         )
 
         emit_info(
-            f"💾 Auto-saved session: {metadata.message_count} messages ({metadata.total_tokens} tokens)"
+            f"Auto-saved session: {metadata.message_count} messages ({metadata.total_tokens} tokens)"
         )
 
         return True

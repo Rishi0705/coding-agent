@@ -547,7 +547,7 @@ def register_invoke_agent(agent):
 
             # Emit clean completion summary
             emit_success(
-                f"✓ {agent_name} completed successfully", message_group=group_id
+                f"{agent_name} completed successfully", message_group=group_id
             )
 
             return AgentInvokeOutput(
@@ -556,7 +556,7 @@ def register_invoke_agent(agent):
 
         except Exception as e:
             # Emit clean failure summary
-            emit_error(f"✗ {agent_name} failed: {str(e)}", message_group=group_id)
+            emit_error(f"{agent_name} failed: {str(e)}", message_group=group_id)
 
             # Full traceback for debugging
             error_msg = f"Error invoking agent '{agent_name}': {traceback.format_exc()}"
@@ -579,7 +579,7 @@ def register_invoke_agent(agent):
                         initial_prompt=prompt if is_new_session else None,
                     )
                     emit_info(
-                        f"💾 Saved partial session '{session_id}' "
+                        f"Saved partial session '{session_id}' "
                         f"({len(partial_history)} message(s)) before error",
                         message_group=group_id,
                     )

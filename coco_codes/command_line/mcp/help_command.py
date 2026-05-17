@@ -110,7 +110,7 @@ class HelpCommand(MCPCommandBase):
             # Status Indicators
             help_lines.append(Text("Status Indicators:", style="bold"))
             help_lines.append(
-                Text("✓ Running    ✗ Stopped    ⚠ Error    ⏸ Quarantined    ⭐ Popular")
+                Text("Running    Stopped    Error    Quarantined    Popular")
             )
             help_lines.append(Text(""))
 

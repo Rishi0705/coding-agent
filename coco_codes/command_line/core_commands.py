@@ -153,7 +153,7 @@ def handle_paste_command(command: str) -> bool:
     if placeholder:
         manager = get_clipboard_manager()
         count = manager.get_pending_count()
-        emit_success(f"📋 {placeholder}")
+        emit_success(f"{placeholder}")
         emit_info(f"Total pending clipboard images: {count}")
         emit_info("Type your prompt and press Enter to send with the image(s)")
     else:
@@ -192,13 +192,13 @@ def handle_tutorial_command(command: str) -> bool:
         result = future.result(timeout=300)  # 5 min timeout
 
     if result == "chatgpt":
-        emit_info("🔐 Starting ChatGPT OAuth flow...")
+        emit_info("Starting ChatGPT OAuth flow...")
         from coco_codes.plugins.chatgpt_oauth.oauth_flow import run_oauth_flow
 
         run_oauth_flow()
         set_model_and_reload_agent("chatgpt-gpt-5.4")
     elif result == "claude":
-        emit_info("🔐 Starting Claude Code OAuth flow...")
+        emit_info("Starting Claude Code OAuth flow...")
         from coco_codes.plugins.claude_code_oauth.register_callbacks import (
             _perform_authentication,
         )
@@ -206,9 +206,9 @@ def handle_tutorial_command(command: str) -> bool:
         _perform_authentication()
         set_model_and_reload_agent("claude-code-claude-opus-4-7")
     elif result == "completed":
-        emit_info("🎉 Tutorial complete! Happy coding!")
+        emit_info("Tutorial complete! Happy coding!")
     elif result == "skipped":
-        emit_info("⏭️ Tutorial skipped. Run /tutorial anytime!")
+        emit_info("⏭Tutorial skipped. Run /tutorial anytime!")
 
     return True
 

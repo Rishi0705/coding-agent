@@ -50,7 +50,7 @@ def make_steer_history_processor(agent: Any) -> Callable[..., List[ModelMessage]
         injected: List[ModelMessage] = []
         for steer_text in pending:
             preview = steer_text[:80] + ("..." if len(steer_text) > 80 else "")
-            emit_info(f"🎯 Injecting steer mid-turn — model will see: {preview!r}")
+            emit_info(f"Injecting steer mid-turn — model will see: {preview!r}")
             injected.append(ModelRequest(parts=[UserPromptPart(content=steer_text)]))
 
         # Append AFTER the existing messages. pydantic-ai passes this list

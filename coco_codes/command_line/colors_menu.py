@@ -21,44 +21,44 @@ from rich.console import Console
 
 # Banner display names with icons
 BANNER_DISPLAY_INFO = {
-    "thinking": ("THINKING", "⚡"),
+    "thinking": ("THINKING", ""),
     "agent_response": ("AGENT RESPONSE", ""),
-    "shell_command": ("SHELL COMMAND", "🚀"),
-    "read_file": ("READ FILE", "📂"),
-    "edit_file": ("EDIT FILE", "✏️"),
-    "create_file": ("CREATE FILE", "📝"),
-    "replace_in_file": ("REPLACE IN FILE", "✏️"),
-    "delete_snippet": ("DELETE SNIPPET", "✂️"),
-    "grep": ("GREP", "📂"),
-    "directory_listing": ("DIRECTORY LISTING", "📂"),
+    "shell_command": ("SHELL COMMAND", ""),
+    "read_file": ("READ FILE", ""),
+    "edit_file": ("EDIT FILE", ""),
+    "create_file": ("CREATE FILE", ""),
+    "replace_in_file": ("REPLACE IN FILE", ""),
+    "delete_snippet": ("DELETE SNIPPET", ""),
+    "grep": ("GREP", ""),
+    "directory_listing": ("DIRECTORY LISTING", ""),
     "agent_reasoning": ("AGENT REASONING", ""),
-    "invoke_agent": ("🤖 INVOKE AGENT", ""),
-    "subagent_response": ("✓ AGENT RESPONSE", ""),
+    "invoke_agent": ("INVOKE AGENT", ""),
+    "subagent_response": ("AGENT RESPONSE", ""),
     "list_agents": ("LIST AGENTS", ""),
-    "universal_constructor": ("UNIVERSAL CONSTRUCTOR", "🔧"),
-    "terminal_tool": ("TERMINAL TOOL", "🖥️"),
-    "llm_judge": ("LLM JUDGE", "⚖️"),
+    "universal_constructor": ("UNIVERSAL CONSTRUCTOR", ""),
+    "terminal_tool": ("TERMINAL TOOL", ""),
+    "llm_judge": ("LLM JUDGE", ""),
 }
 
 # Sample content to show after each banner
 BANNER_SAMPLE_CONTENT = {
     "thinking": "Let me analyze this code structure and figure out the best approach...",
     "agent_response": "I've implemented the feature you requested. The changes include...",
-    "shell_command": "$ npm run test -- --silent\n⏱ Timeout: 60s",
+    "shell_command": "$ npm run test -- --silent\nTimeout: 60s",
     "read_file": "/path/to/file.py (lines 1-50)",
     "edit_file": "MODIFY /path/to/file.py\n--- a/file.py\n+++ b/file.py",
     "create_file": "CREATE /path/to/new_file.py\nFile created successfully.",
     "replace_in_file": "MODIFY /path/to/file.py\n--- a/file.py\n+++ b/file.py",
     "delete_snippet": "MODIFY /path/to/file.py\nSnippet deleted from file.",
-    "grep": "/src for 'handleClick'\n📄 Button.tsx (3 matches)",
-    "directory_listing": "/src (recursive=True)\n📁 components/\n   └── Button.tsx",
+    "grep": "/src for 'handleClick'\nButton.tsx (3 matches)",
+    "directory_listing": "/src (recursive=True)\ncomponents/\n   Button.tsx",
     "agent_reasoning": "Current reasoning:\nI need to refactor this function...",
     "invoke_agent": "code-reviewer (New session)\nSession: review-auth-abc123",
     "subagent_response": "code-reviewer\nThe code looks good overall...",
-    "list_agents": "- coco-codes: Coco Codes 🤖\n- planning-agent: Planning Agent",
-    "universal_constructor": "action=create tool_name=api.weather\n✅ Created successfully",
+    "list_agents": "- coco-codes: Coco Codes \n- planning-agent: Planning Agent",
+    "universal_constructor": "action=create tool_name=api.weather\nCreated successfully",
     "terminal_tool": "$ chromium --headless\nBrowser terminal session started",
-    "llm_judge": "🎯 Verdict: Complete ✅\nGoal verified — all tests pass.",
+    "llm_judge": "Verdict: Complete \nGoal verified — all tests pass.",
 }
 
 # Available background colors grouped by theme
@@ -182,14 +182,14 @@ async def interactive_colors_picker() -> Optional[dict]:
 
             # Add action items
             if config.has_changes():
-                choices.append("─── Actions ───")
-                choices.append("💾 Save & Exit")
-                choices.append("🔄 Reset All to Defaults")
-                choices.append("❌ Discard & Exit")
+                choices.append("Actions ")
+                choices.append("Save & Exit")
+                choices.append("Reset All to Defaults")
+                choices.append("Discard & Exit")
             else:
-                choices.append("─── Actions ───")
-                choices.append("🔄 Reset All to Defaults")
-                choices.append("❌ Exit")
+                choices.append("Actions ")
+                choices.append("Reset All to Defaults")
+                choices.append("Exit")
 
             def dummy_update(choice: str):
                 pass
@@ -217,10 +217,10 @@ async def interactive_colors_picker() -> Optional[dict]:
                 from coco_codes.config import DEFAULT_BANNER_COLORS
 
                 config.current_colors = DEFAULT_BANNER_COLORS.copy()
-            elif "Discard" in selected or selected == "❌ Exit":
+            elif "Discard" in selected or selected == "Exit":
                 config.current_colors = config.original_colors.copy()
                 break
-            elif "───" in selected:
+            elif "" in selected:
                 # Separator - do nothing
                 pass
             else:
@@ -245,7 +245,7 @@ async def interactive_colors_picker() -> Optional[dict]:
     # Clear exit message
     from coco_codes.messaging import emit_info
 
-    emit_info("✓ Exited banner color configuration")
+    emit_info("Exited banner color configuration")
 
     # Return changes if any
     if config.has_changes():
@@ -278,11 +278,11 @@ async def _split_panel_selector(
             else:
                 for i, choice in enumerate(choices):
                     # Skip separator lines for selection highlighting
-                    if "───" in choice:
+                    if "" in choice:
                         lines.append(("fg:ansigray", f"  {choice}"))
                         lines.append(("", "\n"))
                     elif i == selected_index[0]:
-                        lines.append(("fg:ansigreen", "▶ "))
+                        lines.append(("fg:ansigreen", ""))
                         lines.append(("fg:ansigreen bold", choice))
                         lines.append(("", "\n"))
                     else:
@@ -292,7 +292,7 @@ async def _split_panel_selector(
 
             lines.append(("", "\n"))
             lines.append(
-                ("fg:ansigreen", "↑↓ Navigate  │  Enter Select  │  Ctrl-C Cancel")
+                ("fg:ansigreen", "↑↓ Navigate   Enter Select   Ctrl-C Cancel")
             )
             return FormattedText(lines)
         except Exception as e:
@@ -314,7 +314,7 @@ async def _split_panel_selector(
         if choices:
             # Skip separator lines
             new_idx = (selected_index[0] - 1) % len(choices)
-            while "───" in choices[new_idx]:
+            while "" in choices[new_idx]:
                 new_idx = (new_idx - 1) % len(choices)
             selected_index[0] = new_idx
             on_change(choices[selected_index[0]])
@@ -326,7 +326,7 @@ async def _split_panel_selector(
         if choices:
             # Skip separator lines
             new_idx = (selected_index[0] + 1) % len(choices)
-            while "───" in choices[new_idx]:
+            while "" in choices[new_idx]:
                 new_idx = (new_idx + 1) % len(choices)
             selected_index[0] = new_idx
             on_change(choices[selected_index[0]])
@@ -409,9 +409,9 @@ def _get_preview_text_for_prompt_toolkit(config: ColorConfiguration) -> ANSI:
     )
 
     # Header
-    console.print("[bold]═" * 60 + "[/bold]")
+    console.print("[bold]" * 60 + "[/bold]")
     console.print("[bold bright_green] LIVE PREVIEW - Banner Colors[/bold bright_green]")
-    console.print("[bold]═" * 60 + "[/bold]")
+    console.print("[bold]" * 60 + "[/bold]")
     console.print()
 
     # Show each banner with its current color
@@ -423,7 +423,7 @@ def _get_preview_text_for_prompt_toolkit(config: ColorConfiguration) -> ANSI:
         # Highlight the currently selected banner
         is_selected = key == config.get_current_banner_key()
         if is_selected:
-            console.print("[bold bright_green]▶[/bold bright_green] ", end="")
+            console.print("[bold bright_green][/bold bright_green] ", end="")
         else:
             console.print("  ", end="")
 
@@ -443,7 +443,7 @@ def _get_preview_text_for_prompt_toolkit(config: ColorConfiguration) -> ANSI:
                 console.print(f"    [dim]{line}[/dim]")
         console.print()
 
-    console.print("[bold]═" * 60 + "[/bold]")
+    console.print("[bold]" * 60 + "[/bold]")
 
     ansi_output = buffer.getvalue()
     return ANSI(ansi_output)
@@ -508,10 +508,10 @@ def _get_single_banner_preview(config: ColorConfiguration) -> ANSI:
     sample = BANNER_SAMPLE_CONTENT[banner_key]
 
     # Header
-    console.print("[bold]═" * 60 + "[/bold]")
+    console.print("[bold]" * 60 + "[/bold]")
     console.print(f"[bold bright_green] Editing: {display_name}[/bold bright_green]")
     console.print(f" Current Color: [bold]{color}[/bold]")
-    console.print("[bold]═" * 60 + "[/bold]")
+    console.print("[bold]" * 60 + "[/bold]")
     console.print()
 
     # Show the banner large
@@ -528,7 +528,7 @@ def _get_single_banner_preview(config: ColorConfiguration) -> ANSI:
         console.print(f"[dim]{line}[/dim]")
 
     console.print()
-    console.print("[bold]═" * 60 + "[/bold]")
+    console.print("[bold]" * 60 + "[/bold]")
 
     ansi_output = buffer.getvalue()
     return ANSI(ansi_output)

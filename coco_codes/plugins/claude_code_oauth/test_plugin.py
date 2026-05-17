@@ -23,11 +23,11 @@ def test_plugin_imports() -> bool:
             get_token_storage_path,
         )
 
-        print("✅ Config import successful")
-        print(f"✅ Token storage path: {get_token_storage_path()}")
-        print(f"✅ Known auth URL: {CLAUDE_CODE_OAUTH_CONFIG['auth_url']}")
+        print("Config import successful")
+        print(f"Token storage path: {get_token_storage_path()}")
+        print(f"Known auth URL: {CLAUDE_CODE_OAUTH_CONFIG['auth_url']}")
     except Exception as exc:  # pragma: no cover - manual harness
-        print(f"❌ Config import failed: {exc}")
+        print(f"Config import failed: {exc}")
         return False
 
     try:
@@ -58,9 +58,9 @@ def test_plugin_imports() -> bool:
             save_claude_models,
             save_tokens,
         )
-        print("✅ Utils import successful")
+        print("Utils import successful")
     except Exception as exc:  # pragma: no cover - manual harness
-        print(f"❌ Utils import failed: {exc}")
+        print(f"Utils import failed: {exc}")
         return False
 
     try:
@@ -70,13 +70,13 @@ def test_plugin_imports() -> bool:
         )
 
         commands = _custom_help()
-        print("✅ Callback registration import successful")
+        print("Callback registration import successful")
         for name, description in commands:
             print(f"  /{name} - {description}")
         # Ensure handler callable exists
         _ = _handle_custom_command
     except Exception as exc:  # pragma: no cover - manual harness
-        print(f"❌ Callback import failed: {exc}")
+        print(f"Callback import failed: {exc}")
         return False
 
     return True
@@ -105,7 +105,7 @@ def test_oauth_helpers() -> bool:
         auth_url = build_authorization_url(context)
         parsed = urlparse(auth_url)
         params = parse_qs(parsed.query)
-        print(f"✅ Authorization URL: {auth_url}")
+        print(f"Authorization URL: {auth_url}")
         assert parsed.scheme == "https", "Authorization URL must use https"
         assert params.get("client_id", [None])[0], "client_id missing"
         assert params.get("code_challenge_method", [None])[0] == "S256"
@@ -116,19 +116,19 @@ def test_oauth_helpers() -> bool:
         parsed_code, parsed_state = parse_authorization_code(sample_code)
         assert parsed_code == "MYCODE", "Code parsing failed"
         assert parsed_state == context.state, "State parsing failed"
-        print("✅ parse_authorization_code handled state suffix correctly")
+        print("parse_authorization_code handled state suffix correctly")
 
         parsed_code, parsed_state = parse_authorization_code("SINGLECODE")
         assert parsed_code == "SINGLECODE" and parsed_state is None
-        print("✅ parse_authorization_code handled bare code correctly")
+        print("parse_authorization_code handled bare code correctly")
 
         return True
 
     except AssertionError as exc:
-        print(f"❌ Assertion failed: {exc}")
+        print(f"Assertion failed: {exc}")
         return False
     except Exception as exc:  # pragma: no cover - manual harness
-        print(f"❌ OAuth helper test crashed: {exc}")
+        print(f"OAuth helper test crashed: {exc}")
         import traceback
 
         traceback.print_exc()
@@ -150,10 +150,10 @@ def test_file_operations() -> bool:
         )
 
         tokens = load_stored_tokens()
-        print(f"✅ Token load result: {'present' if tokens else 'none'}")
+        print(f"Token load result: {'present' if tokens else 'none'}")
 
         models = load_claude_models()
-        print(f"✅ Loaded {len(models)} Claude models")
+        print(f"Loaded {len(models)} Claude models")
         for name, config in models.items():
             print(f"  - {name}: {config.get('type', 'unknown type')}")
 
@@ -161,13 +161,13 @@ def test_file_operations() -> bool:
         models_path = get_claude_models_path()
         token_path.parent.mkdir(parents=True, exist_ok=True)
         models_path.parent.mkdir(parents=True, exist_ok=True)
-        print(f"✅ Token path: {token_path}")
-        print(f"✅ Models path: {models_path}")
+        print(f"Token path: {token_path}")
+        print(f"Models path: {models_path}")
 
         return True
 
     except Exception as exc:  # pragma: no cover - manual harness
-        print(f"❌ File operations test failed: {exc}")
+        print(f"File operations test failed: {exc}")
         import traceback
 
         traceback.print_exc()
@@ -183,10 +183,10 @@ def test_command_handlers() -> bool:
     )
 
     unknown = _handle_custom_command("/bogus", "bogus")
-    print(f"✅ Unknown command returned: {unknown}")
+    print(f"Unknown command returned: {unknown}")
 
     partial = _handle_custom_command("/claude-code", "claude-code")
-    print(f"✅ Partial command returned: {partial}")
+    print(f"Partial command returned: {partial}")
 
     # Do not invoke the real auth command here because it prompts for input.
     return True
@@ -217,24 +217,24 @@ def test_configuration() -> bool:
 
         missing = [key for key in required_keys if key not in CLAUDE_CODE_OAUTH_CONFIG]
         if missing:
-            print(f"❌ Missing configuration keys: {missing}")
+            print(f"Missing configuration keys: {missing}")
             return False
 
         for key in required_keys:
             value = CLAUDE_CODE_OAUTH_CONFIG[key]
-            print(f"✅ {key}: {value}")
+            print(f"{key}: {value}")
 
         for url_key in ["auth_url", "token_url", "api_base_url"]:
             url = CLAUDE_CODE_OAUTH_CONFIG[url_key]
             if not str(url).startswith("https://"):
-                print(f"❌ URL must use HTTPS: {url_key} -> {url}")
+                print(f"URL must use HTTPS: {url_key} -> {url}")
                 return False
-            print(f"✅ {url_key} uses HTTPS")
+            print(f"{url_key} uses HTTPS")
 
         return True
 
     except Exception as exc:  # pragma: no cover - manual harness
-        print(f"❌ Configuration test crashed: {exc}")
+        print(f"Configuration test crashed: {exc}")
         import traceback
 
         traceback.print_exc()
@@ -260,22 +260,22 @@ def main() -> bool:
             if test():
                 passed += 1
             else:
-                print("\n❌ Test failed")
+                print("\nTest failed")
         except Exception as exc:  # pragma: no cover - manual harness
-            print(f"\n❌ Test crashed: {exc}")
+            print(f"\nTest crashed: {exc}")
 
     print("\n=== Test Results ===")
     print(f"Passed: {passed}/{len(tests)}")
 
     if passed == len(tests):
-        print("✅ All sanity checks passed!")
+        print("All sanity checks passed!")
         print("Next steps:")
         print("1. Restart Coco Codes if it was running")
         print("2. Run /claude-code-auth")
         print("3. Paste the Claude Console authorization code when prompted")
         return True
 
-    print("❌ Some checks failed. Investigate before using the plugin.")
+    print("Some checks failed. Investigate before using the plugin.")
     return False
 
 

@@ -122,7 +122,7 @@ async def shell_safety_callback(
                 risk_display = cached.risk or "unknown"
                 concise_reason = cached.reasoning or "No reasoning provided"
                 error_msg = (
-                    f"🛑 Command blocked (risk {risk_display.upper()} > permission {threshold.upper()}).\n"
+                    f"Command blocked (risk {risk_display.upper()} > permission {threshold.upper()}).\n"
                     f"Reason: {concise_reason}\n"
                     f"Override: /set yolo_mode true or /set safety_permission_level {risk_display}"
                 )
@@ -161,7 +161,7 @@ async def shell_safety_callback(
             risk_display = assessment.risk or "unknown"
             concise_reason = assessment.reasoning or "No reasoning provided"
             error_msg = (
-                f"🛑 Command blocked (risk {risk_display.upper()} > permission {threshold.upper()}).\n"
+                f"Command blocked (risk {risk_display.upper()} > permission {threshold.upper()}).\n"
                 f"Reason: {concise_reason}\n"
                 f"Override: /set yolo_mode true or /set safety_permission_level {risk_display}"
             )
@@ -181,7 +181,7 @@ async def shell_safety_callback(
     except Exception as e:
         # On any error, fail safe by blocking the command
         error_msg = (
-            f"🛑 Command blocked (risk HIGH > permission {threshold.upper()}).\n"
+            f"Command blocked (risk HIGH > permission {threshold.upper()}).\n"
             f"Reason: Safety assessment error: {str(e)}\n"
             f"Override: /set yolo_mode true or /set safety_permission_level high"
         )

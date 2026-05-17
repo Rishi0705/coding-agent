@@ -1,6 +1,6 @@
 """Interactive TUI onboarding wizard for first-time Coco Codes users.
 
-🤖 Quick 5-slide tutorial. concise!
+Quick 5-slide tutorial. concise!
 
 Usage:
     from coco_codes.command_line.onboarding_wizard import (
@@ -104,9 +104,9 @@ class OnboardingWizard:
         self._should_exit = False
 
     def get_progress_indicator(self) -> str:
-        """Progress dots: ● ○ ○ ○ ○"""
+        """Progress dots: """
         return " ".join(
-            "●" if i == self.current_slide else "○" for i in range(self.TOTAL_SLIDES)
+            "" if i == self.current_slide else "" for i in range(self.TOTAL_SLIDES)
         )
 
     def get_slide_content(self) -> str:
@@ -291,7 +291,7 @@ async def run_onboarding_wizard() -> Optional[str]:
             content=FormattedTextControl(lambda: _get_slide_panel_content(wizard))
         )
 
-        root_container = Frame(slide_panel, title="🤖 Coco Codes Tutorial")
+        root_container = Frame(slide_panel, title="Coco Codes Tutorial")
         layout = Layout(root_container)
 
         app = Application(
@@ -320,11 +320,11 @@ async def run_onboarding_wizard() -> Optional[str]:
     from coco_codes.messaging import emit_info
 
     if wizard.result == "skipped":
-        emit_info("✓ Tutorial skipped")
+        emit_info("Tutorial skipped")
     elif wizard.result == "completed":
-        emit_info("✓ Tutorial completed! Welcome to Coco Codes! 🤖")
+        emit_info("Tutorial completed! Welcome to Coco Codes! ")
     else:
-        emit_info("✓ Exited tutorial")
+        emit_info("Exited tutorial")
 
     if wizard.result in ("completed", "skipped"):
         mark_onboarding_complete()

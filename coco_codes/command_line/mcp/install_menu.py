@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 PAGE_SIZE = 12  # Items per page
 
 # Special category for custom servers
-CUSTOM_SERVER_CATEGORY = "➕ Custom Server"
+CUSTOM_SERVER_CATEGORY = "Custom Server"
 
 
 class MCPInstallMenu:
@@ -99,22 +99,22 @@ class MCPInstallMenu:
     def _get_category_icon(self, category: str) -> str:
         """Get an icon for a category."""
         if category == CUSTOM_SERVER_CATEGORY:
-            return "➕"
+            return ""
         icons = {
-            "Code": "💻",
-            "Storage": "💾",
-            "Database": "🗄️",
-            "Documentation": "📝",
-            "DevOps": "🔧",
-            "Monitoring": "📊",
-            "Package Management": "📦",
-            "Communication": "💬",
-            "AI": "🤖",
-            "Search": "🔍",
-            "Development": "🛠️",
-            "Cloud": "☁️",
+            "Code": "",
+            "Storage": "",
+            "Database": "",
+            "Documentation": "",
+            "DevOps": "",
+            "Monitoring": "",
+            "Package Management": "",
+            "Communication": "",
+            "AI": "",
+            "Search": "",
+            "Development": "",
+            "Cloud": "",
         }
-        return icons.get(category, "📁")
+        return icons.get(category, "")
 
     def _is_custom_server_selected(self) -> bool:
         """Check if the custom server category is selected."""
@@ -129,7 +129,7 @@ class MCPInstallMenu:
         """Render the category list panel."""
         lines = []
 
-        lines.append(("bold bright_green", " 📂 CATEGORIES"))
+        lines.append(("bold bright_green", " CATEGORIES"))
         lines.append(("", "\n\n"))
 
         if not self.categories:
@@ -212,9 +212,9 @@ class MCPInstallMenu:
             # Create indicator icons
             icons = []
             if server.verified:
-                icons.append("✓")
+                icons.append("")
             if server.popular:
-                icons.append("⭐")
+                icons.append("")
 
             icon_str = " ".join(icons) + " " if icons else ""
 
@@ -260,7 +260,7 @@ class MCPInstallMenu:
         """Render the details panel."""
         lines = []
 
-        lines.append(("bold bright_green", " 📋 DETAILS"))
+        lines.append(("bold bright_green", " DETAILS"))
         lines.append(("", "\n\n"))
 
         if self.view_mode == "categories":
@@ -285,7 +285,7 @@ class MCPInstallMenu:
             # Show popular servers in this category
             popular = [s for s in servers if s.popular]
             if popular:
-                lines.append(("bold", "  ⭐ Popular:"))
+                lines.append(("bold", "  Popular:"))
                 lines.append(("", "\n"))
                 for server in popular[:5]:
                     lines.append(("fg:ansibrightblack", f"    • {server.display_name}"))
@@ -300,9 +300,9 @@ class MCPInstallMenu:
             # Server name with indicators
             indicators = []
             if server.verified:
-                indicators.append("✓ Verified")
+                indicators.append("Verified")
             if server.popular:
-                indicators.append("⭐ Popular")
+                indicators.append("Popular")
 
             lines.append(("bold", f"  {server.display_name}"))
             lines.append(("", "\n"))
@@ -337,8 +337,8 @@ class MCPInstallMenu:
             # Type
             lines.append(("bold", "  Type:"))
             lines.append(("", "\n"))
-            type_icons = {"stdio": "📟", "http": "🌐", "sse": "📡"}
-            type_icon = type_icons.get(server.type, "❓")
+            type_icons = {"stdio": "", "http": "", "sse": ""}
+            type_icon = type_icons.get(server.type, "")
             lines.append(("fg:ansibrightblack", f"    {type_icon} {server.type}"))
             lines.append(("", "\n\n"))
 
@@ -356,22 +356,22 @@ class MCPInstallMenu:
             # Environment variables
             env_vars = server.get_environment_vars()
             if env_vars:
-                lines.append(("bold", "  🔑 Environment Variables:"))
+                lines.append(("bold", "  Environment Variables:"))
                 lines.append(("", "\n"))
                 for var in env_vars:
                     # Check if already set
                     is_set = os.environ.get(var)
                     if is_set:
-                        lines.append(("fg:green", f"    ✓ {var}"))
+                        lines.append(("fg:green", f"    {var}"))
                     else:
-                        lines.append(("fg:yellow", f"    ○ {var}"))
+                        lines.append(("fg:yellow", f"    {var}"))
                     lines.append(("", "\n"))
                 lines.append(("", "\n"))
 
             # Command line args
             cmd_args = server.get_command_line_args()
             if cmd_args:
-                lines.append(("bold", "  ⚙️ Configuration:"))
+                lines.append(("bold", "  Configuration:"))
                 lines.append(("", "\n"))
                 for arg in cmd_args:
                     name = arg.get("name", "unknown")
@@ -388,14 +388,14 @@ class MCPInstallMenu:
             # Required tools
             required_tools = requirements.required_tools
             if required_tools:
-                lines.append(("bold", "  🛠️ Required Tools:"))
+                lines.append(("bold", "  Required Tools:"))
                 lines.append(("", "\n"))
                 lines.append(("fg:ansibrightblack", f"    {', '.join(required_tools)}"))
                 lines.append(("", "\n\n"))
 
             # Example usage
             if server.example_usage:
-                lines.append(("bold", "  💡 Example:"))
+                lines.append(("bold", "  Example:"))
                 lines.append(("", "\n"))
                 lines.append(("fg:ansibrightblack", f"    {server.example_usage}"))
                 lines.append(("", "\n"))
@@ -406,10 +406,10 @@ class MCPInstallMenu:
         """Render details for the custom server option."""
         lines = []
 
-        lines.append(("bold bright_green", " 📋 DETAILS"))
+        lines.append(("bold bright_green", " DETAILS"))
         lines.append(("", "\n\n"))
 
-        lines.append(("bold green", "  ➕ Add Custom MCP Server"))
+        lines.append(("bold green", "  Add Custom MCP Server"))
         lines.append(("", "\n\n"))
 
         lines.append(("fg:ansibrightblack", "  Add your own MCP server by providing"))
@@ -417,7 +417,7 @@ class MCPInstallMenu:
         lines.append(("fg:ansibrightblack", "  a JSON configuration."))
         lines.append(("", "\n\n"))
 
-        lines.append(("bold", "  📟 Supported Types:"))
+        lines.append(("bold", "  Supported Types:"))
         lines.append(("", "\n\n"))
 
         lines.append(("fg:ansigreen bold", "  1. stdio"))
@@ -443,7 +443,7 @@ class MCPInstallMenu:
         lines.append(("fg:ansibrightblack", "     for real-time streaming."))
         lines.append(("", "\n\n"))
 
-        lines.append(("bold", "  💡 Press Enter to configure"))
+        lines.append(("bold", "  Press Enter to configure"))
         lines.append(("", "\n"))
 
         return lines
@@ -668,7 +668,7 @@ class MCPInstallMenu:
 
         # Clear exit message (unless we're about to prompt for more input)
         if self.result not in ("pending_custom", "pending_install"):
-            emit_info("✓ Exited MCP server browser")
+            emit_info("Exited MCP server browser")
 
         # Handle custom server after TUI exits
         if self.result == "pending_custom":

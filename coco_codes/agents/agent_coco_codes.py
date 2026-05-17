@@ -15,7 +15,7 @@ class CocoCodesAgent(BaseAgent):
 
     @property
     def display_name(self) -> str:
-        return "Coco Codes 🤖"
+        return "Coco Codes "
 
     @property
     def description(self) -> str:

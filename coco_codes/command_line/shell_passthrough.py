@@ -44,7 +44,7 @@ def _format_banner() -> str:
         Rich markup string for the banner.
     """
     color = get_banner_color(_BANNER_NAME)
-    return f"[bold white on {color}] 🐚 SHELL PASSTHROUGH [/bold white on {color}]"
+    return f"[bold white on {color}] SHELL PASSTHROUGH [/bold white on {color}]"
 
 
 def is_shell_passthrough(task: str) -> bool:
@@ -126,18 +126,18 @@ def execute_shell_passthrough(task: str) -> None:
 
         if result.returncode == 0:
             console.print(
-                f"[bold green]✅ Done[/bold green] [dim]({elapsed:.1f}s)[/dim]"
+                f"[bold green]Done[/bold green] [dim]({elapsed:.1f}s)[/dim]"
             )
         else:
             console.print(
-                f"[bold bright_green]❌ Exit code {result.returncode}[/bold bright_green] "
+                f"[bold bright_green]Exit code {result.returncode}[/bold bright_green] "
                 f"[dim]({elapsed:.1f}s)[/dim]"
             )
 
     except KeyboardInterrupt:
         elapsed = time.monotonic() - start_time
         console.print(
-            f"\n[bold bright_green]⚡ Interrupted[/bold bright_green] [dim]({elapsed:.1f}s)[/dim]"
+            f"\n[bold bright_green]Interrupted[/bold bright_green] [dim]({elapsed:.1f}s)[/dim]"
         )
 
     except Exception as e:

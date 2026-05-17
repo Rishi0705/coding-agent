@@ -11,11 +11,11 @@ Commands are used for:
 The UI layer creates these commands and sends them to the agent/runtime.
 The agent processes them and may emit messages in response.
 
-    ┌─────────┐   Commands    ┌─────────┐
-    │   UI    │ ────────────> │  Agent  │
-    │ (User)  │               │         │
-    │         │ <──────────── │         │
-    └─────────┘   Messages    └─────────┘
+      Commands    
+      UI    >  Agent  
+    (User)                        
+            <        
+      Messages    
 
 NO Rich markup or formatting should be embedded in any string fields.
 """

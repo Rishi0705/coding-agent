@@ -22,7 +22,7 @@ async def save_workflow(name: str, content: str) -> Dict[str, Any]:
     """Save a browser workflow as a markdown file."""
     group_id = generate_group_id("save_workflow", name)
     emit_info(
-        f"SAVE WORKFLOW 💾 name='{name}'",
+        f"SAVE WORKFLOW name='{name}'",
         message_group=group_id,
     )
 
@@ -86,7 +86,7 @@ async def list_workflows() -> Dict[str, Any]:
     """List all available browser workflows."""
     group_id = generate_group_id("list_workflows")
     emit_info(
-        "LIST WORKFLOWS 📋",
+        "LIST WORKFLOWS ",
         message_group=group_id,
     )
 
@@ -138,7 +138,7 @@ async def read_workflow(name: str) -> Dict[str, Any]:
     """Read a saved browser workflow."""
     group_id = generate_group_id("read_workflow", name)
     emit_info(
-        f"READ WORKFLOW 📖 name='{name}'",
+        f"READ WORKFLOW name='{name}'",
         message_group=group_id,
     )
 

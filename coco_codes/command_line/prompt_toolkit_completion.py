@@ -577,7 +577,7 @@ def get_prompt_with_active_model(base: str = ">>> "):
         cwd_display = cwd
     return FormattedText(
         [
-            ("bold", "🤖 "),
+            ("bold", ""),
             ("class:assistant", f"{assistant}"),
             ("", " "),
             ("class:agent", f"[{_normalize_emoji_spacing(agent_display)}] "),
@@ -824,10 +824,10 @@ async def get_input_with_combined_completion(
                     event.app.output.bell()
             else:
                 # Insert a transient message that user can delete
-                event.app.current_buffer.insert_text("[⚠️ no image in clipboard] ")
+                event.app.current_buffer.insert_text("[no image in clipboard] ")
                 event.app.output.bell()
         except Exception:
-            event.app.current_buffer.insert_text("[❌ clipboard error] ")
+            event.app.current_buffer.insert_text("[clipboard error] ")
             event.app.output.bell()
 
     session = PromptSession(

@@ -94,7 +94,7 @@ class MCPConfigWizard:
 
             group_id = str(uuid.uuid4())
 
-        emit_info("🧙 MCP Server Configuration Wizard", message_group=group_id)
+        emit_info("MCP Server Configuration Wizard", message_group=group_id)
 
         # Step 1: Server name
         name = self.prompt_server_name(group_id)
@@ -393,14 +393,14 @@ class MCPConfigWizard:
                 # Try to get the pydantic server (this validates config)
                 server = managed.get_pydantic_server()
                 if server:
-                    emit_success("✓ Configuration valid", message_group=group_id)
+                    emit_success("Configuration valid", message_group=group_id)
                     return True
 
-            emit_error("✗ Failed to create server instance", message_group=group_id)
+            emit_error("Failed to create server instance", message_group=group_id)
             return False
 
         except Exception as e:
-            emit_error(f"✗ Configuration error: {e}", message_group=group_id)
+            emit_error(f"Configuration error: {e}", message_group=group_id)
             return False
 
     def prompt_confirmation(self, config: ServerConfig, group_id: str = None) -> bool:
@@ -456,7 +456,7 @@ def run_add_wizard(group_id: str = None) -> bool:
             server_id = manager.register_server(config)
 
             emit_success(
-                f"\n✅ Server '{config.name}' added successfully!",
+                f"\nServer '{config.name}' added successfully!",
                 message_group=group_id,
             )
             emit_info(f"Server ID: {server_id}", message_group=group_id)

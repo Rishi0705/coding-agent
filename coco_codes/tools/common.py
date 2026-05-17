@@ -496,7 +496,7 @@ def should_ignore_dir_path(path: str) -> bool:
 # SYNTAX HIGHLIGHTING FOR DIFFS ("syntax" mode)
 # ============================================================================
 
-# Monokai color scheme - because we have taste 🎨
+# Monokai color scheme - because we have taste 
 TOKEN_COLORS = (
     {
         Token.Keyword: "#f92672" if PYGMENTS_AVAILABLE else "green",
@@ -840,7 +840,7 @@ async def arrow_select_async(
         for i, choice in enumerate(choices):
             safe_choice = html.escape(choice)
             if i == selected_index[0]:
-                lines.append(f"<ansigreen>❯ {safe_choice}</ansigreen>")
+                lines.append(f"<ansigreen>{safe_choice}</ansigreen>")
             else:
                 lines.append(f"  {safe_choice}")
         lines.append("")
@@ -854,11 +854,11 @@ async def arrow_select_async(
                 # Box width (excluding borders and padding)
                 box_width = 60
                 border_top = (
-                    "<ansiyellow>┌─ Preview "
-                    + "─" * (box_width - 10)
-                    + "┐</ansiyellow>"
+                    "<ansiyellow>Preview "
+                    + "" * (box_width - 10)
+                    + "</ansiyellow>"
                 )
-                border_bottom = "<ansiyellow>└" + "─" * box_width + "┘</ansiyellow>"
+                border_bottom = "<ansiyellow>" + "" * box_width + "</ansiyellow>"
 
                 lines.append(border_top)
 
@@ -873,7 +873,7 @@ async def arrow_select_async(
                     safe_preview = html.escape(wrapped_line)
                     # Pad line to box width for consistent appearance
                     padded_line = safe_preview.ljust(box_width - 2)
-                    lines.append(f"<dim>│ {padded_line} │</dim>")
+                    lines.append(f"<dim>{padded_line} </dim>")
 
                 lines.append(border_bottom)
                 lines.append("")
@@ -954,7 +954,7 @@ def arrow_select(message: str, choices: list[str]) -> str:
         lines = [f"<b>{message}</b>", ""]
         for i, choice in enumerate(choices):
             if i == selected_index[0]:
-                lines.append(f"<ansigreen>❯ {choice}</ansigreen>")
+                lines.append(f"<ansigreen>{choice}</ansigreen>")
             else:
                 lines.append(f"  {choice}")
         lines.append("")
@@ -1126,17 +1126,17 @@ def get_user_approval(
 
         # Show arrow-key selector
         choice = arrow_select(
-            "💭 What would you like to do?",
+            "What would you like to do?",
             [
-                "✓ Approve",
-                "✗ Reject",
-                f"💬 Reject with feedback (tell {assistant_name} what to change)",
+                "Approve",
+                "Reject",
+                f"Reject with feedback (tell {assistant_name} what to change)",
             ],
         )
 
-        if choice == "✓ Approve":
+        if choice == "Approve":
             confirmed = True
-        elif choice == "✗ Reject":
+        elif choice == "Reject":
             confirmed = False
         else:
             # User wants to provide feedback
@@ -1144,7 +1144,7 @@ def get_user_approval(
             emit_info("")
             emit_info(f"Tell {assistant_name} what to change:")
             user_feedback = Prompt.ask(
-                "[bold green]➤[/bold green]",
+                "[bold green][/bold green]",
                 default="",
             ).strip()
 
@@ -1293,17 +1293,17 @@ async def get_user_approval_async(
 
         # Show arrow-key selector (ASYNC VERSION)
         choice = await arrow_select_async(
-            "💭 What would you like to do?",
+            "What would you like to do?",
             [
-                "✓ Approve",
-                "✗ Reject",
-                f"💬 Reject with feedback (tell {assistant_name} what to change)",
+                "Approve",
+                "Reject",
+                f"Reject with feedback (tell {assistant_name} what to change)",
             ],
         )
 
-        if choice == "✓ Approve":
+        if choice == "Approve":
             confirmed = True
-        elif choice == "✗ Reject":
+        elif choice == "Reject":
             confirmed = False
         else:
             # User wants to provide feedback
@@ -1311,7 +1311,7 @@ async def get_user_approval_async(
             emit_info("")
             emit_info(f"Tell {assistant_name} what to change:")
             user_feedback = Prompt.ask(
-                "[bold green]➤[/bold green]",
+                "[bold green][/bold green]",
                 default="",
             ).strip()
 

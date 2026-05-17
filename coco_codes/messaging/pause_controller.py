@@ -9,19 +9,19 @@ turn once the agent reaches the next turn boundary.
 This is the Phase 1 foundation primitive. No runtime wiring, spinner
 suppression, or keybindings live here — those will land in later phases.
 
-    ┌─────────────────────────────────────────────────────────────┐
-    │                     PauseController                          │
-    │                                                              │
-    │   pause()  ─────────────►  _paused = True                    │
-    │                            event.clear()                     │
-    │                                                              │
-    │   resume() ─────────────►  _paused = False                   │
-    │                            event.set()                       │
-    │                                                              │
-    │   request_steer(text) ──►  _steer_queue.append(text)         │
-    │                                                              │
-    │   await wait_if_paused() ── awaits event when paused         │
-    └─────────────────────────────────────────────────────────────┘
+    
+                        PauseController                          
+                                                                 
+      pause()   _paused = True                    
+                               event.clear()                     
+                                                                 
+      resume()  _paused = False                   
+                               event.set()                       
+                                                                 
+      request_steer(text)  _steer_queue.append(text)         
+                                                                 
+      await wait_if_paused() awaits event when paused         
+    
 
 Bulletproofing: pause() / resume() must NEVER raise if the event loop is
 closed or unavailable — they fall back to direct `.set()/.clear()` on the

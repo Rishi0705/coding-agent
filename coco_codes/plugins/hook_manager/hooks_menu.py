@@ -250,9 +250,9 @@ class HooksMenu:
         for i in range(start, end):
             entry = self.entries[i]
             is_selected = i == self.selected_idx
-            status_icon = "✓" if entry.enabled else "✗"
+            status_icon = "" if entry.enabled else ""
             status_style = _C_ENABLED if entry.enabled else _C_DISABLED
-            source_indicator = "🌍" if entry.source == "global" else "📁"
+            source_indicator = "" if entry.source == "global" else ""
             prefix = " > " if is_selected else "   "
 
             if is_selected:

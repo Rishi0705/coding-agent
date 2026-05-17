@@ -563,7 +563,7 @@ def is_clone_agent_name(agent_name: str) -> bool:
 def _default_display_name(agent_name: str) -> str:
     """Build a default display name from an agent name."""
     title = agent_name.title()
-    return f"{title} 🤖"
+    return f"{title} "
 
 
 def _build_clone_display_name(display_name: str, clone_index: int) -> str:

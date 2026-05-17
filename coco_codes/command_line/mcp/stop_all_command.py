@@ -67,10 +67,10 @@ class StopAllCommand(MCPCommandBase):
 
                 if success:
                     stopped_count += 1
-                    emit_info(f"  ✓ Stopped: {server_name}", message_group=group_id)
+                    emit_info(f"  Stopped: {server_name}", message_group=group_id)
                 else:
                     failed_count += 1
-                    emit_info(f"  ✗ Failed: {server_name}", message_group=group_id)
+                    emit_info(f"  Failed: {server_name}", message_group=group_id)
 
             # Summary
             emit_info("", message_group=group_id)

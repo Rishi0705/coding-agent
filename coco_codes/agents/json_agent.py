@@ -96,7 +96,7 @@ class JSONAgent(BaseAgent):
     @property
     def display_name(self) -> str:
         """Get display name from JSON config, fallback to name with emoji."""
-        return self._config.get("display_name", f"{self.name.title()} 🤖")
+        return self._config.get("display_name", f"{self.name.title()} ")
 
     @property
     def description(self) -> str:

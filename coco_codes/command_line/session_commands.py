@@ -91,7 +91,7 @@ def handle_compact_command(command: str) -> bool:
         compaction_strategy = get_compaction_strategy()
         protected_tokens = get_protected_token_count()
         emit_info(
-            f"🤔 Compacting {len(history)} messages using {compaction_strategy} strategy... (~{before_tokens} tokens)"
+            f"Compacting {len(history)} messages using {compaction_strategy} strategy... (~{before_tokens} tokens)"
         )
 
         current_agent = get_current_agent()
@@ -128,8 +128,8 @@ def handle_compact_command(command: str) -> bool:
             else "via summarization"
         )
         emit_success(
-            f"✨ Done! History: {len(history)} → {len(compacted)} messages {strategy_info}\n"
-            f"🏦 Tokens: {before_tokens:,} → {after_tokens:,} ({reduction_pct:.1f}% reduction)"
+            f"Done! History: {len(history)} → {len(compacted)} messages {strategy_info}\n"
+            f"Tokens: {before_tokens:,} → {after_tokens:,} ({reduction_pct:.1f}% reduction)"
         )
         return True
     except Exception as e:
@@ -230,8 +230,8 @@ def handle_dump_context_command(command: str) -> bool:
             token_estimator=agent.estimate_tokens_for_message,
         )
         emit_success(
-            f"✅ Context saved: {metadata.message_count} messages ({metadata.total_tokens} tokens)\n"
-            f"📁 Files: {metadata.pickle_path}, {metadata.metadata_path}"
+            f"Context saved: {metadata.message_count} messages ({metadata.total_tokens} tokens)\n"
+            f"Files: {metadata.pickle_path}, {metadata.metadata_path}"
         )
         return True
 
@@ -290,8 +290,8 @@ def handle_load_context_command(command: str) -> bool:
 
     # Build the success message with proper Text concatenation
     success_msg = Text(
-        f"✅ Context loaded: {len(history)} messages ({total_tokens} tokens)\n"
-        f"📁 From: {session_path}"
+        f"Context loaded: {len(history)} messages ({total_tokens} tokens)\n"
+        f"From: {session_path}"
     )
     success_msg.append_text(autosave_info)
     emit_success(success_msg)

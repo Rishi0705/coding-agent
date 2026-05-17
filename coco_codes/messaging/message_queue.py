@@ -364,7 +364,7 @@ def emit_system_message(content: Any, **metadata):
     emit_message(MessageType.SYSTEM, content, **metadata)
 
 
-def emit_divider(content: str = "─" * 100 + "\n", **metadata):
+def emit_divider(content: str = "" * 100 + "\n", **metadata):
     """Emit a divider line"""
     # TUI mode has been removed, always emit dividers
     emit_message(MessageType.DIVIDER, content, **metadata)

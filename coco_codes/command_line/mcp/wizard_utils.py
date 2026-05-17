@@ -28,7 +28,7 @@ def run_interactive_install_wizard(manager, group_id: str) -> bool:
     """
     try:
         # Show welcome message
-        emit_info("🚀 MCP Server Installation Wizard", message_group=group_id)
+        emit_info("MCP Server Installation Wizard", message_group=group_id)
         emit_info(
             "This wizard will help you install pre-configured MCP servers",
             message_group=group_id,
@@ -133,9 +133,9 @@ def interactive_server_selection(group_id: str):
         for i, server in enumerate(servers, 1):
             indicators = []
             if server.verified:
-                indicators.append("✓")
+                indicators.append("")
             if server.popular:
-                indicators.append("⭐")
+                indicators.append("")
 
             indicator_str = ""
             if indicators:
@@ -317,7 +317,7 @@ def install_server_from_catalog(
 
         emit_info(
             Text.from_markup(
-                f"[bright_green]✓ Successfully installed server: {server_name}[/bright_green]"
+                f"[bright_green]Successfully installed server: {server_name}[/bright_green]"
             ),
             message_group=group_id,
         )

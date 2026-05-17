@@ -197,7 +197,7 @@ class QueueConsole:
         """Print a horizontal rule."""
         self.queue.emit_simple(
             MessageType.SYSTEM,
-            f"─── {title} ───" if title else "─" * 40,
+            f"{title} " if title else "" * 40,
             rule=True,
             style=style,
         )
@@ -205,7 +205,7 @@ class QueueConsole:
     def status(self, status: str, *, spinner: str = "dots"):
         """Show a status message (simplified)."""
         self.queue.emit_simple(
-            MessageType.INFO, f"⏳ {status}", status=True, spinner=spinner
+            MessageType.INFO, f"{status}", status=True, spinner=spinner
         )
 
     def input(self, prompt: str = "") -> str:

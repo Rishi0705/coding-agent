@@ -40,14 +40,14 @@ def _custom_help() -> List[Tuple[str, str]]:
 def _handle_chatgpt_status() -> None:
     tokens = load_stored_tokens()
     if tokens and tokens.get("access_token"):
-        emit_success("🔐 ChatGPT OAuth: Authenticated")
+        emit_success("ChatGPT OAuth: Authenticated")
 
         api_key = tokens.get("api_key")
         if api_key:
             os.environ[CHATGPT_OAUTH_CONFIG["api_key_env_var"]] = api_key
-            emit_info("✅ OAuth access token available for API requests")
+            emit_info("OAuth access token available for API requests")
         else:
-            emit_warning("⚠️ No access token obtained. Authentication may have failed.")
+            emit_warning("No access token obtained. Authentication may have failed.")
 
         chatgpt_models = [
             name
@@ -55,12 +55,12 @@ def _handle_chatgpt_status() -> None:
             if cfg.get("oauth_source") == "chatgpt-oauth-plugin"
         ]
         if chatgpt_models:
-            emit_info(f"🎯 Configured ChatGPT models: {', '.join(chatgpt_models)}")
+            emit_info(f"Configured ChatGPT models: {', '.join(chatgpt_models)}")
         else:
-            emit_warning("⚠️ No ChatGPT models configured yet.")
+            emit_warning("No ChatGPT models configured yet.")
     else:
-        emit_warning("🔓 ChatGPT OAuth: Not authenticated")
-        emit_info("🌐 Run /chatgpt-auth to launch the browser sign-in flow.")
+        emit_warning("ChatGPT OAuth: Not authenticated")
+        emit_info("Run /chatgpt-auth to launch the browser sign-in flow.")
 
 
 def _handle_chatgpt_logout() -> None:

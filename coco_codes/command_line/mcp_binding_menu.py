@@ -6,7 +6,7 @@ post-install flow in :mod:`coco_codes.command_line.mcp.install_command`).
 UI:
 
 * Left panel — every MCP server known to the manager. Each row shows
-  ``[x]`` / ``[ ]`` for bound/unbound and ``⚡`` if auto-start is on.
+  ``[x]`` / ``[ ]`` for bound/unbound and ```` if auto-start is on.
 * Right panel — server details (id, type, current state).
 * Keys: ``↑↓`` navigate, ``space`` toggle binding, ``a`` toggle auto-start,
   ``enter``/``q`` close, ``Ctrl+C`` cancel.
@@ -71,8 +71,8 @@ def _render_menu(
             bound = name in bindings
             auto = bool(bindings.get(name, {}).get("auto_start"))
             checkbox = "[x]" if bound else "[ ]"
-            auto_marker = " ⚡auto" if auto else ""
-            prefix = "▶ " if i == selected_idx else "  "
+            auto_marker = " auto" if auto else ""
+            prefix = "" if i == selected_idx else "  "
             style_prefix = "fg:ansigreen bold" if i == selected_idx else ""
             style_box = "fg:ansigreen" if bound else "fg:ansibrightblack"
             lines.append((style_prefix, prefix))
@@ -226,7 +226,7 @@ async def interactive_mcp_binding_menu(agent_name: str) -> None:
 
     bindings = get_bound_servers(agent_name)
     emit_info(
-        f"✓ Saved MCP bindings for '{agent_name}': {len(bindings)} server(s) bound."
+        f"Saved MCP bindings for '{agent_name}': {len(bindings)} server(s) bound."
     )
 
 
@@ -264,14 +264,14 @@ async def prompt_bind_after_install(server_name: str) -> None:
             bound = is_bound(agent, server_name)
             auto = get_auto_start(agent, server_name) if bound else False
             checkbox = "[x]" if bound else "[ ]"
-            prefix = "▶ " if i == selected_idx[0] else "  "
+            prefix = "" if i == selected_idx[0] else "  "
             style_prefix = "fg:ansigreen bold" if i == selected_idx[0] else ""
             style_box = "fg:ansigreen" if bound else "fg:ansibrightblack"
             lines.append((style_prefix, prefix))
             lines.append((style_box, f"{checkbox} "))
             lines.append((style_prefix or "", agent))
             if auto:
-                lines.append(("fg:ansiyellow", " ⚡auto"))
+                lines.append(("fg:ansiyellow", " auto"))
             lines.append(("", "\n"))
         lines.append(("", "\n"))
         lines.append(("fg:green", "  Space "))
@@ -341,7 +341,7 @@ async def prompt_bind_after_install(server_name: str) -> None:
 
     bound_agents = [a for a in agents if is_bound(a, server_name)]
     if bound_agents:
-        emit_info(f"✓ '{server_name}' is now bound to: {', '.join(bound_agents)}")
+        emit_info(f"'{server_name}' is now bound to: {', '.join(bound_agents)}")
     else:
         emit_info(
             f"'{server_name}' was installed but isn't bound to any agent yet. "

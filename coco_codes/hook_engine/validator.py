@@ -113,9 +113,9 @@ def format_validation_report(
 ) -> str:
     lines = []
     if is_valid:
-        lines.append("✓ Configuration is valid")
+        lines.append("Configuration is valid")
     else:
-        lines.append(f"✗ Configuration has {len(errors)} error(s):")
+        lines.append(f"Configuration has {len(errors)} error(s):")
         for error in errors:
             lines.append(f"  • {error}")
 

@@ -56,7 +56,7 @@ class StopCommand(MCPCommandBase):
             success = self.manager.stop_server_sync(server_id)
 
             if success:
-                emit_info(f"✓ Stopped server: {server_name}", message_group=group_id)
+                emit_info(f"Stopped server: {server_name}", message_group=group_id)
 
                 # Reload the agent to remove the disabled server
                 try:
@@ -72,7 +72,7 @@ class StopCommand(MCPCommandBase):
                     logger.warning(f"Could not reload agent: {e}")
             else:
                 emit_info(
-                    f"✗ Failed to stop server: {server_name}", message_group=group_id
+                    f"Failed to stop server: {server_name}", message_group=group_id
                 )
 
         except Exception as e:

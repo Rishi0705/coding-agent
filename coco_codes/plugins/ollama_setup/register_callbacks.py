@@ -22,7 +22,7 @@ from coco_codes.messaging import emit_error, emit_info, emit_success, emit_warni
 
 logger = logging.getLogger(__name__)
 
-# ── Cloud model catalogue ───────────────────────────────────────────────────
+# Cloud model catalogue 
 # The `:cloud` models from the Ollama recommended list.
 # Each entry maps the ollama tag → extra_models.json config metadata.
 
@@ -57,7 +57,7 @@ OLLAMA_ENDPOINT = "http://localhost:11434/v1"
 OLLAMA_API_KEY = "ollama"  # Ollama's local API doesn't need a real key
 
 
-# ── Helpers ─────────────────────────────────────────────────────────────────
+# Helpers 
 
 
 def _model_key(model_tag: str) -> str:
@@ -78,7 +78,7 @@ def _pull_model(model_tag: str) -> bool:
 
     Returns True on success, False on failure.
     """
-    emit_info(f"⚙️ Pulling {model_tag} via ollama …")
+    emit_info(f"Pulling {model_tag} via ollama …")
     try:
         result = subprocess.run(
             ["ollama", "pull", model_tag],
@@ -150,7 +150,7 @@ def _register_model(model_tag: str) -> bool:
         emit_error(f"Failed to write extra_models.json: {exc}")
         return False
 
-    emit_success(f"✅ Registered {key} in extra_models.json")
+    emit_success(f"Registered {key} in extra_models.json")
     return True
 
 
@@ -202,7 +202,7 @@ def _test_model_auth(model_tag: str) -> tuple[bool, str]:
 
 def _auth_help_message(model_tag: str) -> str:
     """Generate a helpful auth guidance message."""
-    return f"""🔐 Authentication Required for {model_tag}
+    return f"""Authentication Required for {model_tag}
 
 This is a cloud-hosted model (756B+ parameters) that requires Ollama Cloud access.
 
@@ -223,7 +223,7 @@ def _run_ollama_login() -> bool:
     This will open a browser for OAuth flow. Returns True if login succeeded.
     """
     emit_info(
-        "🔐 Launching 'ollama login' — this will open your browser for authentication..."
+        "Launching 'ollama login' — this will open your browser for authentication..."
     )
     emit_info("   (Press Ctrl+C here if you want to cancel and do it manually later)")
     emit_info("")
@@ -239,7 +239,7 @@ def _run_ollama_login() -> bool:
         )
 
         if result.returncode == 0:
-            emit_success("✅ Login completed!")
+            emit_success("Login completed!")
             return True
         else:
             emit_error(f"ollama login exited with code {result.returncode}")
@@ -266,12 +266,12 @@ def _start_ollama_serve() -> Optional[subprocess.Popen]:
             timeout=5,
         )
         if result.returncode == 0:
-            emit_info("🟢 Ollama is already running")
+            emit_info("Ollama is already running")
             return None
     except Exception:
         pass
 
-    emit_info("🚀 Starting ollama serve in the background …")
+    emit_info("Starting ollama serve in the background …")
     try:
         proc = subprocess.Popen(
             ["ollama", "serve"],
@@ -285,7 +285,7 @@ def _start_ollama_serve() -> Optional[subprocess.Popen]:
         return None
 
 
-# ── Command handler ─────────────────────────────────────────────────────────
+# Command handler 
 
 
 def _handle_ollama_setup(command: str, name: str) -> Any:
@@ -298,7 +298,7 @@ def _handle_ollama_setup(command: str, name: str) -> Any:
 
     # No argument → show available models
     if not model_tag:
-        lines = ["🦙 Available Ollama cloud models:\n"]
+        lines = ["Available Ollama cloud models:\n"]
         for tag, meta in CLOUD_MODELS.items():
             lines.append(f"  • {tag:25s} — {meta['description']}")
         lines.append("\nUsage: /ollama-setup <model>")
@@ -330,18 +330,18 @@ def _handle_ollama_setup(command: str, name: str) -> Any:
     _register_model(matched)
 
     # 4. Test auth / accessibility
-    emit_info(f"🔍 Testing {matched} accessibility...")
+    emit_info(f"Testing {matched} accessibility...")
     authorized, msg = _test_model_auth(matched)
 
     if authorized:
         emit_success(
-            f"🎉 Done! Switch to the model with:  /model {_model_key(matched)}"
+            f"Done! Switch to the model with:  /model {_model_key(matched)}"
         )
     else:
         emit_warning(msg)
         emit_info("")
         emit_info(
-            "💡 Want me to run 'ollama login' for you? (This will open your browser)"
+            "Want me to run 'ollama login' for you? (This will open your browser)"
         )
         emit_info(
             "   Type 'yes' to proceed, or anything else to skip and do it manually later."
@@ -353,23 +353,23 @@ def _handle_ollama_setup(command: str, name: str) -> Any:
 
         if login_ok:
             # Re-test auth after login
-            emit_info("🔍 Re-testing accessibility after login...")
+            emit_info("Re-testing accessibility after login...")
             authorized, msg = _test_model_auth(matched)
 
             if authorized:
                 emit_success(
-                    f"🎉 All set! Switch to the model with:  /model {_model_key(matched)}"
+                    f"All set! Switch to the model with:  /model {_model_key(matched)}"
                 )
             else:
                 emit_warning("Still not authorized after login.")
                 emit_info(
-                    f"📋 Model registered as '{_model_key(matched)}'. "
+                    f"Model registered as '{_model_key(matched)}'. "
                     f"You may need to subscribe to Ollama Cloud at https://ollama.com, "
                     f"then use /model {_model_key(matched)}"
                 )
         else:
             emit_info(
-                f"📋 Model registered as '{_model_key(matched)}' but needs auth. "
+                f"Model registered as '{_model_key(matched)}' but needs auth. "
                 f"Run 'ollama login' manually, then use /model {_model_key(matched)}"
             )
 
@@ -396,7 +396,7 @@ def _resolve_model(user_input: str) -> Optional[str]:
     return None
 
 
-# ── Help entry ──────────────────────────────────────────────────────────────
+# Help entry 
 
 
 def _custom_help():
@@ -406,7 +406,7 @@ def _custom_help():
     ]
 
 
-# ── Register ────────────────────────────────────────────────────────────────
+# Register 
 
 register_callback("custom_command", _handle_ollama_setup)
 register_callback("custom_command_help", _custom_help)

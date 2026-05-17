@@ -92,13 +92,13 @@ class LogsCommand(MCPCommandBase):
 
         if not servers:
             emit_info(
-                "📋 No MCP server logs found.\n"
+                "No MCP server logs found.\n"
                 "Logs are created when servers are started.",
                 message_group=group_id,
             )
             return
 
-        lines = ["📋 **Servers with logs:**\n"]
+        lines = ["**Servers with logs:**\n"]
 
         for server in servers:
             stats = get_log_stats(server)
@@ -149,7 +149,7 @@ class LogsCommand(MCPCommandBase):
 
             if not log_lines:
                 emit_info(
-                    f"📋 No logs found for server: **{server_name}**\n"
+                    f"No logs found for server: **{server_name}**\n"
                     f"Log file: `{get_log_file_path(server_name)}`",
                     message_group=group_id,
                 )
@@ -162,10 +162,10 @@ class LogsCommand(MCPCommandBase):
 
             # Format header
             if lines is None:
-                header = f"📋 Logs for {server_name} (all {total_lines} lines)"
+                header = f"Logs for {server_name} (all {total_lines} lines)"
             else:
                 header = (
-                    f"📋 Logs for {server_name} (last {showing} of {total_lines} lines)"
+                    f"Logs for {server_name} (last {showing} of {total_lines} lines)"
                 )
 
             # Format log content with syntax highlighting
@@ -193,7 +193,7 @@ class LogsCommand(MCPCommandBase):
             if lines is not None and showing < total_lines:
                 emit_info(
                     Text.from_markup(
-                        f"[dim]💡 Use `/mcp logs {server_name} all` to see all logs, "
+                        f"[dim]Use `/mcp logs {server_name} all` to see all logs, "
                         f"or `/mcp logs {server_name} <number>` for specific count[/dim]"
                     ),
                     message_group=group_id,
@@ -226,7 +226,7 @@ class LogsCommand(MCPCommandBase):
 
             cleared_count = 1 + stats["rotated_count"]
             emit_info(
-                f"🗑️  Cleared {cleared_count} log file(s) for **{server_name}**",
+                f" Cleared {cleared_count} log file(s) for **{server_name}**",
                 message_group=group_id,
             )
 

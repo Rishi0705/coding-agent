@@ -300,7 +300,7 @@ def patch_tool_call_callbacks() -> None:
                             clean_reason = (
                                 raw_reason.strip() or "Tool execution blocked by hook"
                             )
-                        block_msg = f"🚫 Hook blocked this tool call: {clean_reason}"
+                        block_msg = f"Hook blocked this tool call: {clean_reason}"
                         emit_warning(block_msg)
                         return f"ERROR: {block_msg}\n\nThe hook policy prevented this tool from running. Please inform the user and do not retry this specific command."
             except Exception:
@@ -376,8 +376,8 @@ def patch_prompt_toolkit_emoji_width() -> None:
                 or 0x1F600 <= code <= 0x1F64F  # Emoticons
                 or 0x1F680 <= code <= 0x1F6FF  # Transport/Map symbols
                 or 0x1FA00 <= code <= 0x1FAFF  # Symbols/Pictographs Extended-A
-                or 0x2600 <= code <= 0x26FF  # Misc Symbols (☀️, ⚡, etc)
-                or 0x2700 <= code <= 0x27BF  # Dingbats (✂️, ✈️, etc)
+                or 0x2600 <= code <= 0x26FF  # Misc Symbols (, , etc)
+                or 0x2700 <= code <= 0x27BF  # Dingbats (, , etc)
                 or 0x1F1E0 <= code <= 0x1F1FF  # Regional indicators (flags)
             ):
                 return 2

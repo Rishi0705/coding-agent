@@ -26,7 +26,7 @@ from .judge_config import JudgeConfig, get_enabled_judges_or_default
 
 @register_command(
     name="wiggum",
-    description="Loop mode: re-run the same prompt when agent finishes 🍩",
+    description="Loop mode: re-run the same prompt when agent finishes ",
     usage="/wiggum <prompt>",
     category="plugin",
 )
@@ -40,7 +40,7 @@ def handle_wiggum_command(command: str) -> str | bool:
         return True
 
     state.start(prompt, mode="wiggum")
-    emit_success("🍩 WIGGUM MODE ACTIVATED!")
+    emit_success("WIGGUM MODE ACTIVATED!")
     emit_info(f"Prompt: {prompt}")
     emit_info("The agent will re-loop this prompt after each completion.")
     emit_info("Press Ctrl+C or run /wiggum_stop to stop the loop.")
@@ -49,7 +49,7 @@ def handle_wiggum_command(command: str) -> str | bool:
 
 @register_command(
     name="goal",
-    description="Retry a task until all LLM judges say it is complete 🎯",
+    description="Retry a task until all LLM judges say it is complete ",
     usage="/goal <prompt>",
     # /task and /objective are shorthand aliases for /goal — same behavior,
     # just more on-brand for a coco codes.
@@ -66,7 +66,7 @@ def handle_goal_command(command: str) -> str | bool:
         return True
 
     state.start(prompt, mode="goal")
-    _display_banner_message("GOAL MODE", "🎯 ACTIVATED!", banner_name="llm_judge")
+    _display_banner_message("GOAL MODE", "ACTIVATED!", banner_name="llm_judge")
     emit_info(f"Goal: {prompt}")
     emit_info(
         "After each iteration, every enabled LLM judge will verify completion in parallel."
@@ -87,7 +87,7 @@ def handle_wiggum_stop_command(command: str) -> bool:
     del command
     if state.is_active():
         state.stop()
-        emit_success("🍩 Wiggum/goal mode stopped!")
+        emit_success("Wiggum/goal mode stopped!")
     else:
         emit_info("Wiggum/goal mode is not active.")
     return True
@@ -95,7 +95,7 @@ def handle_wiggum_stop_command(command: str) -> bool:
 
 @register_command(
     name="judges",
-    description="Configure goal-mode LLM judges (TUI) ⚖️",
+    description="Configure goal-mode LLM judges (TUI) ",
     usage="/judges",
     category="plugin",
 )
@@ -219,9 +219,9 @@ def _format_remediation_block(verdicts: list[GoalJudgement]) -> str:
     lines: list[str] = []
     for v in verdicts:
         if v.abstained:
-            status = "⚠️  ABSTAIN"
+            status = " ABSTAIN"
         else:
-            status = "✅ PASS" if v.complete else "❌ FAIL"
+            status = "PASS" if v.complete else "FAIL"
         lines.append(f"[{v.judge_name}] {status}")
         if v.notes:
             for note_line in v.notes.strip().splitlines():
@@ -337,15 +337,15 @@ async def _run_goal_judges(
         # propagate here is what stops the goal loop cleanly — if we
         # returned a sentinel tuple instead, the caller would treat it as
         # "goal incomplete" and request another retry.
-        _display_llm_judge("⛔ Judges cancelled (Ctrl+C). Stopping goal loop.")
+        _display_llm_judge("Judges cancelled (Ctrl+C). Stopping goal loop.")
         raise
 
     # Now serialize the per-judge verdicts so all banners actually show up.
     for v in verdicts:
         if v.abstained:
-            glyph = "⚠️  ABSTAIN"
+            glyph = " ABSTAIN"
         else:
-            glyph = "✅ PASS" if v.complete else "❌ FAIL"
+            glyph = "PASS" if v.complete else "FAIL"
         summary = v.notes.strip().splitlines()[0] if v.notes.strip() else "(no notes)"
         _display_llm_judge(f"  [{v.judge_name}] {glyph} — {summary}")
 
@@ -358,7 +358,7 @@ async def _run_goal_judges(
     if not voting:
         all_complete = False
         if verdicts:
-            _display_llm_judge("⚠️  All judges abstained — cannot determine completion.")
+            _display_llm_judge(" All judges abstained — cannot determine completion.")
     else:
         all_complete = all(v.complete for v in voting)
 
@@ -399,19 +399,19 @@ async def _on_interactive_turn_end(
             # Belt-and-suspenders: _run_goal_judges already swallows these
             # but we never want a stray Ctrl+C to escape the plugin and
             # take down the whole REPL.
-            _display_llm_judge("⛔ Goal loop cancelled (Ctrl+C).")
+            _display_llm_judge("Goal loop cancelled (Ctrl+C).")
             state.stop()
             return None
         if complete:
             # Per-judge verdicts were already shown by _run_goal_judges —
             # no need to re-dump the notes block here.
-            _display_llm_judge("✅ GOAL COMPLETE!", final=True)
+            _display_llm_judge("GOAL COMPLETE!", final=True)
             state.stop()
             return None
 
         state.get_state().remediation_notes = notes
         _display_llm_judge(
-            f"❌ GOAL INCOMPLETE — Retrying! (Loop #{loop_num})",
+            f"GOAL INCOMPLETE — Retrying! (Loop #{loop_num})",
             final=True,
         )
         return {
@@ -422,10 +422,10 @@ async def _on_interactive_turn_end(
         }
 
     if error is not None:
-        emit_warning(f"\n🍩 WIGGUM RETRYING AFTER ERROR! (Loop #{loop_num})")
+        emit_warning(f"\nWIGGUM RETRYING AFTER ERROR! (Loop #{loop_num})")
         emit_system_message(f"Previous run failed: {error}")
     else:
-        emit_warning(f"\n🍩 WIGGUM RELOOPING! (Loop #{loop_num})")
+        emit_warning(f"\nWIGGUM RELOOPING! (Loop #{loop_num})")
 
     emit_system_message(f"Re-running prompt: {goal_prompt}")
     return {
@@ -440,7 +440,7 @@ def _on_interactive_turn_cancel(prompt: str, *, reason: str = "cancelled") -> No
     del prompt
     if state.is_active():
         state.stop()
-        emit_warning(f"🍩 Wiggum/goal loop stopped due to {reason}")
+        emit_warning(f"Wiggum/goal loop stopped due to {reason}")
 
 
 register_callback("interactive_turn_end", _on_interactive_turn_end)

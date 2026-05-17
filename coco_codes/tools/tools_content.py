@@ -12,7 +12,7 @@ Here is the complete set of available tools:
 # **Search & Analysis**
 - **`grep(search_string, directory)`** - Search for text across files recursively using ripgrep (rg) for high-performance searching (up to 200 matches). Searches across all text file types, not just Python files. Supports ripgrep flags in the search string.
 
-# 💻 **System Operations**
+# **System Operations**
 - **`agent_run_shell_command(command, cwd, timeout)`** - Execute shell commands with full output capture (stdout, stderr, exit codes)
 
 # **Network Operations**
@@ -39,12 +39,12 @@ I follow these principles religiously:
 # **What I Can Do**
 
 With these tools, I can:
-- 📝 Write, modify, and organize code
-- 🔍 Analyze codebases and find patterns
-- ⚡ Run tests and debug issues
-- 📊 Generate documentation and reports
-- 🔄 Automate development workflows
-- 🧹 Refactor code following best practices
+- Write, modify, and organize code
+- Analyze codebases and find patterns
+- Run tests and debug issues
+- Generate documentation and reports
+- Automate development workflows
+- Refactor code following best practices
 
-Ready to fetch some code sticks and build amazing software together? 🔧✨
+Ready to fetch some code sticks and build amazing software together? 
 """

@@ -66,7 +66,7 @@ def handle_show_command(command: str) -> bool:
     current_agent = get_current_agent()
     default_agent = get_default_agent()
 
-    status_msg = f"""[bold bright_green]🤖 Coco Codes Status[/bold bright_green]
+    status_msg = f"""[bold bright_green]Coco Codes Status[/bold bright_green]
 
 [bold]assistant_name:[/bold]            [bright_green]{assistant_name}[/bright_green]
 [bold]owner_name:[/bold]            [bright_green]{owner_name}[/bright_green]
@@ -219,7 +219,7 @@ def handle_set_command(command: str) -> bool:
         if key == "enable_dbos":
             emit_info(
                 Text.from_markup(
-                    "[bright_green]⚠️ DBOS configuration changed. Please restart Coco Codes for this change to take effect.[/bright_green]"
+                    "[bright_green]DBOS configuration changed. Please restart Coco Codes for this change to take effect.[/bright_green]"
                 )
             )
 
@@ -236,7 +236,7 @@ def handle_set_command(command: str) -> bool:
             value = normalized_value  # Use normalized value
             emit_info(
                 Text.from_markup(
-                    "[bright_green]⚠️ cancel_agent_key changed. Please restart Coco Codes for this change to take effect.[/bright_green]"
+                    "[bright_green]cancel_agent_key changed. Please restart Coco Codes for this change to take effect.[/bright_green]"
                 )
             )
 
@@ -597,7 +597,7 @@ def handle_colors_command(command: str) -> bool:
         try:
             for banner_name, color in result.items():
                 set_banner_color(banner_name, color)
-            emit_success("Banner colors saved! 🎨")
+            emit_success("Banner colors saved! ")
         except Exception as e:
             emit_error(f"Failed to apply banner color settings: {e}")
     return True
@@ -621,95 +621,95 @@ def _show_color_options(color_type: str):
     # Standard Rich colors organized by category
     color_categories = {
         "Basic Colors": [
-            ("black", "⚫"),
-            ("red", "🔴"),
-            ("green", "🟢"),
-            ("green", "🟡"),
-            ("green", "🔵"),
-            ("green", "🟣"),
-            ("green", "🔷"),
-            ("white", "⚪"),
+            ("black", ""),
+            ("red", ""),
+            ("green", ""),
+            ("green", ""),
+            ("green", ""),
+            ("green", "*"),
+            ("green", ""),
+            ("white", ""),
         ],
         "Bright Colors": [
-            ("bright_black", "⚫"),
-            ("bright_red", "🔴"),
-            ("bright_green", "🟢"),
-            ("bright_yellow", "🟡"),
-            ("bright_green", "🔵"),
-            ("bright_green", "🟣"),
-            ("bright_green", "🔷"),
-            ("bright_white", "⚪"),
+            ("bright_black", ""),
+            ("bright_red", ""),
+            ("bright_green", ""),
+            ("bright_yellow", ""),
+            ("bright_green", ""),
+            ("bright_green", "*"),
+            ("bright_green", ""),
+            ("bright_white", ""),
         ],
         "Special Colors": [
-            ("orange1", "🟠"),
-            ("orange3", "🟠"),
-            ("orange4", "🟠"),
-            ("deep_sky_blue1", "🔷"),
-            ("deep_sky_blue2", "🔷"),
-            ("deep_sky_blue3", "🔷"),
-            ("deep_sky_blue4", "🔷"),
-            ("turquoise2", "🔷"),
-            ("turquoise4", "🔷"),
-            ("steel_blue1", "🔷"),
-            ("steel_blue3", "🔷"),
-            ("chartreuse1", "🟢"),
-            ("chartreuse2", "🟢"),
-            ("chartreuse3", "🟢"),
-            ("chartreuse4", "🟢"),
-            ("gold1", "🟡"),
-            ("gold3", "🟡"),
-            ("rosy_brown", "🔴"),
-            ("indian_red", "🔴"),
+            ("orange1", ""),
+            ("orange3", ""),
+            ("orange4", ""),
+            ("deep_sky_blue1", ""),
+            ("deep_sky_blue2", ""),
+            ("deep_sky_blue3", ""),
+            ("deep_sky_blue4", ""),
+            ("turquoise2", ""),
+            ("turquoise4", ""),
+            ("steel_blue1", ""),
+            ("steel_blue3", ""),
+            ("chartreuse1", ""),
+            ("chartreuse2", ""),
+            ("chartreuse3", ""),
+            ("chartreuse4", ""),
+            ("gold1", ""),
+            ("gold3", ""),
+            ("rosy_brown", ""),
+            ("indian_red", ""),
         ],
     }
 
     # Suggested colors for each type
     if color_type == "additions":
         suggestions = [
-            ("green", "🟢"),
-            ("bright_green", "🟢"),
-            ("chartreuse1", "🟢"),
-            ("green3", "🟢"),
-            ("sea_green1", "🟢"),
+            ("green", ""),
+            ("bright_green", ""),
+            ("chartreuse1", ""),
+            ("green3", ""),
+            ("sea_green1", ""),
         ]
         emit_info(
             Text.from_markup(
-                "[bold white on green]🎨 Recommended Colors for Additions:[/bold white on green]"
+                "[bold white on green]Recommended Colors for Additions:[/bold white on green]"
             )
         )
         for color, emoji in suggestions:
             emit_info(
                 Text.from_markup(
-                    f"  [bright_green]{color:<16}[/bright_green] [white on {color}]■■■■■■■■■■[/white on {color}] {emoji}"
+                    f"  [bright_green]{color:<16}[/bright_green] [white on {color}][/white on {color}] {emoji}"
                 )
             )
     elif color_type == "deletions":
         suggestions = [
-            ("orange1", "🟠"),
-            ("red", "🔴"),
-            ("bright_red", "🔴"),
-            ("indian_red", "🔴"),
-            ("dark_red", "🔴"),
+            ("orange1", ""),
+            ("red", ""),
+            ("bright_red", ""),
+            ("indian_red", ""),
+            ("dark_red", ""),
         ]
         emit_info(
             Text.from_markup(
-                "[bold white on orange1]🎨 Recommended Colors for Deletions:[/bold white on orange1]"
+                "[bold white on orange1]Recommended Colors for Deletions:[/bold white on orange1]"
             )
         )
         for color, emoji in suggestions:
             emit_info(
                 Text.from_markup(
-                    f"  [bright_green]{color:<16}[/bright_green] [white on {color}]■■■■■■■■■■[/white on {color}] {emoji}"
+                    f"  [bright_green]{color:<16}[/bright_green] [white on {color}][/white on {color}] {emoji}"
                 )
             )
 
-    emit_info("\n🎨 All Available Rich Colors:")
+    emit_info("\nAll Available Rich Colors:")
     for category, colors in color_categories.items():
         emit_info(f"\n{category}:")
         # Display in columns for better readability
         for i in range(0, len(colors), 4):
             row = colors[i : i + 4]
-            row_text = "  ".join([f"[{color}]■[/{color}] {color}" for color, _ in row])
+            row_text = "  ".join([f"[{color}][/{color}] {color}" for color, _ in row])
             emit_info(Text.from_markup(f"  {row_text}"))
 
     emit_info("\nUsage: /diff {color_type} <color_name>")

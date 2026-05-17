@@ -14,7 +14,7 @@ async def navigate_to_url(url: str) -> Dict[str, Any]:
     """Navigate to a specific URL."""
     group_id = generate_group_id("browser_navigate", url)
     emit_info(
-        f"BROWSER NAVIGATE 🌐 {url}",
+        f"BROWSER NAVIGATE {url}",
         message_group=group_id,
     )
     try:
@@ -44,7 +44,7 @@ async def get_page_info() -> Dict[str, Any]:
     """Get current page information."""
     group_id = generate_group_id("browser_get_page_info")
     emit_info(
-        "BROWSER GET PAGE INFO 📌",
+        "BROWSER GET PAGE INFO ",
         message_group=group_id,
     )
     try:
@@ -67,7 +67,7 @@ async def go_back() -> Dict[str, Any]:
     """Navigate back in browser history."""
     group_id = generate_group_id("browser_go_back")
     emit_info(
-        "BROWSER GO BACK ⬅️",
+        "BROWSER GO BACK ",
         message_group=group_id,
     )
     try:
@@ -89,7 +89,7 @@ async def go_forward() -> Dict[str, Any]:
     """Navigate forward in browser history."""
     group_id = generate_group_id("browser_go_forward")
     emit_info(
-        "BROWSER GO FORWARD ➡️",
+        "BROWSER GO FORWARD ",
         message_group=group_id,
     )
     try:
@@ -111,7 +111,7 @@ async def reload_page(wait_until: str = "domcontentloaded") -> Dict[str, Any]:
     """Reload the current page."""
     group_id = generate_group_id("browser_reload", wait_until)
     emit_info(
-        f"BROWSER RELOAD 🔄 wait_until={wait_until}",
+        f"BROWSER RELOAD wait_until={wait_until}",
         message_group=group_id,
     )
     try:
@@ -135,7 +135,7 @@ async def wait_for_load_state(
     """Wait for page to reach a specific load state."""
     group_id = generate_group_id("browser_wait_for_load", f"{state}_{timeout}")
     emit_info(
-        f"BROWSER WAIT FOR LOAD ⏱️ state={state} timeout={timeout}ms",
+        f"BROWSER WAIT FOR LOAD state={state} timeout={timeout}ms",
         message_group=group_id,
     )
     try:

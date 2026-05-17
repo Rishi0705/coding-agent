@@ -94,10 +94,10 @@ async def demonstrate_basic_retry():
             strategy="exponential",
             server_id="demo-server",
         )
-        print(f"✅ Success: Retrieved {len(result)} tools")
+        print(f"Success: Retrieved {len(result)} tools")
         print(f"Server call count: {server.call_count}")
     except Exception as e:
-        print(f"❌ Failed after retries: {e}")
+        print(f"Failed after retries: {e}")
 
     # Check retry stats
     stats = await retry_manager.get_retry_stats("demo-server")
@@ -130,12 +130,12 @@ async def demonstrate_different_strategies():
             )
 
             end_time = asyncio.get_event_loop().time()
-            print(f"  ✅ Success: {result}")
+            print(f"  Success: {result}")
             print(f"  Time taken: {end_time - start_time:.2f}s")
             print(f"  Call count: {server.call_count}")
         except Exception as e:
             end_time = asyncio.get_event_loop().time()
-            print(f"  ❌ Failed: {e}")
+            print(f"  Failed: {e}")
             print(f"  Time taken: {end_time - start_time:.2f}s")
             print(f"  Call count: {server.call_count}")
 
@@ -203,7 +203,7 @@ async def demonstrate_error_classification():
     print("Error retry decisions:")
     for error in test_errors:
         should_retry = retry_manager.should_retry(error)
-        status = "✅ RETRY" if should_retry else "❌ NO RETRY"
+        status = "RETRY" if should_retry else "NO RETRY"
         print(f"  {type(error).__name__}: {error} → {status}")
 
 
@@ -217,7 +217,7 @@ async def main():
     await demonstrate_concurrent_retries()
     await demonstrate_error_classification()
 
-    print("\n🎉 All demonstrations completed!")
+    print("\nAll demonstrations completed!")
 
 
 if __name__ == "__main__":

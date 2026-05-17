@@ -192,7 +192,7 @@ def _render_question_panel_unsafe(
         remaining = state.get_time_remaining()
         console.print()
         console.print(
-            f"{pad}[{colors.timeout_warning}]⚠ Timeout in {remaining}s - press any key to continue[/{colors.timeout_warning}]"
+            f"{pad}[{colors.timeout_warning}]Timeout in {remaining}s - press any key to continue[/{colors.timeout_warning}]"
         )
 
     return ANSI(buffer.getvalue())
@@ -307,14 +307,14 @@ def _render_option(
 
     # Build the prefix with checkbox or radio button
     if multi_select:
-        # Checkbox style: [✓] or [ ]
+        # Checkbox style: [] or [ ]
         checkbox = f"[{CHECK_MARK}]" if is_selected else "[ ]"
         if is_cursor:
             prefix = f"[{cursor_style}]{CURSOR_POINTER} {checkbox}[/{cursor_style}]"
         else:
             prefix = f"  {checkbox}"
     else:
-        # Radio button style: (●) or ( )
+        # Radio button style: () or ( )
         radio = f"({RADIO_FILLED})" if is_selected else "( )"
         if is_cursor:
             prefix = f"[{cursor_style}]{CURSOR_POINTER} {radio}[/{cursor_style}]"

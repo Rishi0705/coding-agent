@@ -186,7 +186,7 @@ async def event_stream_handler(
                 from coco_codes.messaging import emit_warning
 
                 emit_warning(
-                    f"⏸️  Pause exceeded {max_pause:.0f}s; auto-resuming to "
+                    f" Pause exceeded {max_pause:.0f}s; auto-resuming to "
                     "avoid upstream timeout."
                 )
 

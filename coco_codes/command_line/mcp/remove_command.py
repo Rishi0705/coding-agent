@@ -62,10 +62,10 @@ class RemoveCommand(MCPCommandBase):
             success = self.manager.remove_server(server_id)
 
             if success:
-                emit_info(f"✓ Removed server: {server_name}", message_group=group_id)
+                emit_info(f"Removed server: {server_name}", message_group=group_id)
                 if bound_agents:
                     emit_info(
-                        f"  ✓ Also unbound from {len(bound_agents)} agent(s): "
+                        f"  Also unbound from {len(bound_agents)} agent(s): "
                         f"{', '.join(bound_agents)}",
                         message_group=group_id,
                     )
@@ -90,7 +90,7 @@ class RemoveCommand(MCPCommandBase):
                         logger.warning(f"Could not update mcp_servers.json: {e}")
             else:
                 emit_info(
-                    f"✗ Failed to remove server: {server_name}", message_group=group_id
+                    f"Failed to remove server: {server_name}", message_group=group_id
                 )
 
         except Exception as e:

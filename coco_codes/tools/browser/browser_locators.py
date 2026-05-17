@@ -19,7 +19,7 @@ async def find_by_role(
     """Find elements by ARIA role."""
     group_id = generate_group_id("browser_find_by_role", f"{role}_{name or 'any'}")
     emit_info(
-        f"BROWSER FIND BY ROLE 🎨 role={role} name={name}",
+        f"BROWSER FIND BY ROLE role={role} name={name}",
         message_group=group_id,
     )
     try:
@@ -71,7 +71,7 @@ async def find_by_text(
     """Find elements containing specific text."""
     group_id = generate_group_id("browser_find_by_text", text[:50])
     emit_info(
-        f"BROWSER FIND BY TEXT 🔍 text='{text}' exact={exact}",
+        f"BROWSER FIND BY TEXT text='{text}' exact={exact}",
         message_group=group_id,
     )
     try:
@@ -123,7 +123,7 @@ async def find_by_label(
     """Find form elements by their associated label text."""
     group_id = generate_group_id("browser_find_by_label", text[:50])
     emit_info(
-        f"BROWSER FIND BY LABEL 🏷️ label='{text}' exact={exact}",
+        f"BROWSER FIND BY LABEL label='{text}' exact={exact}",
         message_group=group_id,
     )
     try:
@@ -186,7 +186,7 @@ async def find_by_placeholder(
     """Find elements by placeholder text."""
     group_id = generate_group_id("browser_find_by_placeholder", text[:50])
     emit_info(
-        f"BROWSER FIND BY PLACEHOLDER 📝 placeholder='{text}' exact={exact}",
+        f"BROWSER FIND BY PLACEHOLDER placeholder='{text}' exact={exact}",
         message_group=group_id,
     )
     try:
@@ -244,7 +244,7 @@ async def find_by_test_id(
     """Find elements by test ID attribute."""
     group_id = generate_group_id("browser_find_by_test_id", test_id)
     emit_info(
-        f"BROWSER FIND BY TEST ID 🧪 test_id='{test_id}'",
+        f"BROWSER FIND BY TEST ID test_id='{test_id}'",
         message_group=group_id,
     )
     try:
@@ -300,7 +300,7 @@ async def run_xpath_query(
     """Find elements using XPath selector."""
     group_id = generate_group_id("browser_xpath_query", xpath[:100])
     emit_info(
-        f"BROWSER XPATH QUERY 🔍 xpath='{xpath}'",
+        f"BROWSER XPATH QUERY xpath='{xpath}'",
         message_group=group_id,
     )
     try:
@@ -355,7 +355,7 @@ async def find_buttons(
     """Find all button elements on the page."""
     group_id = generate_group_id("browser_find_buttons", text_filter or "all")
     emit_info(
-        f"BROWSER FIND BUTTONS 🔘 filter='{text_filter or 'none'}'",
+        f"BROWSER FIND BUTTONS filter='{text_filter or 'none'}'",
         message_group=group_id,
     )
     try:
@@ -406,7 +406,7 @@ async def find_links(
     """Find all link elements on the page."""
     group_id = generate_group_id("browser_find_links", text_filter or "all")
     emit_info(
-        f"BROWSER FIND LINKS 🔗 filter='{text_filter or 'none'}'",
+        f"BROWSER FIND LINKS filter='{text_filter or 'none'}'",
         message_group=group_id,
     )
     try:

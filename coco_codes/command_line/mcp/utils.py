@@ -22,12 +22,12 @@ def format_state_indicator(state: ServerState) -> Text:
         Rich Text object with colored state indicator
     """
     state_map = {
-        ServerState.RUNNING: ("✓ Run", "green"),
-        ServerState.STOPPED: ("✗ Stop", "red"),
+        ServerState.RUNNING: ("Run", "green"),
+        ServerState.STOPPED: ("Stop", "red"),
         ServerState.STARTING: ("↗ Start", "green"),
         ServerState.STOPPING: ("↙ Stop", "green"),
-        ServerState.ERROR: ("⚠ Err", "red"),
-        ServerState.QUARANTINED: ("⏸ Quar", "green"),
+        ServerState.ERROR: ("Err", "red"),
+        ServerState.QUARANTINED: ("Quar", "green"),
     }
 
     display, color = state_map.get(state, ("? Unk", "dim"))

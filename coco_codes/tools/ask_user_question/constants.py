@@ -51,16 +51,16 @@ EXIT_ALT_SCREEN: Final[str] = "\033[?1049l"
 CLEAR_AND_HOME: Final[str] = "\033[2J\033[H"
 
 # Unicode symbols for TUI rendering
-CURSOR_POINTER: Final[str] = "\u276f"  # ❯
-CURSOR_TRIANGLE: Final[str] = "\u25b6"  # ▶
-CHECK_MARK: Final[str] = "\u2713"  # ✓
-RADIO_FILLED: Final[str] = "\u25cf"  # ●
-BORDER_DOUBLE: Final[str] = "\u2550"  # ═
+CURSOR_POINTER: Final[str] = "\u276f"  # 
+CURSOR_TRIANGLE: Final[str] = "\u25b6"  # 
+CHECK_MARK: Final[str] = "\u2713"  # 
+RADIO_FILLED: Final[str] = "\u25cf"  # 
+BORDER_DOUBLE: Final[str] = "\u2550"  # 
 ARROW_LEFT: Final[str] = "\u2190"  # ←
 ARROW_RIGHT: Final[str] = "\u2192"  # →
 ARROW_UP: Final[str] = "\u2191"  # ↑
 ARROW_DOWN: Final[str] = "\u2193"  # ↓
-PIPE_SEPARATOR: Final[str] = "\u2502"  # │
+PIPE_SEPARATOR: Final[str] = "\u2502"  # 
 
 # Panel rendering
 MAX_READABLE_WIDTH: Final[int] = 120

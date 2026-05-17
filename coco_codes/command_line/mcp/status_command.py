@@ -113,7 +113,7 @@ class StatusCommand(MCPCommandBase):
 
             enabled = status.get("enabled", False)
             status_lines.append(
-                f"[bold]Enabled:[/bold] {'✓ Yes' if enabled else '✗ No'}"
+                f"[bold]Enabled:[/bold] {'Yes' if enabled else 'No'}"
             )
 
             # Check async lifecycle manager status if available
@@ -123,7 +123,7 @@ class StatusCommand(MCPCommandBase):
                 lifecycle_mgr = get_lifecycle_manager()
                 if lifecycle_mgr.is_running(server_id):
                     status_lines.append(
-                        "[bold]Process:[/bold] [bright_green]✓ Active (subprocess/connection running)[/bright_green]"
+                        "[bold]Process:[/bold] [bright_green]Active (subprocess/connection running)[/bright_green]"
                     )
                 else:
                     status_lines.append("[bold]Process:[/bold] [dim]Not active[/dim]")
@@ -132,7 +132,7 @@ class StatusCommand(MCPCommandBase):
 
             quarantined = status.get("quarantined", False)
             if quarantined:
-                status_lines.append("[bold]Quarantined:[/bold] [bright_green]⚠ Yes[/bright_green]")
+                status_lines.append("[bold]Quarantined:[/bold] [bright_green]Yes[/bright_green]")
 
             # Timing information
             uptime = status.get("tracker_uptime")
@@ -161,7 +161,7 @@ class StatusCommand(MCPCommandBase):
             # Create and show the panel
             panel_content = Text.from_markup("\n".join(status_lines))
             panel = Panel(
-                panel_content, title=f"🔌 {server_name} Status", border_style="green"
+                panel_content, title=f"{server_name} Status", border_style="green"
             )
 
             emit_info(panel, message_group=group_id)
@@ -169,7 +169,7 @@ class StatusCommand(MCPCommandBase):
             # Show recent events if available
             recent_events = status.get("recent_events", [])
             if recent_events:
-                emit_info("\n📋 Recent Events:", message_group=group_id)
+                emit_info("\nRecent Events:", message_group=group_id)
                 for event in recent_events[-5:]:  # Show last 5 events
                     timestamp = datetime.fromisoformat(event["timestamp"])
                     time_str = timestamp.strftime("%H:%M:%S")

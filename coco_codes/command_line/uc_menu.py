@@ -380,7 +380,7 @@ def _render_source_panel(
     lines.append(("", "\n"))
     lines.append(("fg:ansibrightblack", f" {tool.source_path}"))
     lines.append(("", "\n"))
-    lines.append(("fg:ansibrightblack", "─" * 70))
+    lines.append(("fg:ansibrightblack", "" * 70))
     lines.append(("", "\n"))
 
     if error:
@@ -405,7 +405,7 @@ def _render_source_panel(
         line_content = source_lines[i]
 
         # Line number
-        lines.append(("fg:ansibrightblack", f" {line_num:>{line_num_width}} │ "))
+        lines.append(("fg:ansibrightblack", f" {line_num:>{line_num_width}} "))
 
         # Basic syntax highlighting
         highlighted = _highlight_python_line(line_content)
@@ -413,7 +413,7 @@ def _render_source_panel(
         lines.append(("", "\n"))
 
     # Footer with scroll info
-    lines.append(("fg:ansibrightblack", "─" * 70))
+    lines.append(("fg:ansibrightblack", "" * 70))
     lines.append(("", "\n"))
 
     # Scroll position indicator

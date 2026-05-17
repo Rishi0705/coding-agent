@@ -80,7 +80,7 @@ class _CallbackHandler(BaseHTTPRequestHandler):
             self.result.error = "Missing code or state"
             failure_html = oauth_failure_html(
                 "Claude Code",
-                "Missing code or state parameter 🥺",
+                "Missing code or state parameter ",
             )
             self._write_response(400, failure_html)
 

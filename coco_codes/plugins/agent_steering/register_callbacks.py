@@ -51,7 +51,7 @@ async def _on_pause_requested() -> None:
     # prompt_toolkit grabs the terminal.
     await asyncio.sleep(0.05)
     emit_info(
-        "⏸️  Agent paused. Type your steering message — Enter to submit, Esc to cancel."
+        " Agent paused. Type your steering message — Enter to submit, Esc to cancel."
     )
 
     # 2. Suspend the key-listener so prompt_toolkit has exclusive stdin.
@@ -85,20 +85,20 @@ async def _on_pause_requested() -> None:
         stripped = text.strip()
         bus.provide_response(SteerAgentCommand(text=stripped, mode=mode))
         preview = stripped[:80] + ("..." if len(stripped) > 80 else "")
-        mode_label = "🎯 STEER NOW" if mode == "now" else "📨 QUEUE"
+        mode_label = "STEER NOW" if mode == "now" else "QUEUE"
         emit_info(
-            f"✍️  Steer queued [{mode_label}] ({len(stripped)} chars): {preview!r}"
+            f" Steer queued [{mode_label}] ({len(stripped)} chars): {preview!r}"
         )
         if mode == "now":
             emit_info(
-                "🎯 Steering queued; agent will see it before its next model call."
+                "Steering queued; agent will see it before its next model call."
             )
         else:
             emit_info(
-                "📨 Steering queued; agent will see it after current turn completes."
+                "Steering queued; agent will see it after current turn completes."
             )
     else:
-        emit_info("▶️  Resuming agent (no steering message).")
+        emit_info(" Resuming agent (no steering message).")
     bus.provide_response(ResumeAgentCommand())
 
 

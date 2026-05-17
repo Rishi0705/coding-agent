@@ -128,7 +128,7 @@ class CustomServerForm:
         """Render the form panel."""
         lines = []
 
-        title = " ✏️ EDIT MCP SERVER" if self.edit_mode else " ➕ ADD CUSTOM MCP SERVER"
+        title = " EDIT MCP SERVER" if self.edit_mode else " ADD CUSTOM MCP SERVER"
         lines.append(("bold bright_green", title))
         lines.append(("", "\n\n"))
 
@@ -137,7 +137,7 @@ class CustomServerForm:
         lines.append((name_style, "  1. Server Name:"))
         lines.append(("", "\n"))
         if self.focused_field == 0:
-            lines.append(("fg:ansibrightgreen", "     ▶ Type in the box below"))
+            lines.append(("fg:ansibrightgreen", "     Type in the box below"))
         else:
             name_display = self.server_name if self.server_name else "(not set)"
             lines.append(("fg:ansibrightblack", f"     {name_display}"))
@@ -146,7 +146,7 @@ class CustomServerForm:
         name_error = self._validate_server_name(self.server_name)
         if name_error and self.server_name:  # Only show if there's input
             lines.append(("", "\n"))
-            lines.append(("fg:ansiyellow", f"     ⚠ {name_error}"))
+            lines.append(("fg:ansiyellow", f"     {name_error}"))
         lines.append(("", "\n\n"))
 
         # Server Type field
@@ -155,9 +155,9 @@ class CustomServerForm:
         lines.append(("", "\n"))
 
         type_icons = {
-            "stdio": "📟",
-            "http": "🌐",
-            "sse": "📡",
+            "stdio": "",
+            "http": "",
+            "sse": "",
         }
 
         for i, server_type in enumerate(SERVER_TYPES):
@@ -165,9 +165,9 @@ class CustomServerForm:
             icon = type_icons.get(server_type, "")
 
             if self.focused_field == 1 and is_selected:
-                lines.append(("fg:ansibrightgreen", "  ▶ "))
+                lines.append(("fg:ansibrightgreen", "  "))
             elif is_selected:
-                lines.append(("fg:ansigreen", "  ✓ "))
+                lines.append(("fg:ansigreen", "  "))
             else:
                 lines.append(("", "    "))
 
@@ -185,16 +185,16 @@ class CustomServerForm:
         lines.append(("", "\n"))
 
         if self.focused_field == 2:
-            lines.append(("fg:ansibrightgreen", "     ▶ Editing in box below"))
+            lines.append(("fg:ansibrightgreen", "     Editing in box below"))
         else:
             lines.append(("fg:ansibrightblack", "     (Tab to edit)"))
         lines.append(("", "\n\n"))
 
         # Validation status
         if self.validation_error:
-            lines.append(("fg:ansired bold", f"  ❌ {self.validation_error}"))
+            lines.append(("fg:ansired bold", f"  {self.validation_error}"))
         else:
-            lines.append(("fg:ansigreen", "  ✓ Valid JSON"))
+            lines.append(("fg:ansigreen", "  Valid JSON"))
         lines.append(("", "\n\n"))
 
         # Navigation hints
@@ -215,12 +215,12 @@ class CustomServerForm:
         # Status message bar - shows feedback for user actions
         if self.status_message:
             lines.append(("", "\n\n"))
-            lines.append(("bold", "  ─" * 20))
+            lines.append(("bold", "  " * 20))
             lines.append(("", "\n"))
             if self.status_is_error:
-                lines.append(("fg:ansired bold", f"  ⚠️  {self.status_message}"))
+                lines.append(("fg:ansired bold", f"   {self.status_message}"))
             else:
-                lines.append(("fg:ansigreen bold", f"  ✓ {self.status_message}"))
+                lines.append(("fg:ansigreen bold", f"  {self.status_message}"))
 
         return lines
 
@@ -230,7 +230,7 @@ class CustomServerForm:
 
         current_type = self._get_current_type()
 
-        lines.append(("bold bright_green", " 📝 HELP & PREVIEW"))
+        lines.append(("bold bright_green", " HELP & PREVIEW"))
         lines.append(("", "\n\n"))
 
         # Type description
@@ -281,7 +281,7 @@ class CustomServerForm:
         lines.append(("", "\n"))
 
         # Tips
-        lines.append(("bold", "  💡 Tips:"))
+        lines.append(("bold", "  Tips:"))
         lines.append(("", "\n"))
         lines.append(("fg:ansibrightblack", "  • Use $ENV_VAR for secrets"))
         lines.append(("", "\n"))
@@ -505,7 +505,7 @@ class CustomServerForm:
                     [
                         Frame(
                             form_window,
-                            title="➕ Custom Server",
+                            title="Custom Server",
                             height=Dimension(min=18, weight=35),
                         ),
                         Frame(
@@ -641,17 +641,17 @@ class CustomServerForm:
 
         # Clear exit message if not installing
         if self.result != "installed":
-            emit_info("✓ Exited custom server form")
+            emit_info("Exited custom server form")
 
         # Handle result
         if self.result == "installed":
             if self.edit_mode:
                 emit_success(
-                    f"\n  ✅ Successfully updated server '{self.server_name}'!"
+                    f"\n  Successfully updated server '{self.server_name}'!"
                 )
             else:
                 emit_success(
-                    f"\n  ✅ Successfully added custom server '{self.server_name}'!"
+                    f"\n  Successfully added custom server '{self.server_name}'!"
                 )
             emit_info(f"  Use '/mcp start {self.server_name}' to start the server.\n")
 

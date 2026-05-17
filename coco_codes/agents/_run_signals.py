@@ -141,7 +141,7 @@ def prepare_queued_steer_injection(agent: Any, result: Any) -> Optional[str]:
     for leftover in pending[1:]:
         pc.request_steer(leftover, mode="queue")
     preview = steer_text[:80] + ("..." if len(steer_text) > 80 else "")
-    emit_info(f"📨 Injecting queued steer between turns — agent will see: {preview!r}")
+    emit_info(f"Injecting queued steer between turns — agent will see: {preview!r}")
     return steer_text
 
 
@@ -159,7 +159,7 @@ def drain_pause_state_on_cancel() -> None:
     drained = pc.drain_pending_steer()
     if drained:
         emit_info(
-            f"🧹 Discarded {len(drained)} undelivered steering message(s) on cancel."
+            f"Discarded {len(drained)} undelivered steering message(s) on cancel."
         )
 
 

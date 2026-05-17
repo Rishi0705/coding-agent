@@ -54,7 +54,7 @@ def prompt_and_install_custom_server(manager) -> bool:
 
     from .utils import find_server_id_by_name
 
-    emit_info("\n➕ Add Custom MCP Server\n")
+    emit_info("\nAdd Custom MCP Server\n")
     emit_info("  Configure your own MCP server using JSON.\n")
 
     # Get server name
@@ -83,9 +83,9 @@ def prompt_and_install_custom_server(manager) -> bool:
 
     # Select server type
     emit_info("\n  Select server type:\n")
-    emit_info("    1. 📟 stdio  - Local command (npx, python, uvx, etc.)")
-    emit_info("    2. 🌐 http   - HTTP endpoint")
-    emit_info("    3. 📡 sse    - Server-Sent Events\n")
+    emit_info("    1. stdio  - Local command (npx, python, uvx, etc.)")
+    emit_info("    2. http   - HTTP endpoint")
+    emit_info("    3. sse    - Server-Sent Events\n")
 
     try:
         type_choice = safe_input("  Enter choice [1-3]: ")
@@ -186,7 +186,7 @@ def prompt_and_install_custom_server(manager) -> bool:
         with open(MCP_SERVERS_FILE, "w") as f:
             json.dump(data, f, indent=2)
 
-        emit_success(f"\n  ✅ Successfully added custom server '{server_name}'!")
+        emit_success(f"\n  Successfully added custom server '{server_name}'!")
         emit_info(f"  Use '/mcp start {server_name}' to start the server.\n")
 
         # Strict opt-in: prompt the user to bind this server to agents.

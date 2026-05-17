@@ -236,10 +236,10 @@ def prompt_for_file_permission(
     try:
         # Build panel content
         panel_content = RichText()
-        panel_content.append("🔒 Requesting permission to ", style="bold bright_green")
+        panel_content.append("Requesting permission to ", style="bold bright_green")
         panel_content.append(operation, style="bold bright_green")
         panel_content.append(":\n", style="bold bright_green")
-        panel_content.append("📄 ", style="dim")
+        panel_content.append("", style="dim")
         panel_content.append(file_path, style="bold white")
 
         # Use the common approval function

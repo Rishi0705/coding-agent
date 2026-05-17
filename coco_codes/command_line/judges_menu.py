@@ -152,7 +152,7 @@ def _render_model_list(
 
     # Header: (Page x/y, focused indicator)
     if focused:
-        lines.append(("fg:ansigreen bold", "▼ "))
+        lines.append(("fg:ansigreen bold", ""))
     else:
         lines.append(("fg:ansibrightblack", "  "))
     lines.append(
@@ -167,7 +167,7 @@ def _render_model_list(
         is_sel = i == selected_idx
         name = _sanitize(models[i])
         if is_sel and focused:
-            lines.append(("fg:ansigreen bold", "  ▶ "))
+            lines.append(("fg:ansigreen bold", "  "))
             lines.append(("fg:ansigreen bold", name))
         elif is_sel:
             lines.append(("fg:ansiyellow", "  · "))
@@ -491,7 +491,7 @@ def _render_menu(
         for i in range(start, end):
             judge = judges[i]
             is_selected = i == selected_idx
-            marker = "▶ " if is_selected else "  "
+            marker = "" if is_selected else "  "
             row_style = "fg:ansigreen bold" if is_selected else ""
             enabled_glyph = "[on] " if judge.enabled else "[off]"
             enabled_style = "fg:ansigreen" if judge.enabled else "fg:ansibrightblack"
@@ -806,4 +806,4 @@ async def interactive_judges_menu() -> None:
         sys.stdout.flush()
         set_awaiting_user_input(False)
 
-    emit_info("✓ Exited judges menu")
+    emit_info("Exited judges menu")

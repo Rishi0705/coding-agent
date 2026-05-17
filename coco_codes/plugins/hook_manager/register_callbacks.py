@@ -85,7 +85,7 @@ def _handle_hooks_command(command: str, name: str) -> Optional[Any]:
         global_hooks = [e for e in entries if e.source == "global"]
 
         if project_hooks:
-            emit_info("📁 PROJECT HOOKS (.claude/settings.json):")
+            emit_info("PROJECT HOOKS (.claude/settings.json):")
             for entry in project_hooks:
                 status = (
                     "\U0001f7e2 enabled " if entry.enabled else "\U0001f534 disabled"
@@ -97,7 +97,7 @@ def _handle_hooks_command(command: str, name: str) -> Optional[Any]:
                 emit_info("")
 
         if global_hooks:
-            emit_info("🌍 GLOBAL HOOKS (~/.coco_codes/hooks.json):")
+            emit_info("GLOBAL HOOKS (~/.coco_codes/hooks.json):")
             for entry in global_hooks:
                 status = (
                     "\U0001f7e2 enabled " if entry.enabled else "\U0001f534 disabled"

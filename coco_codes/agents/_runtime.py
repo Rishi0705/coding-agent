@@ -179,12 +179,12 @@ def streaming_retry(
                     if attempt < max_attempts - 1:
                         delay = delays[attempt] if attempt < len(delays) else delays[-1]
                         emit_warning(
-                            f"⚡ Streaming interrupted, auto-retrying in {delay}s... "
+                            f"Streaming interrupted, auto-retrying in {delay}s... "
                             f"(attempt {attempt + 1}/{max_attempts})"
                         )
                         await asyncio.sleep(delay)
                     else:
-                        emit_error(f"❌ Streaming failed after {max_attempts} attempts")
+                        emit_error(f"Streaming failed after {max_attempts} attempts")
             assert last_exc is not None  # loop always sets this before exiting
             raise last_exc
 

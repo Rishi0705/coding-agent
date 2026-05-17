@@ -44,7 +44,7 @@ class ListCommand(MCPCommandBase):
                 return
 
             # Create table for server list
-            table = Table(title="🔌 MCP Server Status Dashboard")
+            table = Table(title="MCP Server Status Dashboard")
             table.add_column("Name", style="green", no_wrap=True)
             table.add_column("Type", style="dim", no_wrap=True)
             table.add_column("State", justify="center")
@@ -57,7 +57,7 @@ class ListCommand(MCPCommandBase):
                 state_display = format_state_indicator(server.state)
 
                 # Format enabled status
-                enabled_display = "✓" if server.enabled else "✗"
+                enabled_display = "" if server.enabled else ""
                 enabled_style = "green" if server.enabled else "red"
 
                 # Format uptime
@@ -85,7 +85,7 @@ class ListCommand(MCPCommandBase):
                 1 for s in servers if s.state == ServerState.RUNNING and s.enabled
             )
             emit_info(
-                f"\n📊 Summary: {running}/{total} servers running",
+                f"\nSummary: {running}/{total} servers running",
                 message_group=group_id,
             )
 

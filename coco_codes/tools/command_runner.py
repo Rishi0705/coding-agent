@@ -523,13 +523,13 @@ def _shell_command_keyboard_context():
 
     # Handler for Ctrl-X: kill all running shell processes
     def handle_ctrl_x_press() -> None:
-        emit_warning("\n🛑 Ctrl-X detected! Interrupting shell command...")
+        emit_warning("\nCtrl-X detected! Interrupting shell command...")
         kill_all_running_shell_processes()
 
     # Handler for Ctrl-C during shell execution: just kill the shell process, don't cancel agent
     def shell_sigint_handler(_sig, _frame):
         """During shell execution, Ctrl-C kills the shell but doesn't cancel the agent."""
-        emit_warning("\n🛑 Ctrl-C detected! Interrupting shell command...")
+        emit_warning("\nCtrl-C detected! Interrupting shell command...")
         kill_all_running_shell_processes()
 
     # Set up Ctrl-X listener
@@ -574,13 +574,13 @@ def _shell_command_keyboard_context():
 
 def _handle_ctrl_x_press() -> None:
     """Handler for Ctrl-X: kill all running shell processes."""
-    emit_warning("\n🛑 Ctrl-X detected! Interrupting all shell commands...")
+    emit_warning("\nCtrl-X detected! Interrupting all shell commands...")
     kill_all_running_shell_processes()
 
 
 def _shell_sigint_handler(_sig, _frame):
     """During shell execution, Ctrl-C kills all shells but doesn't cancel agent."""
-    emit_warning("\n🛑 Ctrl-C detected! Interrupting all shell commands...")
+    emit_warning("\nCtrl-C detected! Interrupting all shell commands...")
     kill_all_running_shell_processes()
 
 
@@ -1083,9 +1083,9 @@ async def run_shell_command(
 
             # Emit info about background execution
             emit_info(
-                f"🚀 Background process started (PID: {process.pid}) - no timeout, runs until complete"
+                f"Background process started (PID: {process.pid}) - no timeout, runs until complete"
             )
-            emit_info(f"📄 Output logging to: {log_file.name}")
+            emit_info(f"Output logging to: {log_file.name}")
 
             # Return immediately - don't wait, don't block
             return ShellCommandOutput(
@@ -1110,7 +1110,7 @@ async def run_shell_command(
             except OSError:
                 pass
             # Emit error message so user sees what happened
-            emit_error(f"❌ Failed to start background process: {e}")
+            emit_error(f"Failed to start background process: {e}")
             return ShellCommandOutput(
                 success=False,
                 command=command,
@@ -1156,13 +1156,13 @@ async def run_shell_command(
 
         # Build panel content
         panel_content = Text()
-        panel_content.append("⚡ Requesting permission to run:\n", style="bold bright_green")
+        panel_content.append("Requesting permission to run:\n", style="bold bright_green")
         panel_content.append("$ ", style="bold green")
         panel_content.append(command, style="bold white")
 
         if cwd:
             panel_content.append("\n\n", style="")
-            panel_content.append("📂 Working directory: ", style="dim")
+            panel_content.append("Working directory: ", style="dim")
             panel_content.append(cwd, style="dim cyan")
 
         # Use the common approval function (async version)

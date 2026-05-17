@@ -193,7 +193,7 @@ class ModelsDevRegistry:
             data = self._fetch_from_api()
             if data:
                 self.data_source = "live:models.dev"
-                emit_info("📡 Fetched latest models from models.dev")
+                emit_info("Fetched latest models from models.dev")
             else:
                 # Fall back to bundled JSON
                 bundled_path = self._get_bundled_json_path()
@@ -203,7 +203,7 @@ class ModelsDevRegistry:
                             data = json.load(f)
                         self.data_source = f"bundled:{bundled_path.name}"
                         emit_info(
-                            "📦 Using bundled models database (models.dev unavailable)"
+                            "Using bundled models database (models.dev unavailable)"
                         )
                     except json.JSONDecodeError as e:
                         emit_error(f"Invalid JSON in bundled file {bundled_path}: {e}")

@@ -99,7 +99,7 @@ async def take_screenshot(
     """
     target = element_selector or ("full_page" if full_page else "viewport")
     group_id = generate_group_id("browser_screenshot", target)
-    emit_info(f"BROWSER SCREENSHOT 📷 target={target}", message_group=group_id)
+    emit_info(f"BROWSER SCREENSHOT target={target}", message_group=group_id)
 
     try:
         browser_manager = get_session_browser_manager()

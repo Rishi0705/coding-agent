@@ -62,7 +62,7 @@ class RestartCommand(MCPCommandBase):
 
                 if start_success:
                     emit_info(
-                        f"✓ Restarted server: {server_name}", message_group=group_id
+                        f"Restarted server: {server_name}", message_group=group_id
                     )
 
                     # Reload the agent to pick up the server changes
@@ -83,12 +83,12 @@ class RestartCommand(MCPCommandBase):
                         logger.warning(f"Could not reload agent: {e}")
                 else:
                     emit_info(
-                        f"✗ Failed to start server after reload: {server_name}",
+                        f"Failed to start server after reload: {server_name}",
                         message_group=group_id,
                     )
             else:
                 emit_info(
-                    f"✗ Failed to reload server configuration: {server_name}",
+                    f"Failed to reload server configuration: {server_name}",
                     message_group=group_id,
                 )
 

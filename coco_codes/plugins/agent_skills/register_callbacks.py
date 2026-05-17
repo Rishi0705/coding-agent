@@ -230,16 +230,16 @@ def _handle_skills_command(command: str, name: str) -> Optional[Any]:
             new_state = not get_skills_enabled()
             set_skills_enabled(new_state)
             if new_state:
-                emit_success("✅ Skills integration enabled globally")
+                emit_success("Skills integration enabled globally")
             else:
-                emit_warning("🔴 Skills integration disabled globally")
+                emit_warning("Skills integration disabled globally")
             return True
 
         elif subcommand == "refresh":
             refreshed = refresh_skill_cache()
             valid_skills = [skill for skill in refreshed if skill.has_skill_md]
             emit_success(
-                f"🔄 Refreshed skills cache: {len(refreshed)} discovered "
+                f"Refreshed skills cache: {len(refreshed)} discovered "
                 f"({len(valid_skills)} with SKILL.md)"
             )
             return True

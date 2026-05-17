@@ -11,25 +11,25 @@ It also handles request/response correlation for user interactions:
 4. MessageBus matches the response to the waiting request via prompt_id
 5. Agent's request_input() returns with the user's value
 
-    ┌─────────────────────────────────────────────────────────────┐
-    │                       MessageBus                             │
-    │  ┌─────────────┐                      ┌─────────────┐       │
-    │  │  outgoing   │  Messages (Agent→UI) │  incoming   │       │
-    │  │   Queue     │ ───────────────────> │   Queue     │       │
-    │  │ [AnyMessage]│                      │ [AnyCommand]│       │
-    │  └─────────────┘                      └─────────────┘       │
-    │         ↑                                    │              │
-    │         │                                    ↓              │
-    │    emit()                           provide_response()      │
-    │    emit_text()                                              │
-    │    request_input() ─────────────────────────────────────────│
-    │         ↑              (waits for matching response)        │
-    │         │                                                   │
-    │  ┌──────┴──────┐                                            │
-    │  │  pending    │  prompt_id → Future                        │
-    │  │  requests   │                                            │
-    │  └─────────────┘                                            │
-    └─────────────────────────────────────────────────────────────┘
+    
+                          MessageBus                             
+                                
+      outgoing    Messages (Agent→UI)  incoming         
+       Queue     >   Queue           
+     [AnyMessage]                     [AnyCommand]      
+                                
+            ↑                                                 
+                                               ↓              
+       emit()                           provide_response()      
+       emit_text()                                              
+       request_input() 
+            ↑              (waits for matching response)        
+                                                              
+                                                
+      pending     prompt_id → Future                        
+      requests                                              
+                                                
+    
 """
 
 import asyncio
