@@ -11,7 +11,7 @@ provides a reasonable middle ground.  The max clamp (3.5) prevents
 absurdly high ratios from inflating token estimates.
 
 Storage lives at ``~/.coco_codes/token_ratios.json``, overridable via
-the env var ``CODE_PUPPY_TOKEN_RATIOS_PATH``.
+the env var ``COCO_CODES_TOKEN_RATIOS_PATH``.
 """
 
 import json
@@ -56,7 +56,7 @@ _ratios_lock = threading.Lock()
 _TOKEN_RATIOS_PATH: Path = Path(
     os.path.expanduser(
         os.environ.get(
-            "CODE_PUPPY_TOKEN_RATIOS_PATH",
+            "COCO_CODES_TOKEN_RATIOS_PATH",
             str(Path.home() / ".coco_codes" / "token_ratios.json"),
         )
     )

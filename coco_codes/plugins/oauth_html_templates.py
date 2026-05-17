@@ -14,13 +14,13 @@ GEMINI_LOGO_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Goo
 def oauth_success_html(service_name: str, extra_message: Optional[str] = None) -> str:
     """Return an success HTML page with artillery effects."""
     clean_service = service_name.strip() or "OAuth"
-    detail = f"<p class='detail'>🐾 {extra_message} 🐾</p>" if extra_message else ""
+    detail = f"<p class='detail'>✅ {extra_message}</p>" if extra_message else ""
     projectile, rival_url, rival_alt, target_modifier = _service_targets(clean_service)
     target_classes = "target" if not target_modifier else f"target {target_modifier}"
     return (
         "<!DOCTYPE html>"
         "<html lang='en'><head><meta charset='utf-8'>"
-        "<title>Puppy Paw-ty Success</title>"
+        "<title>Authentication Successful</title>"
         "<style>"
         "html,body{margin:0;padding:0;height:100%;overflow:hidden;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(135deg,#0f172a 0%,#111827 45%,#1f2937 100%);color:#e5e7eb;}"
         "body{display:flex;align-items:center;justify-content:center;}"
@@ -57,8 +57,8 @@ def oauth_success_html(service_name: str, extra_message: Optional[str] = None) -
             for left, top, delay, emoji in _SUCCESS_PUPPIES
         )
         + "</div>"
-        f"<h1>🐶⚡ {clean_service} OAuth Complete ⚡🐶</h1>"
-        "<p class='mega'>Puppy squad delivered the token payload without mercy.</p>"
+        f"<h1>🤖⚡ {clean_service} OAuth Complete ⚡🤖</h1>"
+        "<p class='mega'>Authentication token received successfully.</p>"
         f"{detail}"
         f"<p>💣 Puppies are bombarding the {rival_alt} defenses! 💣</p>"
         "<p>🚀 This window will auto-close faster than a corgi zoomie. 🚀</p>"
@@ -80,7 +80,7 @@ def oauth_failure_html(service_name: str, reason: str) -> str:
     return (
         "<!DOCTYPE html>"
         "<html lang='en'><head><meta charset='utf-8'>"
-        "<title>Puppy Tears</title>"
+        "<title>Authentication Failed</title>"
         "<style>"
         "html,body{margin:0;padding:0;height:100%;overflow:hidden;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(160deg,#101827 0%,#0b1120 100%);color:#e2e8f0;}"
         "body{display:flex;align-items:center;justify-content:center;}"
@@ -113,8 +113,8 @@ def oauth_failure_html(service_name: str, reason: str) -> str:
             for left, top, delay, emoji in _FAILURE_PUPPIES
         )
         + "</div>"
-        f"<h1>💔🐶 {clean_service} OAuth Whoopsie 💔</h1>"
-        "<p class='howl'>😭 Puppy artillery jammed! Someone cut the firing wire.</p>"
+        f"<h1>💔🤖 {clean_service} OAuth Whoopsie 💔</h1>"
+        "<p class='howl'>❌ Authentication failed. Please try again.</p>"
         f"<p>{clean_reason}</p>"
         "<p>💧 A thousand doggy eyes are welling up. Try again from Coco Codes! 💧</p>"
         f"<p>Re-calibrate the {projectile} barrage and slam it into the {rival_alt} wall.</p>"
@@ -132,57 +132,57 @@ def oauth_failure_html(service_name: str, reason: str) -> str:
 
 
 _SUCCESS_PUPPIES = (
-    (5, 12, 0.0, "🐶"),
-    (18, 28, 0.2, "🐕"),
+    (5, 12, 0.0, "🤖"),
+    (18, 28, 0.2, "⚙️"),
     (32, 6, 1.1, "🐩"),
     (46, 18, 0.5, "🦮"),
-    (62, 9, 0.8, "🐕‍🦺"),
-    (76, 22, 1.3, "🐶"),
+    (62, 9, 0.8, "⚙️"),
+    (76, 22, 1.3, "🤖"),
     (88, 14, 0.4, "🐺"),
-    (12, 48, 0.6, "🐕"),
+    (12, 48, 0.6, "⚙️"),
     (28, 58, 1.7, "🦴"),
     (44, 42, 0.9, "🦮"),
-    (58, 52, 1.5, "🐾"),
+    (58, 52, 1.5, "✨"),
     (72, 46, 0.3, "🐩"),
-    (86, 54, 1.1, "🐕‍🦺"),
-    (8, 72, 0.7, "🐶"),
+    (86, 54, 1.1, "⚙️"),
+    (8, 72, 0.7, "🤖"),
     (24, 80, 1.2, "🐩"),
-    (40, 74, 0.2, "🐕"),
+    (40, 74, 0.2, "⚙️"),
     (56, 66, 1.6, "🦮"),
-    (70, 78, 1.0, "🐕‍🦺"),
-    (84, 70, 1.4, "🐾"),
-    (16, 90, 0.5, "🐶"),
+    (70, 78, 1.0, "⚙️"),
+    (84, 70, 1.4, "✨"),
+    (16, 90, 0.5, "🤖"),
     (32, 92, 1.9, "🦴"),
     (48, 88, 1.1, "🐺"),
     (64, 94, 1.8, "🐩"),
-    (78, 88, 0.6, "🐕"),
-    (90, 82, 1.3, "🐾"),
+    (78, 88, 0.6, "⚙️"),
+    (90, 82, 1.3, "✨"),
 )
 
 
 _FAILURE_PUPPIES = (
-    (8, 6, 0.0, "🥺🐶"),
-    (22, 18, 0.3, "😢🐕"),
+    (8, 6, 0.0, "🥺🤖"),
+    (22, 18, 0.3, "😞"),
     (36, 10, 0.6, "😿🐩"),
     (50, 20, 0.9, "😭🦮"),
-    (64, 8, 1.2, "🥺🐕‍🦺"),
-    (78, 16, 1.5, "😢🐶"),
-    (12, 38, 0.4, "😭🐕"),
+    (64, 8, 1.2, "😞"),
+    (78, 16, 1.5, "😢🤖"),
+    (12, 38, 0.4, "😞"),
     (28, 44, 0.7, "😿🐩"),
     (42, 34, 1.0, "🥺🦮"),
-    (58, 46, 1.3, "😭🐕‍🦺"),
-    (72, 36, 1.6, "😢🐶"),
-    (86, 40, 1.9, "😭🐕"),
+    (58, 46, 1.3, "😞"),
+    (72, 36, 1.6, "😢🤖"),
+    (86, 40, 1.9, "😞"),
     (16, 64, 0.5, "🥺🐩"),
     (32, 70, 0.8, "😭🦮"),
-    (48, 60, 1.1, "😿🐕‍🦺"),
-    (62, 74, 1.4, "🥺🐶"),
-    (78, 68, 1.7, "😭🐕"),
+    (48, 60, 1.1, "😞"),
+    (62, 74, 1.4, "🥺🤖"),
+    (78, 68, 1.7, "😞"),
     (90, 72, 2.0, "😢🐩"),
     (20, 88, 0.6, "🥺🦮"),
-    (36, 92, 0.9, "😭🐕‍🦺"),
-    (52, 86, 1.2, "😢🐶"),
-    (68, 94, 1.5, "😭🐕"),
+    (36, 92, 0.9, "😞"),
+    (52, 86, 1.2, "😢🤖"),
+    (68, 94, 1.5, "😞"),
     (82, 90, 1.8, "😿🐩"),
 )
 
@@ -211,7 +211,7 @@ def _build_artillery(projectile: str, *, shells_only: bool = False) -> str:
         return shells
 
     cannons = (
-        "<span class='cannon left'>🐶🧨</span><span class='cannon right'>🐕‍🦺🔥</span>"
+        "<span class='cannon left'>🤖🧨</span><span class='cannon right'>⚡🔥</span>"
     )
     return cannons + shells
 
@@ -220,9 +220,9 @@ def _service_targets(service_name: str) -> Tuple[str, str, str, str]:
     """Map service names to projectile emoji and rival logo metadata."""
     normalized = service_name.lower()
     if "anthropic" in normalized or "claude" in normalized:
-        return "🐕‍🦺🧨", CLAUDE_LOGO_URL, "Claude logo", ""
+        return "🤖⚡", CLAUDE_LOGO_URL, "Claude logo", ""
     if "chat" in normalized or "gpt" in normalized:
-        return "🐶🚀", CHATGPT_LOGO_URL, "ChatGPT logo", "invert"
+        return "🤖🚀", CHATGPT_LOGO_URL, "ChatGPT logo", "invert"
     if "gemini" in normalized or "google" in normalized:
-        return "🐶✨", GEMINI_LOGO_URL, "Gemini logo", ""
-    return "🐾💥", CHATGPT_LOGO_URL, "mystery logo", "invert"
+        return "🤖✨", GEMINI_LOGO_URL, "Gemini logo", ""
+    return "⚡", CHATGPT_LOGO_URL, "mystery logo", "invert"

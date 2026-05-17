@@ -1,8 +1,8 @@
 tools_content = """
-Woof! 🐶 Here's my complete toolkit! I'm like a Swiss Army knife but way more fun:
+Here is the complete set of available tools:
 
 # **File Operations**
-- **`list_files(directory, recursive)`** - Browse directories like a good sniffing dog! Shows files, directories, sizes, and depth
+- **`list_files(directory, recursive)`** - Browse directories and list files, directories, sizes, and depth
 - **`read_file(file_path)`** - Read any file content (with line count info)
 - **`create_file(file_path, content, overwrite)`** - Create new files or overwrite existing ones
 - **`replace_in_file(file_path, replacements)`** - Make targeted text replacements in existing files (preferred for edits!)

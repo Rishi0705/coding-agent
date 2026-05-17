@@ -30,21 +30,16 @@ class StatusDisplay:
         self.task = None
         self.live = None
         self.loading_messages = [
-            "Fetching...",
-            "Sniffing around...",
-            "Wagging tail...",
-            "Pawsing for a moment...",
-            "Chasing tail...",
-            "Digging up results...",
-            "Barking at the data...",
-            "Rolling over...",
-            "Panting with excitement...",
-            "Chewing on it...",
-            "Prancing along...",
-            "Howling at the code...",
-            "Snuggling up to the task...",
-            "Bounding through data...",
-            "Puppy pondering...",
+            "Processing...",
+            "Analyzing...",
+            "Reasoning...",
+            "Evaluating options...",
+            "Generating response...",
+            "Synthesizing results...",
+            "Reviewing context...",
+            "Compiling output...",
+            "Optimizing...",
+            "Finalizing...",
         ]
         self.current_message_index = 0
         self.spinner = Spinner("dots", text="")
@@ -183,7 +178,7 @@ class StatusDisplay:
 
         # Create a highly visible status text
         return Text.assemble(
-            Text(f"⏳ {rate_text} 🐾", style="bold cyan"),
+            Text(f"⏳ {rate_text} ⚡", style="bold cyan"),
             Text(f" {message}", style="yellow"),
         )
 

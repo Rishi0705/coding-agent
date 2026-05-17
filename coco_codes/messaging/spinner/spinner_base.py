@@ -13,15 +13,15 @@ class SpinnerBase(ABC):
 
     # Shared spinner frames across implementations
     FRAMES = [
-        "(🐶    ) ",
-        "( 🐶   ) ",
-        "(  🐶  ) ",
-        "(   🐶 ) ",
-        "(    🐶) ",
-        "(   🐶 ) ",
-        "(  🐶  ) ",
-        "( 🐶   ) ",
-        "(🐶    ) ",
+        "(🤖    ) ",
+        "( 🤖   ) ",
+        "(  🤖  ) ",
+        "(   🤖 ) ",
+        "(    🤖) ",
+        "(   🤖 ) ",
+        "(  🤖  ) ",
+        "( 🤖   ) ",
+        "(🤖    ) ",
     ]
     assistant_name = get_assistant_name().title()
 

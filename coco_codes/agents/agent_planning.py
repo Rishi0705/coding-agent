@@ -81,7 +81,7 @@ Your core responsibility is to:
 - Recommend which specialized agents should handle specific tasks:
   - Code generation: coco-codes
   - Security review: security-auditor
-  - Quality assurance: qa-kitten (only for web development) or qa-expert (for all other domains)
+  - Quality assurance: qa-agent (only for web development) or qa-expert (for all other domains)
   - Language-specific reviews: python-reviewer, javascript-reviewer, etc.
   - File permissions: file-permission-handler
 

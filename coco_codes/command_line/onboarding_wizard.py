@@ -1,6 +1,6 @@
 """Interactive TUI onboarding wizard for first-time Coco Codes users.
 
-🐶 Quick 5-slide tutorial. ADHD-friendly!
+🤖 Quick 5-slide tutorial. concise!
 
 Usage:
     from coco_codes.command_line.onboarding_wizard import (
@@ -61,10 +61,10 @@ def should_show_onboarding() -> bool:
 
     Returns False if:
     - User has already completed onboarding
-    - CODE_PUPPY_SKIP_TUTORIAL env var is set to '1' or 'true'
+    - COCO_CODES_SKIP_TUTORIAL env var is set to '1' or 'true'
     """
     # Allow skipping tutorial via environment variable (useful for testing)
-    skip_env = os.environ.get("CODE_PUPPY_SKIP_TUTORIAL", "").lower()
+    skip_env = os.environ.get("COCO_CODES_SKIP_TUTORIAL", "").lower()
     if skip_env in ("1", "true", "yes"):
         return False
     return not has_completed_onboarding()
@@ -291,7 +291,7 @@ async def run_onboarding_wizard() -> Optional[str]:
             content=FormattedTextControl(lambda: _get_slide_panel_content(wizard))
         )
 
-        root_container = Frame(slide_panel, title="🐶 Coco Codes Tutorial")
+        root_container = Frame(slide_panel, title="🤖 Coco Codes Tutorial")
         layout = Layout(root_container)
 
         app = Application(
@@ -322,7 +322,7 @@ async def run_onboarding_wizard() -> Optional[str]:
     if wizard.result == "skipped":
         emit_info("✓ Tutorial skipped")
     elif wizard.result == "completed":
-        emit_info("✓ Tutorial completed! Welcome to Coco Codes! 🐶")
+        emit_info("✓ Tutorial completed! Welcome to Coco Codes! 🤖")
     else:
         emit_info("✓ Exited tutorial")
 

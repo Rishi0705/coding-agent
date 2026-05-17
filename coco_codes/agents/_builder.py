@@ -36,7 +36,7 @@ from coco_codes.messaging import emit_error, emit_info, emit_warning
 from coco_codes.model_factory import ModelFactory, make_model_settings
 
 _AGENT_RULE_FILES = ("AGENTS.md", "AGENT.md", "agents.md", "agent.md")
-_CODE_PUPPY_DIR = ".coco_codes"
+_COCO_CODES_DIR = ".coco_codes"
 
 
 def load_agent_rules() -> Optional[str]:
@@ -62,7 +62,7 @@ def load_agent_rules() -> Optional[str]:
     project_rules: Optional[str] = None
 
     # Priority 1: Check .coco_codes/ directory (preferred location)
-    coco_codes_dir = Path(_CODE_PUPPY_DIR)
+    coco_codes_dir = Path(_COCO_CODES_DIR)
     if coco_codes_dir.is_dir():
         for name in _AGENT_RULE_FILES:
             candidate = coco_codes_dir / name

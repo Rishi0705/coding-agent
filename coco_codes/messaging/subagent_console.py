@@ -30,7 +30,7 @@ from coco_codes.messaging.messages import SubAgentStatusMessage
 
 STATUS_STYLES = {
     "starting": {"color": "cyan", "spinner": "dots", "emoji": "🚀"},
-    "running": {"color": "green", "spinner": "dots", "emoji": "🐕"},
+    "running": {"color": "green", "spinner": "dots", "emoji": "⚙️"},
     "thinking": {"color": "magenta", "spinner": "dots", "emoji": "🤔"},
     "tool_calling": {"color": "yellow", "spinner": "dots12", "emoji": "🔧"},
     "completed": {"color": "green", "spinner": None, "emoji": "✅"},
@@ -173,7 +173,7 @@ class SubAgentConsoleManager:
 
         Args:
             session_id: Unique identifier for this agent session.
-            agent_name: Name of the agent (e.g., 'coco-codes', 'qa-kitten').
+            agent_name: Name of the agent (e.g., 'coco-codes', 'qa-agent').
             model_name: Name of the model being used (e.g., 'gpt-4o').
         """
         with self._agents_lock:
@@ -402,7 +402,7 @@ class SubAgentConsoleManager:
 
         # Build panel title with spinner for active states
         title = Text()
-        title.append("🐕 ", style="bold")
+        title.append("⚙️ ", style="bold")
         title.append(agent.agent_name, style=f"bold {color}")
 
         # Create panel

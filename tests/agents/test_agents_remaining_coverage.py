@@ -26,7 +26,7 @@ def _test_reviewer_agent(module_path, class_name):
 
 
 def test_qa_kitten():
-    from coco_codes.agents.agent_qa_kitten import QualityAssuranceKittenAgent
+    from coco_codes.agents.agent_qa_automation import QualityAssuranceKittenAgent
 
     agent = QualityAssuranceKittenAgent()
     tools = agent.get_available_tools()

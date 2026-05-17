@@ -177,7 +177,7 @@ async def main():
             import pyfiglet
 
             intro_lines = pyfiglet.figlet_format(
-                "CODE PUPPY", font="ansi_shadow"
+                "COCO CODES", font="ansi_shadow"
             ).split("\n")
 
             # Simple blue to green gradient (top to bottom)
@@ -197,7 +197,7 @@ async def main():
             # Print directly to console to avoid the 'dim' style from emit_system_message
             display_console.print("\n".join(lines))
         except ImportError:
-            emit_system_message("🐶 Coco Codes is Loading...")
+            emit_system_message("🤖 Coco Codes is Loading...")
 
         # Truecolor warning moved to interactive_mode() so it prints LAST
         # after all the help stuff - max visibility for the ugly red box!
@@ -477,7 +477,7 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
                 )
                 get_message_bus().emit(response_msg)
 
-                emit_success("🐶 Continuing in Interactive Mode")
+                emit_success("🤖 Continuing in Interactive Mode")
                 emit_system_message(
                     "Your command and response are preserved in the conversation history."
                 )
@@ -702,7 +702,7 @@ async def interactive_mode(message_renderer, initial_command: str = None) -> Non
                         )
 
                         # Allow environment variable override for tests
-                        if os.getenv("CODE_PUPPY_NO_TUI") == "1":
+                        if os.getenv("COCO_CODES_NO_TUI") == "1":
                             use_interactive_picker = False
 
                         if use_interactive_picker:

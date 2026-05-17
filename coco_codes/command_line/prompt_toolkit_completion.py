@@ -577,7 +577,7 @@ def get_prompt_with_active_model(base: str = ">>> "):
         cwd_display = cwd
     return FormattedText(
         [
-            ("bold", "🐶 "),
+            ("bold", "🤖 "),
             ("class:assistant", f"{assistant}"),
             ("", " "),
             ("class:agent", f"[{_normalize_emoji_spacing(agent_display)}] "),

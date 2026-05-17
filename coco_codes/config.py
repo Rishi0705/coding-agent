@@ -198,7 +198,7 @@ def ensure_config_exists():
         # Note: Using sys.stdout here for initial setup before messaging system is available
         import sys
 
-        sys.stdout.write("🐾 Let's get your Puppy ready!\n")
+        sys.stdout.write("🚀 Let's set up Coco Codes.\n")
         sys.stdout.flush()
         for key in missing:
             if key == "assistant_name":
@@ -230,7 +230,7 @@ def get_value(key: str):
 
 
 def get_assistant_name():
-    return get_value("assistant_name") or "Puppy"
+    return get_value("assistant_name") or "Coco"
 
 
 def get_owner_name():
@@ -1671,7 +1671,7 @@ def auto_save_session_if_enabled() -> bool:
         )
 
         emit_info(
-            f"🐾 Auto-saved session: {metadata.message_count} messages ({metadata.total_tokens} tokens)"
+            f"💾 Auto-saved session: {metadata.message_count} messages ({metadata.total_tokens} tokens)"
         )
 
         return True

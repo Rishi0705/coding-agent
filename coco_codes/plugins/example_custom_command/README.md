@@ -20,7 +20,7 @@ This plugin demonstrates how to create custom commands using Coco Codes's callba
 ### 2. Custom Commands (Plugins) ← **This Example**
 - Use `register_callback()` function
 - Located in plugin directories like this one
-- Examples: `/woof`, `/echo` (from this plugin)
+- Examples: `/hello`, `/echo` (from this plugin)
 - Designed for plugin-specific functionality
 
 ## How This Plugin Works
@@ -42,7 +42,7 @@ from coco_codes.messaging import emit_info
 # 1. Define help entries for your commands
 def _custom_help():
     return [
-        ("woof", "Emit a playful woof message (no model)"),
+        ("hello", "Emit a playful hello message (no model)"),
         ("echo", "Echo back your text (display only)"),
     ]
 
@@ -51,16 +51,16 @@ def _handle_custom_command(command: str, name: str):
     """Handle custom commands.
     
     Args:
-        command: Full command string (e.g., "/woof something")
-        name: Command name without slash (e.g., "woof")
+        command: Full command string (e.g., "/hello something")
+        name: Command name without slash (e.g., "hello")
         
     Returns:
         - None: Command not handled by this plugin
         - True: Command handled successfully  
         - str: Text to process as user input to the model
     """
-    if name == "woof":
-        emit_info("🐶 Woof!")
+    if name == "hello":
+        emit_info("🤖 Hello!")
         return True  # Handled, don't invoke model
         
     if name == "echo":
@@ -79,21 +79,21 @@ register_callback("custom_command", _handle_custom_command)
 
 ## Commands Provided
 
-### `/woof [text]`
+### `/hello [text]`
 
 **Description**: Playful command that sends a prompt to the model.
 
 **Behavior**:
-- Without text: Sends "Tell me a dog fact" to the model
+- Without text: Sends "Tell me a coding tip" to the model
 - With text: Sends your text as the prompt
 
 **Examples**:
 ```bash
-/woof
-# → Sends prompt: "Tell me a dog fact"
+/hello
+# → Sends prompt: "Tell me a coding tip"
 
-/woof What's the best breed?
-# → Sends prompt: "What's the best breed?"
+/hello What's the best practice?
+# → Sends prompt: "What's the best practice?"
 ```
 
 ### `/echo <text>`

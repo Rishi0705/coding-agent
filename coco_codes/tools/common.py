@@ -39,14 +39,14 @@ try:
     )
 
     # Use queue console by default, but allow fallback
-    NO_COLOR = bool(int(os.environ.get("CODE_PUPPY_NO_COLOR", "0")))
+    NO_COLOR = bool(int(os.environ.get("COCO_CODES_NO_COLOR", "0")))
     _rich_console = Console(no_color=NO_COLOR)
     console = get_queue_console()
     # Set the fallback console for compatibility
     console.fallback_console = _rich_console
 except ImportError:
     # Fallback to regular Rich console if messaging system not available
-    NO_COLOR = bool(int(os.environ.get("CODE_PUPPY_NO_COLOR", "0")))
+    NO_COLOR = bool(int(os.environ.get("COCO_CODES_NO_COLOR", "0")))
     console = Console(no_color=NO_COLOR)
 
     # Provide fallback emit functions

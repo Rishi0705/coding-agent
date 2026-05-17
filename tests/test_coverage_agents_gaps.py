@@ -16,7 +16,7 @@ import pytest
 
 
 _REVIEWER_AGENTS = [
-    ("coco_codes.agents.agent_qa_kitten", "QualityAssuranceKittenAgent"),
+    ("coco_codes.agents.agent_qa_automation", "QualityAssuranceKittenAgent"),
 ]
 
 
