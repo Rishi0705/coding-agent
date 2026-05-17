@@ -136,11 +136,10 @@ async def event_stream_handler(
         # Clear line and print newline before banner
         console.print(" " * 50, end="\r")
         console.print()  # Newline before banner
-        # Bold banner with configurable color and lightning bolt
         thinking_color = get_banner_color("thinking")
         console.print(
             Text.from_markup(
-                f"[bold white on {thinking_color}] THINKING [/bold white on {thinking_color}] [dim]\u26a1 "
+                f"[bold white on {thinking_color}] THINKING [/bold white on {thinking_color}] "
             ),
             end="",
         )

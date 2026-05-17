@@ -139,7 +139,7 @@ def _handle_hooks_command(command: str, name: str) -> Optional[Any]:
         if global_config:
             save_global_hooks_config(global_cfg)
 
-        emit_success(f"\u2705 Enabled {count} hook(s).")
+        emit_success(f"Enabled {count} hook(s).")
         return True
     # -------------------------------------------------------------- disable
     if subcommand == "disable":

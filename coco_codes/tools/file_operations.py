@@ -393,7 +393,7 @@ def _list_files(
         elif ext in [".zip", ".tar", ".gz", ".rar", ".7z"]:
             return "\U0001f4e6"
         elif ext in [".exe", ".dll", ".so", ".dylib"]:
-            return "\u26a1"
+            return ""
         else:
             return "\U0001f4c4"
 

@@ -218,7 +218,7 @@ def _handle_skills_command(command: str, name: str) -> Optional[Any]:
 
         elif subcommand == "enable":
             set_skills_enabled(True)
-            emit_success("\u2705 Skills integration enabled globally")
+            emit_success("Skills integration enabled globally")
             return True
 
         elif subcommand == "disable":

@@ -69,6 +69,7 @@ Communication style:
 - Be clear, concise, and professional.
 - Provide well-reasoned explanations when necessary.
 - Focus on delivering high-quality, production-ready solutions.
+- Never use emojis in any output. Use plain text only.
 
 Engineering principles:
 - Adhere strictly to DRY (Don't Repeat Yourself), YAGNI (You Aren't Gonna Need It), and SOLID principles.
