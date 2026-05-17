@@ -1,0 +1,97 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "coco-codes"
+version = "0.1.0"
+description = "AI-powered code generation agent for professional software engineering"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "pydantic-ai-slim[openai,anthropic,mcp]==1.56.0",
+    "typer>=0.12.0",
+    "mcp>=1.9.4",
+    "httpx[http2]>=0.24.1",
+    "requests>=2.28.0",
+    "rich>=13.4.2",
+    "pydantic>=2.4.0",
+    "python-dotenv>=1.0.0",
+    "prompt-toolkit>=3.0.52",
+    "json-repair>=0.46.2",
+    "pyfiglet>=0.8.post1",
+    "rapidfuzz>=3.13.0",
+    "openai>=1.99.1",
+    "ripgrep==14.1.0",
+    "playwright>=1.40.0",
+    "termflow-md>=0.1.11",
+    "Pillow>=10.0.0",
+    "azure-identity>=1.15.0",
+    "anthropic==0.79.0",
+]
+authors = [
+    {name = "Rishi Raj Acharyya"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Code Generators",
+]
+
+[project.optional-dependencies]
+bedrock = ["boto3>=1.35.0"]
+durable = ["dbos>=2.11.0"]
+
+[project.urls]
+repository = "https://github.com/rishi0705/coco-codes"
+HomePage = "https://github.com/rishi0705/coco-codes"
+
+[project.scripts]
+coco-codes = "coco_codes.main:main_entry"
+coco = "coco_codes.main:main_entry"
+
+[tool.logfire]
+ignore_no_config = true
+
+[tool.hatch.build]
+packages = ["coco_codes"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"coco_codes/models.json" = "coco_codes/models.json"
+"coco_codes/models_dev_api.json" = "coco_codes/models_dev_api.json"
+
+[[tool.hatch.build.targets.sdist.include]]
+path = "coco_codes/models.json"
+
+[[tool.hatch.build.targets.sdist.include]]
+path = "coco_codes/models_dev_api.json"
+
+[tool.ruff.lint.per-file-ignores]
+"coco_codes/main.py" = ["E402"]
+"coco_codes/cli_runner.py" = ["E402"]
+"coco_codes/messaging/__init__.py" = ["E402"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=coco_codes --cov-report=term-missing"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+omit = ["coco_codes/main.py"]
+
+[tool.uv]
+python-preference = "only-managed"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-cov>=6.1.1",
+    "pytest-asyncio>=0.23.1",
+    "ruff>=0.11.11",
+    "pexpect>=4.9.0",
+]

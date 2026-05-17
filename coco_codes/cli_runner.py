@@ -1,0 +1,1106 @@
+"""CLI runner for Coco Codes.
+
+Contains the main application logic, interactive mode, and entry point.
+"""
+
+# Apply pydantic-ai patches BEFORE any pydantic-ai imports
+from coco_codes.pydantic_patches import apply_all_patches
+
+apply_all_patches()
+
+import argparse
+import asyncio
+import os
+import sys
+import traceback
+from pathlib import Path
+
+from rich.console import Console
+
+from coco_codes import __version__, callbacks, plugins
+from coco_codes.agents import get_current_agent
+from coco_codes.command_line.attachments import parse_prompt_attachments
+from coco_codes.command_line.clipboard import get_clipboard_manager
+from coco_codes.config import (
+    AUTOSAVE_DIR,
+    COMMAND_HISTORY_FILE,
+    ensure_config_exists,
+    finalize_autosave_session,
+    initialize_command_history_file,
+    save_command_to_history,
+)
+from coco_codes.http_utils import find_available_port
+from coco_codes.keymap import (
+    KeymapError,
+    get_cancel_agent_display_name,
+    get_pause_agent_display_name,
+    validate_cancel_agent_key,
+    validate_pause_agent_key,
+)
+from coco_codes.messaging import emit_info
+from coco_codes.terminal_utils import (
+    print_truecolor_warning,
+    reset_unix_terminal,
+    reset_windows_terminal_ansi,
+    reset_windows_terminal_full,
+)
+from coco_codes.version_checker import default_version_mismatch_behavior
+
+plugins.load_plugin_callbacks()
+
+
+def _resume_session_from_path(raw_path: str) -> None:
+    """Restore agent message history from a saved .pkl session file.
+
+    Accepts any path (autosaves, contexts, somewhere weird on disk). We don't
+    care where it lives — we just decompose into (parent_dir, stem) and reuse
+    ``session_storage.load_session`` so we stay DRY.
+    """
+    from coco_codes.agents.agent_manager import get_current_agent
+    from coco_codes.messaging import emit_error, emit_success
+    from coco_codes.session_storage import load_session
+
+    session_path = Path(raw_path).expanduser().resolve()
+
+    if not session_path.exists():
+        emit_error(f"--resume: session file not found: {session_path}")
+        sys.exit(1)
+
+    if session_path.suffix != ".pkl":
+        emit_error(
+            f"--resume: expected a .pkl session file, got '{session_path.suffix}': {session_path}"
+        )
+        sys.exit(1)
+
+    try:
+        history = load_session(session_path.stem, session_path.parent)
+    except Exception as exc:
+        emit_error(f"--resume: failed to load session: {exc}")
+        sys.exit(1)
+
+    try:
+        agent = get_current_agent()
+        agent.set_message_history(history)
+    except Exception as exc:
+        emit_error(f"--resume: failed to attach history to agent: {exc}")
+        sys.exit(1)
+
+    # Rotate autosave id so we don't clobber the original file we just resumed.
+    try:
+        from coco_codes.config import rotate_autosave_id
+
+        rotate_autosave_id()
+    except Exception:
+        pass  # autosave rotation is best-effort
+
+    total_tokens = sum(agent.estimate_tokens_for_message(m) for m in history)
+    emit_success(
+        f"✅ Resumed session: {len(history)} messages ({total_tokens} tokens)\n"
+        f"📁 From: {session_path}"
+    )
+
+
+async def main():
+    """Main async entry point for Coco Codes CLI."""
+    parser = argparse.ArgumentParser(description="Coco Codes - A code generation agent")
+    parser.add_argument(
+        "--version",
+        "-v",
+        action="version",
+        version=f"{__version__}",
+        help="Show version and exit",
+    )
+    parser.add_argument(
+        "--interactive",
+        "-i",
+        action="store_true",
+        help="Run in interactive mode",
+    )
+    parser.add_argument(
+        "--prompt",
+        "-p",
+        type=str,
+        help="Execute a single prompt and exit (no interactive mode)",
+    )
+    parser.add_argument(
+        "--agent",
+        "-a",
+        type=str,
+        help="Specify which agent to use (e.g., --agent coco-codes)",
+    )
+    parser.add_argument(
+        "--model",
+        "-m",
+        type=str,
+        help="Specify which model to use (e.g., --model gpt-5)",
+    )
+    parser.add_argument(
+        "--resume",
+        "-r",
+        type=str,
+        metavar="PATH",
+        help="Resume a saved session from a .pkl file (e.g. ~/.coco_codes/contexts/foo.pkl)",
+    )
+    parser.add_argument(
+        "command", nargs="*", help="Run a single command (deprecated, use -p instead)"
+    )
+    args = parser.parse_args()
+
+    from coco_codes.messaging import (
+        RichConsoleRenderer,
+        SynchronousInteractiveRenderer,
+        get_global_queue,
+        get_message_bus,
+    )
+
+    # Create a shared console for both renderers
+    display_console = Console()
+
+    # Legacy renderer for backward compatibility (emits via get_global_queue)
+    message_queue = get_global_queue()
+    message_renderer = SynchronousInteractiveRenderer(message_queue, display_console)
+    message_renderer.start()
+
+    # New MessageBus renderer for structured messages (tools emit here)
+    message_bus = get_message_bus()
+    bus_renderer = RichConsoleRenderer(message_bus, display_console)
+    bus_renderer.start()
+
+    initialize_command_history_file()
+    from coco_codes.messaging import emit_error, emit_system_message
+
+    # Show the awesome Coco Codes logo when entering interactive mode
+    # This happens when: no -p flag (prompt-only mode) is used
+    # The logo should appear for both `coco-codes` and `coco-codes -i`
+    if not args.prompt:
+        try:
+            import pyfiglet
+
+            intro_lines = pyfiglet.figlet_format(
+                "CODE PUPPY", font="ansi_shadow"
+            ).split("\n")
+
+            # Simple blue to green gradient (top to bottom)
+            gradient_colors = ["bright_blue", "bright_cyan", "bright_green"]
+            display_console.print("\n")
+
+            lines = []
+            # Apply gradient line by line
+            for line_num, line in enumerate(intro_lines):
+                if line.strip():
+                    # Use line position to determine color (top blue, middle cyan, bottom green)
+                    color_idx = min(line_num // 2, len(gradient_colors) - 1)
+                    color = gradient_colors[color_idx]
+                    lines.append(f"[{color}]{line}[/{color}]")
+                else:
+                    lines.append("")
+            # Print directly to console to avoid the 'dim' style from emit_system_message
+            display_console.print("\n".join(lines))
+        except ImportError:
+            emit_system_message("🐶 Coco Codes is Loading...")
+
+        # Truecolor warning moved to interactive_mode() so it prints LAST
+        # after all the help stuff - max visibility for the ugly red box!
+
+    available_port = find_available_port()
+    if available_port is None:
+        emit_error("No available ports in range 8090-9010!")
+        return
+
+    # Early model setting if specified via command line
+    # This happens before ensure_config_exists() to ensure config is set up correctly
+    early_model = None
+    if args.model:
+        early_model = args.model.strip()
+        from coco_codes.config import set_model_name
+
+        set_model_name(early_model)
+
+    ensure_config_exists()
+
+    # Validate cancel_agent_key configuration early
+    try:
+        validate_cancel_agent_key()
+    except KeymapError as e:
+        from coco_codes.messaging import emit_error
+
+        emit_error(str(e))
+        sys.exit(1)
+
+    # Validate pause_agent_key configuration early (Phase 3 of pause/steer)
+    try:
+        validate_pause_agent_key()
+    except KeymapError as e:
+        from coco_codes.messaging import emit_error
+
+        emit_error(str(e))
+        sys.exit(1)
+
+    # Show uvx detection notice if we're on Windows + uvx
+    # Also disable Ctrl+C at the console level to prevent terminal bricking
+    try:
+        from coco_codes.uvx_detection import should_use_alternate_cancel_key
+
+        if should_use_alternate_cancel_key():
+            from coco_codes.terminal_utils import (
+                disable_windows_ctrl_c,
+                set_keep_ctrl_c_disabled,
+            )
+
+            # Disable Ctrl+C at the console input level
+            # This prevents Ctrl+C from being processed as a signal at all
+            disable_windows_ctrl_c()
+
+            # Set flag to keep it disabled (prompt_toolkit may re-enable it)
+            set_keep_ctrl_c_disabled(True)
+
+            # Use print directly - emit_system_message can get cleared by ANSI codes
+            print(
+                "🔧 Detected uvx launch on Windows - using Ctrl+K for cancellation "
+                "(Ctrl+C is disabled to prevent terminal issues)"
+            )
+
+            # Also install a SIGINT handler as backup
+            import signal
+
+            from coco_codes.terminal_utils import reset_windows_terminal_full
+
+            def _uvx_protective_sigint_handler(_sig, _frame):
+                """Protective SIGINT handler for Windows+uvx."""
+                reset_windows_terminal_full()
+                # Re-disable Ctrl+C in case something re-enabled it
+                disable_windows_ctrl_c()
+
+            signal.signal(signal.SIGINT, _uvx_protective_sigint_handler)
+    except ImportError:
+        pass  # uvx_detection module not available, ignore
+
+    # Load API keys from coco.cfg into environment variables
+    from coco_codes.config import load_api_keys_to_environment
+
+    load_api_keys_to_environment()
+
+    # Handle model validation from command line (validation happens here, setting was earlier)
+    if args.model:
+        from coco_codes.config import _validate_model_exists
+
+        model_name = args.model.strip()
+        try:
+            # Validate that the model exists in models.json
+            if not _validate_model_exists(model_name):
+                from coco_codes.model_factory import ModelFactory
+
+                models_config = ModelFactory.load_config()
+                available_models = list(models_config.keys()) if models_config else []
+
+                emit_error(f"Model '{model_name}' not found")
+                emit_system_message(f"Available models: {', '.join(available_models)}")
+                sys.exit(1)
+
+            # Model is valid, show confirmation (already set earlier)
+            emit_system_message(f"🎯 Using model: {model_name}")
+        except Exception as e:
+            emit_error(f"Error validating model: {str(e)}")
+            sys.exit(1)
+
+    # Handle agent selection from command line
+    if args.agent:
+        from coco_codes.agents.agent_manager import (
+            get_available_agents,
+            set_current_agent,
+        )
+
+        agent_name = args.agent.lower()
+        try:
+            # First check if the agent exists by getting available agents
+            available_agents = get_available_agents()
+            if agent_name not in available_agents:
+                emit_error(f"Agent '{agent_name}' not found")
+                emit_system_message(
+                    f"Available agents: {', '.join(available_agents.keys())}"
+                )
+                sys.exit(1)
+
+            # Agent exists, set it
+            set_current_agent(agent_name)
+            emit_system_message(f"🤖 Using agent: {agent_name}")
+        except Exception as e:
+            emit_error(f"Error setting agent: {str(e)}")
+            sys.exit(1)
+
+    current_version = __version__
+
+    no_version_update = os.getenv("NO_VERSION_UPDATE", "").lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    )
+    if no_version_update:
+        version_msg = f"Current version: {current_version}"
+        update_disabled_msg = (
+            "Update phase disabled because NO_VERSION_UPDATE is set to 1 or true"
+        )
+        emit_system_message(version_msg)
+        emit_system_message(update_disabled_msg)
+    else:
+        if len(callbacks.get_callbacks("version_check")):
+            await callbacks.on_version_check(current_version)
+        else:
+            default_version_mismatch_behavior(current_version)
+
+    await callbacks.on_startup()
+
+    if args.resume:
+        _resume_session_from_path(args.resume)
+
+    global shutdown_flag
+    shutdown_flag = False
+    try:
+        initial_command = None
+        prompt_only_mode = False
+
+        if args.prompt:
+            initial_command = args.prompt
+            prompt_only_mode = True
+        elif args.command:
+            initial_command = " ".join(args.command)
+            prompt_only_mode = False
+
+        if prompt_only_mode:
+            await execute_single_prompt(initial_command, message_renderer)
+        else:
+            # Default to interactive mode (no args = same as -i)
+            await interactive_mode(message_renderer, initial_command=initial_command)
+    finally:
+        if message_renderer:
+            message_renderer.stop()
+        if bus_renderer:
+            bus_renderer.stop()
+        await callbacks.on_shutdown()
+
+
+async def interactive_mode(message_renderer, initial_command: str = None) -> None:
+    """Run the agent in interactive mode."""
+    from coco_codes.command_line.command_handler import handle_command
+
+    display_console = message_renderer.console
+    from coco_codes.messaging import emit_info, emit_system_message
+
+    emit_system_message(
+        "Type '/exit', '/quit', or press Ctrl+D to exit the interactive mode."
+    )
+    emit_system_message("Type 'clear' to reset the conversation history.")
+    emit_system_message("Type /help to view all commands")
+    emit_system_message(
+        "Type @ for path completion, or /model to pick a model. Toggle multiline with Alt+M or F2; newline: Ctrl+J."
+    )
+    emit_system_message("Paste images: Ctrl+V (even on Mac!), F3, or /paste command.")
+    import platform
+
+    if platform.system() == "Darwin":
+        emit_system_message(
+            "💡 macOS tip: Use Ctrl+V (not Cmd+V) to paste images in terminal."
+        )
+    cancel_key = get_cancel_agent_display_name()
+    emit_system_message(
+        f"Press {cancel_key} during processing to cancel the current task or inference. Use Ctrl+X to interrupt running shell commands."
+    )
+    pause_key = get_pause_agent_display_name()
+    emit_system_message(
+        f"Press {pause_key} during processing to pause the agent and inject a steering message."
+    )
+    emit_system_message(
+        "Use /autosave_load to manually load a previous autosave session."
+    )
+    emit_system_message(
+        "Use /diff to configure diff highlighting colors for file changes."
+    )
+    emit_system_message("To re-run the tutorial, use /tutorial.")
+    emit_system_message(
+        "!<command> to run shell commands directly (e.g., !git status)",
+    )
+    # Print truecolor warning LAST so it's the most visible thing on startup
+    # Big ugly red box should be impossible to miss! 🔴
+    print_truecolor_warning(display_console)
+
+    # Shell pass-through for initial_command: !<cmd> bypasses the agent
+    if initial_command:
+        from coco_codes.command_line.shell_passthrough import (
+            execute_shell_passthrough,
+            is_shell_passthrough,
+        )
+
+        if is_shell_passthrough(initial_command):
+            execute_shell_passthrough(initial_command)
+            initial_command = None
+
+    # Initialize the runtime agent manager
+    if initial_command:
+        from coco_codes.agents import get_current_agent
+        from coco_codes.messaging import emit_info, emit_success, emit_system_message
+
+        agent = get_current_agent()
+        emit_info(f"Processing initial command: {initial_command}")
+
+        try:
+            # Check if any tool is waiting for user input before showing spinner
+            try:
+                from coco_codes.tools.command_runner import is_awaiting_user_input
+
+                awaiting_input = is_awaiting_user_input()
+            except ImportError:
+                awaiting_input = False
+
+            # Run with or without spinner based on whether we're awaiting input
+            response, agent_task = await run_prompt_with_attachments(
+                agent,
+                initial_command,
+                spinner_console=display_console,
+                use_spinner=not awaiting_input,
+            )
+            if response is not None:
+                agent_response = response.output
+
+                # Update the agent's message history with the complete conversation
+                # including the final assistant response
+                if hasattr(response, "all_messages"):
+                    agent.set_message_history(list(response.all_messages()))
+
+                # Emit structured message for proper markdown rendering
+                from coco_codes.messaging import get_message_bus
+                from coco_codes.messaging.messages import AgentResponseMessage
+
+                response_msg = AgentResponseMessage(
+                    content=agent_response,
+                    is_markdown=True,
+                )
+                get_message_bus().emit(response_msg)
+
+                emit_success("🐶 Continuing in Interactive Mode")
+                emit_system_message(
+                    "Your command and response are preserved in the conversation history."
+                )
+
+        except Exception as e:
+            from coco_codes.messaging import emit_error
+
+            emit_error(f"Error processing initial command: {str(e)}")
+
+    # Check if prompt_toolkit is installed
+    try:
+        from coco_codes.command_line.prompt_toolkit_completion import (
+            get_input_with_combined_completion,
+            get_prompt_with_active_model,
+        )
+    except ImportError:
+        from coco_codes.messaging import emit_warning
+
+        emit_warning("Warning: prompt_toolkit not installed. Installing now...")
+        try:
+            import subprocess
+
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", "--quiet", "prompt_toolkit"]
+            )
+            from coco_codes.messaging import emit_success
+
+            emit_success("Successfully installed prompt_toolkit")
+            from coco_codes.command_line.prompt_toolkit_completion import (
+                get_input_with_combined_completion,
+                get_prompt_with_active_model,
+            )
+        except Exception as e:
+            from coco_codes.messaging import emit_error, emit_warning
+
+            emit_error(f"Error installing prompt_toolkit: {e}")
+            emit_warning("Falling back to basic input without tab completion")
+
+    # Autosave loading is now manual - use /autosave_load command
+
+    # Auto-run tutorial on first startup
+    try:
+        from coco_codes.command_line.onboarding_wizard import should_show_onboarding
+
+        if should_show_onboarding():
+            import concurrent.futures
+
+            from coco_codes.command_line.onboarding_wizard import run_onboarding_wizard
+            from coco_codes.config import set_model_name
+            from coco_codes.messaging import emit_info
+
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(lambda: asyncio.run(run_onboarding_wizard()))
+                result = future.result(timeout=300)
+
+            if result == "chatgpt":
+                emit_info("🔐 Starting ChatGPT OAuth flow...")
+                from coco_codes.plugins.chatgpt_oauth.oauth_flow import run_oauth_flow
+
+                run_oauth_flow()
+                set_model_name("chatgpt-gpt-5.4")
+            elif result == "claude":
+                emit_info("🔐 Starting Claude Code OAuth flow...")
+                from coco_codes.plugins.claude_code_oauth.register_callbacks import (
+                    _perform_authentication,
+                )
+
+                _perform_authentication()
+                set_model_name("claude-code-claude-opus-4-7")
+            elif result == "completed":
+                emit_info("🎉 Tutorial complete! Happy coding!")
+            elif result == "skipped":
+                emit_info("⏭️ Tutorial skipped. Run /tutorial anytime!")
+    except Exception as e:
+        from coco_codes.messaging import emit_warning
+
+        emit_warning(f"Tutorial auto-start failed: {e}")
+
+    # Track the current agent task for cancellation on quit
+    current_agent_task = None
+
+    while True:
+        from coco_codes.agents.agent_manager import get_current_agent
+        from coco_codes.messaging import emit_info
+
+        # Get the custom prompt from the current agent, or use default
+        current_agent = get_current_agent()
+        user_prompt = current_agent.get_user_prompt() or "Enter your coding task:"
+
+        emit_info(f"{user_prompt}\n")
+
+        try:
+            # Use prompt_toolkit for enhanced input with path completion
+            try:
+                # Windows-specific: Reset terminal state before prompting
+                reset_windows_terminal_ansi()
+
+                # Use the async version of get_input_with_combined_completion
+                task = await get_input_with_combined_completion(
+                    get_prompt_with_active_model(), history_file=COMMAND_HISTORY_FILE
+                )
+
+                # Windows+uvx: Re-disable Ctrl+C after prompt_toolkit
+                # (prompt_toolkit restores console mode which re-enables Ctrl+C)
+                try:
+                    from coco_codes.terminal_utils import ensure_ctrl_c_disabled
+
+                    ensure_ctrl_c_disabled()
+                except ImportError:
+                    pass
+            except ImportError:
+                # Fall back to basic input if prompt_toolkit is not available
+                task = input(">>> ")
+
+        except (KeyboardInterrupt, asyncio.CancelledError):
+            # Handle Ctrl+C - cancel input and continue
+            # Windows-specific: Reset terminal state after interrupt to prevent
+            # the terminal from becoming unresponsive (can't type characters)
+            reset_windows_terminal_full()
+            from coco_codes.callbacks import on_interactive_turn_cancel
+            from coco_codes.messaging import emit_warning
+
+            await on_interactive_turn_cancel("", reason="Ctrl+C")
+            emit_warning("\nInput cancelled")
+            continue
+        except EOFError:
+            # Handle Ctrl+D - exit the application
+            from coco_codes.messaging import emit_success
+
+            emit_success("\nGoodbye! (Ctrl+D)")
+
+            # Cancel any running agent task for clean shutdown
+            if current_agent_task and not current_agent_task.done():
+                emit_info("Cancelling running agent task...")
+                current_agent_task.cancel()
+                try:
+                    await current_agent_task
+                except asyncio.CancelledError:
+                    pass  # Expected when cancelling
+
+            break
+
+        # Shell pass-through: !<command> executes directly, bypassing the agent
+        from coco_codes.command_line.shell_passthrough import (
+            execute_shell_passthrough,
+            is_shell_passthrough,
+        )
+
+        if is_shell_passthrough(task):
+            execute_shell_passthrough(task)
+            continue
+
+        # Check for exit commands (plain text or command form)
+        if task.strip().lower() in ["exit", "quit"] or task.strip().lower() in [
+            "/exit",
+            "/quit",
+        ]:
+            from coco_codes.messaging import emit_success
+
+            emit_success("Goodbye!")
+
+            # Cancel any running agent task for clean shutdown
+            if current_agent_task and not current_agent_task.done():
+                emit_info("Cancelling running agent task...")
+                current_agent_task.cancel()
+                try:
+                    await current_agent_task
+                except asyncio.CancelledError:
+                    pass  # Expected when cancelling
+
+            # The renderer is stopped in the finally block of main().
+            break
+
+        # Check for clear command (supports both `clear` and `/clear`)
+        if task.strip().lower() in ("clear", "/clear"):
+            from coco_codes.command_line.clipboard import get_clipboard_manager
+            from coco_codes.messaging import (
+                emit_info,
+                emit_system_message,
+                emit_warning,
+            )
+
+            agent = get_current_agent()
+            new_session_id = finalize_autosave_session()
+            agent.clear_message_history()
+            emit_warning("Conversation history cleared!")
+            emit_system_message("The agent will not remember previous interactions.")
+            emit_info(f"Auto-save session rotated to: {new_session_id}")
+
+            # Also clear pending clipboard images
+            clipboard_manager = get_clipboard_manager()
+            clipboard_count = clipboard_manager.get_pending_count()
+            clipboard_manager.clear_pending()
+            if clipboard_count > 0:
+                emit_info(f"Cleared {clipboard_count} pending clipboard image(s)")
+            continue
+
+        # Parse attachments first so leading paths aren't misread as commands
+        processed_for_commands = parse_prompt_attachments(task)
+        cleaned_for_commands = (processed_for_commands.prompt or "").strip()
+
+        # Handle / commands based on cleaned prompt (after stripping attachments)
+        if cleaned_for_commands.startswith("/"):
+            try:
+                command_result = handle_command(cleaned_for_commands)
+            except Exception as e:
+                from coco_codes.messaging import emit_error
+
+                emit_error(f"Command error: {e}")
+                # Continue interactive loop instead of exiting
+                continue
+            if command_result is True:
+                continue
+            elif isinstance(command_result, str):
+                if command_result == "__AUTOSAVE_LOAD__":
+                    # Handle async autosave loading
+                    try:
+                        # Check if we're in a real interactive terminal
+                        # (not pexpect/tests) - interactive picker requires proper TTY
+                        use_interactive_picker = (
+                            sys.stdin.isatty() and sys.stdout.isatty()
+                        )
+
+                        # Allow environment variable override for tests
+                        if os.getenv("CODE_PUPPY_NO_TUI") == "1":
+                            use_interactive_picker = False
+
+                        if use_interactive_picker:
+                            # Use interactive picker for terminal sessions
+                            from coco_codes.agents.agent_manager import (
+                                get_current_agent,
+                            )
+                            from coco_codes.command_line.autosave_menu import (
+                                interactive_autosave_picker,
+                            )
+                            from coco_codes.config import (
+                                set_current_autosave_from_session_name,
+                            )
+                            from coco_codes.messaging import (
+                                emit_error,
+                                emit_success,
+                                emit_warning,
+                            )
+                            from coco_codes.session_storage import (
+                                load_session,
+                                restore_autosave_interactively,
+                            )
+
+                            chosen_session = await interactive_autosave_picker()
+
+                            if not chosen_session:
+                                emit_warning("Autosave load cancelled")
+                                continue
+
+                            # Load the session
+                            base_dir = Path(AUTOSAVE_DIR)
+                            history = load_session(chosen_session, base_dir)
+
+                            agent = get_current_agent()
+                            agent.set_message_history(history)
+
+                            # Set current autosave session
+                            set_current_autosave_from_session_name(chosen_session)
+
+                            total_tokens = sum(
+                                agent.estimate_tokens_for_message(msg)
+                                for msg in history
+                            )
+                            session_path = base_dir / f"{chosen_session}.pkl"
+
+                            emit_success(
+                                f"✅ Autosave loaded: {len(history)} messages ({total_tokens} tokens)\n"
+                                f"📁 From: {session_path}"
+                            )
+
+                            # Display recent message history for context
+                            from coco_codes.command_line.autosave_menu import (
+                                display_resumed_history,
+                            )
+
+                            display_resumed_history(history)
+                        else:
+                            # Fall back to old text-based picker for tests/non-TTY environments
+                            await restore_autosave_interactively(Path(AUTOSAVE_DIR))
+
+                    except Exception as e:
+                        from coco_codes.messaging import emit_error
+
+                        emit_error(f"Failed to load autosave: {e}")
+                    continue
+                else:
+                    # Command returned a prompt to execute
+                    task = command_result
+            elif command_result is False:
+                # Command not recognized, continue with normal processing
+                pass
+
+        if task.strip():
+            # Write to the secret file for permanent history with timestamp
+            save_command_to_history(task)
+
+            turn_result = None
+            turn_success = False
+            turn_error = None
+
+            try:
+                # No need to get agent directly - use manager's run methods
+
+                # Use our custom helper to enable attachment handling with spinner support
+                result, current_agent_task = await run_prompt_with_attachments(
+                    current_agent,
+                    task,
+                    spinner_console=message_renderer.console,
+                )
+                # Check if the task was cancelled (but don't show message if we just killed processes)
+                if result is None:
+                    # Windows-specific: Reset terminal state after cancellation
+                    reset_windows_terminal_ansi()
+                    # Re-disable Ctrl+C if needed (uvx mode)
+                    try:
+                        from coco_codes.terminal_utils import ensure_ctrl_c_disabled
+
+                        ensure_ctrl_c_disabled()
+                    except ImportError:
+                        pass
+                    from coco_codes.callbacks import on_interactive_turn_cancel
+
+                    await on_interactive_turn_cancel(task, reason="cancellation")
+                    continue
+                # Get the structured response
+                agent_response = result.output
+
+                # Emit structured message for proper markdown rendering
+                from coco_codes.messaging import get_message_bus
+                from coco_codes.messaging.messages import AgentResponseMessage
+
+                response_msg = AgentResponseMessage(
+                    content=agent_response,
+                    is_markdown=True,
+                )
+                get_message_bus().emit(response_msg)
+
+                # Update the agent's message history with the complete conversation
+                # including the final assistant response. The history_processors callback
+                # may not capture the final message, so we use result.all_messages()
+                # to ensure the autosave includes the complete conversation.
+                if hasattr(result, "all_messages"):
+                    current_agent.set_message_history(list(result.all_messages()))
+
+                turn_result = result
+                turn_success = True
+
+                # Ensure console output is flushed before next prompt
+                # This fixes the issue where prompt doesn't appear after agent response
+                if hasattr(display_console.file, "flush"):
+                    display_console.file.flush()
+
+                await asyncio.sleep(
+                    0.1
+                )  # Brief pause to ensure all messages are rendered
+
+            except Exception as e:
+                turn_error = e
+                from coco_codes.messaging.queue_console import get_queue_console
+
+                get_queue_console().print_exception()
+
+            # Auto-save session if enabled (moved outside the try block to avoid being swallowed)
+            from coco_codes.config import auto_save_session_if_enabled
+
+            auto_save_session_if_enabled()
+
+            # ================================================================
+            # CONTINUATION LOOP: plugins may request follow-up prompt runs.
+            # ================================================================
+            from coco_codes.callbacks import (
+                on_interactive_turn_cancel,
+                on_interactive_turn_end,
+            )
+            from coco_codes.messaging import emit_system_message
+
+            continuation_prompt = task
+            continuation_result = turn_result
+            continuation_success = turn_success
+            continuation_error = turn_error
+
+            while True:
+                continuation_requests = await on_interactive_turn_end(
+                    current_agent,
+                    continuation_prompt,
+                    continuation_result,
+                    success=continuation_success,
+                    error=continuation_error,
+                )
+                continuation = next(
+                    (r for r in continuation_requests if isinstance(r, dict)),
+                    None,
+                )
+                if not continuation:
+                    break
+
+                next_prompt = str(continuation.get("prompt") or "").strip()
+                if not next_prompt:
+                    break
+
+                if continuation.get("clear_context", False):
+                    new_session_id = finalize_autosave_session()
+                    current_agent.clear_message_history()
+                    emit_system_message(
+                        f"Context cleared. Session rotated to: {new_session_id}"
+                    )
+
+                delay = float(continuation.get("delay") or 0)
+                if delay > 0:
+                    await asyncio.sleep(delay)
+
+                continuation_prompt = next_prompt
+                continuation_result = None
+                continuation_success = False
+                continuation_error = None
+
+                try:
+                    result, current_agent_task = await run_prompt_with_attachments(
+                        current_agent,
+                        next_prompt,
+                        spinner_console=message_renderer.console,
+                    )
+
+                    if result is None:
+                        await on_interactive_turn_cancel(
+                            next_prompt, reason="cancellation"
+                        )
+                        break
+
+                    agent_response = result.output
+                    response_msg = AgentResponseMessage(
+                        content=agent_response,
+                        is_markdown=True,
+                    )
+                    get_message_bus().emit(response_msg)
+
+                    if hasattr(result, "all_messages"):
+                        current_agent.set_message_history(list(result.all_messages()))
+
+                    if hasattr(display_console.file, "flush"):
+                        display_console.file.flush()
+                    await asyncio.sleep(0.1)
+
+                    auto_save_session_if_enabled()
+                    continuation_result = result
+                    continuation_success = True
+
+                except KeyboardInterrupt:
+                    await on_interactive_turn_cancel(next_prompt, reason="Ctrl+C")
+                    break
+                except Exception as e:
+                    continuation_error = e
+                    from coco_codes.messaging.queue_console import get_queue_console
+
+                    get_queue_console().print_exception()
+                    auto_save_session_if_enabled()
+
+            # Re-disable Ctrl+C if needed (uvx mode) - must be done after
+            # each iteration as various operations may restore console mode
+            try:
+                from coco_codes.terminal_utils import ensure_ctrl_c_disabled
+
+                ensure_ctrl_c_disabled()
+            except ImportError:
+                pass
+
+
+async def run_prompt_with_attachments(
+    agent,
+    raw_prompt: str,
+    *,
+    spinner_console=None,
+    use_spinner: bool = True,
+):
+    """Run the agent after parsing CLI attachments for image/document support.
+
+    Returns:
+        tuple: (result, task) where result is the agent response and task is the asyncio task
+    """
+    import asyncio
+    import re
+
+    from coco_codes.messaging import emit_system_message, emit_warning
+
+    processed_prompt = parse_prompt_attachments(raw_prompt)
+
+    for warning in processed_prompt.warnings:
+        emit_warning(warning)
+
+    # Get clipboard images and merge with file attachments
+    clipboard_manager = get_clipboard_manager()
+    clipboard_images = clipboard_manager.get_pending_images()
+
+    # Clear pending clipboard images after retrieval
+    clipboard_manager.clear_pending()
+
+    # Build summary of all attachments
+    summary_parts = []
+    if processed_prompt.attachments:
+        summary_parts.append(f"files: {len(processed_prompt.attachments)}")
+    if clipboard_images:
+        summary_parts.append(f"clipboard images: {len(clipboard_images)}")
+    if processed_prompt.link_attachments:
+        summary_parts.append(f"urls: {len(processed_prompt.link_attachments)}")
+    if summary_parts:
+        emit_system_message("Attachments detected -> " + ", ".join(summary_parts))
+
+    # Clean up clipboard placeholders from the prompt text
+    cleaned_prompt = processed_prompt.prompt
+    if clipboard_images and cleaned_prompt:
+        cleaned_prompt = re.sub(
+            r"\[📋 clipboard image \d+\]\s*", "", cleaned_prompt
+        ).strip()
+
+    if not cleaned_prompt:
+        emit_warning(
+            "Prompt is empty after removing attachments; add instructions and retry."
+        )
+        return None, None
+
+    # Combine file attachments with clipboard images
+    attachments = [attachment.content for attachment in processed_prompt.attachments]
+    attachments.extend(clipboard_images)  # Add clipboard images
+
+    link_attachments = [link.url_part for link in processed_prompt.link_attachments]
+
+    # IMPORTANT: Set the shared console for streaming output so it
+    # uses the same console as the spinner. This prevents Live display conflicts
+    # that cause line duplication during markdown streaming.
+    from coco_codes.agents.event_stream_handler import set_streaming_console
+
+    set_streaming_console(spinner_console)
+
+    # Create the agent task first so we can track and cancel it
+    agent_task = asyncio.create_task(
+        agent.run_with_mcp(
+            cleaned_prompt,  # Use cleaned prompt (clipboard placeholders removed)
+            attachments=attachments,
+            link_attachments=link_attachments,
+        )
+    )
+
+    if use_spinner and spinner_console is not None:
+        from coco_codes.messaging.spinner import ConsoleSpinner
+
+        with ConsoleSpinner(console=spinner_console):
+            try:
+                result = await agent_task
+                return result, agent_task
+            except asyncio.CancelledError:
+                emit_info("Agent task cancelled")
+                return None, agent_task
+    else:
+        try:
+            result = await agent_task
+            return result, agent_task
+        except asyncio.CancelledError:
+            emit_info("Agent task cancelled")
+            return None, agent_task
+
+
+async def execute_single_prompt(prompt: str, message_renderer) -> None:
+    """Execute a single prompt and exit (for -p flag)."""
+    # Shell pass-through: !<cmd> bypasses the agent even in -p mode
+    from coco_codes.command_line.shell_passthrough import (
+        execute_shell_passthrough,
+        is_shell_passthrough,
+    )
+
+    if is_shell_passthrough(prompt):
+        execute_shell_passthrough(prompt)
+        return
+
+    from coco_codes.messaging import emit_info
+
+    emit_info(f"Executing prompt: {prompt}")
+
+    try:
+        # Get agent through runtime manager and use helper for attachments
+        agent = get_current_agent()
+        result, _agent_task = await run_prompt_with_attachments(
+            agent,
+            prompt,
+            spinner_console=message_renderer.console,
+        )
+        if result is None:
+            return
+
+        agent_response = result.output
+
+        # Emit structured message for proper markdown rendering
+        from coco_codes.messaging import get_message_bus
+        from coco_codes.messaging.messages import AgentResponseMessage
+
+        response_msg = AgentResponseMessage(
+            content=agent_response,
+            is_markdown=True,
+        )
+        get_message_bus().emit(response_msg)
+
+    except asyncio.CancelledError:
+        from coco_codes.messaging import emit_warning
+
+        emit_warning("Execution cancelled by user")
+    except Exception as e:
+        from coco_codes.messaging import emit_error
+
+        emit_error(f"Error executing prompt: {str(e)}")
+
+
+def main_entry():
+    """Entry point for the installed CLI tool."""
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        # Note: Using sys.stderr for crash output - messaging system may not be available
+        sys.stderr.write(traceback.format_exc())
+        return 0
+    finally:
+        # Reset terminal on Unix-like systems (not Windows)
+        reset_unix_terminal()
